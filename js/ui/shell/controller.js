@@ -15,7 +15,8 @@ import { ADJUST_KINDS } from "./types.js";
 /** A new layer's strength: the gentle default for looks; the photo-adjustment tools start at 100,
  * because their sliders are the amount and every slider starts at no change. */
 export function defaultStrength(kind) {
-    return ADJUST_KINDS.includes(kind) ? 100 : GENTLE_DEFAULT;
+    // Lighting is a whole-scene simulation: its preview tiles and its buttons run at full, so Add does too.
+    return ADJUST_KINDS.includes(kind) || kind === "lighting" ? 100 : GENTLE_DEFAULT;
 }
 import { History, initialState } from "./history.js";
 import { appendLayer, editLayer, moveLayer, removeLayer } from "./layers.js";
@@ -32,6 +33,12 @@ export class Editor {
     journal;
     nextId = 0;
     sourceVersion = 0;
+    /** The layer a preview pick (strip tile, tool button or option list) created and that the Add
+     * button has not yet kept. Add keeps it instead of stacking a second, default layer on top. */
+    pendingPick = null;
+    /** One selection state per tool: the option last chosen for it, by any control. Add starts
+     * from it, so the option on screen is the option a new layer gets. */
+    choices = new Map();
     get renderVersion() { return `${this.sourceVersion}:${this.renderer.generation}`; }
     showingOriginal = false;
     cached = null;
@@ -64,6 +71,8 @@ export class Editor {
         this.studioCache.clear();
         this.nextId = 0;
         this.showingOriginal = false;
+        this.pendingPick = null;
+        this.choices.clear();
         this.journal.reset(initialState(source.id, preferred));
         this.invalidate();
     }
@@ -143,16 +152,84 @@ export class Editor {
     selectStudio(studio) {
         if (this.document.studio === studio)
             return;
-        if (this.journal.change(`Open ${tool(studio).title}`, (s) => ({ ...s, studio })))
+        // The options panel follows the tool: the newly opened tool's own layer (the pending pick,
+        // else the top one) is selected, or none, so another tool's options never show under it.
+        const own = this.layerFor(studio);
+        if (this.journal.change(`Open ${tool(studio).title}`, (s) => ({ ...s, studio, selected: own?.id ?? null })))
             this.invalidate();
     }
     choose(id) {
-        if (id !== null && !this.document.layers.some((l) => l.id === id))
+        const item = id === null ? null : this.document.layers.find((l) => l.id === id);
+        if (id !== null && !item)
             throw new RangeError("Layer not found");
         if (this.document.selected === id)
             return;
-        if (this.journal.change("Select layer", (s) => ({ ...s, selected: id })))
+        // Selecting a layer in the stack opens its tool, so the panel and the layer always agree.
+        let studio = this.document.studio;
+        if (item && item.kind !== studio) {
+            try {
+                tool(item.kind);
+                studio = item.kind;
+            }
+            catch { /* not a studio tool */ }
+        }
+        if (this.journal.change("Select layer", (s) => ({ ...s, studio, selected: id })))
             this.invalidate();
+    }
+    /** This tool's layer that picks and options act on: the pending pick, else the selected layer
+     * when it is this tool's, else this tool's top layer. */
+    layerFor(kind) {
+        const layers = this.document.layers;
+        const pending = this.pendingPick ? layers.find((l) => l.id === this.pendingPick && l.kind === kind) : undefined;
+        if (pending)
+            return pending;
+        if (this.selected?.kind === kind)
+            return this.selected;
+        return [...layers].reverse().find((l) => l.kind === kind) ?? null;
+    }
+    /** The option last chosen for a tool (what Add uses), or null before any choice. */
+    choiceFor(kind) {
+        const c = this.choices.get(kind);
+        return c ? { params: { ...c.params }, ...(c.strength === undefined ? {} : { strength: c.strength }) } : null;
+    }
+    remember(kind, params, strength) {
+        const prev = this.choices.get(kind);
+        this.choices.set(kind, { params: { ...(prev?.params ?? {}), ...params }, strength: strength ?? prev?.strength });
+    }
+    /** The pending pick, if its layer still exists (undo can take it away). */
+    get pending() {
+        return this.pendingPick ? this.document.layers.find((l) => l.id === this.pendingPick) ?? null : null;
+    }
+    /** The Add button: exactly one layer per press. A preview pick already made this tool's layer,
+     * so Add keeps that layer (no second commit); otherwise it adds one layer with the option
+     * chosen for this tool. Returns the layer and whether it is new. */
+    addLayer(kind = this.document.studio) {
+        const pending = this.pending;
+        if (pending && pending.kind === kind) {
+            this.pendingPick = null;
+            if (this.document.selected !== pending.id)
+                this.change(`Keep ${tool(kind).title}`, (s) => ({ ...s, selected: pending.id }));
+            else
+                this.invalidate();
+            return { layer: this.selected ?? pending, added: false };
+        }
+        const choice = this.choices.get(kind);
+        const before = this.document.layers.length;
+        const layer = this.add(kind, choice?.params ?? {}, choice?.strength ?? defaultStrength(kind));
+        return { layer, added: this.document.layers.length > before };
+    }
+    /** A tool-panel pick (option buttons, option lists): changes this tool's layer in one step, or
+     * makes it, as a pick the Add button then keeps. Same state as the preview strip. */
+    pick(kind, params, label, strength) {
+        const target = this.layerFor(kind);
+        this.remember(kind, params, strength);
+        if (target) {
+            this.change(`${tool(kind).title}: ${label}`, (s) => ({ ...s, selected: target.id, layers: editLayer(s.layers, target.id, { enabled: true, ...(strength === undefined ? {} : { strength }), parameters: { ...target.parameters, ...params } }) }));
+            return this.selected;
+        }
+        const made = this.add(kind, params, strength ?? defaultStrength(kind), `${tool(kind).title}: ${label}`);
+        this.pendingPick = made.id;
+        return made;
     }
     invalidate() { this.cached = null; for (const listener of [...this.listeners]) {
         try {
@@ -187,13 +264,16 @@ export class Editor {
     }
     /** A thumbnail pick: change the selected layer of that tool in one step, or add a new layer. */
     applyOption(kind, params, label, strength) {
-        const chosen = this.selected?.kind === kind ? this.selected
-            : SINGLE_KINDS.includes(kind) ? this.document.layers.find((l) => l.kind === kind) ?? null : null;
-        if (chosen && chosen.kind === kind) {
-            this.change(`${tool(kind).title}: ${label}`, (s) => ({ ...s, selected: chosen.id, layers: editLayer(s.layers, chosen.id, { enabled: true, ...(strength === undefined ? {} : { strength }), parameters: { ...chosen.parameters, ...params } }) }));
-            return this.selected;
+        // Photo adjustments are one layer each; everything else goes through the same pick state.
+        if (SINGLE_KINDS.includes(kind)) {
+            const single = this.document.layers.find((l) => l.kind === kind);
+            if (single) {
+                this.remember(kind, params, strength);
+                this.change(`${tool(kind).title}: ${label}`, (s) => ({ ...s, selected: single.id, layers: editLayer(s.layers, single.id, { enabled: true, ...(strength === undefined ? {} : { strength }), parameters: { ...single.parameters, ...params } }) }));
+                return this.selected;
+            }
         }
-        return this.add(kind, params, strength ?? defaultStrength(kind));
+        return this.pick(kind, params, label, strength);
     }
     /** Replace a layer's settings in one undo step (a crop drag, a curve point, a reset). */
     setParams(id, parameters, label = "Change settings") {
@@ -208,6 +288,7 @@ export class Editor {
         const item = this.document.layers.find((l) => l.id === id);
         if (!item)
             throw new RangeError("Layer not found");
+        this.remember(item.kind, { [key]: value });
         this.change(`Set ${key}`, (s) => ({ ...s, layers: editLayer(s.layers, id, { parameters: { ...item.parameters, [key]: value } }) }));
     }
     /** One retouch brush stroke (or a cleared brush): the layer's strokes change in one history
@@ -253,11 +334,13 @@ export class Editor {
         return changed;
     }
     resetLayers() {
+        this.pendingPick = null;
         this.change("Reset all edits", (s) => ({ ...s, layers: [], selected: null, showBefore: false }));
     }
     /** The Studio's Reset: every layer and the Create document (text, stickers, drawing, frame,
      * board) in one undoable step, so the photo saved next is the original, as Reset says. */
     resetAll() {
+        this.pendingPick = null;
         this.change("Reset all edits", (s) => {
             const next = { ...s, layers: [], selected: null, showBefore: false };
             delete next.create;

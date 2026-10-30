@@ -45,7 +45,7 @@ export function appearanceStackReport(source, layers, after) {
     if (points && points.length === 478) {
         let face = points;
         if (age) {
-            const stop = Number(age.parameters.stop ?? 1);
+            const stop = Number(age.parameters.stop ?? (age.kind === "older" ? 3 : 2));
             const result = renderAge(before, points, { stop: age.kind === "older" ? stop : -stop, strength: age.strength / 100, seed: 1024,
                 hairMask: source.hair, layers: { hair: source.hair ? 1 : 0 } });
             ageStrength = result.metrics.strength_used;

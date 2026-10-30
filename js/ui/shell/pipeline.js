@@ -14,7 +14,8 @@ import { effective } from "./layers.js";
 import { appearanceOrder } from "./appearance-stack.js";
 import { readiness } from "./catalogue.js";
 import { applyHeroLayer } from "./hero-layer.js";
-import { applyBeautyLayer } from "./beauty-layer.js";
+import { applyBeautyLayer, photoMeanLab } from "./beauty-layer.js";
+import { ciede2000 } from "../../engines/core/colour.js";
 import { applySkinLayer } from "./skin-layer.js";
 import { applyUnderEyeLayer } from "./under-eye-layer.js";
 import { applyHairBeardTeethLayer } from "./hair-beard-teeth-layer.js";
@@ -23,6 +24,8 @@ import { applyMakeupLayer } from "./makeup-layer.js";
 import { autoFix } from "../../engines/beauty/auto-fix.js";
 import { applyRetouchLayer } from "../../editor/brush/layer.js";
 import { applyFilterLayer } from "../../filters/runtime/layer.js";
+import { guardFilterLook } from "./never-lighter.js";
+import { finishEnhance } from "./enhance-finish.js";
 import { applyPortraitLayer } from "../../filters/portrait/layer.js";
 import { regionMask } from "../../data/regions/index.js";
 import { developStage, finishStage, geometryStage, isEditorKind, stagePlan } from "../../editor/adjust/stack.js";
@@ -130,8 +133,11 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
     const retouch = applyRetouchLayer(img, source, layer);
     if (retouch)
         return retouch;
-    if (layer.kind === "filters")
-        return applyFilterLayer(img, source, layer);
+    if (layer.kind === "filters") {
+        // Skin guard on: the look never leaves skin lighter than the photo (never-lighter.ts).
+        const look = applyFilterLayer(img, source, layer), capped = guardFilterLook(img, look.image, source, layer.parameters);
+        return { ...look, image: capped.image, metrics: { ...look.metrics, never_lighter: capped.area, never_lighter_pixels: capped.clamped } };
+    }
     if (layer.kind === "portrait")
         return applyPortraitLayer(img, source, layer);
     if (layer.kind === "enhance") {
@@ -172,10 +178,15 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
                 exposure: layer.parameters.exposure !== false, sharpen: layer.parameters.sharpen !== false,
             },
         });
-        return { image: result.image, label: result.label, metrics: { mode, noise_before: result.before.noise_sigma,
+        // Portrait and Vivid: their own finish after the rescue (enhance-finish.ts), unless colour is off.
+        const finish = layer.parameters.colour !== false ? finishEnhance(img, result.image, mode, layer.strength / 100, faceMask) : null;
+        const image = finish?.applied ? finish.image : result.image;
+        const unchanged = finish?.applied ? image.data.every((v, i) => v === img.data[i]) : result.steps.unchanged === true;
+        return { image, label: result.label, metrics: { mode, noise_before: result.before.noise_sigma,
                 noise_after: result.after.noise_sigma, condition: result.condition.primary,
                 effective_mode: result.safety.plan.effective_mode, exposure_applied: result.steps.exposure_applied === true,
-                normal_preserved: result.steps.normal_preserved === true, unchanged: result.steps.unchanged === true,
+                normal_preserved: result.steps.normal_preserved === true && !finish?.applied, unchanged,
+                ...(finish?.applied ? { mode_finish: mode } : {}),
                 face_metering: faceMask ? "supplied_face_mask" : "unmeasured",
                 ...(result.safety.face_tone ? { skin_lstar_max_rise: result.safety.face_tone.max_rise } : {}) } };
     }
@@ -243,10 +254,16 @@ export function renderLayers(source, layers, lightingRenderer) {
         const result = applyLocalLayer(current, face === source.face ? source : { ...source, face }, item, lightingRenderer);
         // Lighting mixes by strength on an ease-out, so the gentle default (30) already shows the light.
         const weight = item.opacity * (item.kind === "lighting" ? 1 - (1 - item.strength / 100) ** 1.7 : 1);
+        const before = current;
         current = mixOpacity(current, result.image, weight);
         face = nextFace(face, result.face, weight);
         labels.push(result.label);
-        metrics.push({ ...result.metrics, opacity: item.opacity, strength: item.strength,
+        // Lighting: the colour shift is measured on this render (sampled mean, before vs after the
+        // light at its strength), not taken from a model; Daylight is the identity and reads 0.
+        const measured = item.kind === "lighting"
+            ? { shift_delta_e: Math.round(ciede2000(photoMeanLab(before), photoMeanLab(current)) * 100) / 100,
+                model_shift_delta_e: result.metrics.shift_delta_e ?? "n/a", delta_e_source: "render" } : {};
+        metrics.push({ ...result.metrics, ...measured, opacity: item.opacity, strength: item.strength,
             simulation: item.simulation, source: item.provenance });
     }
     if (!plan.geometry && !plan.finish)

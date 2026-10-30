@@ -26,7 +26,8 @@ export function documentEvidence(source, stack) {
     if (simulationCount)
         warnings.push("These appearance edits are photo simulations, not physical outcomes.");
     const badges = [source.kind === "sample" ? "Drawn example" : "On-device photo",
-        `${localCount} local layer${localCount === 1 ? "" : "s"}`];
+        // The same total every counter shows (layers.ts countLine); provider and hidden layers are named below.
+        `${stack.length} layer${stack.length === 1 ? "" : "s"}`];
     if (providerCount)
         badges.push(`${providerCount} provider result${providerCount === 1 ? "" : "s"}`);
     if (hiddenCount)

@@ -161,7 +161,8 @@ export function mountJudgeMode(doc, host, onExit) {
                         evidence.reset();
                         failureReplay.reset();
                         observed("source-selected");
-                        message = "Drawn sample selected. Press Continue to review consent.";
+                        observed("local-consent"); // the one device consent covers the walk
+                        message = "Drawn sample selected. Press Continue for the hair step.";
                     }
                     catch {
                         message = "The illustration cannot open in this browser. You may skip this step.";
@@ -178,6 +179,7 @@ export function mountJudgeMode(doc, host, onExit) {
                         evidence.reset();
                         failureReplay.reset();
                         observed("source-selected");
+                        observed("local-consent"); // the one device consent covers the walk
                         message = "Two drawn adults selected. Main figure is selected; the bystander is unchanged.";
                     }
                     catch {
@@ -375,6 +377,7 @@ export function mountJudgeMode(doc, host, onExit) {
             evidence.reset();
             failureReplay.reset();
             observed("source-selected");
+            observed("local-consent"); // the one device consent covers the walk
             message = "Local image selected. No upload or facial tracking occurred.";
         }
         catch {

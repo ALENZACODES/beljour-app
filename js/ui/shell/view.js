@@ -73,6 +73,7 @@ import { BRUSH_LABELS, BRUSH_NAMES, brushOf, strokesOf } from "../../editor/brus
 import { editorScreen, fullSizeFor, renderFullSize, savedLine } from "../../editor/adjust/tools.js";
 import { isEditorKind } from "../../editor/adjust/stack.js";
 import { renderLayers } from "./pipeline.js";
+import { countLine } from "./layers.js";
 import { scaleSource } from "./scale.js";
 import { rgbFromRGBA } from "./demo.js";
 function node(tag, className = "", text) {
@@ -122,17 +123,32 @@ function percent(label, value, min, max, step, change, suffix = "%", format) {
     const show = format ?? ((v) => `${Math.round(v * 100) / 100}${suffix}`);
     const num = node("output", "shell-range-output", show(value));
     let last = value;
+    // The picture follows the slider while it moves (debounced), not only on release.
+    const debounce = new PreviewDebouncer(85);
     range.addEventListener("input", () => {
         const next = Number(range.value);
         num.textContent = show(next);
         if (format)
             hapticTick(last, next);
         last = next;
+        debounce.schedule(String(next), () => change(next));
     });
-    range.addEventListener("change", () => change(Number(range.value)));
+    range.addEventListener("change", () => { const v = Number(range.value); debounce.flush(String(v), () => change(v)); });
+    trackDrag(range);
     const group = node("div", "shell-percent");
     group.append(range, num);
     return labelled(label, group);
+}
+/** A settings slider is being dragged: the panel keeps its elements until the pointer lifts. */
+const settingsDrag = { active: false };
+function trackDrag(range) {
+    range.addEventListener("pointerdown", () => { settingsDrag.active = true; });
+    const end = () => { if (settingsDrag.active) {
+        settingsDrag.active = false;
+    } };
+    range.addEventListener("pointerup", end);
+    range.addEventListener("pointercancel", end);
+    range.addEventListener("blur", end);
 }
 /** The checked engine receives its original 0–100 value; the input displays 1.0–5.0. */
 function effectStrengthControl(label, current, change) {
@@ -141,6 +157,7 @@ function effectStrengthControl(label, current, change) {
     range.setAttribute("aria-label", label);
     const output = node("output", "shell-range-output", `${range.value} of 5.0`);
     const debounce = new PreviewDebouncer(85);
+    trackDrag(range);
     const submit = () => {
         const level = Number(range.value);
         if (!Number.isFinite(level))
@@ -207,6 +224,7 @@ export class ShellView {
     helpModal;
     singleKeys = true;
     stripKey = "";
+    settingsKey = "";
     precheckTicket = 0;
     /** Retouch brushes: the brush settings and the painter on the photo (editor/brush). */
     brushes;
@@ -373,9 +391,18 @@ export class ShellView {
             this.editor.mark(sealed);
             this.draft = null;
         }, "The manual region is ready. Previous layers have been reset so their geometry cannot become stale."));
-        this.add.addEventListener("click", () => this.safely(() => {
-            this.editor.add();
-        }, "Local layer added; the original image is unchanged."));
+        this.add.addEventListener("click", () => {
+            let line = "";
+            this.safely(() => {
+                const { layer, added } = this.editor.addLayer();
+                line = added ? `${tool(layer.kind).title} layer added; the original image is unchanged.`
+                    : `${tool(layer.kind).title} layer kept with the option you picked. One layer, not two.`;
+            });
+            if (line) {
+                this.inform(line);
+                this.draw();
+            }
+        });
         this.undo.addEventListener("click", () => this.safely(() => this.editor.undo(), "Undid one edit."));
         this.redo.addEventListener("click", () => this.safely(() => this.editor.redo(), "Redid one edit."));
         find("shell-reset").addEventListener("click", () => this.safely(() => this.editor.resetAll(), "All layers and Create additions reset; the original remains. Undo brings them back."));
@@ -865,7 +892,7 @@ export class ShellView {
         this.toolText.textContent = item.description;
         this.sourceName.textContent = this.editor.source.label;
         this.sample.value = this.editor.source.id.startsWith("sample:") ? this.editor.source.id.slice(7) : defaultSample(state.studio);
-        this.layerCount.textContent = `${state.layers.length} layer${state.layers.length === 1 ? "" : "s"}`;
+        this.layerCount.textContent = countLine(state.layers);
         const ready = readiness(state.studio, this.editor.source);
         this.add.disabled = !ready.ready || item.source !== "local" || this.busy;
         this.add.textContent = ready.ready ? `Add ${item.title} layer` : "Not ready for this photo";
@@ -897,9 +924,15 @@ export class ShellView {
                 }), "Six ordered landmarks, with face to image left"));
             }
             if (item.source === "local")
-                guidance.append(button("Open the drawn example", () => this.safely(() => {
-                    this.editor.loadRecommendedSample();
-                }, "Matching R7 drawn example loaded; previous layers have been reset."), "Use a drawn photo for this tool"));
+                guidance.append(button("Open the drawn example", () => {
+                    // Never silent: her own photo or any layers are only replaced after she says so.
+                    const layers = this.editor.document.layers.length, own = this.master?.id === this.editor.source.id;
+                    if ((layers || own) && !window.confirm(`Open the drawn example? This replaces ${own ? "your photo" : "this photo"}${layers ? ` and its ${layers} layer${layers === 1 ? "" : "s"}` : ""}. Save first to keep them.`)) {
+                        this.inform("Kept your photo and layers. The drawn example was not opened.");
+                        return;
+                    }
+                    this.safely(() => { this.editor.loadRecommendedSample(); }, "Drawn example loaded; previous layers have been reset.");
+                }, "Use a drawn photo for this tool"));
             if (item.source === "youcam") {
                 guidance.append(button("What is sent, and open the styling screen", () => { void this.openProvider(); }, "Explains what is sent to YouCam before you go to the styling screen", "shell-button shell-link"));
             }
@@ -1004,12 +1037,31 @@ export class ShellView {
         }
     }
     renderSettings() {
-        const layer = this.editor.selected;
-        this.settings.replaceChildren();
-        if (!layer) {
-            this.settings.append(node("p", "shell-empty", "Select a layer to adjust strength, named stops, options and opacity."));
+        const studio = this.editor.document.studio, open = tool(studio);
+        const selected = this.editor.selected;
+        // The panel always belongs to the open tool: another tool's layer never shows its options here.
+        const layer = selected && selected.kind === studio ? selected : null;
+        const key = `${this.editor.source.id}|${studio}|${layer?.id ?? ""}|${layer ? JSON.stringify(layer.parameters) : ""}|${layer?.strength ?? ""}|${layer?.opacity ?? ""}`;
+        // A slider being dragged keeps its element (re-rendering would drop the drag); the picture
+        // still updates live underneath.
+        if (settingsDrag.active && this.settings.dataset.layer === (layer?.id ?? "") && this.settings.dataset.tool === studio) {
+            this.settingsKey = key;
             return;
         }
+        if (key === this.settingsKey && this.settings.childElementCount)
+            return;
+        this.settingsKey = key;
+        this.settings.replaceChildren();
+        this.settings.dataset.tool = studio;
+        this.settings.dataset.layer = layer?.id ?? "";
+        this.settings.setAttribute("aria-label", `${open.title} options`);
+        if (!layer) {
+            this.settings.append(node("p", "shell-empty", open.source === "local"
+                ? `${open.title}: pick a preview or press Add ${open.title} layer to adjust its strength, options and opacity.`
+                : `${open.title}: no layer on this photo yet.`));
+            return;
+        }
+        this.settings.append(node("p", "shell-settings-title", `${open.title} options`));
         const set = (changes, label) => this.safely(() => this.editor.update(layer.id, changes, label));
         const param = (name, value) => this.safely(() => this.editor.param(layer.id, name, value));
         const strength = node("section", "shell-controls");
@@ -1033,7 +1085,7 @@ export class ShellView {
             settings.append(node("p", "shell-hint", "Choose which steps of the R7 analysis pipeline run."), steps);
         }
         if (layer.kind === "older" || layer.kind === "younger") {
-            settings.append(percent("Appearance stop", getNumber(layer, "stop", 1), 1, layer.kind === "older" ? 5 : 3, 1, n => param("stop", n), ""));
+            settings.append(percent("Appearance stop", getNumber(layer, "stop", layer.kind === "older" ? 3 : 2), 1, layer.kind === "older" ? 5 : 3, 1, n => param("stop", n), ""));
         }
         if (layer.kind === "gender") {
             settings.append(percent("Feminine to masculine appearance", getNumber(layer, "slider", -33), -100, 100, 1, n => param("slider", n), ""), node("p", "shell-hint", "Face-only simulation. Original is 0. Hair and makeup stay as they are."));
@@ -1187,11 +1239,10 @@ export class ShellView {
             const result = this.editor.preview();
             if (ticket !== this.pending)
                 return;
-            const simulate = result.labels.some((l) => /simulat|photo edit/i.test(l));
-            paint(this.canvas, result.image, { zoom: this.editor.document.zoom,
-                label: SIMULATION_TAG, simulate });
+            // The simulation label goes on exports only (export switch); the preview stays clean.
+            paint(this.canvas, result.image, { zoom: this.editor.document.zoom });
             find("shell-measure").textContent = result.effective
-                ? `${result.effective} active edit${result.effective === 1 ? "" : "s"} · ${pixelsChanged(this.editor.source.image, result.image).percent.toFixed(1)}% of pixels changed`
+                ? `${countLine(this.editor.document.layers)} · ${pixelsChanged(this.editor.source.image, result.image).percent.toFixed(1)}% of pixels changed`
                 : "Original — no active edits";
             this.stage.dataset.preview = result.effective ? "edited" : "original";
             if (this.draft)
@@ -1224,6 +1275,23 @@ export class ShellView {
         this.status.textContent = this.lastMessage;
         this.showCanvas();
         this.renderStrip();
+        this.markRegions();
+    }
+    /** Where the face is, as fractions of the photo, so checks can measure an edit inside its own region. */
+    markRegions() {
+        const src = this.editor.source, pts = src.face, w = src.image.width, h = src.image.height;
+        if (!pts || !pts.length || !w || !h) {
+            delete this.canvas.dataset.faceBox;
+            return;
+        }
+        let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+        for (const [x, y] of pts) {
+            x0 = Math.min(x0, x);
+            y0 = Math.min(y0, y);
+            x1 = Math.max(x1, x);
+            y1 = Math.max(y1, y);
+        }
+        this.canvas.dataset.faceBox = [x0 / w, y0 / h, x1 / w, y1 / h].map((v) => Math.max(0, Math.min(1, v)).toFixed(4)).join(",");
     }
 }
 export function mountShell() { return new ShellView(); }

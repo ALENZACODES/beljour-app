@@ -4,18 +4,11 @@
 import { h } from "../dom.js";
 import { CAVEAT, presetIds, preset } from "../engines/shade/lighting.js";
 export function chooseLighting(editor, id) {
-    preset(id);
-    const layer = [...editor.document.layers].reverse().find(row => row.kind === "lighting");
-    if (layer) {
-        editor.choose(layer.id);
-        editor.param(layer.id, "preset", id);
-        editor.update(layer.id, { enabled: true, strength: 100 });
-    }
-    else
-        editor.add("lighting", { preset: id }, 100);
+    // The same pick state as the preview strip and Add (controller.ts): the light chosen is the light applied.
+    editor.pick("lighting", { preset: id }, preset(id).label, 100);
 }
 export function lightingScreen(editor, changed) {
-    const selected = [...editor.document.layers].reverse().find(layer => layer.kind === "lighting");
+    const selected = editor.layerFor("lighting");
     const active = String(selected?.parameters.preset ?? "daylight");
     const out = h("p", { class: "fine", "aria-live": "polite" });
     const apply = (id) => { chooseLighting(editor, id); changed(); };
@@ -27,7 +20,7 @@ export function lightingScreen(editor, changed) {
     options.addEventListener("change", () => apply(options.value));
     try {
         const measured = editor.rendered().metrics.find(m => m.lighting === active);
-        out.textContent = measured ? `Sampled whole-photo colour shift: ΔE ${Number(measured.shift_delta_e).toFixed(2)}. ${measured.backend === "webgl2" ? "Graphics preview." : "On-device preview."}`
+        out.textContent = measured ? `Colour shift measured on this render: ΔE ${Number(measured.shift_delta_e).toFixed(2)}. ${measured.backend === "webgl2" ? "Graphics preview." : "On-device preview."}`
             : "Choose a light to compare it with your current look.";
     }
     catch {

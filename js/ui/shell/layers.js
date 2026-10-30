@@ -81,6 +81,12 @@ export function moveLayer(stack, id, delta) {
 export function effective(stack) {
     return stack.filter((i) => i.enabled && i.opacity > 0 && i.strength > 0);
 }
+/** The one layer count shown everywhere (Studio header, compare status, measure line): every
+ * layer in the list, and how many of them are switched off (hidden, 0 strength or 0 opacity). */
+export function countLine(stack) {
+    const n = stack.length, off = n - effective(stack).length;
+    return `${n} layer${n === 1 ? "" : "s"}${off ? ` (${off} off)` : ""}`;
+}
 export function describeStack(stack) {
     return { local: stack.filter((i) => i.provenance === "local").length,
         provider: stack.filter((i) => i.provenance === "youcam").length,

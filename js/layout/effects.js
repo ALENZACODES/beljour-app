@@ -1,6 +1,6 @@
-export const GENTLE_DEFAULT = 30;
+export const GENTLE_DEFAULT = 50; // Batch 2: "Natural", clearly visible at the default (owner, Oct 30)
 /** The highest default any effect may start at: the "Subtle" tick. */
-export const GENTLE_MAX = 33;
+export const GENTLE_MAX = 50; // the default sits at the Natural stop
 export const STRENGTH_TICKS = [
     { name: "Subtle", value: 33 }, { name: "Normal", value: 66 }, { name: "Strong", value: 100 },
 ];

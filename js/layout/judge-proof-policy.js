@@ -9,7 +9,7 @@ const OBSERVATIONS = {
     consent: {
         milestone: "local-consent",
         ready: (state) => state.permissions.local,
-        explanation: "The separate local illustration checkbox was used.",
+        explanation: "The one device consent covers this walk; everything runs in this browser.",
     },
     hair: {
         milestone: "hair-applied",

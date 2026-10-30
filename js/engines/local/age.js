@@ -64,7 +64,8 @@ export function creasePlan(mesh, amount) {
     const pt = (u, v) => [f.centre[0] + f.across[0] * u + f.down[0] * v,
         f.centre[1] + f.across[1] * u + f.down[1] * v];
     const strokes = [];
-    const width = Math.max(0.6, f.iod * 0.012), depth = amount * 20;
+    // Calibrated (Batch 2): at half strength the lines must read clearly at normal viewing size.
+    const width = Math.max(0.8, f.iod * 0.016), depth = amount * 42;
     // Horizontal forehead creases are approximations anchored to the top/brow gap.
     for (let band = 0; band < 3; band++) {
         const height = -f.length * (0.13 + 0.046 * band);
@@ -178,7 +179,7 @@ export function renderAge(input, mesh, options) {
         mono.data[i] = 0.2126 * output.data[j] + 0.7152 * output.data[j + 1] + 0.0722 * output.data[j + 2];
     }
     const smooth = boxMean(mono, Math.max(1, Math.round(f.iod / 30)));
-    const texture = fraction * layers.texture * (older ? 0.35 : -0.48);
+    const texture = fraction * layers.texture * (older ? 0.9 : -0.85);
     const colour = fraction * layers.colour;
     for (let i = 0; i < skin.data.length; i++) {
         const alpha = skin.data[i];
@@ -188,7 +189,8 @@ export function renderAge(input, mesh, options) {
         const sign = older ? 1 : -1;
         for (let c = 0; c < 3; c++) {
             const idx = i * channels + c;
-            const tone = sign * (c === 0 ? 3.0 : c === 1 ? 1.4 : -2.4) * colour * alpha;
+            // Older: warmer, slightly duller and a touch darker skin; younger: the reverse, gently.
+            const tone = sign * (c === 0 ? 4.0 : c === 1 ? -1.5 : -9.0) * colour * alpha - (older ? 6 : -4) * colour * alpha;
             output.data[idx] = Math.max(0, Math.min(255, Math.round(output.data[idx] + detail + tone)));
         }
         if (texture !== 0 || colour !== 0)
@@ -196,13 +198,13 @@ export function renderAge(input, mesh, options) {
     }
     // Deterministic sparse spots, not placed in eye, lip or eyebrow masks.
     if (older && layers.spots > 0) {
-        const n = Math.ceil((f.iod ** 2) / 200 * fraction * layers.spots);
+        const n = Math.ceil((f.iod ** 2) / 120 * fraction * layers.spots);
         const cx = f.centre[0], cy = f.centre[1];
         for (let j = 0; j < n; j++) {
             const px = Math.round(cx + (rand() - 0.5) * f.iod * 2.3);
             const py = Math.round(cy + (rand() - 0.45) * f.length * 0.85);
             const radius = Math.max(1, f.iod * (0.012 + rand() * 0.022));
-            const strength = (7 + rand() * 15) * fraction * layers.spots;
+            const strength = (12 + rand() * 24) * fraction * layers.spots;
             if (px < 0 || px >= w || py < 0 || py >= h || skin.data[py * w + px] < 0.8)
                 continue;
             spots++;

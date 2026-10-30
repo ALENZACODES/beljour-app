@@ -26,14 +26,8 @@ export function chooseAppearance(editor, kind, value) {
     if (!valid)
         throw new RangeError("Choose an available appearance stop.");
     const key = kind === "gender" ? "slider" : "stop";
-    const existing = [...editor.document.layers].reverse().find(row => row.kind === kind);
-    if (existing) {
-        editor.choose(existing.id);
-        editor.param(existing.id, key, value);
-        editor.update(existing.id, { enabled: true });
-    }
-    else
-        editor.add(kind, { [key]: value });
+    // One selection state with the strip and Add (controller.ts pick): one undo step, and Add keeps this layer.
+    editor.pick(kind, { [key]: value }, kind === "gender" ? `appearance ${value}` : `stop ${value}`);
 }
 export async function matchingFaceFixture(raw, source) {
     if (source.kind !== "uploaded" || !source.fileSha256 || !source.fileDimensions)

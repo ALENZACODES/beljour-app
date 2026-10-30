@@ -21,7 +21,7 @@ export function renderCompare(state, frames, options) {
         const [before, after] = pairOf(frames);
         const showing = session.showing(options.elapsedMs ?? 0) === "before" ? before : after;
         return { image: asRGB(showing.image), layout, captions: [], description, simulation: showing.simulation,
-            status: showing === before ? "Showing the original" : `Showing the edit · ${after.effective} active edit${after.effective === 1 ? "" : "s"}` };
+            status: showing === before ? "Showing the original" : `Showing the edit · ${after.count ?? `${after.effective} layer${after.effective === 1 ? "" : "s"}`}` };
     }
     if (split) {
         const [before, after] = pairOf(frames);

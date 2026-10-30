@@ -1,5 +1,5 @@
 import { MODE_INFO, stopGridValues } from "./compare.js";
-import { effective } from "./layers.js";
+import { countLine, effective } from "./layers.js";
 import { renderLayers } from "./pipeline.js";
 import { scaleSource } from "./scale.js";
 import { strengthName, stopsFor } from "./stops.js";
@@ -62,7 +62,7 @@ export function sideFor(mode) {
 }
 export function renderStack(source, stack) {
     const preview = renderLayers(source, stack.layers);
-    return { id: stack.id, caption: stack.caption, image: preview.image, effective: preview.effective,
+    return { id: stack.id, caption: stack.caption, image: preview.image, effective: preview.effective, count: countLine(stack.layers),
         simulation: effective(stack.layers).some((l) => l.simulation) };
 }
 /** Render every frame a mode needs. `current` reuses the editor's preview for the pair modes,
@@ -76,7 +76,7 @@ export function compareFrames(source, layers, selected, mode, current, cache) {
         if (side === null && stack.id === "original" && current?.before)
             return { id: "original", caption: stack.caption, image: current.before, effective: 0, simulation: false };
         if (side === null && stack.id === "edited" && current) {
-            return { id: "edited", caption: stack.caption, image: current.image, effective: current.effective,
+            return { id: "edited", caption: stack.caption, image: current.image, effective: current.effective, count: countLine(stack.layers),
                 simulation: effective(stack.layers).some((l) => l.simulation) };
         }
         const key = FrameCache.key(`${source.id}:${source.geometryRevision ?? 0}`, side, stack);

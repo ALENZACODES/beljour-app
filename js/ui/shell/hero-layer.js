@@ -23,7 +23,7 @@ export function applyHeroLayer(image, source, layer) {
                 min_jacobian: warp.jacobian.minDet, refused: warp.refused,
                 max_iod_percent: target.report.max_iod_percent, validated_on_released_photos: false } };
     }
-    const stop = Number(layer.parameters.stop ?? 1), max = layer.kind === "older" ? 5 : 3;
+    const stop = Number(layer.parameters.stop ?? (layer.kind === "older" ? 3 : 2)), max = layer.kind === "older" ? 5 : 3;
     if (!Number.isInteger(stop) || stop < 1 || stop > max)
         throw new RangeError(`Choose a ${layer.kind} stop from 1 to ${max}.`);
     const result = renderAge(image, points, { stop: layer.kind === "older" ? stop : -stop, strength: layer.strength / 100, seed: 1024,

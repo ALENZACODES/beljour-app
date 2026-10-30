@@ -32,6 +32,7 @@ import { ILLUSTRATION_DEFAULTS, STUDIO_DEFAULTS } from "./studio-layer.js";
 import { retouchDefaults } from "../../editor/brush/layer.js";
 import { LOOKS as ILLUSTRATION_LOOKS } from "../../engines/studio/illustration.js";
 import { defaultFilterParams, filterOptions, renderFilterTile } from "../../filters/runtime/layer.js";
+import { guardFilterLook } from "./never-lighter.js";
 import { defaultPortraitParams, portraitOptions } from "../../filters/portrait/layer.js";
 import { SELECTIVE_START, editorOptions } from "../../editor/adjust/options.js";
 import { LOCAL_KINDS, isSimulationKind } from "./types.js";
@@ -45,7 +46,7 @@ const words = (id) => id.replaceAll("_", " ").replace(/^./, (c) => c.toUpperCase
 /** Default parameters for a new layer of this kind (the controller's defaults, in one place). */
 export function defaultParams(kind, source) {
     if (kind === "older" || kind === "younger")
-        return { stop: 1 };
+        return { stop: kind === "older" ? 3 : 2 };
     if (kind === "gender")
         return { slider: -33 };
     if (kind === "lighting")
@@ -226,8 +227,8 @@ export function renderStripPage(studio, source, { side = THUMB_SIDE, clock = () 
         const start = clock();
         try {
             const preview = tile.option.kind === "filters" ? null : renderLayers(small, [optionLayer(tile.option, origin)]);
-            const image = preview ? preview.image : renderFilterTile(small, { recipe: String(tile.option.params.recipe),
-                params: { ...tile.option.params }, strength: tile.option.strength });
+            const image = preview ? preview.image : guardFilterLook(small.image, renderFilterTile(small, { recipe: String(tile.option.params.recipe),
+                params: { ...tile.option.params }, strength: tile.option.strength }), small, tile.option.params).image;
             const metrics = preview?.metrics[0];
             const enhance = tile.option.kind === "enhance" && metrics ? {
                 condition: String(metrics.condition), effectiveMode: String(metrics.effective_mode),
@@ -271,7 +272,17 @@ export class StripCache {
 export function activeOption(tiles, selected) {
     if (!selected)
         return null;
-    const hit = tiles.find((t) => t.option && t.option.kind === selected.kind && selected.parameters[t.option.key] === t.option.params[t.option.key]);
-    return hit?.option?.id ?? null;
+    const hits = tiles.filter((t) => t.option && t.option.kind === selected.kind && selected.parameters[t.option.key] === t.option.params[t.option.key]);
+    if (hits.length <= 1)
+        return hits[0]?.option?.id ?? null;
+    // Several tiles share the key (Backdrop: three backdrops; Glow: two looks): the one whose
+    // distinguishing settings match the layer is the one applied.
+    const varying = new Set();
+    for (const t of hits)
+        for (const [k, v] of Object.entries(t.option.params))
+            if (hits.some((o) => o.option.params[k] !== v))
+                varying.add(k);
+    const exact = hits.find((t) => [...varying].every((k) => selected.parameters[k] === t.option.params[k]));
+    return (exact ?? hits[0]).option?.id ?? null;
 }
 //# sourceMappingURL=thumbnails.js.map

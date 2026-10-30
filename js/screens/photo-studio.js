@@ -15,18 +15,12 @@ export const STUDIO_NOTES = Object.freeze({
     headshot: "Backdrop, soft light and a light even-tone retouch, with square and 4:5 crops. Nothing is generated.",
     authentic: "Light, contrast and a 4:5 crop only, then a Still Her check. No reshaping or smoothing.",
 });
-function latest(editor, kind) {
-    return [...editor.document.layers].reverse().find((row) => row.kind === kind);
-}
+/** One selection state with the strip, the option list and Add (controller.ts pick): the chosen
+ * option is the applied option, in one undo step, and Add keeps this layer instead of adding a second. */
 function choose(editor, kind, params) {
-    const found = latest(editor, kind);
-    if (!found)
-        return editor.add(kind, { ...params });
-    editor.choose(found.id);
-    for (const [key, value] of Object.entries(params))
-        editor.param(found.id, key, value);
-    editor.update(found.id, { enabled: true });
-    return editor.selected;
+    const label = kind === "studio" ? STUDIO_TOOL_NAMES[String(params.tool)] ?? String(params.tool)
+        : LOOKS[String(params.look)]?.name ?? String(params.look);
+    return editor.pick(kind, { ...params }, label);
 }
 /** Select or add the studio layer with `tool`; refuses a face tool when there are no face points. */
 export function chooseStudioTool(editor, tool, params = {}) {

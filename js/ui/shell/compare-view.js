@@ -10,7 +10,7 @@
  * Author: John Khan.
  */
 import { toRGBA } from "../../engines/core/buffer.js";
-import { label as drawLabel, downloadCanvas, SIMULATION_TAG } from "./canvas.js";
+import { label as drawLabel, downloadCanvas } from "./canvas.js";
 import { COMPARE_MODES, MODE_INFO, splitOrientation, stopGridValues } from "./compare.js";
 import { stacksFor, targetLayer } from "./compare-frames.js";
 import { PHONE_MAX, stageBox } from "./compare-layout.js";
@@ -322,8 +322,9 @@ export class CompareController {
         canvas.height = view.image.height;
         ctx.putImageData(new ImageData(new Uint8ClampedArray(toRGBA(view.image)), view.image.width, view.image.height), 0, 0);
         drawCaptions(ctx, view);
-        if (view.simulation)
-            drawLabel(ctx, view.image.width, view.image.height, SIMULATION_TAG);
+        // No banner is drawn into the on-screen picture: the page's Simulation tag says it, and the
+        // label is burned in only on export, when the export switch is on.
+        this.els.stage.dataset.simulation = String(view.simulation);
         const single = MODE_INFO[this.session.mode].inputs === "pair" && !["side-by-side", "loupe"].includes(this.session.mode);
         const scale = view.layout.displayScale * (single ? this.hooks.zoom() : 1);
         canvas.style.width = `${Math.round(view.image.width * scale)}px`;
@@ -471,11 +472,9 @@ export class CompareController {
         ctx.textAlign = "left";
         const kind = this.view.simulation ? "Includes photo simulations" : "Local edits";
         ctx.fillText(`BELJOUR — FULL BEAUTY STUDIO · ${kind} · made on this device · ${new Date().toISOString().slice(0, 10)}`, 8, copy.height - footer / 2, copy.width - 16);
-        if (!this.hooks.exportLabel() && this.view.simulation) {
-            // The visible board always carries the label; the export follows the export switch.
-            ctx.putImageData(new ImageData(new Uint8ClampedArray(toRGBA(this.view.image)), this.view.image.width, this.view.image.height), 0, 0);
-            drawCaptions(ctx, this.view);
-        }
+        // The on-screen board has no burned-in label; the saved one carries it when the export switch is on.
+        if (this.hooks.exportLabel() && this.view.simulation)
+            drawLabel(ctx, this.view.image.width, this.view.image.height, "Photo simulation · BELJOUR — FULL BEAUTY STUDIO");
         await downloadCanvas(copy, `beljour-${this.session.mode}-board.png`);
         this.hooks.status("Board saved on this device.");
     }
