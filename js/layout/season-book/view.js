@@ -107,7 +107,7 @@ function matchSection(doc, state, actions) {
         aside.append(clear);
     }
     else if (!state.personalizePending) {
-        aside.append(create(doc, "p", "lg-season-empty", "Personal recommendations appear only after Lane F returns a reviewed, versioned shade match."));
+        aside.append(create(doc, "p", "lg-season-empty", "Personal recommendations appear only after Workstream F returns a reviewed, versioned shade match."));
     }
     aside.append(statusParagraph(doc, state.statusMessage));
     return aside;

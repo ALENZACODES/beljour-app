@@ -15,6 +15,12 @@ export function renderJudgeConsent(doc, host, state, onConsent) {
     container.append(facts);
     container.append(judgeNotice(doc, "Provider notice", "Live makeup, hair styling and Skin AI product matching are separate features. "
         + "This walkthrough is a mock and does not use provider units."));
+    // No per-action ticks (owner's order, Oct 29): everything is on under the single device consent.
+    void onConsent;
+    container.append(judgeParagraph(doc, "Everything in this walkthrough runs in this browser. Nothing is sent.", "lg-judge-small"));
+    host.replaceChildren(container);
+    if (state.permissions.local)
+        return;
     const checks = judgeNode(doc, "fieldset", "lg-judge-checks");
     const legend = judgeNode(doc, "legend", "", "Action-specific choices");
     checks.append(legend);

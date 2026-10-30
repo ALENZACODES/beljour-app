@@ -7,7 +7,6 @@ import { STOPS as GENDER_STOPS } from "../engines/local/gender.js";
 import { validateFixture } from "../vision/fixtures.js";
 import { detectedFaces, faceMapFor } from "../face/map-reader.js";
 import { studioMapKey } from "./face-map.js";
-import { appConsent } from "../ui/shell/consent.js";
 import { appearanceStackReport, StackError } from "../ui/shell/appearance-stack.js";
 /** The joint check line when age and the gender appearance are both on; empty otherwise. */
 export function stackLine(editor) {
@@ -90,8 +89,10 @@ export function heroAppearanceScreen(editor, changed, deps = {}) {
     const read = h("button", { type: "button", class: "btn btn-quiet", onclick: async () => {
             read.disabled = true;
             try {
-                if (!(deps.consent ?? (() => appConsent.hasVisit))())
-                    throw new Error("Confirm photo consent before reading face points.");
+                // The photo on screen was opened under the single consent (built-in samples need none).
+                if (!(await (deps.consent ?? (() => true))()))
+                    throw new Error("No face points were read.");
+                status.textContent = "Face reader loading on this device…";
                 current();
                 const source = editor.source, result = await (deps.detect ?? detect)(source);
                 current();
@@ -117,8 +118,8 @@ export function heroAppearanceScreen(editor, changed, deps = {}) {
         if (!file)
             return;
         try {
-            if (!(deps.consent ?? (() => appConsent.hasVisit))())
-                throw new Error("Confirm photo consent before attaching recorded face points.");
+            if (!(await (deps.consent ?? (() => true))()))
+                throw new Error("No face points were attached.");
             if (file.size > 28_000_000)
                 throw new Error("Recorded points file is too large.");
             current();

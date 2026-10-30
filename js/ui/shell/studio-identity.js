@@ -1,5 +1,5 @@
 /** Studio-wide identity-lock request UI; applies to every selected layer, including pose.
- * Enforcement is deferred until Lane H ships a public adapter.
+ * Enforcement is deferred until Workstream H ships a public adapter.
  */
 import { IdentityLockController } from "../../layout/identity-lock.js";
 import { setStrengthRange, strengthText, parseVisibleStrength } from "../../layout/strength-scale.js";

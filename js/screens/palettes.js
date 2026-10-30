@@ -1,3 +1,4 @@
+import { ensureConsent } from "../ui/one-consent.js";
 import { h } from "../dom.js";
 import { resize } from "../engines/core/buffer.js";
 import { mixColours, moreChroma, assessShade, MIX_LABEL, SUITABILITY_LABEL } from "../engines/palette/colour.js";
@@ -265,8 +266,8 @@ export function paletteScreen(ctx, deps = {}) {
             gate.acceptVisit({ understood: true });
             ctx.consent = true;
         }
-        sourceInput.disabled = !gate.hasVisit;
-        consent.hidden = gate.hasVisit;
+        sourceInput.disabled = false;
+        consent.hidden = true; // the single consent is asked at the first photo open
     };
     understood.addEventListener("change", updateConsent);
     sourceInput.addEventListener("change", async () => {
@@ -274,10 +275,11 @@ export function paletteScreen(ctx, deps = {}) {
         sourceInput.value = "";
         if (!file)
             return;
-        if (!gate.hasVisit) {
-            referenceStatus.textContent = "Confirm the statement before opening a photo.";
+        if (!gate.hasVisit && (gate !== appConsent || !(await ensureConsent()))) {
+            referenceStatus.textContent = "No photo opened.";
             return;
         }
+        ctx.consent = gate.hasVisit;
         const version = ++request;
         run.disabled = true;
         clearReference.disabled = false;

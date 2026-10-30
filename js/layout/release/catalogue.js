@@ -1,4 +1,4 @@
-/** Release verification categories for the public browser handoff. Author: John Khan. */
+/** Release verification categories for the public browser transfer. Author: John Khan. */
 import { realDemoRoute } from "../judge-live-routes.js";
 const CHECKS = [
     {

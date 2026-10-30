@@ -41,3 +41,10 @@
 .shell-source-bar > .ph-actions:not([hidden]) { display: contents; }
 .ph-picker[hidden] { display: none; }
 .photo-screen > .ph-picker { margin-top: 1.2rem; }
+
+/* Try a sample photo (synthetic fictional adults) */
+.ph-samples { flex-basis: 100%; margin-top: .5rem; }
+.ph-sample-list { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; padding: 0; margin: .4rem 0 0; }
+.ph-sample-use { display: flex; flex-direction: column; align-items: center; gap: .2rem; width: 5.2rem; padding: .25rem; border: 1px solid rgba(0,0,0,.15); border-radius: .4rem; background: transparent; cursor: pointer; font: inherit; font-size: .72rem; line-height: 1.15; }
+.ph-sample-use img { width: 48px; height: 72px; object-fit: cover; border-radius: .25rem; }
+.ph-sample-label { font-size: .8rem; }

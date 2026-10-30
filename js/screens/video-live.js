@@ -5,6 +5,7 @@
  * simulations; skin effects are not medical advice. Author: John Khan.
  */
 import { LongWork } from "../ui/long-work.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { announce, clear, h } from "../dom.js";
 import { browserMirrorDeps, clipFrames, clipRecorder, frameToPng, measureFrame, modelsReady } from "../reel/live/browser.js";
 import { LiveMirror } from "../reel/live/mirror.js";
@@ -158,7 +159,6 @@ export function renderVideoLive(main, _ctx, deps = browserVideoDeps) {
     const camVideo = h("video", { class: "mirror-src", hidden: true });
     const camDisplay = h("canvas", { class: "mirror-view", role: "img", "aria-label": "Live mirror on this device" });
     const mirror = new LiveMirror(deps.mirror(camVideo, camDisplay));
-    const cameraConsent = h("input", { type: "checkbox", id: "mirror-consent" });
     const startMirror = h("button", { class: "btn", type: "button" }, "Start the live mirror");
     const stopMirror = h("button", { class: "btn btn-quiet", type: "button", disabled: true }, "Stop the camera");
     const saveStill = h("button", { class: "btn btn-quiet", type: "button", disabled: true }, "Save this frame");
@@ -178,9 +178,13 @@ export function renderVideoLive(main, _ctx, deps = browserVideoDeps) {
     const endMirror = () => { mirror.stop(); startMirror.disabled = false; stopMirror.disabled = saveStill.disabled = true; };
     startMirror.addEventListener("click", async () => {
         const withEffect = syncMirrorEffect();
-        const result = await mirror.start(cameraConsent.checked);
+        if (!(await ensureConsent())) {
+            mirrorStatus.textContent = "The camera stays off.";
+            return;
+        }
+        const result = await mirror.start(true);
         if (!result.started) {
-            mirrorStatus.textContent = result.reason === "camera_consent" ? "Tick the camera agreement first. The camera stays off."
+            mirrorStatus.textContent = result.reason === "camera_consent" ? "Continue on the consent screen first. The camera stays off."
                 : result.reason === "camera_unavailable" ? "The camera is unavailable. You can still process a clip." : "The mirror is already starting.";
             return;
         }
@@ -190,10 +194,6 @@ export function renderVideoLive(main, _ctx, deps = browserVideoDeps) {
             mirrorStatus.textContent = "Live mirror on. Frames are processed on this device and are not recorded or uploaded.";
     });
     stopMirror.addEventListener("click", () => { endMirror(); mirrorStatus.textContent = "Camera off. No frame was kept."; });
-    cameraConsent.addEventListener("change", () => { if (!cameraConsent.checked && mirror.state !== "off") {
-        endMirror();
-        mirrorStatus.textContent = "Camera agreement withdrawn; the camera is off.";
-    } });
     for (const control of [effect, strength, backdrop, filter, appearance, lens])
         control.addEventListener("change", () => { if (mirror.state === "on")
             syncMirrorEffect(); });
@@ -262,7 +262,7 @@ export function renderVideoLive(main, _ctx, deps = browserVideoDeps) {
             work.end(signal);
         }
     });
-    main.append(h("h1", {}, "Video and live"), h("p", { class: "lede" }, "Local effects on a clip, frame by frame, on this device. Nothing is uploaded and no frame is stored."), h("section", {}, h("h2", {}, "Process a clip"), h("label", { for: file.id }, "Clip", file), h("label", { for: effect.id }, "Effect", effect), h("label", { for: strength.id }, "Strength", strength), h("label", { for: backdrop.id }, "New background", backdrop), h("label", { for: filter.id }, "Live filter", filter), h("label", { for: appearance.id }, "Appearance", appearance), h("label", { for: lens.id }, "Face lens", lens), h("p", { class: "check" }, keep, h("label", { for: keep.id }, "Keep the processed clip so I can save it")), run, work.button, status), h("section", {}, h("h2", {}, "Edit a reel"), h("p", {}, "Scenes are found from the clip's brightness on this device. Strength ramps inside each scene and never across a cut."), findScenes, sceneList, h("label", { for: rampStart.id }, "Strength at the start of each scene", rampStart), h("label", { for: rampEnd.id }, "Strength at the end of each scene", rampEnd), renderReel, reelStatus), h("section", {}, h("h2", {}, "Live mirror"), h("p", { class: "check" }, cameraConsent, h("label", { for: cameraConsent.id }, "Turn on my camera for a live mirror on this device. Nothing is recorded or uploaded unless I save a frame.")), h("div", { class: "row" }, startMirror, stopMirror, saveStill), mirrorStatus, camDisplay, camVideo, mirrorSaved), preview, saved, h("p", { class: "fine" }, "Every effect is a labelled simulation. Skin effects are general cosmetic information, not medical advice."), h("p", { class: "fine" }, "Age and gender appearance uses the same engines as photos, frame by frame; it is not a prediction of age, sex or gender identity, and its quality on video has not been tested."));
+    main.append(h("h1", {}, "Video and live"), h("p", { class: "lede" }, "Local effects on a clip, frame by frame, on this device. Nothing is uploaded and no frame is stored."), h("section", {}, h("h2", {}, "Process a clip"), h("label", { for: file.id }, "Clip", file), h("label", { for: effect.id }, "Effect", effect), h("label", { for: strength.id }, "Strength", strength), h("label", { for: backdrop.id }, "New background", backdrop), h("label", { for: filter.id }, "Live filter", filter), h("label", { for: appearance.id }, "Appearance", appearance), h("label", { for: lens.id }, "Face lens", lens), h("p", { class: "check" }, keep, h("label", { for: keep.id }, "Keep the processed clip so I can save it")), run, work.button, status), h("section", {}, h("h2", {}, "Edit a reel"), h("p", {}, "Scenes are found from the clip's brightness on this device. Strength ramps inside each scene and never across a cut."), findScenes, sceneList, h("label", { for: rampStart.id }, "Strength at the start of each scene", rampStart), h("label", { for: rampEnd.id }, "Strength at the end of each scene", rampEnd), renderReel, reelStatus), h("section", {}, h("h2", {}, "Live mirror"), h("p", { class: "fine" }, "Uses your camera on this device. Nothing is recorded or uploaded unless you save a frame."), h("div", { class: "row" }, startMirror, stopMirror, saveStill), mirrorStatus, camDisplay, camVideo, mirrorSaved), preview, saved, h("p", { class: "fine" }, "Every effect is a labelled simulation. Skin effects are general cosmetic information, not medical advice."), h("p", { class: "fine" }, "Age and gender appearance uses the same engines as photos, frame by frame; it is not a prediction of age, sex or gender identity, and its quality on video has not been tested."));
     return () => { disposed = true; revision++; work.stop(); mirror.stop(); };
 }
 //# sourceMappingURL=video-live.js.map

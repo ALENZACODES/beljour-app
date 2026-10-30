@@ -1,4 +1,4 @@
-/** Typed catalogue for the six R19B Lane B easy filters. Author: John Khan. */
+/** Typed catalogue for the six R19B Workstream B easy filters. Author: John Khan. */
 import { LABEL as BRIDAL_LABEL } from "./bridal.js";
 import { LABEL as EYE_LABEL } from "./eye-colour.js";
 import { LABEL as FUN_LABEL } from "./fun.js";
@@ -71,13 +71,13 @@ export const SKIPPED = [
     {
         gapRow: 4,
         name: "Closed-mouth smile with eye crinkle",
-        reason: "Already shipped in Lane A EASY-filter scope.",
+        reason: "Already shipped in Workstream A EASY-filter scope.",
         owner: "A",
     },
     {
         gapRow: 28,
         name: "Warm teeth whitening",
-        reason: "Already shipped in Lane A EASY-filter scope.",
+        reason: "Already shipped in Workstream A EASY-filter scope.",
         owner: "A",
     },
 ];
@@ -90,7 +90,7 @@ export function byId(filterId) {
 export function byGapRow(gapRow) {
     const found = FILTERS.find(item => item.gapRow === gapRow);
     if (!found)
-        throw new Error(`gap row ${gapRow} is not built by Lane B r19b`);
+        throw new Error(`gap row ${gapRow} is not built by Workstream B r19b`);
     return found;
 }
 export function validateCatalogue() {

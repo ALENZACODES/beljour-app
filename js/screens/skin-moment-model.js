@@ -35,6 +35,12 @@ export function whatIsSent(moment) {
             "Units come from this app's allowance; you never pay for a call.",
         ] };
 }
+/** YouCam units a live run of each moment uses, as the moment's own plan states them. */
+export const MOMENT_UNITS = { buy: 31, breakout: 13, checkin: 14 };
+/** The inline, non-blocking cloud label for a moment. */
+export function sendLine(moment) {
+    return `YouCam · sends this photo for one skin analysis${moment === "buy" ? ", a tone reading and two try-ons" : moment === "breakout" ? " and one skin preview" : ""} · ${MOMENT_UNITS[moment]} units`;
+}
 export const LOCAL_TEXT = "Local estimate only: nothing is sent to YouCam and no units are used. The photo still goes to the Beljour server, which measures fewer things.";
 export const DEMO_LABEL = "Saved example";
 export const DEMO_NOTE = "Saved example: a stored result, not a measurement of your photo. No server is used and no units are spent.";
@@ -121,14 +127,16 @@ export class MomentController {
     choose(moment) {
         if (!MOMENTS.some((m) => m.id === moment))
             throw new RangeError("unknown moment");
-        this.consentGiven = false;
-        return this.set({ kind: "consent", moment, problem: null });
+        // One consent per device (owner's order, Oct 29): it is asked when the photo is opened, so a
+        // moment goes straight to its photo step, with an inline line saying what is sent.
+        this.consentGiven = true;
+        return this.set({ kind: "photo", moment, mode: "youcam", photo: null });
     }
     /** Agree to send. The tick is required; without it nothing is sent. */
     agree(answers) {
         const moment = this.moment();
         if (answers.agreed !== true) {
-            const problem = "Tick the box to send your photo, or choose the local estimate. Nothing was sent.";
+            const problem = "Continue on the consent screen to send your photo, or choose the local estimate. Nothing was sent.";
             this.set({ kind: "consent", moment, problem });
             throw new ConsentMissing(problem);
         }
@@ -226,15 +234,14 @@ export class MomentController {
             return this.set({ kind: "choose" });
         if (s.kind === "loading")
             return s;
-        return this.set({ kind: "consent", moment: s.moment, problem: null });
+        return this.set({ kind: "choose" });
     }
     /** After an error: back to the photo step, with the same moment and mode. */
     retry() {
         const s = this.state;
         if (s.kind !== "error" || !s.moment)
             return this.restart();
-        return this.consentGiven ? this.set({ kind: "photo", moment: s.moment, mode: "youcam", photo: null })
-            : this.set({ kind: "consent", moment: s.moment, problem: null });
+        return this.set({ kind: "photo", moment: s.moment, mode: this.consentGiven ? "youcam" : "local", photo: null });
     }
     restart() { this.consentGiven = false; return this.set({ kind: "choose" }); }
 }

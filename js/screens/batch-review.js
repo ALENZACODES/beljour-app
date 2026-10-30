@@ -3,6 +3,7 @@
  * Author: John Khan.
  */
 import { h } from "../dom.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { paint } from "../ui/shell/canvas.js";
 import { appConsent, VISIT_STATEMENTS } from "../ui/shell/consent.js";
 import { createShellClient } from "../ui/shell/worker-protocol.js";
@@ -79,7 +80,7 @@ export function batchReviewScreen(name, layers, deps = {}) {
                 } } }, "Redo this photo");
             grid.append(h("li", { class: "batch-review-card", "data-id": item.id }, h("h3", {}, item.name), canvas, h("p", { class: "fine" }, `${item.status}: ${item.note}`), toggle, item.faces.kind === "unknown" || item.faces.kind === "none" ? h("div", { class: "row" }, contains, none) : null, h("label", {}, "Per-photo strength ", strength, amount), redo));
         }
-        input.disabled = model.running || model.disposed || !gate.visit;
+        input.disabled = model.running || model.disposed;
         start.disabled = model.running || model.disposed || !rows.some(row => row.status === "ready") || !model.compatibility.ready.length;
         pause.disabled = !model.running;
         save.disabled = model.running || !rows.some(row => row.status === "done");
@@ -89,15 +90,15 @@ export function batchReviewScreen(name, layers, deps = {}) {
     const updateConsent = () => {
         if (understood.checked)
             gate.acceptVisit({ understood: true });
-        input.disabled = !gate.visit || model.running || model.disposed;
-        consent.hidden = Boolean(gate.visit);
+        input.disabled = model.running || model.disposed;
+        consent.hidden = true; // the single consent is asked once, when photos are first opened
     };
     understood.addEventListener("change", updateConsent);
     input.addEventListener("change", async () => {
         const files = Array.from(input.files ?? []);
         input.value = "";
-        if (!gate.visit) {
-            status.textContent = "Confirm the statement before opening photos.";
+        if (!gate.visit && (gate !== appConsent || !(await ensureConsent()))) {
+            status.textContent = "No photos opened.";
             return;
         }
         try {
@@ -129,8 +130,6 @@ export function batchReviewScreen(name, layers, deps = {}) {
     const removeConsentListener = gate.subscribe(() => {
         if (!gate.visit) {
             model.cancel();
-            input.disabled = true;
-            consent.hidden = false;
             understood.checked = false;
         }
     });

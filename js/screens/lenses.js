@@ -11,6 +11,7 @@
  * Nothing is uploaded. Captures go through save/export.ts. Author: John Khan.
  */
 import { announce, h, loadImage } from "../dom.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { fromRGBA, toRGBA } from "../engines/core/buffer.js";
 import { facePhoto } from "../engines/local/beard.js";
 import { symmetricFace } from "../engines/local/face-synthetic.js";
@@ -156,7 +157,6 @@ export async function renderLenses(root) {
     // Live mirror ---------------------------------------------------------------------------
     const video = h("video", { class: "ln-hidden", muted: "", playsinline: "" });
     const live = h("canvas", { class: "ln-live", role: "img", "aria-label": "Live mirror with the lens" });
-    const agree = h("input", { type: "checkbox", id: "ln-camera" });
     const startBtn = h("button", { class: "lg-button", type: "button" }, "Start the live mirror");
     const liveNote = h("p", { class: "fine", "aria-live": "polite" });
     let mirror = null;
@@ -172,17 +172,21 @@ export async function renderLenses(root) {
         }
         mirror ??= new LiveMirror(browserMirrorDeps(video, live));
         mirror.setEffect(new LensEffect(lens.id, pictures, false), { face: true, person: false }, Number(strength.value));
-        const started = await mirror.start(agree.checked);
+        if (!(await ensureConsent())) {
+            liveNote.textContent = "The camera stays off.";
+            return;
+        }
+        const started = await mirror.start(true);
         if (started.started) {
             startBtn.textContent = "Stop the live mirror";
             liveNote.textContent = "Camera on. Nothing is recorded or uploaded.";
         }
         else
-            liveNote.textContent = started.reason === "camera_consent" ? "Tick the box to turn on the camera." : "The camera could not be opened.";
+            liveNote.textContent = started.reason === "camera_consent" ? "Continue on the consent screen to turn on the camera." : "The camera could not be opened.";
     });
     grid.addEventListener("click", () => { if (mirror?.state === "on")
         mirror.setEffect(new LensEffect(lens.id, pictures, false), { face: true, person: false }, Number(strength.value)); });
-    root.append(h("section", { class: "ln-stage" }, title, preview, label, h("label", { for: strength.id }, "Strength", strength), saveBtn, status), h("section", { class: "ln-source" }, h("h2", {}, "Picture"), people, framing, h("p", { class: "ln-own" }, "Or use your own photo. It stays on this device."), upload.element), h("section", { class: "ln-pick" }, h("h2", {}, "Lenses"), grid), h("section", { class: "ln-livebox" }, h("h2", {}, "Live mirror"), live, video, h("p", { class: "check" }, agree, h("label", { for: agree.id }, "Turn on my camera on this device for the live mirror")), startBtn, liveNote));
+    root.append(h("section", { class: "ln-stage" }, title, preview, label, h("label", { for: strength.id }, "Strength", strength), saveBtn, status), h("section", { class: "ln-source" }, h("h2", {}, "Picture"), people, framing, h("p", { class: "ln-own" }, "Or use your own photo. It stays on this device."), upload.element), h("section", { class: "ln-pick" }, h("h2", {}, "Lenses"), grid), h("section", { class: "ln-livebox" }, h("h2", {}, "Live mirror"), live, video, h("p", { class: "fine" }, "Uses your camera on this device. Nothing is recorded or uploaded."), startBtn, liveNote));
     draw();
     thumbs();
     // Example people and lens pictures arrive after first paint.

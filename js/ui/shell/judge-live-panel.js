@@ -1,4 +1,4 @@
-/** Optional real-product handoff and manual operator checklist.
+/** Optional real-product transfer and manual operator checklist.
  * Every link is a fixed public entry point; no demo photo follows it.
  */
 import { REAL_DEMO_CHECKS, } from "../../layout/judge-live-checks.js";

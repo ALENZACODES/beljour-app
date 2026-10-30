@@ -1,4 +1,4 @@
-/** Public Lane H decimal levels, adapted to the filter kernel's 0..100 scale.
+/** Public Workstream H decimal levels, adapted to the filter kernel's 0..100 scale.
  *
  * A level of 1.0 is deliberately a gentle 20% filter, not a no-op.
  * Internal zero remains available for identity and the historical goldens.

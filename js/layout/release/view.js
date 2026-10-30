@@ -131,7 +131,7 @@ export function renderReleaseView(doc, host, snapshot, readiness, commands, envi
     const content = el(doc, "section", "lg-release-workspace");
     content.dataset.releaseTheme = "french";
     const header = el(doc, "header", "lg-release-header");
-    const title = el(doc, "h2", "", "Release readiness and real-demo handoff");
+    const title = el(doc, "h2", "", "Release readiness and real-demo transfer");
     title.id = "lg-release-heading";
     title.tabIndex = -1;
     header.append(title);

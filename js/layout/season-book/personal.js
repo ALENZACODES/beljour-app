@@ -78,7 +78,7 @@ export function validateShadeHistory(value) {
         if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== raw.observedOn) {
             throw new SeasonContractError("shade_date", "Invalid shade observation day");
         }
-        if (raw.source !== "user-chosen" && raw.source !== "lane-f-record") {
+        if (raw.source !== "user-chosen" && raw.source !== "workstream-f-record") {
             throw new SeasonContractError("shade_source", "A shade observation needs provenance");
         }
         return { shadeId, observedOn: raw.observedOn, source: raw.source };
@@ -96,7 +96,7 @@ export function validateUndertone(value) {
     if (!["warm", "cool", "neutral", "olive", "unclassified"].includes(String(raw.undertone))) {
         throw new SeasonContractError("undertone", "Unknown undertone category");
     }
-    if (raw.source !== "user-confirmed" && raw.source !== "lane-f-mapping") {
+    if (raw.source !== "user-confirmed" && raw.source !== "workstream-f-mapping") {
         throw new SeasonContractError("profile_source", "Profile source must be explicit");
     }
     if (raw.confirmed !== true && raw.confirmed !== false) {
@@ -124,14 +124,14 @@ export function validateSeasonMatches(value, book, evidence) {
     if (Object.keys(raw).sort().join(",") !== expected) {
         throw new SeasonContractError("match_shape", "Matching result contains unknown or missing fields");
     }
-    if (raw.format !== MATCH_FORMAT || raw.mappingProvider !== "lane-f" || raw.seasonId !== book.seasonId) {
-        throw new SeasonContractError("mapping_provider", "Result must belong to Lane F and the active season");
+    if (raw.format !== MATCH_FORMAT || raw.mappingProvider !== "workstream-f" || raw.seasonId !== book.seasonId) {
+        throw new SeasonContractError("mapping_provider", "Result must belong to Workstream F and the active season");
     }
     if (!evidence.undertone?.confirmed || raw.matchedProfileId !== evidence.undertone.profileId) {
         throw new SeasonContractError("profile_mismatch", "Matching result does not belong to the confirmed profile");
     }
     if (typeof raw.mappingVersion !== "string" || !MAPPING_VERSION.test(raw.mappingVersion)) {
-        throw new SeasonContractError("mapping_version", "Missing versioned Lane F mapping");
+        throw new SeasonContractError("mapping_version", "Missing versioned Workstream F mapping");
     }
     const visibleLooks = new Map(book.looks.map((item) => [item.id, item]));
     const matches = boundedArray(raw.matches, "matches", 12).map((item) => {
@@ -146,10 +146,10 @@ export function validateSeasonMatches(value, book, evidence) {
             throw new SeasonContractError("match_reference", "Personal match must reference a reviewed look and its listed tone");
         }
         if (match.fit !== "recommended" && match.fit !== "explore") {
-            throw new SeasonContractError("match_fit", "Unknown Lane F match category");
+            throw new SeasonContractError("match_fit", "Unknown Workstream F match category");
         }
         if (typeof match.reason !== "string" || !REASON.test(match.reason) || match.reason.trim() !== match.reason) {
-            throw new SeasonContractError("match_reason", "Lane F must supply one plain, bounded reason");
+            throw new SeasonContractError("match_reason", "Workstream F must supply one plain, bounded reason");
         }
         return { lookId, toneId, fit: match.fit, reason: match.reason };
     });
@@ -159,7 +159,7 @@ export function validateSeasonMatches(value, book, evidence) {
     return {
         format: MATCH_FORMAT,
         seasonId: book.seasonId,
-        mappingProvider: "lane-f",
+        mappingProvider: "workstream-f",
         mappingVersion: raw.mappingVersion,
         matchedProfileId: evidence.undertone.profileId,
         matches,

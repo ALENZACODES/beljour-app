@@ -10,6 +10,8 @@
  * Author: John Khan.
  */
 import { h } from "../dom.js";
+import { ensureConsent } from "../ui/one-consent.js";
+import { SAMPLE_LABEL, SAMPLE_PHOTOS, sampleFile, sampleUrl } from "./samples.js";
 import { sniff } from "../image/decode.js";
 import { MAX_PHOTOS, myPhotos } from "./library.js";
 import { head, looksLikeHeic, PhotoOpenError, preparePhoto, OPEN_MESSAGE } from "./prepare.js";
@@ -51,6 +53,9 @@ async function forScreen(file, prepared, prepare) {
     return new File([ready.photo], `${baseName(file.name)}.jpg`, { type: "image/jpeg", lastModified: file.lastModified });
 }
 export function photoPicker(options) {
+    // The single device consent is asked before a file is prepared, decoded or kept (Batch 1).
+    if (!options.gate)
+        options = { ...options, gate: () => ensureConsent() };
     const library = options.library ?? myPhotos();
     const prepare = options.prepare ?? ((f) => preparePhoto(f));
     const takes = options.takes ?? "many";
@@ -84,8 +89,32 @@ export function photoPicker(options) {
         : h("label", { for: target.id, class: cls }, text);
     const showCamera = (options.camera ?? true) && (options.touch ?? isTouch());
     const actions = h("div", { class: "ph-actions" }, options.input ? null : input, options.input ? null : trigger(input, label, `${classes.button} ph-add`), showCamera ? camera : null, showCamera ? trigger(camera, "Take a photo", `${classes.quiet} ph-camera`) : null);
-    if (!actions.children.length)
-        actions.hidden = true;
+    // "Try a sample photo": synthetic fictional adults, opened like a picked photo but never kept.
+    const samples = h("div", { class: "ph-samples", role: "group", "aria-label": "Sample photos" });
+    samples.hidden = true;
+    const sampleToggle = h("button", { type: "button", class: `${classes.quiet} ph-sample`, "aria-expanded": "false", onclick: () => {
+            samples.hidden = !samples.hidden;
+            sampleToggle.setAttribute("aria-expanded", String(!samples.hidden));
+            if (!samples.hidden && !samples.children.length) {
+                samples.append(h("p", { class: "ph-note ph-sample-label" }, `${SAMPLE_LABEL}. Each one is a synthetic picture of a fictional adult.`), h("ul", { class: "ph-sample-list" }, ...SAMPLE_PHOTOS.map((sp) => h("li", { class: "ph-sample-item" }, h("button", { type: "button", class: "ph-sample-use", "data-sample": sp.file, title: `${sp.name}. ${SAMPLE_LABEL}`,
+                    "aria-label": `Use sample: ${sp.name}. ${SAMPLE_LABEL}`, onclick: () => { void useSample(sp); } }, h("img", { src: sampleUrl(sp), alt: "", width: 48, height: 72, loading: "lazy", decoding: "async" }), h("span", { class: "ph-sample-name" }, sp.name))))));
+            }
+        } }, "Try a sample photo");
+    async function useSample(sp) {
+        try {
+            const file = await sampleFile(sp);
+            const ready = await forScreen(file, new Map(), prepare);
+            say(`${sp.name}: ${SAMPLE_LABEL}.`);
+            samples.hidden = true;
+            sampleToggle.setAttribute("aria-expanded", "false");
+            await options.onPhotos([ready], "sample");
+        }
+        catch (error) {
+            say(error instanceof PhotoOpenError ? error.message : "That sample photo could not be opened.");
+        }
+    }
+    actions.append(sampleToggle, samples);
+    actions.hidden = false;
     // ---- My photos strip -------------------------------------------------------------------
     const count = h("span", { class: "ph-count" });
     const list = h("ul", { class: "ph-list", "aria-label": "My photos, newest first" });

@@ -8,9 +8,9 @@ const readout = (value, low, high) => `${value} · ${value === 0 ? "Original" : 
 /** A section with a turn-on button; `open` fills it once the person turns it on. */
 function optIn(cls, title, intro, button, open) {
     const section = h("section", { class: `face-parts ${cls}` }, h("h2", {}, title), h("p", {}, intro));
-    const turnOn = h("button", { class: "btn btn-quiet", type: "button" }, button);
-    turnOn.addEventListener("click", () => { turnOn.remove(); open(section); });
-    section.append(turnOn);
+    // Features are simply on (owner's order, Oct 29): no "Turn on" step.
+    void button;
+    open(section);
     return section;
 }
 /** One slider, a show button and an output area that drops stale results. */
@@ -118,13 +118,13 @@ function greyAdd(ctx, dependencies) {
         });
     };
 }
-/** Weight gain, weight loss, head turn and grey add, in that order, each opt-in. */
+/** Weight gain, weight loss, head turn and grey add, in that order. */
 export function moreSimulations(ctx, dependencies) {
     return [
-        optIn("sim-weight-gain", "Weight gain simulation", "Opt-in. A fuller face contour on your own photo, from face width and cheek fullness.", "Turn on weight gain preview", fullness(ctx, dependencies, "gain")),
-        optIn("sim-weight-loss", "Weight loss simulation", "Opt-in, and never part of any preset. A slimmer face contour on your own photo.", "Turn on weight loss preview", fullness(ctx, dependencies, "loss")),
-        optIn("sim-head-turn", "Head turn", "Opt-in. A small turn of the head, simulated inside the face outline.", "Turn on head turn preview", turn(ctx, dependencies)),
-        optIn("sim-grey-add", "Add grey", "Opt-in. Grey added only inside the hair you mark.", "Turn on grey preview", greyAdd(ctx, dependencies)),
+        optIn("sim-weight-gain", "Weight gain simulation", "A fuller face contour on your own photo, from face width and cheek fullness.", "Turn on weight gain preview", fullness(ctx, dependencies, "gain")),
+        optIn("sim-weight-loss", "Weight loss simulation", "Never part of any preset. A slimmer face contour on your own photo.", "Turn on weight loss preview", fullness(ctx, dependencies, "loss")),
+        optIn("sim-head-turn", "Head turn", "A small turn of the head, simulated inside the face outline.", "Turn on head turn preview", turn(ctx, dependencies)),
+        optIn("sim-grey-add", "Add grey", "Grey added only inside the hair you mark.", "Turn on grey preview", greyAdd(ctx, dependencies)),
     ];
 }
 //# sourceMappingURL=more-previews.js.map

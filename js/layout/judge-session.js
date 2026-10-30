@@ -8,10 +8,13 @@ const EMPTY_PERMISSIONS = {
     face: false,
     mock: false,
 };
+/** Owner's order (Oct 29): no per-step consent. The single device consent covers the walk, so
+ * every illustrative action is simply on; withdrawing local processing still turns them all off. */
+const ALL_ON = { local: true, hair: true, face: true, mock: true };
 export class JudgeSession {
     step = "source";
     source = null;
-    permissions = { ...EMPTY_PERMISSIONS };
+    permissions = { ...ALL_ON };
     hair = "none";
     face = "none";
     details = { ...EMPTY_JUDGE_DETAILS };
@@ -169,6 +172,11 @@ export class JudgeSession {
         this.completed.add(this.step);
         this.skipped.delete(this.step);
         this.step = judgeStepAt(judgeIndex(this.step) + 1);
+        // The consent step collapses into the flow: the statement is shown once on the image step.
+        if (this.step === "consent" && this.permissions.local) {
+            this.completed.add("consent");
+            this.step = judgeStepAt(judgeIndex(this.step) + 1);
+        }
         return true;
     }
     skip() {
@@ -184,6 +192,8 @@ export class JudgeSession {
         if (index === 0)
             return false;
         this.step = judgeStepAt(index - 1);
+        if (this.step === "consent" && this.permissions.local && index - 1 > 0)
+            this.step = judgeStepAt(index - 2);
         return true;
     }
     progress() {
