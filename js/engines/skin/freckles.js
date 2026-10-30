@@ -4,12 +4,12 @@
  * Author: John Khan.
  */
 import { checkPhoto, checkStrength, encode, labPlanes, lcg, NOTE, noLighten, unchanged } from "./common.js";
-export const MAX_FRECKLES = 90;
+export const MAX_FRECKLES = 220;
 export const ATTEMPTS_PER_FRECKLE = 12;
 const BOX = [-1.15, 1.15, 0.05, 0.95];
 const ZONE = [[0.0, 0.50, 0.42], [-0.62, 0.50, 0.48], [0.62, 0.50, 0.48]];
-const RADIUS_IOD = [0.014, 0.016];
-const DEPTH_L = [5.0, 7.0];
+const RADIUS_IOD = [0.022, 0.02];
+const DEPTH_L = [13.0, 10.0];
 const WARM = [0.15, 0.35];
 export const LABEL = "Freckle simulation: drawn freckles added, your own marks kept. " + NOTE;
 export function zoneWeight(a, b) {

@@ -95,8 +95,9 @@ function mount(root) {
         try {
             session.load(await openLocal(f));
             drawing = [];
-            status.textContent = "Photo opened locally. Detect face points for lip features, or mark a checked region where required.";
+            status.textContent = "Photo opened locally.";
             configure();
+            void detectPoints(true);
         }
         catch (e) {
             status.textContent = e instanceof Error ? e.message : "Could not open photo";
@@ -111,10 +112,14 @@ function mount(root) {
         status.textContent = "Labelled drawn fixture loaded. It is not a real face and does not count as quality evidence.";
         configure();
     });
-    detect.addEventListener("click", async () => {
+    // Face points are read automatically when a photo opens (no extra button press needed); the
+    // button stays for a re-read.
+    const detectPoints = async (auto) => {
         try {
             if (!session.image)
                 throw new Error("Open a photo first.");
+            if (auto)
+                status.textContent = "Photo opened locally. Reading face points on this device…";
             const face = await readFace(original);
             if (!face)
                 throw new Error("No face was found locally.");
@@ -122,13 +127,14 @@ function mount(root) {
             const pts = face.points.map(p => [p.x, p.y]);
             const img = session.image;
             session.load(img, pts);
-            status.textContent = "Local face points attached. Region annotations were cleared.";
+            status.textContent = auto ? "Photo opened locally. Face points read on this device." : "Local face points attached. Region annotations were cleared.";
             refresh();
         }
         catch (e) {
             status.textContent = e instanceof Error ? e.message : "Local face detection failed.";
         }
-    });
+    };
+    detect.addEventListener("click", () => { void detectPoints(false); });
     feature.addEventListener("change", () => { session.select(feature.value); drawing = []; configure(); });
     style.addEventListener("change", () => { session.style = style.value; session.invalidate(); refresh(); });
     amount.addEventListener("input", () => { session.amount = Number(amount.value) / 100; amountOut.textContent = `${amount.value} %`; session.invalidate(); refresh(); });

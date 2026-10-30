@@ -1,4 +1,6 @@
 import { renderAge } from "../../engines/local/age.js";
+import { easeStrength } from "./strength-curve.js";
+import { genderAmount } from "./hero-layer.js";
 import { genderTargets } from "../../engines/local/gender.js";
 import { meshWarp } from "../../engines/warp/mesh.js";
 import { moveMagnitude } from "../../engines/warp/field.js";
@@ -46,7 +48,7 @@ export function appearanceStackReport(source, layers, after) {
         let face = points;
         if (age) {
             const stop = Number(age.parameters.stop ?? (age.kind === "older" ? 3 : 2));
-            const result = renderAge(before, points, { stop: age.kind === "older" ? stop : -stop, strength: age.strength / 100, seed: 1024,
+            const result = renderAge(before, points, { stop: age.kind === "older" ? stop : -stop, strength: easeStrength(age.strength), seed: 1024,
                 hairMask: source.hair, layers: { hair: source.hair ? 1 : 0 } });
             ageStrength = result.metrics.strength_used;
             face = nextFace(points, result.face, age.opacity) ?? points;
@@ -54,7 +56,7 @@ export function appearanceStackReport(source, layers, after) {
                 allowed[i] = 1; });
         }
         if (gender) {
-            const requested = Number(gender.parameters.slider ?? -33) * gender.strength / 100;
+            const requested = genderAmount(Number(gender.parameters.slider ?? -33), gender.strength);
             const start = face.map(([x, y]) => [x, y]);
             const warp = meshWarp(width, height, start, genderTargets(start, requested, { scope: "face_only" }).points, { guard: true });
             guardScale = warp.strengthUsed;

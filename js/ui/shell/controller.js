@@ -100,6 +100,16 @@ export class Editor {
         this.studioCache.clear();
         this.invalidate();
     }
+    /** Commit a crown area (marked, or the automatic one from auto-hair.ts) without resetting edits. */
+    setCrown(crown) {
+        requireMask(crown);
+        if (crown.width !== this.photo.image.width || crown.height !== this.photo.image.height)
+            throw new RangeError("The crown area must match the photo size.");
+        this.photo = { ...this.photo, geometryRevision: ++this.sourceVersion, crown: { ...crown, data: Float32Array.from(crown.data) } };
+        this.frameCache.clear();
+        this.studioCache.clear();
+        this.invalidate();
+    }
     /** Commit a manual hair mask without changing source pixels or settings history. */
     setHair(hair, placement) {
         for (const mask of [hair, placement]) {

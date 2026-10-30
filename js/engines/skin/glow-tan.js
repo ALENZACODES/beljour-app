@@ -6,7 +6,7 @@ export const SHIFTS = {
     olive: [0.5, 4.2], cool: [2.4, 2.0], warm: [0.9, 4.4], neutral: [1.5, 3.1],
 };
 export const LABEL = "Summer colour simulation with optional synthetic freckles; not a UV exposure guide.";
-export function glowTan(image, skin, undertone = "neutral", strength = 55, freckles = false, seed = 41) {
+export function glowTan(image, skin, undertone = "neutral", strength = 55, freckles = false, seed = 41, depthL = 4, shiftScale = 1) {
     validate(image, skin, strength);
     finitePhotograph(image);
     if (!(undertone in SHIFTS))
@@ -24,8 +24,8 @@ export function glowTan(image, skin, undertone = "neutral", strength = 55, freck
         oldLab.push(base);
         const amount = skin[i] >= 0.5 ? strength / 100 : 0;
         result.alpha[i] = amount;
-        revised.push([base[0] - 4 * amount, base[1] + amount * SHIFTS[undertone][0],
-            base[2] + amount * SHIFTS[undertone][1]]);
+        revised.push([base[0] - depthL * amount, base[1] + amount * SHIFTS[undertone][0] * shiftScale,
+            base[2] + amount * SHIFTS[undertone][1] * shiftScale]);
         if (amount > 0)
             result.changed++;
     }

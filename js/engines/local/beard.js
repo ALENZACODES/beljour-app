@@ -26,12 +26,13 @@ export const NECK_START = OVAL.indexOf(288), NECK_END = OVAL.indexOf(58);
 export const UPPER_LIP = [291, 409, 270, 269, 267, 0, 37, 39, 40, 185, 61];
 export const NECKLINES = { high: 0, natural: 0.18, low: 0.4 };
 export const EDGES = { sharp: null, faded: 0.1 };
-export const MOUSTACHE_FEATHER = 0.3;
+export const MOUSTACHE_FEATHER = 0.6, MOUSTACHE_TOP = 0.75;
 export const CHEEK_SHARE = 0.6, TOP_SHARE = 0.55, NOSE_GAP = 0.05, LIP_MARGIN = 0.05, CORNER_OUT = 0.12;
 export const STYLES = {
     stubble: { region: "full", length: [0.008, 0.02], density: 900, width: [0.6, 1.0], shadow: 0.1 },
     short_boxed: { region: "full", length: [0.035, 0.08], density: 600, width: [0.8, 1.3], shadow: 0.04 },
-    moustache: { region: "moustache", length: [0.04, 0.09], density: 800, width: [0.8, 1.3], shadow: 0.03 },
+    // Moustache: dense, longer and wider strands with a stronger under-shadow so it reads at the default strength.
+    moustache: { region: "moustache", length: [0.07, 0.15], density: 2600, width: [1.0, 1.7], shadow: 0.25 },
 };
 export const LENGTHS = { 1: 0.6, 2: 0.8, 3: 1.0, 4: 1.25, 5: 1.5 };
 export const DENSITIES = [1, 2, 3, 4];
@@ -44,8 +45,11 @@ export function outline(face, f, region) {
     const topR = lerp(mouthR, face[LANDMARKS.right_ala], TOP_SHARE), topL = lerp(mouthL, face[LANDMARKS.left_ala], TOP_SHARE);
     const nose = add(face[LANDMARKS.subnasale], down, NOSE_GAP * iod);
     if (region === "moustache") {
+        // A full moustache fills most of the upper lip, up to just under the nose.
         const lip = UPPER_LIP.map((i) => add(face[i], down, -0.015 * iod));
-        return [add(mouthL, across, 0.05 * iod), ...lip, add(mouthR, across, -0.05 * iod), topR, nose, topL];
+        const mTopR = lerp(mouthR, face[LANDMARKS.right_ala], MOUSTACHE_TOP), mTopL = lerp(mouthL, face[LANDMARKS.left_ala], MOUSTACHE_TOP);
+        const mNose = add(face[LANDMARKS.subnasale], down, 0.02 * iod);
+        return [add(mouthL, across, 0.05 * iod), ...lip, add(mouthR, across, -0.05 * iod), mTopR, mNose, mTopL];
     }
     if (region !== "full")
         throw new RangeError("region must be full or moustache");

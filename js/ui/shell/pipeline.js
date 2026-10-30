@@ -3,6 +3,7 @@
  * No file/network/provider access. Deterministic on one source, layers and seed.
  * Author: John Khan.
  */
+import { rootStrength } from "./strength-curve.js";
 import { requireColour, encodeChannel, roundHalfEven, SRGB_TO_LINEAR } from "../../engines/core/buffer.js";
 import { enhance, MODES } from "../../engines/local/enhance.js";
 import { readCrown, shadeCard, hairColour } from "../../engines/local/fibre.js";
@@ -34,6 +35,8 @@ import { mapToOutput, readGeometry, isIdentity } from "../../editor/crop/geometr
  * layer moved them, undefined when the photo has none). */
 /** The Enhance mode that runs the one-tap auto fix; the other modes are the guarded rescue modes. */
 export const AUTO_FIX = "auto";
+/** Least Lab distance between the crown's hair and gap tones for Hair fibres to have anything to fill. ASSUMED. */
+export const FIBRE_MIN_CONTRAST = 12, FIBRE_POWER = 0.15;
 /** The points after a layer that moved them and was mixed in at `weight` (0-1). A partly mixed
  * warp has no single true geometry; moving the points by the same share is ASSUMED. */
 export function nextFace(before, after, weight) {
@@ -196,9 +199,11 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
             throw new RangeError("Unknown beard style");
         const style = requested;
         const length = Math.max(1, Math.min(5, Math.round(numberParam(layer, "length", 3))));
-        const density = Math.max(1, Math.min(4, Math.ceil(layer.strength / 25)));
+        // Eased like the face tools: Natural (50) is density 3 of 4, so the beard reads at the default.
+        const eased = Math.max(0, Math.min(1, layer.strength / 100)) * (2 - Math.max(0, Math.min(1, layer.strength / 100)));
+        const density = Math.max(1, Math.min(4, Math.round(1 + 3 * eased)));
         const result = renderBeard(img, source.face, { style, length, density,
-            colour: stringParam(layer, "colour", "#3B2A22"), seed: 11 });
+            colour: stringParam(layer, "colour", "#241915"), seed: 11 });
         return { image: result.image, label: result.label,
             metrics: { style, length, density, strands: Number(result.metrics.strands) } };
     }
@@ -209,10 +214,21 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
         const product = requested;
         const area = source.crown;
         const reading = readCrown(img, area);
+        // Fibres fill where the scalp or light roots show between darker hair. When the crown's two
+        // tones are nearly the same, there is nothing to fill: say so instead of leaving it unchanged.
+        const [hairLab, gapLab] = reading.split.centres;
+        const contrast = Math.hypot(gapLab[0] - hairLab[0], gapLab[1] - hairLab[1], gapLab[2] - hairLab[2]);
+        if (contrast < FIBRE_MIN_CONTRAST) {
+            const message = "No scalp or light roots show in the crown area, so Hair fibres have nothing to fill. They work where the scalp shows through.";
+            return { image: { ...img, data: Uint8ClampedArray.from(img.data) }, label: message,
+                metrics: { product, status: "refused", reason_code: "no_scalp_showing", message, crown_contrast: Math.round(contrast * 10) / 10 } };
+        }
         const shade = shadeCard(hairColour(img, reading.split.hair));
-        const result = renderFibres(img, area, reading.split.scalp, shade.top[0].lab, { product, hair: reading.split.hair, amount: layer.strength, seed: 17 });
+        // A steeper curve than the face tools (FIBRE_POWER): the gaps are a small share of the photo, so
+        // 30 already fills most of them, and every step up to 100 still adds fibres.
+        const result = renderFibres(img, area, reading.split.scalp, shade.top[0].lab, { product, hair: reading.split.hair, amount: Math.min(100, 100 * rootStrength(layer.strength, FIBRE_POWER)), seed: 17 });
         return { image: result.image, label: result.label,
-            metrics: { product, scalp_share: reading.overall_scalp_share, fibres: Number(result.metrics.fibres || 0) } };
+            metrics: { product, scalp_share: reading.overall_scalp_share, fibres: Number(result.metrics.fibres || 0), crown_contrast: Math.round(contrast * 10) / 10 } };
     }
     if (layer.kind === "posture") {
         const requested = stringParam(layer, "fix", "lean");

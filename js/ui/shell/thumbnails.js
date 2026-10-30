@@ -43,6 +43,13 @@ export const THUMB_BUDGET_MS = 50;
 export const DEFAULT_STRENGTH = GENTLE_DEFAULT;
 export const STRIP_PAGE = 12;
 const words = (id) => id.replaceAll("_", " ").replace(/^./, (c) => c.toUpperCase());
+/** The seven named appearance levels, shared by the preview strip and the Tool options list, so the
+ * two can never name a level differently. The level carries the intensity (hero-layer.ts genderAmount). */
+export const GENDER_LEVELS = [
+    { slider: -100, label: "Hyper feminine" }, { slider: -66, label: "Extra feminine" }, { slider: -33, label: "Normal feminine" },
+    { slider: 0, label: "Original" },
+    { slider: 33, label: "Normal masculine" }, { slider: 66, label: "Extra masculine" }, { slider: 100, label: "Hyper masculine" },
+];
 /** Default parameters for a new layer of this kind (the controller's defaults, in one place). */
 export function defaultParams(kind, source) {
     if (kind === "older" || kind === "younger")
@@ -87,7 +94,7 @@ export function defaultParams(kind, source) {
         return { fix: source.body?.view === "side" ? "forward_head" : "lean",
             band_share: POSTURE_DEFAULTS.bandShare, cap_share: POSTURE_DEFAULTS.capShare };
     if (kind === "beard")
-        return { style: "stubble", colour: "#3B2A22", length: 3 };
+        return { style: "stubble", colour: "#241915", length: 3 };
     return { product: "fibres" };
 }
 /** The options a tool's strip shows. Posture options follow the photo's front or side view;
@@ -105,8 +112,7 @@ export function optionsFor(kind, source) {
     if (kind === "older" || kind === "younger")
         return Array.from({ length: kind === "older" ? 5 : 3 }, (_, i) => ({ ...make("stop", String(i + 1), i), params: { stop: i + 1 }, label: `${kind === "older" ? "Older" : "Younger"} ${i + 1}` }));
     if (kind === "gender")
-        return [-100, -66, -33, 0, 33, 66, 100].map((slider, i) => ({ ...make("slider", String(slider), i), params: { slider },
-            label: slider === 0 ? "Original" : `${Math.abs(slider) === 33 ? "Normal" : Math.abs(slider) === 66 ? "Extra" : "Hyper"} ${slider < 0 ? "feminine" : "masculine"}` }));
+        return GENDER_LEVELS.map(({ slider, label }, i) => ({ ...make("slider", String(slider), i), params: { slider }, label }));
     if (kind === "lighting")
         return ["daylight", "office", "evening"].map((p, i) => ({ ...make("preset", p, i), strength: 100 }));
     if (kind === "recolour")

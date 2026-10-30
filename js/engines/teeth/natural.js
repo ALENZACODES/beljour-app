@@ -13,7 +13,7 @@ import { median, xy } from "../skin/common.js";
 import { meshProblems, REASONS } from "../skin/studio.js";
 export const MODULE = "teeth.natural";
 export const LABEL = "Teeth colour simulation with a natural cap, not dental treatment or a whitening prediction.";
-export const NATURAL_L_CAP = 86.0, MAX_LIFT = 10.0, WARM_B = 9.0, MAX_B_DROP = 8.0;
+export const NATURAL_L_CAP = 90.0, MAX_LIFT = 16.0, WARM_B = 6.0, MAX_B_DROP = 12.0;
 export const MIN_OPENING_PIXELS = 8, ROUNDING_PASSES = 4, ROUNDING_STEP = 0.5, CLOSED_GAP_RATIO = 0.04;
 export const MESSAGES = Object.freeze({
     mouth_closed: "The mouth is closed in this photo, so there are no teeth to whiten.",

@@ -77,6 +77,17 @@ export class BrushPainter {
     raf = 0;
     /** Bloat and pinch keep working while the finger is held still. */
     holdTimer = null;
+    /** Full-size scratch planes reused across live frames, so a drag does not allocate several
+     * photo-sized arrays per frame (a long drag on a large photo could exhaust a phone's memory). */
+    scratch = null;
+    planes(width, height) {
+        const s = this.scratch;
+        if (s && s.width === width && s.height === height)
+            return s;
+        const m = floatImage(width, height, 1), none = floatImage(width, height, 1);
+        this.scratch = { width, height, zero: new Float32Array(width * height), mask: new Float32Array(width * height), m, none };
+        return this.scratch;
+    }
     offscreen;
     constructor(host, doc = document) {
         this.host = host;
@@ -109,6 +120,7 @@ export class BrushPainter {
         this.unschedule();
         if (this.live) {
             this.live = null;
+            this.scratch = null;
             this.host.committed();
         }
         this.gesture = null;
@@ -145,6 +157,7 @@ export class BrushPainter {
             const first = this.live.id;
             this.stopHold();
             this.live = null;
+            this.scratch = null;
             this.host.committed();
             this.startGesture([first, e.pointerId]);
             return;
@@ -229,6 +242,7 @@ export class BrushPainter {
         this.stopHold();
         const points = this.live.points;
         this.live = null;
+        this.scratch = null;
         this.unschedule();
         try {
             const layer = this.host.session.commit(points);
@@ -327,8 +341,9 @@ export class BrushPainter {
         const snap = stroke.snap === "none" ? null : snapPlanes({ width, height, face: editor.source.face, hair: editor.source.hair }, [stroke])[stroke.snap] ?? new Float32Array(width * height);
         const cover = strokeCoverage(stroke, width, height, snap);
         const erase = stroke.mode === "erase";
-        const old = live.old?.data ?? new Float32Array(width * height);
-        const mask = new Float32Array(width * height);
+        const planes = this.planes(width, height);
+        const old = live.old?.data ?? planes.zero;
+        const mask = planes.mask;
         for (let i = 0; i < mask.length; i++)
             mask[i] = erase ? old[i] * (1 - cover[i]) : old[i] + cover[i] * (1 - old[i]);
         if (live.full)
@@ -339,9 +354,8 @@ export class BrushPainter {
             return relightPainted(live.under, buildMask(all, width, height, ["dodge"], snaps), buildMask(all, width, height, ["burn"], snaps), target.strength / 100);
         }
         if (s.brush === "relight") {
-            const m = floatImage(width, height, 1);
+            const m = planes.m, none = planes.none;
             m.data.set(mask);
-            const none = floatImage(width, height, 1);
             return relightPainted(live.under, stroke.mode === "dodge" ? m : none, stroke.mode === "burn" ? m : none, START_STRENGTH.relight / 100);
         }
         // Heal and whiten fill or measure the whole painted spot, so while painting the spot is tinted.

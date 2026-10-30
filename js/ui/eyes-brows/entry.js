@@ -248,7 +248,10 @@ export function mountEyesBrows(root) {
             featureControls();
             refresh();
             draw();
-            status.textContent = "Photo opened locally. Add checked face points before eye and brow previews.";
+            status.textContent = detect.disabled ? "Photo opened locally. Add checked face points before eye and brow previews." : "Photo opened locally. Reading face points on this device…";
+            // Face points are read automatically when the model is available; the button stays for a re-read.
+            if (!detect.disabled)
+                void findPoints();
         }
         catch (error) {
             if (token === generation)
@@ -276,7 +279,7 @@ export function mountEyesBrows(root) {
             showError(error);
         }
     });
-    detect.addEventListener("click", async () => {
+    async function findPoints() {
         if (!session.hasPhoto) {
             status.textContent = "Open a photo first.";
             return;
@@ -295,7 +298,8 @@ export function mountEyesBrows(root) {
         catch (error) {
             showError(error);
         }
-    });
+    }
+    detect.addEventListener("click", () => { void findPoints(); });
     selector.addEventListener("change", () => { stopMotion(); worker.cancel(); session.select(selector.value); featureControls(); draw(); });
     styles.addEventListener("change", () => { session.setStyle(styles.value); changed(); });
     amount.addEventListener("input", () => { session.setAmount(Number(amount.value) / 100); amountOutput.textContent = `${amount.value}%`; changed(); });

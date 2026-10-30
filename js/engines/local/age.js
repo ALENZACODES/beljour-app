@@ -65,7 +65,7 @@ export function creasePlan(mesh, amount) {
         f.centre[1] + f.across[1] * u + f.down[1] * v];
     const strokes = [];
     // Calibrated (Batch 2): at half strength the lines must read clearly at normal viewing size.
-    const width = Math.max(0.8, f.iod * 0.016), depth = amount * 42;
+    const width = Math.max(1, f.iod * 0.022), depth = amount * 70;
     // Horizontal forehead creases are approximations anchored to the top/brow gap.
     for (let band = 0; band < 3; band++) {
         const height = -f.length * (0.13 + 0.046 * band);
@@ -151,7 +151,8 @@ export function renderAge(input, mesh, options) {
     let guardScale = 1;
     let face = mesh.map((q) => [q[0], q[1]]);
     if (layers.jowl > 0 || layers.brows_lids > 0 || layers.lips > 0) {
-        const modifier = older ? 1 : -0.65;
+        // Younger lifts the jowl and jaw a little more than before (Batch 2), still inside the guard.
+        const modifier = older ? 1 : -1;
         const geometry = renderShape(input, mesh, {
             jowl_fullness: Math.min(100, Math.max(-100, modifier * 75 * fraction * layers.jowl)),
             jaw_length: Math.min(100, Math.max(-100, modifier * 40 * fraction * layers.jowl)),
@@ -178,19 +179,21 @@ export function renderAge(input, mesh, options) {
         const j = i * channels;
         mono.data[i] = 0.2126 * output.data[j] + 0.7152 * output.data[j + 1] + 0.0722 * output.data[j + 2];
     }
-    const smooth = boxMean(mono, Math.max(1, Math.round(f.iod / 30)));
-    const texture = fraction * layers.texture * (older ? 0.9 : -0.85);
+    // Younger smooths fine lines over a wider window, so they soften visibly; texture stays (not to zero).
+    const smooth = boxMean(mono, Math.max(1, Math.round(f.iod / (older ? 30 : 12))));
+    const texture = fraction * layers.texture * (older ? 1.6 : -0.95);
     const colour = fraction * layers.colour;
     for (let i = 0; i < skin.data.length; i++) {
         const alpha = skin.data[i];
         if (alpha <= 0)
             continue;
         const detail = (mono.data[i] - smooth.data[i]) * texture * alpha;
-        const sign = older ? 1 : -1;
         for (let c = 0; c < 3; c++) {
             const idx = i * channels + c;
             // Older: warmer, slightly duller and a touch darker skin; younger: the reverse, gently.
-            const tone = sign * (c === 0 ? 4.0 : c === 1 ? -1.5 : -9.0) * colour * alpha - (older ? 6 : -4) * colour * alpha;
+            // Younger (Batch 2): a little less yellow and fresher, enough to read at the gentle defaults.
+            const tone = older ? ((c === 0 ? 4.0 : c === 1 ? -1.5 : -9.0) - 6) * colour * alpha
+                : (c === 0 ? 1 : c === 1 ? 7 : 17) * colour * alpha;
             output.data[idx] = Math.max(0, Math.min(255, Math.round(output.data[idx] + detail + tone)));
         }
         if (texture !== 0 || colour !== 0)
@@ -198,13 +201,13 @@ export function renderAge(input, mesh, options) {
     }
     // Deterministic sparse spots, not placed in eye, lip or eyebrow masks.
     if (older && layers.spots > 0) {
-        const n = Math.ceil((f.iod ** 2) / 120 * fraction * layers.spots);
+        const n = Math.ceil((f.iod ** 2) / 60 * fraction * layers.spots);
         const cx = f.centre[0], cy = f.centre[1];
         for (let j = 0; j < n; j++) {
             const px = Math.round(cx + (rand() - 0.5) * f.iod * 2.3);
             const py = Math.round(cy + (rand() - 0.45) * f.length * 0.85);
             const radius = Math.max(1, f.iod * (0.012 + rand() * 0.022));
-            const strength = (12 + rand() * 24) * fraction * layers.spots;
+            const strength = (20 + rand() * 30) * fraction * layers.spots;
             if (px < 0 || px >= w || py < 0 || py >= h || skin.data[py * w + px] < 0.8)
                 continue;
             spots++;

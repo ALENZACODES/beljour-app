@@ -1,4 +1,5 @@
 import { isRefusal, renderSkinTool, TOOLS } from "../../engines/skin/studio.js";
+import { easeStrength } from "./strength-curve.js";
 import { applyFoundation, isRetouchRefusal, smoothSkin } from "../../engines/beauty/skin-retouch.js";
 /** Every tool the skin layer runs: the two retouch tools first, then the engines/skin tools. */
 export const SKIN_LAYER_TOOLS = ["smooth", "foundation", ...TOOLS];
@@ -39,7 +40,10 @@ export function applySkinLayer(image, source, layer) {
         return { image: { width: image.width, height: image.height, channels: image.channels, data: done.image },
             label: done.label, metrics: { ...done.metrics, tool, mask_source: "face points and skin colour" } };
     }
-    const result = renderSkinTool(tool, image, source.face, layer.strength, {
+    // Freckles and Tan read faintly at low slider values on a straight line; the eased curve makes 30
+    // and 50 clearly visible while 100 stays the full effect.
+    const strength = tool === "freckles" || tool === "tan" ? Math.min(100, 100 * easeStrength(layer.strength)) : layer.strength;
+    const result = renderSkinTool(tool, image, source.face, strength, {
         density: number(layer, "density"), seed: Math.round(number(layer, "seed")), direction: text(layer, "direction"),
         undertone: text(layer, "undertone"), allowLightening: layer.parameters.allow_lightening === true,
         style: text(layer, "style"), redness: number(layer, "redness"),

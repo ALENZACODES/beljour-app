@@ -3,6 +3,7 @@ import { srgbToLab } from "../../engines/shade/colourspace.js";
 import { LABEL as LIGHT_LABEL, relightImage, simulateLook } from "../../engines/shade/lighting.js";
 import { recolourHair } from "../../engines/haircolour/recolour.js";
 import { paint, measureBaseLevel } from "../../engines/haircolour/balayage.js";
+import { easeStrength } from "./strength-curve.js";
 export function parameter(layer, key, fallback) {
     const value = layer.parameters[key];
     return typeof value === "string" ? value : fallback;
@@ -85,7 +86,9 @@ export function applyBeautyLayer(image, source, layer, lightingRenderer) {
         let peak = 0;
         for (const value of result.lift)
             peak = Math.max(peak, value);
-        const recoloured = recolourHair(image, source.hair.data, result.colour_lab, { strength: layer.strength / 100, alpha: result.lift.map(v => v / Math.max(peak, 1e-9)) });
+        const recoloured = recolourHair(image, source.hair.data, result.colour_lab, 
+        // Eased like the other colour tools, so 30 and 50 already show the placement; 100 is the full lift.
+        { strength: easeStrength(layer.strength), alpha: result.lift.map(v => v / Math.max(peak, 1e-9)) });
         return { image: { ...image, data: Uint8Array.from(recoloured.image) }, label: `Local simulation. ${result.label}`,
             metrics: { base_level: base, target_level: result.plan.target_level, sessions: result.plan.sessions,
                 session_1_level: result.plan.session_1_level, assumed: true, note: result.plan.note,

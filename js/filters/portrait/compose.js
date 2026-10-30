@@ -108,13 +108,18 @@ function rgbOf(image) {
             out[p * 3 + c] = image.data[p * 4 + c];
     return out;
 }
-function steps(rgb, width, height, fm, look, strength, polishScale) {
+export const NO_BOOST = { grade: 1, reach: 1 };
+function steps(rgb, width, height, fm, look, strength, polishScale, boost = NO_BOOST) {
     const s = strength / 100;
     let x = P.polish(rgb, width, height, fm.skin, fm.protect, fm.iod, look.polish * s * polishScale);
     const e = look.emphasis;
     x = P.define(x, width, height, P.featureMask(fm.features, fm.iod, e.eyes, e.brows, e.lips), s);
     const masks = { skin: fm.skin, person: fm.person, source: "landmarks", note: "" };
-    const graded = renderFilter({ width, height, channels: 3, data: x }, look.recipe, { strength }, masks, fm.centre).image.data;
+    const graded = renderFilter({ width, height, channels: 3, data: x }, look.recipe, { strength: Math.min(100, strength * boost.grade) }, masks, fm.centre).image.data;
+    const reach = boost.reach;
+    if (reach > 1)
+        for (let i = 0; i < graded.length; i++)
+            graded[i] = Math.max(0, Math.min(255, Math.round(x[i] + reach * (graded[i] - x[i]))));
     const before = keepOriginal(rgb, graded, Float64Array.from(fm.features.irises.data));
     if (!look.sparkle)
         return { before, final: before, glints: 0 };
@@ -137,7 +142,7 @@ function identity(rgb, before, final, width, height, fm, used) {
     return { marksFound: kept.found, marksKept: kept.kept, irisKept, skinLift: lift, polishUsed: used,
         passed: marksOk && lift <= LIFT_LIMIT && irisKept === 1 };
 }
-export function renderPortrait(image, points, lookId, strength = 30) {
+export function renderPortrait(image, points, lookId, strength = 30, boost = NO_BOOST) {
     const look = validate(image, points, lookId, strength);
     const base = { look: look.id, name: look.name, strength, label: LABEL };
     if (strength === 0) {
@@ -149,7 +154,7 @@ export function renderPortrait(image, points, lookId, strength = 30) {
     const notes = [];
     let check = null, result = { before: rgb, final: rgb, glints: 0 };
     for (let step = 0; step < POLISH_STEPS.length; step++) {
-        result = steps(rgb, width, height, fm, look, strength, POLISH_STEPS[step]);
+        result = steps(rgb, width, height, fm, look, strength, POLISH_STEPS[step], boost);
         check = identity(rgb, result.before, result.final, width, height, fm, look.polish * strength / 100 * POLISH_STEPS[step]);
         if (check.passed || check.skinLift > LIFT_LIMIT || step + 1 === POLISH_STEPS.length)
             break;

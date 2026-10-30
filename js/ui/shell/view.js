@@ -41,6 +41,8 @@ import { PHONE_MAX } from "./compare-layout.js";
 import { HairStudio } from "../studios/hair/view.js";
 import { hashModel } from "../../vision/model-registry.js";
 import { defaultVisionClient } from "../../vision/client.js";
+import { GENDER_LEVELS } from "./thumbnails.js";
+import { autoCrown, autoPlacement } from "./auto-hair.js";
 import { faceReaderReady, stagedModels } from "../../vision/staged.js";
 import { toRGBA } from "../../engines/core/buffer.js";
 import { readHeader } from "../../image/decode.js";
@@ -692,8 +694,20 @@ export class ShellView {
                             const sx = Math.min(seg.width - 1, Math.floor((x + 0.5) * seg.width / width)), sy = Math.min(seg.height - 1, Math.floor((y + 0.5) * seg.height / height));
                             data[y * width + x] = Math.min(1, Math.max(0, plane[sy * seg.width + sx]));
                         }
-                    this.editor.setHair({ width, height, channels: 1, data });
-                    hairNote = "Hair area";
+                    // Balayage needs a placement: keep hers if she painted one, else start from the mid-lengths
+                    // and ends (auto-hair.ts). It shows in the painter, where she can repaint or erase it.
+                    const hairMask = { width, height, channels: 1, data };
+                    const own = this.editor.source.hairPaint, placement = own ?? autoPlacement({ ...this.editor.source, hair: hairMask }) ?? undefined;
+                    this.editor.setHair(hairMask, placement);
+                    hairNote = placement && !own ? "Hair area, a starting balayage placement" : "Hair area";
+                    // Hair fibres need a crown: start from the top of the head, which she can still mark herself.
+                    if (!this.editor.source.crown) {
+                        const crown = autoCrown(this.editor.source);
+                        if (crown) {
+                            this.editor.setCrown(crown);
+                            hairNote = "Hair area, crown";
+                        }
+                    }
                 }
             }
             if (!this.editor.source.person && (await stagedModels()).has("selfie-multiclass") && vision.ready("person-segmentation")) {
@@ -1088,14 +1102,24 @@ export class ShellView {
             settings.append(percent("Appearance stop", getNumber(layer, "stop", layer.kind === "older" ? 3 : 2), 1, layer.kind === "older" ? 5 : 3, 1, n => param("stop", n), ""));
         }
         if (layer.kind === "gender") {
-            settings.append(percent("Feminine to masculine appearance", getNumber(layer, "slider", -33), -100, 100, 1, n => param("slider", n), ""), node("p", "shell-hint", "Face-only simulation. Original is 0. Hair and makeup stay as they are."));
+            // Named levels (the same seven as the preview strip); the level carries the intensity.
+            const slider = getNumber(layer, "slider", -33), named = GENDER_LEVELS.find((l) => l.slider === slider);
+            const levels = [...GENDER_LEVELS.map((l) => ({ value: String(l.slider), label: l.label })), ...(named ? [] : [{ value: "custom", label: `Custom (${slider})` }])];
+            const levelSelect = select(levels, named ? String(slider) : "custom", (v) => this.safely(() => {
+                const level = GENDER_LEVELS.find((l) => String(l.slider) === v);
+                if (level)
+                    this.editor.applyOption("gender", { slider: level.slider }, level.label);
+            }));
+            levelSelect.setAttribute("aria-label", "Appearance level");
+            settings.append(labelled("Appearance level", levelSelect));
+            settings.append(percent("Feminine to masculine appearance", slider, -100, 100, 1, n => param("slider", n), ""), node("p", "shell-hint", "Face-only simulation. Original is 0. Hair and makeup stay as they are."));
         }
         if (layer.kind === "beard") {
             settings.append(labelled("Style", select(Object.keys(STYLES).map((s) => ({ value: s, label: s.replaceAll("_", " ") })), getParam(layer, "style", "stubble"), (v) => param("style", v))));
             settings.append(percent("Length", getNumber(layer, "length", 3), 1, 5, 1, (n) => param("length", n), "/5"));
             const colour = node("input", "shell-colour");
             colour.type = "color";
-            colour.value = getParam(layer, "colour", "#3B2A22");
+            colour.value = getParam(layer, "colour", "#241915");
             colour.addEventListener("change", () => param("colour", colour.value));
             settings.append(labelled("Strand colour", colour));
             settings.append(node("p", "shell-hint", "Strength sets strand density (1–4). No real beard is grown."));
@@ -1274,8 +1298,25 @@ export class ShellView {
         this.renderMarking();
         this.status.textContent = this.lastMessage;
         this.showCanvas();
+        this.showToolNotice();
         this.renderStrip();
         this.markRegions();
+    }
+    /** A tool that could not apply, or applied only an estimate, says so in the status line; no tool
+     * leaves the photo unchanged without a reason on screen. */
+    showToolNotice() {
+        let notes = [];
+        try {
+            notes = this.editor.rendered().metrics.filter((m) => (m.status === "refused" || m.status === "estimated") && typeof m.message === "string")
+                .map((m) => `${m.status === "refused" ? "Not applied: " : ""}${String(m.message)}`);
+        }
+        catch {
+            return;
+        }
+        const text = [...new Set(notes)].join(" ");
+        this.status.dataset.toolNotice = notes.length ? "shown" : "";
+        if (text && !this.status.textContent?.includes(text))
+            this.status.textContent = this.lastMessage ? `${text} ${this.lastMessage}` : text;
     }
     /** Where the face is, as fractions of the photo, so checks can measure an edit inside its own region. */
     markRegions() {

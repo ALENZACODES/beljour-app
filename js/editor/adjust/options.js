@@ -13,13 +13,14 @@ const ADJUST_STARTS = [
     ["clear-detail", "Crisp detail", { sharpen: 40, clarity: 15, noise: 15 }],
     ["film-grain", "Film grain", { grain: 35, vignette: -25, fade: 10 }],
 ];
+// Starting points are clearly visible at a tap (owner bar, Oct 30: nothing faint); the sliders refine them.
 const MIXER_STARTS = [
-    ["richer", "Richer colour", { red_s: 20, orange_s: 15, yellow_s: 20, green_s: 25, aqua_s: 25, blue_s: 25, purple_s: 20, magenta_s: 20 }],
-    ["skies", "Deeper skies", { blue_s: 30, blue_l: -20, aqua_s: 20, aqua_l: -10 }],
-    ["leaves", "Fresher greens", { green_s: 25, green_h: -15, yellow_h: 10, green_l: 10 }],
-    ["quiet-greens", "Quiet greens", { green_s: -45, aqua_s: -25, yellow_s: -15 }],
-    ["soft-reds", "Softer reds", { red_s: -25, magenta_s: -20 }],
-    ["golden", "Golden hour", { yellow_h: -15, yellow_s: 15, orange_l: 10, blue_s: -15 }],
+    ["richer", "Richer colour", { red_s: 45, orange_s: 30, yellow_s: 45, green_s: 55, aqua_s: 55, blue_s: 55, purple_s: 45, magenta_s: 45 }],
+    ["skies", "Deeper skies", { blue_s: 60, blue_l: -35, aqua_s: 45, aqua_l: -20 }],
+    ["leaves", "Fresher greens", { green_s: 55, green_h: -25, yellow_h: 15, green_l: 15 }],
+    ["quiet-greens", "Quiet greens", { green_s: -70, aqua_s: -45, yellow_s: -30 }],
+    ["soft-reds", "Softer reds", { red_s: -50, magenta_s: -40 }],
+    ["golden", "Golden hour", { yellow_h: -25, yellow_s: 35, orange_l: 20, blue_s: -30 }],
 ];
 export function editorOptions(kind, source) {
     if (kind === "adjust" || kind === "mixer") {

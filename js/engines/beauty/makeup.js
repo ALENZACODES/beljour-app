@@ -73,13 +73,14 @@ export function applyMakeup(image, mesh, strength, options = {}) {
         for (const side of [-1, 1]) {
             const [cx, cy] = toPhoto(f, 0.66 * side, 0.62);
             const roll = Math.atan2(f.uy, f.ux);
-            spots.push(ellipseSpot(rect, cx, cy, 0.32 * iod, 0.17 * iod, roll - side * 0.42));
+            spots.push(ellipseSpot(rect, cx, cy, 0.38 * iod, 0.21 * iod, roll - side * 0.42));
         }
         // A tint relative to her own skin: the blush's colour difference from her measured skin is
-        // added, at most 16 a*/b* units, so it reads as colour on her skin and not a painted patch.
-        const st = map.stats, amount = 0.48 * e;
-        const da = Math.max(-16, Math.min(16, blush[1] - st.a)), db = Math.max(-16, Math.min(16, blush[2] - st.b));
-        const dl = Math.min(0, blush[0] - st.L) * 0.25;
+        // added, at most 22 a*/b* units, so it reads as colour on her skin and not a painted patch,
+        // and clearly at the default strength (owner bar, Oct 30: nothing faint).
+        const st = map.stats, amount = Math.min(1, 1.05 * e);
+        const da = Math.max(-22, Math.min(22, Math.sign(blush[1] - st.a) * Math.max(10, Math.abs(blush[1] - st.a)))), db = Math.max(-16, Math.min(16, blush[2] - st.b));
+        const dl = Math.min(0, blush[0] - st.L) * 0.4;
         for (let i = 0; i < n; i++) {
             const w = Math.max(spots[0][i], spots[1][i]) * map.skin[i] * amount;
             if (!(w > 0.002))
@@ -104,7 +105,7 @@ export function applyMakeup(image, mesh, strength, options = {}) {
         if (shadow) {
             // The lid from the lash line up to just under the brow bone, deepest at the lashes and the
             // outer corner, fading upward.
-            const crease = offsetLine(upper, (t) => up * iod * (0.15 + 0.08 * t));
+            const crease = offsetLine(upper, (t) => up * iod * (0.18 + 0.09 * t));
             const lid = blur(polygonMask([...upper, ...crease.reverse()], rect, 3), rect.w, rect.h, 0.035 * iod);
             const outer = upper[upper.length - 1], inner = upper[0];
             const amount = Math.min(1, 1.2 * e);
@@ -117,9 +118,9 @@ export function applyMakeup(image, mesh, strength, options = {}) {
                 const w = lid[i] * toward * amount * (1 - eyeball[i]);
                 if (!(w > 0.002))
                     continue;
-                L[i] += w * Math.min(0, shadow[0] - L[i]) * 0.7;
-                A[i] += w * (shadow[1] - A[i]) * 0.8;
-                B[i] += w * (shadow[2] - B[i]) * 0.8;
+                L[i] += w * Math.min(-6, shadow[0] - L[i]) * 0.8;
+                A[i] += w * (shadow[1] - A[i]) * 0.9;
+                B[i] += w * (shadow[2] - B[i]) * 0.9;
                 touch(i, 1);
             }
             metrics.shadow = true;
@@ -161,7 +162,7 @@ export function applyMakeup(image, mesh, strength, options = {}) {
         const smoothL = blur(lab.L, rect.w, rect.h, 0.03 * iod);
         // A pale shade on dark lips is held to a believable lift (ASSUMED 10 L*).
         const shiftL = Math.min(lip[0] - mL, 10);
-        const amount = 0.85 * Math.min(1, e * 1.2);
+        const amount = 0.95 * Math.min(1, e * 1.3);
         for (let i = 0; i < n; i++) {
             const w = soft[i] * amount;
             if (!(w > 0.002))
@@ -174,7 +175,8 @@ export function applyMakeup(image, mesh, strength, options = {}) {
             if (finish === "gloss")
                 target += 1.4 * Math.max(0, detail) + 6 * smoothstep(1, 5, detail);
             L[i] += w * (target - L[i]);
-            A[i] += w * (lip[1] + (lab.a[i] - mA) * 0.35 - A[i]);
+            // Chroma pushed a little past the shade so a colour near her own lips still reads as lipstick.
+            A[i] += w * (lip[1] + (lip[1] - mA) * 0.35 + (lab.a[i] - mA) * 0.35 - A[i]);
             B[i] += w * (lip[2] + (lab.b[i] - mB) * 0.35 - B[i]);
             touch(i, 1);
         }

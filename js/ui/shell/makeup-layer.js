@@ -1,3 +1,9 @@
+/** Makeup on this device as a shell layer kind, "face-makeup" (the "makeup" studio is the YouCam try-on): lipstick, blush, eyeshadow and eyeliner drawn on this
+ * device by web/src/engines/beauty/makeup.ts from the photo's own face points. Nothing is sent
+ * anywhere. Each product is a hex colour or "none"; the lipstick has a matte, satin or gloss finish.
+ * Author: John Khan.
+ */
+import { easedPercent } from "./eased.js";
 import { applyMakeup, FINISHES, isMakeupRefusal, LOOKS } from "../../engines/beauty/makeup.js";
 const FIRST = LOOKS[0];
 /** A new makeup layer starts with the first named look. */
@@ -27,7 +33,7 @@ export function applyMakeupLayer(image, source, layer) {
     const finish = text(layer, "finish");
     if (!FINISHES.includes(finish))
         throw new RangeError("Unknown lipstick finish");
-    const result = applyMakeup(image, source.face, layer.strength, { lip: text(layer, "lip"), finish: finish,
+    const result = applyMakeup(image, source.face, easedPercent(layer.strength), { lip: text(layer, "lip"), finish: finish,
         blush: text(layer, "blush"), shadow: text(layer, "shadow"), liner: text(layer, "liner"),
         hair: source.hair?.data, person: source.person?.data });
     if (isMakeupRefusal(result))

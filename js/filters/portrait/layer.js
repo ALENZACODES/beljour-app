@@ -1,6 +1,16 @@
+/**
+ * The portrait-look layer kind in the studio shell: what a "portrait" layer stores, how it
+ * renders and the options its strip shows. A layer is one ShellLayer with kind "portrait":
+ * strength is the 0-100 slider and the one parameter `look` names the look (PL01 ...). Undo,
+ * history, compare and My Looks work as for every other layer. Every result is labelled a
+ * local simulation; the look runs only with the photo's own 478 face points.
+ * Author: John Khan.
+ */
+import { easedPercent } from "../../ui/shell/eased.js";
 import { portraitLook, portraitLooks } from "./looks.js";
 import { renderPortrait } from "./compose.js";
 export const DEFAULT_LOOK = "PL01";
+export const STUDIO_BOOST = (eased) => ({ grade: 2, reach: 2.6 + Math.min(1, eased / 100) });
 export function defaultPortraitParams(lookId = DEFAULT_LOOK) {
     if (!portraitLook(lookId))
         throw new RangeError("Pick a portrait look");
@@ -16,7 +26,19 @@ export function applyPortraitLayer(img, source, layer) {
     const id = layer.parameters.look;
     if (typeof id !== "string" || !portraitLook(id))
         throw new RangeError("Pick a portrait look");
-    const result = renderPortrait(img, source.face, id, layer.strength);
+    // The studio boosts the colour grade so a look reads clearly at Natural (owner bar, Oct 30):
+    // the grade runs at 2x the eased slider (full recipe from Subtle up) and its change is extended
+    // 3.1x at Subtle, 3.35x at Natural and 3.6x at Full.
+    const eased = easedPercent(layer.strength);
+    // A boost that would lighten skin past the guard steps down (never past the parity render).
+    let result = renderPortrait(img, source.face, id, eased, STUDIO_BOOST(eased));
+    for (const reach of [2.4, 1.8, 1.3]) {
+        if (result.status !== "refused" || result.code !== "skin_lightened")
+            break;
+        result = renderPortrait(img, source.face, id, eased, { grade: 2, reach });
+    }
+    if (result.status === "refused" && result.code === "skin_lightened")
+        result = renderPortrait(img, source.face, id, eased);
     if (result.status === "refused")
         throw new Error(`${result.name} was not applied (${result.code}). ${result.notes.join(" ")}`);
     const image = { width: img.width, height: img.height, channels: 3, data: new Uint8Array(img.width * img.height * 3) };

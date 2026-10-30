@@ -7,6 +7,10 @@ import { glowTan, SHIFTS } from "./glow-tan.js";
 import { checkPhoto, checkStrength, copyOf, encode, labPlanes, NOTE, unchanged } from "./common.js";
 export const DIRECTIONS = ["add", "remove"];
 export const REMOVE_L = 3.0;
+/** A visible tan: L* darkening at strength 100 and the undertone shift multiplier. ASSUMED, tuned so
+ * strength 30 and 50 read clearly on the synthetic samples (Glow keeps its own lighter values). */
+export const ADD_DEPTH_L = 10.0;
+export const ADD_SHIFT_SCALE = 2.0;
 export const ADD_LABEL = "Tan simulation; not a UV exposure guide. " + NOTE;
 export const REMOVE_LABEL = "Tan removal simulation, chosen by you: this lightens skin. " + NOTE;
 export const LIGHTENING_CODE = "lightening_needs_opt_in";
@@ -34,7 +38,7 @@ export function tan(image, skin, direction = "add", strength = 30, undertone = "
     if (amount === 0)
         return unchanged(image, direction === "add" ? ADD_LABEL : REMOVE_LABEL, { direction });
     if (direction === "add") {
-        const added = glowTan(rgbOnly(image), skin, undertone, strength, false);
+        const added = glowTan(rgbOnly(image), skin, undertone, strength, false, 41, ADD_DEPTH_L, ADD_SHIFT_SCALE);
         const out = copyOf(image), ch = image.channels;
         for (let i = 0; i < skin.length; i++)
             for (let c = 0; c < 3; c++)
