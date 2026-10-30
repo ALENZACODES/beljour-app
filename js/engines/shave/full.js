@@ -6,17 +6,23 @@
  *    cleaned, gaps closed, and the result grown, so the mouth corners and the chin are inside it.
  * 2. Low frequencies: smooth membrane fills (the Laplace equation, solved on a coarse grid): one for
  *    the face from her cheeks and lip line, on top of the side-to-side light fitted from them, and
- *    one for the neck from the neck. The face fill's mean L*, a*, b* is matched to the cheek band
- *    just above the beard, less a small darkening toward the jaw.
+ *    one for the neck from the neck. Deeper in, the face runs from her cheek tone (the cheek band
+ *    above the beard, without the lit skin beside the nose wings) at the nose base most of the way
+ *    to her neck tone at the chin, darkens a little toward the face outline as it turns away, and
+ *    keeps a small share of the photo's own broad light and shadow there.
  * 3. The jaw: below the mouth, the face outline from the face points stands in for the jaw and chin
- *    under the hair. Past it is her neck (its width measured under the beard) or the backdrop
- *    (filled from the backdrop around the beard), with a soft shadow under the jaw.
+ *    under the hair. Past it is her neck (its width measured under the beard, darker at its sides)
+ *    or the backdrop (filled from the backdrop around the beard); the shadow under the jaw comes in
+ *    across a soft jaw edge and fades down the neck.
  * 4. Skin texture: isotropic noise in octave bands, each scaled to the same band of her clean
  *    cheek, so the grain matches her photo with no streaks; a little colour mottling too.
  * 5. Finish (separate from coverage): light stubble at 0.3 (a shadow and single darker dots where
- *    the beard grew), a very faint shadow at 0.5, a clean shave at 1. Stray stubble past the beard's
- *    edge, and moustache tips over the lip and nostril rims, are lifted to the skin (or lip) around them.
- * 6. Mixed in with a distance feather outward from the beard, so there is no hard boundary.
+ *    the beard grew, fading out past its edge), a very faint shadow at 0.5, a clean shave at 1.
+ *    Stray stubble past the beard's edge, moustache tips over the lip, and hair tips on the nose's
+ *    lower rim are lifted to the skin (or lip) around them.
+ * 6. Mixed in full over the beard and faded over a wide band past it (about a sixth of the face
+ *    width): her own skin there keeps its pores and lines and only its broad tone moves, and hairs
+ *    the search missed close to the beard fade out with it, so there is no line at the old edge.
  * Never lighter than her cheek (or, past the jaw, the backdrop). Shares and radii are ASSUMED,
  * tuned by eye on the synthetic sample. A rough visual estimate, not a grooming or medical
  * prediction. Runs in a window around the lower face and neck. Browser only; the stubble and
@@ -38,18 +44,31 @@ export const AREA_GROW = 0.12, CORNER_RADIUS = 0.12, NOSE_MARGIN = 0, HAIR_DROP_
 /** Fill, texture, shadows (L* units unless noted). */
 export const GRID_SHARE = 0.035, SOLVE_ITERATIONS = 60, JAW_SHADOW_L = 8.0, JAW_SHADOW_REACH = 0.16;
 /** Jaw silhouette: starts this far below the mouth corners, over this ramp; the jaw edge is this soft. */
-export const SILHOUETTE_START = -0.15, SILHOUETTE_RAMP = 0.2, JAW_EDGE = 0.03, NECK_EDGE = 0.04, NECK_ROWS = [0.04, 0.2], NECK_SHARE = 0.8, BACKDROP_GAP = 0.04, BACKDROP_DROP_L = 15, COVER_GROW = 0.025;
+export const SILHOUETTE_START = -0.15, SILHOUETTE_RAMP = 0.2, JAW_EDGE = 0.06, NECK_EDGE = 0.04, NECK_ROWS = [0.04, 0.2], NECK_SHARE = 0.8, BACKDROP_GAP = 0.04, BACKDROP_DROP_L = 15, COVER_GROW = 0.025;
 /** Texture octaves (px) and stray stubble past the edge. */
 export const BAND_SIGMAS = [1, 2, 4], BAND_GAINS = [1.0, 1.0, 0.6], STRAY_RADIUS = 0.04, STRAY_DROP_L = 6, STRAY_BAND = 0.12, LIP_TIP_RADIUS = 0.03, BORDER_PX = 2.5, NOSTRIL_DROP_L = 12;
+/** Nose rim clean-up (round 4): band depth (inter-pupil shares) and the colour share that counts as grey. ASSUMED. */
+/** Missed hairs past the beard are faded only below this line (inter-pupil distances under the eyes). ASSUMED. */
+export const HAIR_RIM_V = 0.3, HAIR_RIM_DROP_L = 16, SKIN_LOW = 0.05;
+export const RIM_DEPTH = 0.065, RIM_CHROMA = 0.8, RIM_CREASE_L = 6;
 export const TEXTURE_GAIN = 1.0, STUBBLE_L = 6, STUBBLE_B = 3;
 export const EDGE_FEATHER = 0.14, FULL_CAP = 1.0, REF_KEEP_SHARE = 0.75;
 /** Working window around the face outline (shares of the inter-pupil distance). */
 export const WINDOW_SIDE = 0.6, WINDOW_TOP = 0.3, WINDOW_BELOW = 1.2;
 /** Tone match: the cheek band just above the beard, how deep the correction reaches in, and the
  * small darkening kept toward the jaw (L*). */
-export const CHEEK_BAND = 0.2, TONE_DEPTH = 0.15, JAW_DARKEN_L = 3, MOTTLE_GAIN = 0.3;
+export const CHEEK_BAND = 0.2, MOTTLE_GAIN = 0.3;
+/** Shading (round 4): the cheek band skips skin this close to the nose wings (lit, brighter than the
+ * cheek beside the beard); the patch runs from the cheek tone at the nose base to this share of the
+ * way to her neck tone at the chin; the estimate gives way to the fill around it over BLEND_DEPTH in
+ * from the beard's edge; the outer mix fades over EDGE_WIDE out from it (about 17% of the face width);
+ * a share of the photo's own broad light and shadow under the beard is kept (SHADE_GAIN, at most
+ * SHADE_MAX L*, blurred over SHADE_RADIUS so single hairs do not show). All ASSUMED, tuned by eye. */
+export const NOSE_CLEAR = 0.1, CHIN_NECK = 0.6, BLEND_DEPTH = 0.3, EDGE_WIDE = 0.36, SHADE_GAIN = 0.25, SHADE_MAX = 4, SHADE_RADIUS = 0.1;
+/** The face turning away toward the jaw and the face edge: up to FORM_L darker at the outline, over FORM_REACH in. */
+export const FORM_L = 4, FORM_REACH = 0.3;
 /** Finish: stubble left at finish 0.3 (fading to none at 1): shadow, and a share of her own hairs kept. */
-export const STUBBLE_DOTS = 0.16, STUBBLE_DOT_L = 12;
+export const STUBBLE_DOTS = 0.16, STUBBLE_DOT_L = 12, DENSITY_SOFT = 0.07, GHOST_SOFT = 0.12;
 export const FULL_LABEL = "Full-beard estimate: the skin under this beard cannot be seen, so it is estimated from your cheeks and neck around it. "
     + "A rough visual estimate, not a grooming or medical prediction.";
 /** A repeatable 0..1 value per position (no random state), so the same photo always gets the same result. */
@@ -289,11 +308,9 @@ function estimateWindow(image, pts, strength, keep, finish) {
     if (strength === 0)
         return { image: new Uint8Array(image.data), weight: new Float64Array(n), label: FULL_LABEL, metrics: { ...metrics, unchanged: true } };
     const region = maskOf(w, h, coreArea);
-    // The feather straddles the beard's edge: half inside (the last hairs fade out) and half outside.
+    // A feather straddling the beard's edge: used for the box worked in and the stray-speck band. The
+    // mix itself is full on the beard (no half-covered last hairs) and fades out over EDGE_WIDE past it.
     const edge = feather(region, Math.max(1, EDGE_FEATHER * iod), "centered").data;
-    // Where the beard meets the nose or the lips it is not a hair edge: no fade there (the hairs
-    // touching them come off fully), so the mix uses the feather of the beard with them included.
-    const edgeMix = feather(union(union(region, noseMask), lipMask), Math.max(1, EDGE_FEATHER * iod), "centered").data;
     // A short blend just inside the nose and lip outlines, so the estimate meets them without a cut.
     const kept = union(noseMask, lipMask), keptInner = feather(kept, BORDER_PX, "inside").data;
     const vMouth = (face.local(...pts[LANDMARKS.right_mouth])[1] + face.local(...pts[LANDMARKS.left_mouth])[1]) / 2;
@@ -308,7 +325,7 @@ function estimateWindow(image, pts, strength, keep, finish) {
             by0 = Math.min(by0, y);
             by1 = Math.max(by1, y);
         }
-    const margin = Math.round(0.25 * iod);
+    const margin = Math.round(Math.max(0.25, EDGE_WIDE + 0.05) * iod); // the box holds the whole outer band
     bx0 = Math.max(0, bx0 - margin);
     by0 = Math.max(0, by0 - margin);
     bx1 = Math.min(w - 1, bx1 + margin);
@@ -378,36 +395,32 @@ function estimateWindow(image, pts, strength, keep, finish) {
         const x0 = Math.floor(gx), y0 = Math.floor(gy), x1 = Math.min(gw - 1, x0 + 1), y1 = Math.min(gh - 1, y0 + 1), fx = gx - x0, fy = gy - y0;
         return (grid[y0 * gw + x0] * (1 - fx) + grid[y0 * gw + x1] * fx) * (1 - fy) + (grid[y1 * gw + x0] * (1 - fx) + grid[y1 * gw + x1] * fx) * fy;
     };
-    // Tone match: the estimate's mean L*, a*, b* over the beard (inside the jaw) is brought to the
-    // cheek band just above it, less a small darkening toward the jaw. The correction is zero at the
-    // beard's edge (where the fill already meets her skin) and full TONE_DEPTH inside it.
-    const toneDepth = feather(region, Math.max(1, TONE_DEPTH * iod), "inside").data;
+    // Tone: the cheek band just above the beard, without the lit skin beside the nose wings (that
+    // skin is brighter than the cheek next to the beard, and made the patch too light).
     const bandMask = dilate(region, CHEEK_BAND * iod).data;
-    const cheekBand = [], inner = [];
+    const wingU = [face.local(...pts[LANDMARKS.right_ala])[0], face.local(...pts[LANDMARKS.left_ala])[0]];
+    const noseLo = Math.min(...wingU) - NOSE_CLEAR, noseHi = Math.max(...wingU) + NOSE_CLEAR;
+    const cheekBand = [], nearNose = [], inner = [];
     for (let i = 0; i < n; i++) {
         const v = V[i];
-        if (bandMask[i] >= 0.5 && coreArea[i] < 0.5 && oval[i] >= 0.5 && skin[i] >= 0.5 && skinLike(i) && v < vMouth && lips[i] < 0.5)
-            cheekBand.push(i);
-        else if (coreArea[i] >= 0.5 && oval[i] >= 0.5 && toneDepth[i] > 0)
+        if (bandMask[i] >= 0.5 && coreArea[i] < 0.5 && oval[i] >= 0.5 && skin[i] >= 0.5 && skinLike(i) && v < vMouth && lips[i] < 0.5) {
+            if (U[i] > noseLo && U[i] < noseHi)
+                nearNose.push(i);
+            else
+                cheekBand.push(i);
+        }
+        else if (coreArea[i] >= 0.5 && oval[i] >= 0.5)
             inner.push(i);
     }
-    const tone = [0, 0, 0], chinV = face.local(...pts[LANDMARKS.chin])[1], vBottomFace = chinV > vMouth ? chinV : vMouth + 0.5;
-    const jawRamp = (v) => smooth((v - vMouth) / Math.max(1e-6, vBottomFace - vMouth));
-    const toneBefore = [0, 0, 0], toneCheek = [0, 0, 0];
-    if (cheekBand.length >= MIN_REF_PIXELS && inner.length >= MIN_REF_PIXELS) {
-        const planes = [lab.L, lab.a, lab.b];
-        for (let c = 0; c < 3; c++) {
-            toneCheek[c] = median(cheekBand.map((i) => planes[c][i]));
-            let sf = 0, sd = 0;
-            for (const i of inner) {
-                const x = i % w, y = (i - x) / w;
-                sf += sample(fillGrid[c], x, y) - (c === 0 ? JAW_DARKEN_L * jawRamp(V[i]) : 0);
-                sd += toneDepth[i];
-            }
-            toneBefore[c] = sf / inner.length;
-            tone[c] = sd > 0 ? (toneCheek[c] - toneBefore[c]) * inner.length / sd : 0;
-        }
-    }
+    const planes = [lab.L, lab.a, lab.b];
+    const bandTone = (idx) => planes.map((pl) => (idx.length ? median(idx.map((i) => pl[i])) : NaN));
+    const toneCheek = cheekBand.length >= MIN_REF_PIXELS ? bandTone(cheekBand) : bandTone([...cheekBand, ...nearNose]);
+    const toneNose = bandTone(nearNose), toneBefore = bandTone(inner);
+    if (!toneCheek.every(Number.isFinite))
+        toneCheek.splice(0, 3, ...ref);
+    const chinV = face.local(...pts[LANDMARKS.chin])[1], vNose = face.local(...pts[LANDMARKS.subnasale])[1];
+    const vBottomFace = chinV > vMouth ? chinV : vMouth + 0.5;
+    const chinRamp = (v) => smooth((v - vNose) / Math.max(1e-6, vBottomFace - vNose));
     // 3. The jaw under the beard. The face outline from the face points follows the jaw and chin
     // under the hair, so below the mouth the beard's own silhouette is taken back to that outline:
     // past it is neck (her neck's width, measured under the beard) or the backdrop (filled from the
@@ -455,6 +468,29 @@ function estimateWindow(image, pts, strength, keep, finish) {
         neckR = chinU + NECK_SHARE * (hi - chinU);
     }
     const edgeSoft = Math.max(1, NECK_EDGE * iod) / iod;
+    // Her neck tone: visible neck skin just under the beard, inside the neck's width.
+    const hairClear = dilate(region, BACKDROP_GAP * iod).data, neckIdx = [];
+    {
+        const inset = 0.15 * (neckR - neckL);
+        for (let i = 0; i < n; i++)
+            if (V[i] >= vBottom + NECK_ROWS[0] && V[i] <= vBottom + 2 * NECK_ROWS[1] && U[i] > neckL + inset && U[i] < neckR - inset
+                && hairClear[i] < 0.5 && oval[i] < 0.5 && skinLike(i))
+                neckIdx.push(i);
+    }
+    const toneNeck = neckIdx.length >= MIN_REF_PIXELS ? bandTone(neckIdx) : [toneCheek[0] - JAW_SHADOW_L, toneCheek[1], toneCheek[2]]; // ASSUMED fallback
+    // The face under the beard: the cheek tone at the nose base, running CHIN_NECK of the way to the
+    // neck tone at the chin, with the side-to-side light fitted from her cheeks, and a share of the
+    // photo's own broad light and shadow there (blurred well past single hairs, centred on zero).
+    const shadeR = Math.max(2, Math.round(SHADE_RADIUS * iod)), coreW = Float64Array.from(coreArea);
+    const lowL = maskedLowpass(maskedLowpass(lab.L, coreW, w, h, shadeR), coreW, w, h, shadeR);
+    let lowMean = 0;
+    for (const i of inner)
+        lowMean += lowL[i];
+    lowMean = inner.length ? lowMean / inner.length : 0;
+    const shadeAt = (i) => (coreArea[i] >= 0.5 ? Math.max(-SHADE_MAX, Math.min(SHADE_MAX, SHADE_GAIN * (lowL[i] - lowMean))) : 0);
+    // How far in from the beard's edge the estimate takes over from the fill around it.
+    const blendIn = feather(region, Math.max(1, BLEND_DEPTH * iod), "inside").data;
+    const formIn = feather(maskOf(w, h, oval), Math.max(1, FORM_REACH * iod), "inside").data;
     // Shares of each pixel: face (inside the jaw, or above the mouth), neck, backdrop.
     const faceShare = new Float64Array(n), neckShare = new Float64Array(n);
     for (let y = by0; y <= by1; y++)
@@ -604,7 +640,11 @@ function estimateWindow(image, pts, strength, keep, finish) {
             texGain = Math.min(1.5, Math.max(0.5, cheekGrain / estGrain));
     }
     // 5. Shaving shadow: where the beard was, softened.
-    const density = maskedLowpass(Float64Array.from(clean), ones, w, h, Math.max(1, Math.round(0.03 * iod)));
+    // (two passes over DENSITY_SOFT, so the shadow fades out at the beard's edge instead of stopping)
+    const densityR = Math.max(1, Math.round(DENSITY_SOFT * iod));
+    const density = maskedLowpass(maskedLowpass(Float64Array.from(clean), ones, w, h, densityR), ones, w, h, densityR);
+    // Wider still for the share of her own beard left showing below full coverage.
+    const ghost = maskedLowpass(density, ones, w, h, Math.max(1, Math.round(GHOST_SOFT * iod)));
     // Stray stubble just past the beard's edge: dark specks against her local skin are lifted to it.
     const faceSkin = new Float64Array(n);
     for (let i = 0; i < n; i++)
@@ -620,12 +660,19 @@ function estimateWindow(image, pts, strength, keep, finish) {
         lipCalm[i] = lipAll[i] && lab.L[i] >= lipFirst[i] - STRAY_DROP_L / 2 ? 1 : 0;
     const lipL = maskedLowpass(lab.L, lipCalm, w, h, lr), lipA = maskedLowpass(lab.a, lipCalm, w, h, lr), lipB = maskedLowpass(lab.b, lipCalm, w, h, lr);
     const vStomion = face.local(...pts[LANDMARKS.stomion_upper])[1];
-    // The skin estimate at a pixel: face fill (tone-matched) and neck fill, split at the jaw.
+    // The nose's lower rim: a thin band in from its outline, below the tip.
+    const rimNose = feather(noseMask, Math.max(1, RIM_DEPTH * iod), "inside").data, vTip = face.local(...pts[LANDMARKS.nose_tip])[1];
+    // The skin estimate at a pixel: the face (cheek-to-neck shading, given way to the fill near the
+    // beard's edge) and the neck fill, split at the jaw.
     const skinAt = (x, y, i) => {
         const fs = faceShare[i] + neckShare[i] > 1e-6 ? faceShare[i] / (faceShare[i] + neckShare[i]) : 1;
-        const v = V[i];
-        return [0, 1, 2].map((c) => fs * (sample(fillGrid[c], x, y) + tone[c] * toneDepth[i] - (c === 0 ? JAW_DARKEN_L * jawRamp(v) : 0))
-            + (1 - fs) * sample(neckGrid[c], x, y));
+        const ramp = CHIN_NECK * chinRamp(V[i]), b = blendIn[i];
+        return [0, 1, 2].map((c) => {
+            const model = toneCheek[c] + ramp * (toneNeck[c] - toneCheek[c]) + fits[c][1] * (U[i] - chinU) + (c === 0 ? shadeAt(i) - FORM_L * (1 - formIn[i]) : 0);
+            // The neck turns away at its sides too.
+            const neckSide = c === 0 ? FORM_L * (1 - smooth(Math.min(U[i] - neckL, neckR - U[i]) / FORM_REACH)) : 0;
+            return fs * ((1 - b) * sample(fillGrid[c], x, y) + b * model) + (1 - fs) * (sample(neckGrid[c], x, y) - neckSide);
+        });
     };
     // Finish: 1 at 0.3 and below (light stubble), about a third at 0.5, none at 1.
     const stubble = Math.min(1, Math.max(0, (1 - finish) / 0.7)) ** 3;
@@ -638,6 +685,19 @@ function estimateWindow(image, pts, strength, keep, finish) {
                     spared[y * w + x] = 1;
             }
     const weight = new Float64Array(n), backdrop = new Float64Array(n), amount = FULL_CAP * (strength / 100);
+    // The outer mix: full on the beard, fading over a wide band out from its edge, so no line shows.
+    const wide = feather(region, Math.max(1, EDGE_WIDE * iod), "outside").data;
+    // Her skin's own broad tone around each pixel (skin past the beard only): in the band the estimate
+    // moves her skin's tone, and her pores and lines stay; and hairs darker than it are found.
+    const skinPx = new Float64Array(n);
+    for (let y = by0; y <= by1; y++)
+        for (let x = bx0; x <= bx1; x++) {
+            const i = y * w + x;
+            if (coreArea[i] < 0.5 && skinLike(i))
+                skinPx[i] = 1;
+        }
+    const lowR = Math.max(2, Math.round(SKIN_LOW * iod)), skinCover = maskedLowpass(skinPx, ones, w, h, lowR);
+    const skinLow = [lab.L, lab.a, lab.b].map((pl) => maskedLowpass(pl, skinPx, w, h, lowR));
     let strayPx = 0, backdropPx = 0;
     for (let y = by0; y <= by1; y++)
         for (let x = bx0; x <= bx1; x++) {
@@ -671,12 +731,31 @@ function estimateWindow(image, pts, strength, keep, finish) {
             if (noseMask.data[i] >= 0.5) {
                 // Moustache hairs over the nostril rims: grey specks lifted to the skin around them (the
                 // nostrils are dark but warm, so they stay).
-                if (!(hairNear[i] >= 0.5))
+                const rim = V[i] > vTip ? 1 - rimNose[i] : 0;
+                if (!(hairNear[i] >= 0.5) && !(rim > 0))
                     continue;
                 const c = Math.hypot(lab.a[i], lab.b[i]), cLocal = Math.hypot(localA[i], localB[i]);
                 // Dark grey hairs, or light grey ones (not as dark as the nostril openings).
                 const grey = smooth((0.6 * cLocal - c) / Math.max(1, 0.3 * cLocal));
-                const tip = grey * Math.max(smooth((localL[i] - lab.L[i] - STRAY_DROP_L / 2) / STRAY_DROP_L), lab.L[i] >= localL[i] - NOSTRIL_DROP_L ? 1 : 0);
+                let tip = hairNear[i] >= 0.5 ? grey * Math.max(smooth((localL[i] - lab.L[i] - STRAY_DROP_L / 2) / STRAY_DROP_L), lab.L[i] >= localL[i] - NOSTRIL_DROP_L ? 1 : 0) : 0;
+                // On the nose's lower rim (a thin band in from its outline) the skin around is the shaded
+                // underside of the nose, as grey as the hair tips, so they are measured against the estimate
+                // just below instead, and lifted to it less a soft crease (RIM_CREASE_L), fading in from the outline.
+                if (rim > 0 && tip < 1) {
+                    let yy = y;
+                    while (yy < h - 1 && coreArea[yy * w + x] < 0.5 && yy - y < 3 * RIM_DEPTH * iod)
+                        yy++;
+                    const est = skinAt(x, yy, yy * w + x), cEst = Math.hypot(est[1], est[2]), lift = rim * smooth((RIM_CHROMA * cEst - c) / Math.max(1, 0.3 * cEst));
+                    const goal = est[0] - RIM_CREASE_L;
+                    if (lift > 0 && lab.L[i] < goal) {
+                        const t = lift * amount;
+                        lab.L[i] += t * (goal - lab.L[i]);
+                        lab.a[i] += t * (est[1] - lab.a[i]);
+                        lab.b[i] += t * (est[2] - lab.b[i]);
+                        weight[i] = Math.max(weight[i], t);
+                        strayPx++;
+                    }
+                }
                 if (!(tip > 0))
                     continue;
                 const t = tip * amount;
@@ -691,8 +770,18 @@ function estimateWindow(image, pts, strength, keep, finish) {
             const bgShare = bgGrid ? (1 - faceShare[i]) - neckShare[i] : 0, outerShare = bgShare + neckShare[i];
             // Skin past the beard: the feather ramp, and stray specks lifted to the skin around them.
             let wt = 0;
-            if (edge[i] > 0 && (onBeard || skinLike(i)))
-                wt = smooth(onBeard ? edgeMix[i] : edge[i]);
+            if (onBeard)
+                wt = 1;
+            const lowOk = skinCover[i] >= 0.2, toneOnly = !onBeard && wide[i] > 0 && skinLike(i) && lowOk;
+            if (!onBeard && wide[i] > 0 && skinLike(i))
+                wt = wide[i];
+            // Beard hairs the search missed just past its edge on the face (a strip along the cheek line, the
+            // sideburn's foot): well darker than her skin around them (or her cheek), faded out with the same band, so no
+            // dark rim or straight cut is left.
+            else if (!onBeard && wide[i] > 0 && oval[i] >= 0.5 && lab.L[i] < (lowOk ? Math.min(skinLow[0][i], toneCheek[0]) : toneCheek[0]) - HAIR_RIM_DROP_L) {
+                // only close to the beard (the cube of the band), and faded in below the cheekbones
+                wt = wide[i] ** 3 * smooth((V[i] - HAIR_RIM_V) / 0.15);
+            }
             wt = Math.max(wt, outerShare * cover[i]);
             let baseL = lab.L[i], baseA = lab.a[i], baseB = lab.b[i];
             const stray = oval[i] >= 0.5 && edge[i] < 0.95 && (faceSkin[i] || onBeard) && strayBand[i] > 0 ? smooth((localL[i] - lab.L[i] - STRAY_DROP_L / 2) / STRAY_DROP_L) * smooth(strayBand[i] / 0.5) : 0;
@@ -704,12 +793,18 @@ function estimateWindow(image, pts, strength, keep, finish) {
             }
             if (!(wt > 0) && !(stray > 0))
                 continue;
-            wt *= amount;
+            // Below full coverage a share of her own beard shows through; it fades out with the beard's
+            // (softened) density, so the ghost has no hard edge where the hairs stopped.
+            wt *= amount + (1 - amount) * (1 - Math.min(1, ghost[i])) * smooth(amount / 0.5);
             const d = Math.min(1, density[i]) * stubble;
-            const shade = JAW_SHADOW_L * smooth(jawShadow[i]) * (oval[i] >= 0.5 ? 0 : 1);
+            // Under the jaw: the shadow comes in across the soft jaw edge, then fades down the neck.
+            const shade = JAW_SHADOW_L * smooth(jawShadow[i]) * (1 - jawIn[i]);
             const est = skinAt(x, y, i);
             const skinL = Math.min(top, est[0] + texGain * texture[0][i] - STUBBLE_L * d);
-            const skinT = [skinL - shade, est[1] + texture[1][i] - 0.3 * STUBBLE_B * d, est[2] + texture[2][i] - STUBBLE_B * d];
+            const skinT = toneOnly
+                // Her own skin in the band: only its broad tone moves to the estimate's.
+                ? [Math.min(Math.max(baseL, top), baseL + Math.min(top, est[0] - STUBBLE_L * d) - skinLow[0][i]) - shade, baseA + est[1] - 0.3 * STUBBLE_B * d - skinLow[1][i], baseB + est[2] - STUBBLE_B * d - skinLow[2][i]]
+                : [skinL - shade, est[1] + texture[1][i] - 0.3 * STUBBLE_B * d, est[2] + texture[2][i] - STUBBLE_B * d];
             const target = bgGrid && bgShare > 0
                 ? skinT.map((v, c) => (1 - bgShare) * v + bgShare * sample(bgGrid[c], x, y))
                 : skinT;
@@ -725,7 +820,7 @@ function estimateWindow(image, pts, strength, keep, finish) {
             lab.a[i] += wt * (target[1] - lab.a[i]);
             lab.b[i] += wt * (target[2] - lab.b[i]);
             // Stubble (at a low finish): short hairs as single darker, greyer dots where the beard grew.
-            if (onBeard && d > 0 && bgShare < 0.5 && grain(x, y, 11) < STUBBLE_DOTS * d) {
+            if ((onBeard || wide[i] > 0) && d > 0 && bgShare < 0.5 && grain(x, y, 11) < STUBBLE_DOTS * d) {
                 lab.L[i] -= wt * STUBBLE_DOT_L * Math.sqrt(d);
                 lab.a[i] -= wt * 0.4 * lab.a[i] * Math.sqrt(d);
                 lab.b[i] -= wt * 0.4 * lab.b[i] * Math.sqrt(d);
@@ -733,13 +828,22 @@ function estimateWindow(image, pts, strength, keep, finish) {
             weight[i] = Math.max(wt, stray > 0 ? stray * amount : 0);
         }
     const toneAfter = [lab.L, lab.a, lab.b].map((pl) => inner.length ? inner.reduce((t, i) => t + pl[i], 0) / inner.length : 0);
+    // The patch's top and bottom thirds (inside the jaw), after, to compare with the cheek and neck.
+    let vLo = Infinity, vHi = -Infinity;
+    for (const i of inner) {
+        vLo = Math.min(vLo, V[i]);
+        vHi = Math.max(vHi, V[i]);
+    }
+    const third = (vHi - vLo) / 3, mean3 = (idx) => [lab.L, lab.a, lab.b].map((pl) => (idx.length ? idx.reduce((t, i) => t + pl[i], 0) / idx.length : 0));
+    const toneTop = mean3(inner.filter((i) => V[i] <= vLo + third)), toneBottom = mean3(inner.filter((i) => V[i] >= vHi - third));
     let edited = 0;
     for (let i = 0; i < n; i++)
         if (weight[i] > 0)
             edited++;
     Object.assign(metrics, { edited_pixels: edited, grain_l: grainSd.map(r3).join("/"), grid: `${gw}x${gh}`, stray_pixels: strayPx, backdrop_pixels: backdropPx,
         backdrop_l_max: r3(bgMaxL), finish: r3(finish), stubble: r3(stubble), tex_gain: r3(texGain), cheek_grain: r3(cheekGrain),
-        tone_before: toneBefore.map(r3).join("/"), tone_cheek: toneCheek.map(r3).join("/"), tone_after: toneAfter.map(r3).join("/"), neck_u: `${r3(neckL)}..${r3(neckR)}`, known_cells: r4(known.reduce((s, v) => s + v, 0) / known.length) });
+        tone_before: toneBefore.map(r3).join("/"), tone_cheek: toneCheek.map(r3).join("/"), tone_after: toneAfter.map(r3).join("/"),
+        tone_nose: toneNose.map(r3).join("/"), tone_neck: toneNeck.map(r3).join("/"), tone_top: toneTop.map(r3).join("/"), tone_bottom: toneBottom.map(r3).join("/"), neck_u: `${r3(neckL)}..${r3(neckR)}`, known_cells: r4(known.reduce((s, v) => s + v, 0) / known.length) });
     return { image: encode(image, lab, weight), weight, backdrop, label: FULL_LABEL, metrics };
 }
 //# sourceMappingURL=full.js.map
