@@ -1,0 +1,68 @@
+/* What's new in beauty (web/news.html). Built on theme.css tokens and layout.css; light and dark
+   come from theme.css (body class "theme-auto"). Author: John Khan. */
+.nw-page { min-height: 100vh; background: var(--cream); color: var(--ink); }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: -1px; padding: 0; border: 0; }
+.nw-skip:focus { position: static; width: auto; height: auto; clip: auto; display: inline-block; padding: 0.5rem; }
+.nw-main { max-width: 76rem; margin: 0 auto; padding: 1.25rem 1rem 2rem; }
+.nw-main h1 { margin: 0.25rem 0 0.5rem; font-family: var(--font-serif); color: var(--plum); font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; }
+.nw-lede { max-width: 62ch; font-size: 1.05rem; line-height: 1.5; margin: 0 0 0.75rem; }
+.nw-not-medical { display: inline-block; margin: 0 0 1rem; padding: 0.45rem 0.75rem; border-radius: var(--radius-l);
+  background: var(--blush); color: var(--ink); font-size: 0.9rem; line-height: 1.4; max-width: 62ch; }
+.nw-page a { color: var(--link); }
+.nw-meta, .nw-shown { color: var(--muted); font-size: 0.9rem; margin: 0.25rem 0 0.75rem; }
+
+.nw-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1rem; }
+@media (max-width: 520px) { .nw-filter { padding: 0.3rem 0.75rem; font-size: 0.92rem; gap: 0.35rem; } }
+.nw-filter { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.75rem; padding: 0.35rem 0.9rem;
+  border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 0.95rem; cursor: pointer; }
+.nw-filter[aria-pressed="true"] { background: var(--plum); border-color: var(--plum); color: var(--cream); }
+.nw-count { font-size: 0.78rem; min-width: 1.5rem; padding: 0.05rem 0.4rem; border-radius: 999px; background: var(--panel); color: var(--ink); text-align: center; }
+.nw-filter[aria-pressed="true"] .nw-count { background: var(--cream); color: var(--plum); }
+
+.nw-partner { margin: 0 0 1.25rem; padding: 0.9rem 1rem; border: 2px dashed var(--rule); border-radius: var(--radius-l); background: transparent; }
+.nw-partner-label { margin: 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+.nw-partner[data-show="placement"] { border-style: solid; background: var(--surface); }
+.nw-sponsored { margin: 0 0 0.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.75rem; color: var(--plum); }
+.nw-sponsor { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
+.nw-partner-img { float: right; width: 6rem; height: 6rem; object-fit: contain; margin: 0 0 0.5rem 0.75rem; }
+.nw-partner-head { margin: 0 0 0.3rem; font-size: 1.1rem; }
+.nw-partner-note { clear: both; color: var(--muted); font-size: 0.8rem; margin: 0.5rem 0 0; }
+
+.nw-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .nw-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1140px) { .nw-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.nw-card { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; border: var(--hairline); border-radius: 0.9rem; background: var(--surface); min-width: 0; }
+.nw-card-head { display: flex; gap: 0.85rem; align-items: flex-start; }
+.nw-pic { flex: 0 0 auto; width: 4.5rem; height: 4.5rem; object-fit: contain; padding: 0.35rem; border-radius: 50%; background: var(--blush); }
+.nw-card h3 { margin: 0.15rem 0 0; font-family: var(--font-serif); color: var(--plum); font-size: 1.2rem; line-height: 1.2; overflow-wrap: anywhere; }
+.nw-aka { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
+.nw-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0; }
+.nw-chip { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.12rem 0.45rem; border-radius: 999px; background: var(--panel); color: var(--ink); }
+.nw-ev-early { background: var(--warn-bg); color: var(--warn); }
+.nw-ev-well-studied { background: var(--blush); color: var(--plum); }
+.nw-ev-rule-change { border: 1px solid var(--plum); background: transparent; color: var(--plum); }
+.nw-facts { margin: 0; display: grid; grid-template-columns: 1fr; gap: 0.1rem; font-size: 0.93rem; line-height: 1.45; }
+.nw-facts dt { font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-top: 0.45rem; }
+.nw-facts dd { margin: 0; }
+.nw-found { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.15rem 0 0; padding: 0; list-style: none; }
+.nw-found li { font-size: 0.82rem; padding: 0.1rem 0.5rem; border: 1px solid var(--rule); border-radius: 999px; }
+.nw-try { margin-top: auto; padding: 0.75rem; border-radius: 0.6rem; background: var(--panel); }
+.nw-try h4 { margin: 0 0 0.25rem; font-size: 0.95rem; color: var(--plum); }
+.nw-try p { margin: 0 0 0.5rem; font-size: 0.9rem; line-height: 1.4; }
+.nw-try-status { font-weight: 600; }
+.nw-try-actions { display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center; }
+.nw-try-actions .lg-button { line-height: 1.2; padding: 0 1.1rem; }
+.nw-try-slot { display: inline-flex; gap: 0.35rem; align-items: center; font-size: 0.9rem; }
+.nw-page .lg-button { min-height: 2.75rem; padding: 0.45rem 1rem; border-radius: 999px; font-size: 0.95rem; text-decoration: none; }
+.nw-page .lg-link { min-height: 2.75rem; display: inline-flex; align-items: center; }
+.nw-card-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; align-items: baseline; font-size: 0.85rem; }
+.nw-sources { flex: 1 1 14rem; min-width: 0; }
+.nw-sources summary { cursor: pointer; min-height: 2.75rem; display: flex; align-items: center; color: var(--link); }
+.nw-sources ul { margin: 0.25rem 0 0; padding-left: 1.1rem; }
+.nw-sources li { margin: 0.3rem 0; overflow-wrap: anywhere; }
+.nw-src-meta, .nw-added { color: var(--muted); }
+.nw-added { margin: 0; }
+.nw-note, .nw-error { padding: 0.6rem 0.8rem; border-radius: var(--radius-l); background: var(--warn-bg); color: var(--warn); }
+.nw-foot { max-width: 76rem; margin: 0 auto; padding: 0 1rem 6rem; font-size: 0.85rem; color: var(--muted); }
+.nw-page button:focus-visible, .nw-page a:focus-visible, .nw-page summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 520px) { .nw-lede { font-size: 0.98rem; } .nw-main { padding-top: 0.75rem; } }

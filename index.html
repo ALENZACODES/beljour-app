@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BELJOUR — FULL BEAUTY STUDIO</title>
+  <meta name="description" content="Try a look on your own photo first. Every result says where it came from. Makeup, hair styling and Skin Moment skin analysis results come from the YouCam API.">
+  <meta name="theme-color" content="#6B3044">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="hair.css">
+  <link rel="stylesheet" href="photos.css">
+  <script src="config.js"></script>
+</head>
+<body class="theme-auto">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top lg-topbar-classic">
+    <a class="brand" href="#/photo" aria-label="BELJOUR — FULL BEAUTY STUDIO. Your best day. Still you."><span class="brand-wordmark">BELJOUR</span><span class="brand-descriptor">FULL BEAUTY STUDIO</span><span class="brand-tagline">Your best day. Still you.</span></a>
+    <a class="lg-trust-pill" href="trust.html" style="color: var(--blanc); border: 1px solid var(--blanc); border-radius: 999px; padding: 0.15rem 0.7rem; text-decoration: none;">Trust</a>
+    <p class="tagline">Try a look on your own photo first. <a href="studio.html" style="color: var(--blanc); text-decoration: underline;">Open Studio editor →</a></p>
+    <p id="mode" class="mode" role="status"></p>
+  </header>
+  <div id="lg-client-root" class="lg-client-root" aria-label="Page navigation and status"></div>
+  <div class="tricolore" aria-hidden="true"></div>
+  <a class="moment-door" href="skin-moment.html"><strong>Skin Moment</strong> <span>Before you buy, after a breakout, or is it working? Your measured skin and one plan.</span> <span aria-hidden="true">→</span></a>
+  <nav id="steps" class="steps" aria-label="Steps"></nav>
+  <div class="layout">
+    <aside id="photo-panel" class="photo-panel" aria-label="Your photo"></aside>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <footer class="foot">
+    <a href="#/privacy">Privacy and your data</a>
+    <a href="recorder.html">Fixture recorder (released photos)</a>
+    <span>Makeup, hair styling and Skin Moment skin analysis results come from the YouCam API by Perfect Corp. Every result is labelled with where it came from.</span>
+    <span>Looks and shape changes are simulations. General information, not medical advice.</span>
+  </footer>
+  <div id="announcer" class="visually-hidden" aria-live="polite"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

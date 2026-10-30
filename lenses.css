@@ -1,0 +1,42 @@
+/* Face lenses page (web/lenses.html). Built on theme.css tokens and layout.css; light and dark
+   come from theme.css (body class "theme-auto"). Author: John Khan. */
+.ln-page { min-height: 100vh; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: -1px; padding: 0; border: 0; }
+.ln-skip:focus { position: static; width: auto; height: auto; clip: auto; display: inline-block; padding: 0.5rem; }
+.ln-main { max-width: 72rem; margin: 0 auto; padding: 1rem 1rem 6rem; }
+.ln-main h1 { margin: 0.5rem 0 0.25rem; }
+.ln-page a { color: var(--link); }
+.ln-root { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 900px) {
+  .ln-root { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; }
+  .ln-stage, .ln-source, .ln-livebox { grid-column: 1; }
+  .ln-pick { grid-column: 2; grid-row: 1 / span 3; }
+}
+.ln-root section { background: var(--surface); border-radius: 1rem; padding: 1rem; }
+.ln-root h2 { font-size: 1.15rem; margin: 0 0 0.6rem; }
+.ln-preview, .ln-live { display: block; width: 100%; max-width: 32rem; height: auto; border-radius: 0.75rem; background: var(--panel); }
+.ln-label { font-size: 0.85rem; color: var(--muted, inherit); margin: 0.5rem 0; }
+.ln-stage label { display: flex; gap: 0.75rem; align-items: center; margin: 0.5rem 0; }
+.ln-stage input[type="range"] { flex: 1; max-width: 20rem; }
+.ln-status { min-height: 1.2em; }
+.ln-grid { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); }
+.ln-lens { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding: 0.4rem; border: 2px solid transparent;
+  border-radius: 0.75rem; background: var(--panel); color: inherit; font: inherit; font-size: 0.78rem; line-height: 1.2; cursor: pointer; min-height: 2.75rem; }
+.ln-lens[aria-pressed="true"] { border-color: var(--plum); }
+.ln-thumb { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 0.5rem; background: var(--surface); }
+.ln-people { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+.ln-person { padding: 0; border: 2px solid transparent; border-radius: 50%; overflow: hidden; width: 3.25rem; height: 3.25rem; background: var(--panel); cursor: pointer; }
+.ln-person img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ln-hidden { display: none; }
+.ln-page button:focus-visible, .ln-page input:focus-visible, .ln-page a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.ln-page .lg-button { min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: 999px; font-size: 1rem; }
+.ln-foot { max-width: 72rem; margin: 0 auto; padding: 0 1rem 6rem; font-size: 0.85rem; }
+.ln-kind { font-size: 0.95rem; margin: 1rem 0 0.5rem; }
+.ln-groups > .ln-kind:first-child { margin-top: 0; }
+.ln-framing { margin: 0.25rem 0 0.75rem; }
+.ln-own { margin: 0.5rem 0; }
+/* Desktop: the left column's panels sit one under another; the tall lens list's extra height goes to an empty last row. */
+@media (min-width: 900px) {
+  .ln-root { grid-template-rows: auto auto auto 1fr; }
+  .ln-pick { grid-row: 1 / span 4; }
+}

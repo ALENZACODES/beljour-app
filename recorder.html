@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Vision fixture recorder — BELJOUR</title>
+  <meta name="theme-color" content="#6B3044">
+  <link rel="stylesheet" href="theme.css"><link rel="stylesheet" href="styles.css">
+  <style>
+    .fixture-shell{max-width:1100px;margin:2rem auto;padding:0 1.5rem}
+    .fixture-tools{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin:1rem 0}
+    .fixture-preview{position:relative;overflow:hidden;border:1px solid var(--rule);background:var(--ivoire);width:fit-content;max-width:100%}
+    .fixture-preview canvas{display:block;max-width:100%;height:auto;touch-action:none;cursor:crosshair}
+    .fixture-panel{border:1px solid var(--rule);background:var(--surface);padding:1rem;margin-top:1rem}
+    .fixture-panel label{display:block;font-weight:600;margin:.5rem 0}
+    .fixture-panel input[type=text]{padding:.6rem;width:min(100%,26rem)}
+    .fixture-guidance{max-width:68ch}
+    .fixture-points{font-variant-numeric:tabular-nums;color:var(--bleu)}
+    .fixture-status{min-height:2.5rem;white-space:pre-line}
+    [data-pro-studio] fieldset{border:1px solid var(--rule);margin:.8rem 0;padding:.7rem}
+    [data-pro-studio] input[type=number]{width:5.8rem;padding:.35rem}
+    [data-pro-studio] select{max-width:100%;padding:.45rem}
+    [data-pro-studio] canvas,.quality-lab canvas{max-width:100%;height:auto;display:block}
+    [data-pro-studio] .fixture-preview{min-width:12rem;min-height:8rem}
+  </style>
+</head>
+<body class="theme-auto">
+  <a class="skip" href="#recorder">Skip to recorder</a>
+  <header class="top"><a class="brand" href="index.html#/photo">BELJOUR</a><p class="tagline">Local fixture recorder</p></header>
+  <div class="tricolore" aria-hidden="true"></div>
+  <main class="fixture-shell" id="recorder">
+    <h1>Record vision test fixtures</h1>
+    <p class="fixture-guidance">Use photos of adults who have signed a release for testing. This page never uploads a photo, and exported JSON contains no photo pixels. Landmark coordinates can still identify someone. Store fixtures securely.</p>
+    <section class="fixture-panel" aria-label="Release and photo">
+      <label for="release">Signed release reference (an ID, not a person's name)</label>
+      <input type="text" id="release" maxlength="80" placeholder="release-case-001" autocomplete="off" spellcheck="false">
+      <label><input type="checkbox" id="consent"> I have a signed release for this adult's image and landmarks.</label>
+      <label for="photo">Select a JPG or PNG from your device</label>
+      <input type="file" id="photo" accept="image/jpeg,image/png">
+      <p id="model-status" class="fine">Checking model licence gates…</p>
+    </section>
+    <section class="fixture-panel" aria-label="Draw or detect masks">
+      <div class="fixture-tools">
+        <label for="region">Mask name</label>
+        <select id="region"><option value="manual_selection">Manual selection</option><option value="crown">Crown</option><option value="face_oval">Face oval</option><option value="skin">Skin</option><option value="person">Person</option></select>
+        <button type="button" class="btn btn-quiet" id="detect-face">Detect faces</button>
+        <button type="button" class="btn btn-quiet" id="detect-pose">Detect pose</button>
+        <button type="button" class="btn btn-quiet" id="close-polygon">Close polygon</button>
+        <button type="button" class="btn btn-quiet" id="undo-point">Undo point</button>
+        <button type="button" class="btn btn-quiet" id="clear-points">Clear points</button>
+      </div>
+      <div class="fixture-preview"><canvas id="preview" width="512" height="384" role="img" aria-label="Released photo; click points around a region"></canvas></div>
+      <p id="point-count" class="fixture-points" aria-live="polite">No points yet.</p>
+      <p id="fixture-status" class="fixture-status" role="status"></p>
+      <div class="fixture-tools">
+        <button type="button" class="btn" id="save-fixture">Save JSON fixture on this device</button>
+        <button type="button" class="btn btn-quiet" id="reset-masks">Remove saved masks</button>
+      </div>
+    </section>
+    <p class="fine">Manual masks are available even while MediaPipe weight licences are pending. A mask is a photo annotation, not a skin, hair or medical assessment. Author: John Khan.</p>
+    <section class="fixture-panel" id="pro-studio" data-pro-studio aria-label="Pro Studio local photo editor">
+      <h2>Pro Studio — local photo editor</h2>
+      <p class="fixture-guidance">Choose a photo to adjust tone curves, precise crop and rotation.
+        Preview and export run on your device. This tool does not send photos to a server.
+        Exports carry a Simulation label by default.</p>
+      <label for="pro-file">Local photo (JPEG, PNG or WebP; max 12 MP and 40 MB)</label>
+      <input type="file" id="pro-file" accept="image/jpeg,image/png,image/webp">
+      <fieldset>
+        <legend>Curves — midpoint output, percent</legend>
+        <div class="fixture-tools">
+          <label for="pro-curve-master">Overall <input id="pro-curve-master" data-pro-edit type="number" min="0" max="100" value="50"></label>
+          <label for="pro-curve-red">Red <input id="pro-curve-red" data-pro-edit type="number" min="0" max="100" value="50"></label>
+          <label for="pro-curve-green">Green <input id="pro-curve-green" data-pro-edit type="number" min="0" max="100" value="50"></label>
+          <label for="pro-curve-blue">Blue <input id="pro-curve-blue" data-pro-edit type="number" min="0" max="100" value="50"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Exact crop, original-photo percentage</legend>
+        <div class="fixture-tools">
+          <label for="pro-crop-x">Left % <input id="pro-crop-x" data-pro-edit type="number" min="0" max="100" step="0.1" value="0"></label>
+          <label for="pro-crop-y">Top % <input id="pro-crop-y" data-pro-edit type="number" min="0" max="100" step="0.1" value="0"></label>
+          <label for="pro-crop-width">Width % <input id="pro-crop-width" data-pro-edit type="number" min="0.1" max="100" step="0.1" value="100"></label>
+          <label for="pro-crop-height">Height % <input id="pro-crop-height" data-pro-edit type="number" min="0.1" max="100" step="0.1" value="100"></label>
+          <label for="pro-aspect">Aspect <select id="pro-aspect" data-pro-edit>
+            <option value="original">Keep crop ratio</option><option value="free">Free</option>
+            <option value="square">Square 1:1</option><option value="portrait">Portrait 4:5</option>
+            <option value="story">Story 9:16</option><option value="landscape">Landscape 16:9</option>
+            <option value="photo">Photo 3:2</option>
+          </select></label>
+          <label for="pro-rotate">Rotate degrees <input id="pro-rotate" data-pro-edit type="number" min="-180" max="180" step="0.1" value="0"></label>
+        </div>
+      </fieldset>
+      <!-- Lane E r22e: local, source-anchored masks and comparison. -->
+      <fieldset>
+        <legend>Local masks</legend>
+        <p>Choose Brush, then draw on the preview. Gradients can be added at the coordinates below.
+          Masks affect only the tone curves. Clear masks to edit the whole image again.</p>
+        <div class="fixture-tools">
+          <label for="pro-mask-kind">Tool <select id="pro-mask-kind">
+            <option value="global">Whole image</option><option value="brush">Brush</option>
+            <option value="linear">Linear gradient</option><option value="radial">Radial gradient</option>
+          </select></label>
+          <label for="pro-mask-x">Centre X % <input id="pro-mask-x" type="number" min="0" max="100" value="50"></label>
+          <label for="pro-mask-y">Centre Y % <input id="pro-mask-y" type="number" min="0" max="100" value="50"></label>
+          <label for="pro-mask-size">Radius % <input id="pro-mask-size" type="number" min="1" max="50" value="25"></label>
+          <label for="pro-mask-feather">Feather % <input id="pro-mask-feather" type="number" min="0" max="100" value="60"></label>
+          <label for="pro-mask-opacity">Opacity % <input id="pro-mask-opacity" type="number" min="0" max="100" value="100"></label>
+          <button class="btn btn-quiet" type="button" id="pro-mask-add">Add gradient</button>
+          <button class="btn btn-quiet" type="button" id="pro-mask-clear">Clear masks</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Before / after</legend>
+        <label for="pro-split-enable"><input type="checkbox" id="pro-split-enable"> Show split view</label>
+        <label for="pro-split-position">Original image on left, percent
+          <input type="range" id="pro-split-position" min="0" max="100" value="50"></label>
+      </fieldset>
+      <fieldset>
+        <legend>Export</legend>
+        <label for="pro-preset">Image size and type
+          <select id="pro-preset" data-pro-edit><option value="original">High quality JPG</option></select></label>
+        <label for="pro-label"><input id="pro-label" data-pro-edit type="checkbox" checked> Include Simulation label</label>
+      </fieldset>
+      <div class="fixture-tools">
+        <button class="btn btn-quiet" type="button" id="pro-undo" disabled>Undo</button>
+        <button class="btn btn-quiet" type="button" id="pro-redo" disabled>Redo</button>
+        <button class="btn btn-quiet" type="button" id="pro-reset">Reset edits</button>
+        <button class="btn" type="button" id="pro-export" disabled>Export local image</button>
+      </div>
+      <div id="pro-preview" class="fixture-preview" aria-label="Local pro edit preview"></div>
+      <p id="pro-status" class="fixture-status" role="status" aria-live="polite"></p>
+      <p class="fine">Images are re-encoded without source EXIF metadata. Preview and export timings are measured locally;
+        performance depends on your browser and device. Cropped and rotated corners export white in JPG and transparent in PNG.</p>
+    </section>
+    <section class="fixture-panel" id="quality-lab" data-quality-lab aria-label="BELJOUR Quality Generator"></section>
+    <p><a href="index.html#/photo">Back to BELJOUR</a></p>
+  </main>
+  <script type="module" src="js/vision/recorder.js"></script>
+  <script type="module" src="js/pro/boot.js"></script>
+  <script type="module" src="js/pro/quality-lab.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6B3044">
+  <title>BELJOUR — Blind judging</title>
+  <meta name="description" content="Blind A/B judging for the quality arena. Bundles open from this device; nothing is uploaded.">
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body class="lg-page theme-auto" data-page="arena">
+  <a href="#lg-main" class="lg-hidden">Skip to content</a>
+  <header class="lg-topbar" data-tool>
+    <div class="lg-left">
+      <a class="lg-cancel" href="home.html">Cancel</a>
+      <a class="lg-trust-pill" href="trust.html">Trust</a>
+    </div>
+    <span class="lg-title">Blind judging</span>
+    <div class="lg-right"><button type="button" class="lg-save" data-save>Save</button></div>
+  </header>
+  <div class="lg-rule" aria-hidden="true"></div>
+  <main id="lg-main" class="lg-main">
+    <h1>Which result is better?</h1>
+    <p class="lg-small">You see the original photo and two results, A and B, of the same filter on the same face. Who made them is hidden and the sides are shuffled. Pick the better one and the main reason the other lost. Your answers stay on this device until you save the file.</p>
+    <form id="lg-judge-start" class="lg-card">
+      <label for="lg-judge-name">Your judge name (no real name needed)</label>
+      <input id="lg-judge-name" name="judge" required minlength="2" maxlength="40" pattern="[A-Za-z0-9_.@\-]{2,40}" autocomplete="off">
+      <label class="lg-switch"><input type="checkbox" id="lg-woman-judge"> I am a woman judge (asks the Still Her score on women's photos)</label>
+      <label for="lg-bundle">Bundle folder</label>
+      <input id="lg-bundle" type="file" webkitdirectory multiple>
+      <button type="submit" class="lg-button lg-primary">Start judging</button>
+    </form>
+    <p id="lg-judge-status" class="lg-small" role="status" aria-live="polite"></p>
+    <section id="lg-judge" class="lg-judge" aria-label="Judging"></section>
+  </main>
+  <script type="module" src="js/arena/entry.js"></script>
+</body>
+</html>

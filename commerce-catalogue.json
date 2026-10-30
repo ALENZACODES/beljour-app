@@ -1,0 +1,26 @@
+{
+  "format": "beljour-commerce-catalogue/1",
+  "author": "John Khan",
+  "version": "r16c-2026-10-24",
+  "currency": "CAD",
+  "note": "Fictional sample products, sample prices and invented swatches. No brand partnerships, shade validation, billing or purchasing. Not tested against real products.",
+  "tones": ["cool", "neutral", "warm", "olive"],
+  "depths": ["porcelain", "fair", "light", "light-medium", "medium", "medium-tan", "tan", "deep-tan", "deep", "rich-deep"],
+  "depth_swatches": ["#eccab3", "#dcb49a", "#cda187", "#bf9078", "#b17f68", "#a26e5a", "#8d5c4b", "#764737", "#613b30", "#482a24"],
+  "finishes": ["natural", "dewy", "satin", "matte"],
+  "concerns": ["redness", "texture", "oiliness", "moisture", "spots", "wrinkles", "dark_circle", "pore", "radiance"],
+  "formulas": [
+    {"id": "quiet-veil", "name": "Quiet Veil Tint", "description": "Sheer skin tint for testing appearance on a photo.", "category": "complexion", "vto": "foundation", "price_cents": 1850, "finish": "natural", "concerns": ["redness", "texture", "spots"], "coverage": "sheer"},
+    {"id": "soft-focus", "name": "Soft Focus Base", "description": "A satin base for a more even-looking finish.", "category": "complexion", "vto": "foundation", "price_cents": 2450, "finish": "satin", "concerns": ["texture", "spots", "pore"], "coverage": "medium"},
+    {"id": "daylight-drop", "name": "Daylight Drop Tint", "description": "A dewy, low-coverage cosmetic appearance option.", "category": "complexion", "vto": "foundation", "price_cents": 2100, "finish": "dewy", "concerns": ["moisture", "radiance", "wrinkles"], "coverage": "sheer"},
+    {"id": "still-matte", "name": "Still Matte Foundation", "description": "A matte look with medium visual coverage.", "category": "complexion", "vto": "foundation", "price_cents": 2650, "finish": "matte", "concerns": ["oiliness", "pore", "texture"], "coverage": "medium"},
+    {"id": "petal-touch", "name": "Petal Touch Blush", "description": "A soft cheek-colour simulation for a saved look.", "category": "cheek", "vto": "blush", "price_cents": 1650, "finish": "natural", "concerns": ["radiance"], "coverage": "sheer"},
+    {"id": "soft-horizon", "name": "Soft Horizon Cheek", "description": "Satin cheek colour with adjustable strength.", "category": "cheek", "vto": "blush", "price_cents": 1750, "finish": "satin", "concerns": ["radiance", "texture"], "coverage": "sheer"},
+    {"id": "lip-note", "name": "Lip Note Balm", "description": "A light colour treatment for the lips.", "category": "lip", "vto": "lip", "price_cents": 1450, "finish": "dewy", "concerns": ["moisture"], "coverage": "sheer"},
+    {"id": "lip-line", "name": "Lip Line Colour", "description": "A satin lip-colour try-on.", "category": "lip", "vto": "lip", "price_cents": 1550, "finish": "satin", "concerns": ["radiance"], "coverage": "medium"},
+    {"id": "calm-canvas", "name": "Calm Canvas Primer", "description": "A sample primer type; not a clinical redness treatment.", "category": "prep", "vto": null, "price_cents": 1950, "finish": "natural", "concerns": ["redness"], "coverage": "none"},
+    {"id": "even-canvas", "name": "Even Canvas Primer", "description": "A sample prep product for texture concerns.", "category": "prep", "vto": null, "price_cents": 1950, "finish": "natural", "concerns": ["texture", "pore"], "coverage": "none"},
+    {"id": "cloud-setting", "name": "Cloud Setting Powder", "description": "A sample powder type for a matte-looking finish.", "category": "finish", "vto": null, "price_cents": 1800, "finish": "matte", "concerns": ["oiliness", "pore"], "coverage": "none"},
+    {"id": "gentle-glow", "name": "Gentle Glow Finish", "description": "A sample dewy cosmetic finish, not skincare advice.", "category": "finish", "vto": null, "price_cents": 1800, "finish": "dewy", "concerns": ["moisture", "radiance"], "coverage": "none"}
+  ]
+}

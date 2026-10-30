@@ -1,0 +1,117 @@
+/* Commerce studio, on the theme tokens (plum, blush and cream since 2026-10-29). Author: John Khan. */
+:root { --lg-blue: var(--plum); --lg-red: var(--rouge); --lg-white: var(--surface); --lg-ink: var(--ink); --lg-muted: var(--muted); --lg-border: var(--rule); --lg-bg: var(--panel); }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--lg-bg); color: var(--lg-ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.5; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .6; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.skip { position: absolute; inset-inline-start: -999px; top: 0; background: var(--surface); padding: 1rem; z-index: 10; }
+.skip:focus { inset-inline-start: 12px; }
+.commerce-top { background: var(--lg-blue); color: var(--blanc); min-height: 4.5rem; display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; justify-content: space-between; padding: 1rem max(1.5rem, calc((100vw - 1200px)/2)); }
+.commerce-top a { color: var(--blanc); }
+.commerce-top nav { display: flex; gap: 1.25rem; }
+.commerce-logo { font-size: 1.2rem; font-weight: 800; letter-spacing: .01em; text-decoration: none; }
+/* one plum-deep rule under the header, as on the other pages (was a three-colour flag) */
+.commerce-tricolour { height: var(--stripe-h); background: var(--plum-deep); }
+.commerce-tricolour span { display: none; }
+.commerce-shell { width: min(1200px, calc(100% - 2rem)); margin: 2.5rem auto 4rem; }
+.commerce-intro { max-width: 850px; margin-bottom: 2rem; }
+.commerce-intro h1 { color: var(--lg-blue); font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.1; letter-spacing: -.045em; margin: .4rem 0 .8rem; }
+.commerce-intro p { max-width: 64ch; }
+.eyebrow, .step-number { font-weight: 700; text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; color: var(--lg-blue); }
+.commerce-disclaimer { border-inline-start: 4px solid var(--lg-red); padding-left: .8rem; }
+.commerce-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; }
+.commerce-panel { min-width: 0; background: var(--surface); border: 1px solid var(--lg-border); border-radius: 14px; padding: clamp(1rem, 2vw, 2rem); box-shadow: 0 6px 24px #1b237210; }
+.commerce-panel h2 { margin: 0 0 1rem; font-size: 1.5rem; color: var(--lg-blue); line-height: 1.2; }
+.commerce-panel h3 { margin-top: 2rem; font-size: 1.1rem; }
+.commerce-panel .step-number { margin-top: 0; }
+.photo-well { min-height: 300px; background: linear-gradient(160deg, var(--panel), var(--panel)); border: 2px dashed var(--rule); border-radius: 12px; display: grid; place-items: center; text-align: center; overflow: hidden; padding: .7rem; }
+.photo-well p { max-width: 35ch; }
+.photo-well img { display: block; width: auto; height: auto; max-width: 100%; max-height: 440px; border-radius: 8px; }
+.photo-well img[hidden] { display: none; }
+.commerce-file-label, .button-primary, .button-muted { display: inline-block; padding: .7rem 1rem; border-radius: 7px; font-weight: 700; border: 2px solid var(--lg-blue); margin-top: .9rem; text-decoration: none; }
+.commerce-file-label, .button-muted { background: var(--surface); color: var(--lg-blue); }
+.button-primary { background: var(--lg-blue); color: var(--blanc); }
+.button-primary:hover { background: var(--plum); }
+.button-muted:hover { background: var(--panel); }
+#photo-file { display: block; width: 100%; margin: .4rem 0; }
+.commerce-panel label:not(.commerce-file-label) { display: block; font-weight: 650; margin: .8rem 0 .35rem; }
+.commerce-panel select { border: 1px solid var(--rule); border-radius: 7px; background: var(--surface); color: var(--lg-ink); padding: .55rem; min-height: 44px; width: 100%; }
+.commerce-panel input[type="file"] { max-width: 100%; }
+.commerce-panel input[type="range"] { width: 100%; accent-color: var(--lg-blue); }
+.commerce-panel input[type="checkbox"], .commerce-panel input[type="radio"] { accent-color: var(--lg-blue); width: 1.05rem; height: 1.05rem; margin-right: .4rem; }
+.mode-choice, .consent-fieldset { border: 1px solid var(--lg-border); border-radius: 9px; margin: 1rem 0; padding: 1rem; }
+.mode-choice legend, .consent-fieldset legend { font-weight: 700; color: var(--lg-blue); }
+.mode-choice label { display: grid !important; grid-template-columns: 24px 1fr; gap: .3rem .5rem; border-bottom: 1px solid var(--rule); padding: .5rem 0; }
+.mode-choice span { grid-column: 2; font-size: .9rem; font-weight: 400; color: var(--lg-muted); }
+.consent-fieldset label { font-weight: 450 !important; }
+.fineprint { font-size: .86rem; color: var(--lg-muted); }
+#commerce-status { border-left: 3px solid var(--lg-blue); background: var(--panel); padding: .7rem; min-height: 2.5rem; }
+.commerce-results { margin: 1.5rem 0; }
+.section-head { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
+.commerce-products { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 1rem; margin-top: 1.25rem; }
+.commerce-product { display: flex; flex-direction: column; gap: .55rem; padding: 1rem; border-radius: 9px; border: 1px solid var(--lg-border); background: var(--surface); }
+.commerce-product h3 { margin: 0; font-size: 1.08rem; }
+.product-swatch { width: 3.1rem; height: 3.1rem; border: 2px solid var(--muted); box-shadow: inset 0 0 0 2px var(--blanc); border-radius: 50%; }
+.product-reason { margin: 0; padding-left: 1.25rem; font-size: .85rem; }
+.product-actions { margin-top: auto; display: flex; gap: .35rem; flex-wrap: wrap; }
+.product-actions button { padding: .5rem .6rem; border-radius: 5px; background: var(--surface); color: var(--lg-blue); border: 1px solid var(--lg-blue); font-weight: 600; min-height: 44px; }
+.product-actions button:first-child { background: var(--lg-blue); color: var(--blanc); }
+.comparison { position: relative; display: block; overflow: hidden; border-radius: 12px; background: var(--panel); aspect-ratio: 1/1; margin: 1rem 0; }
+.comparison > img, .after-clip > img { display: block; height: 100%; width: 100%; object-fit: contain; position: absolute; inset: 0; }
+.after-clip { inset: 0; position: absolute; clip-path: inset(0 50% 0 0); }
+.comparison-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; background: var(--surface); box-shadow: 0 0 0 1px var(--lg-blue); pointer-events: none; }
+.bag-row, .wish-row { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .7rem 0; border-bottom: 1px solid var(--lg-border); }
+.bag-row button, .wish-row button { border: 1px solid var(--lg-red); color: var(--lg-red); background: var(--surface); border-radius: 6px; padding: .4rem; }
+.bag-total { font-size: 1.2rem; font-weight: 750; color: var(--lg-blue); }
+.commerce-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 2rem; background: var(--lg-blue); color: var(--blanc); padding: 2rem 1rem; font-size: .84rem; }
+.commerce-footer a { color: var(--blanc); }
+@media(max-width: 740px) { .commerce-grid { grid-template-columns: 1fr; } .commerce-top { padding: 1rem; } .commerce-shell { width: min(100% - 1.2rem, 1200px); margin-top: 1.5rem; } }
+@media(prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+/* R19 composite-look builder; accessible without hover, minimum 12px text. */
+.look-composer { margin-block: 1.5rem; padding: clamp(1rem, 3vw, 2rem); border: 1px solid var(--rule); border-radius: 1rem; }
+.look-composer .simulation-disclosure { border-inline-start: .25rem solid var(--lg-blue); padding: .65rem 1rem; background: var(--panel); }
+.look-composer .look-step { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .65rem; }
+.look-composer .look-step + .look-step { border-block-start: 1px solid var(--rule); }
+.look-composer textarea { display: block; width: 100%; min-height: 5.5rem; font-size: 1rem; padding: .75rem; resize: vertical; }
+.look-composer button { min-height: 44px; min-width: 44px; padding: .65rem .9rem; }
+.look-composer button:disabled { opacity: .65; cursor: not-allowed; }
+.look-composer button:focus-visible, .look-composer textarea:focus-visible { outline: .2rem solid var(--plum); outline-offset: .18rem; }
+@media (max-width: 640px) { .look-composer .look-step { align-items: flex-start; flex-direction: column; } }
+
+/* R19: privacy-first preference controls, min 12px readable functional text. */
+.hair-consultation { margin: 1rem 0; padding: 1rem; border: 1px solid var(--rule); border-radius: .65rem; }
+.hair-consultation legend { padding: .25rem .5rem; font-weight: 700; font-size: 1rem; }
+.hair-consultation select, .hair-consultation input[type="number"] { display: block; width: 100%; min-height: 2.75rem; margin: .25rem 0 .7rem; padding: .45rem; font-size: 1rem; }
+.hair-consultation .hair-checkbox { display: flex; align-items: center; gap: .6rem; padding: .25rem 0; }
+.hair-consultation .hair-checkbox input { width: 1.15rem; height: 1.15rem; }
+.hair-consultation .hair-consult-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+.hair-consultation #hair-consult-list { margin: .5rem 0; padding-left: 1.5rem; }
+.hair-consultation #hair-consult-list li { padding: .5rem .15rem; font-size: .9rem; line-height: 1.45; }
+.hair-consultation #hair-consult-list button { text-align: left; font: inherit; min-height: 2.75rem; }
+.hair-consultation #hair-consult-status { font-size: .9rem; }
+@media (max-width: 560px) { .hair-consultation { padding: .65rem; } .hair-consultation .hair-consult-actions > button { flex: 1 1 100%; } }
+
+/* Lane C R19: separate synthetic-only tint and fibre comparison. */
+.hair-palette-workshop { border: 1px solid var(--rule); border-radius: .75rem; padding: 1rem; margin-top: 1rem; }
+.hair-palette-workshop h3 { margin-top: 0; }
+.hair-palette-controls { min-width: 0; border: 1px solid var(--rule); border-radius: .6rem; padding: .85rem; }
+.hair-palette-controls legend { padding: .25rem .5rem; font-weight: 700; }
+.hair-palette-controls select, .hair-palette-controls input[type="range"] { width: 100%; margin: .4rem 0 .85rem; }
+.hair-palette-controls select { font-size: 1rem; min-height: 2.75rem; }
+.hair-palette-comparisons { display: grid; align-items: start; gap: .5rem; }
+.hair-palette-comparisons figure { margin: .35rem 0; overflow: hidden; }
+.hair-palette-comparisons img { display: block; width: 100%; object-fit: contain; max-height: 20rem; }
+.hair-palette-comparisons figcaption { margin: .35rem 0; font-size: .85rem; }
+@media (max-width: 740px) { .hair-palette-workshop { padding: .65rem; } }
+
+/* Lane C R19 fictional sample budget and vendor-independent comparison. */
+.commerce-budget-tools { border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
+.commerce-budget-tools h3 { margin-top: .2rem; }
+.commerce-budget-tools select, .commerce-budget-tools input[type="number"] { display: block; width: 100%; min-height: 2.75rem; font-size: 1rem; margin-top: .35rem; padding: .5rem; }
+.commerce-budget-tools .hair-checkbox { display: flex; align-items: center; gap: .5rem; margin: .8rem 0; }
+.commerce-budget-tools ol { margin: .8rem 0 1rem; padding-left: 1.5rem; }
+.commerce-budget-tools li { padding: .35rem 0; line-height: 1.45; font-size: .9rem; }
+.commerce-budget-tools button { min-height: 2.75rem; margin: .25rem .5rem .25rem 0; }

@@ -1,0 +1,7 @@
+export async function openLocal(file, maxSide = 1280) { if (!file.type.startsWith("image/"))
+    throw new Error("Choose an image file."); if (file.size > 20_000_000)
+    throw new Error("Image exceeds the 20 MB local limit."); const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" }), scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height)), width = Math.max(16, Math.round(bitmap.width * scale)), height = Math.max(16, Math.round(bitmap.height * scale)), canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height; const ctx = canvas.getContext("2d", { willReadFrequently: true }); if (!ctx)
+    throw new Error("Canvas is unavailable."); ctx.drawImage(bitmap, 0, 0, width, height); bitmap.close(); const image = ctx.getImageData(0, 0, width, height), empty = () => new Float32Array(width * height); return { photo: { width, height, channels: 4, data: image.data }, hair: empty(), scalp: empty(), masks: { skin: empty(), cheek: empty(), eye: empty(), lip: empty(), brow: empty(), stubble: empty(), beard: empty(), palette_region: empty() }, geometry: { crown: [.5, .14], left_temple: [.28, .34], right_temple: [.72, .34], chin: [.5, .84] } }; }
+export function downloadPng(canvas, name) { canvas.toBlob(blob => { if (!blob)
+    return; const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 0); }, "image/png"); }
+//# sourceMappingURL=files.js.map

@@ -1,0 +1,48 @@
+/* Photo adjustment and crop panels in the Studio (web/src/editor). Plum theme tokens only
+   (theme.css); the hue swatches are content colours, not interface colours. Author: John Khan. */
+.ed-panel { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.ed-choices { display: flex; flex-wrap: wrap; gap: 6px; }
+.ed-choice { font-size: 13px; padding: 7px 11px; min-height: 36px; }
+.ed-choice[aria-pressed="true"] { color: var(--blanc); background: var(--bleu); border-color: var(--bleu); }
+.ed-group { display: flex; flex-direction: column; gap: 4px; }
+.ed-slider { padding: 6px 0 8px; border-bottom: 1px solid var(--rule); }
+.ed-slider:last-child { border-bottom: 0; }
+.ed-slider-head { display: flex; align-items: center; gap: 8px; }
+.ed-slider-head .shell-field-name { flex: 1; }
+.ed-slider .shell-range { display: block; width: 100%; min-height: 28px; margin: 4px 0 0; }
+.ed-slider .shell-range-output { min-width: 64px; font-variant-numeric: tabular-nums; }
+.ed-reset { font-size: 15px; line-height: 1; }
+.ed-reset:disabled { opacity: 0.35; }
+.ed-hint { margin: 2px 0 0; font-size: 12px; }
+.ed-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ed-swatches { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.ed-swatch { display: flex; align-items: center; gap: 6px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface);
+  color: var(--ink); font-size: 12.5px; padding: 7px 8px; min-height: 36px; cursor: pointer; }
+.ed-swatch[aria-checked="true"] { border-color: var(--bleu); box-shadow: inset 0 -3px 0 var(--bleu); color: var(--bleu); font-weight: 630; }
+.ed-swatch-dot { width: 14px; height: 14px; border-radius: 50%; flex: none; border: 1px solid var(--rule); }
+.ed-hue-red .ed-swatch-dot { background: #D2342C; }
+.ed-hue-orange .ed-swatch-dot { background: #E58A2E; }
+.ed-hue-yellow .ed-swatch-dot { background: #E8C53A; }
+.ed-hue-green .ed-swatch-dot { background: #4C9A45; }
+.ed-hue-aqua .ed-swatch-dot { background: #3BAFB2; }
+.ed-hue-blue .ed-swatch-dot { background: #3463C9; }
+.ed-hue-purple .ed-swatch-dot { background: #7A4BC2; }
+.ed-hue-magenta .ed-swatch-dot { background: #C23F9B; }
+.ed-changed { color: var(--bleu); }
+.ed-pad-wrap, .ed-curve-wrap { display: flex; justify-content: center; background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: 8px; }
+.ed-pad { display: block; max-width: 100%; height: auto; touch-action: none; cursor: crosshair; image-rendering: auto; }
+.ed-crop-pad { cursor: move; }
+.ed-curve { display: block; width: min(100%, 280px); height: auto; aspect-ratio: 1; touch-action: none; cursor: crosshair; }
+.ed-pad:focus-visible, .ed-curve:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.ed-point { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.5px; }
+.ed-point label { display: flex; align-items: center; gap: 4px; }
+.ed-number { width: 64px; min-height: 32px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--ink); padding: 3px 6px; }
+.ed-order { font-size: 12px; color: var(--muted); }
+.ed-order summary { cursor: pointer; color: var(--bleu); }
+.ed-order ol { margin: 6px 0 0; padding-left: 18px; }
+@media (max-width: 720px) {
+  .ed-swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ed-choice { min-height: 44px; }
+  .ed-slider .shell-range { min-height: 36px; }
+  .ed-reset { min-width: 40px; height: 40px; }
+}

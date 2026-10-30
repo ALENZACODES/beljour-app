@@ -1,0 +1,85 @@
+/* Local studio, French flag palette. Author: John Khan. */
+:root {
+  color-scheme: light;
+  --eb-blue: var(--plum);
+  --eb-red: var(--rouge);
+  --eb-ink: var(--ink);
+  --eb-muted: var(--muted);
+  --eb-border: var(--rule);
+  --eb-paper: var(--surface);
+  --eb-canvas: var(--panel);
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--eb-ink); background: var(--eb-canvas); font-family: system-ui, sans-serif; font-size: 16px; line-height: 1.5; }
+a { color: var(--eb-blue); text-underline-offset: .2em; }
+button, select, input { font: inherit; }
+button, select, input[type="file"] { min-height: 44px; }
+input[type="range"] { min-height: 44px; width: 100%; margin-inline: 0; accent-color: var(--eb-blue); }
+input[type="checkbox"] { width: 22px; height: 22px; accent-color: var(--eb-blue); flex: 0 0 auto; }
+input[type="file"] { max-width: 100%; padding: .45rem 0; }
+select { padding: .55rem; border: 1px solid var(--eb-border); border-radius: .4rem; background: var(--surface); max-width: 100%; }
+label { display: block; margin: .6rem 0; font-weight: 550; }
+label small { display: block; color: var(--eb-muted); font-size: 13px; font-weight: 400; }
+output { font-variant-numeric: tabular-nums; font-size: 14px; color: var(--eb-blue); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, canvas:focus-visible { outline: 3px solid var(--eb-red); outline-offset: 3px; }
+[hidden] { display: none !important; }
+.eb-skip { position: absolute; left: 1rem; top: -100px; background: var(--surface); padding: .8rem; z-index: 10; }
+.eb-skip:focus { top: .4rem; }
+.eb-top { display: flex; flex-wrap: wrap; gap: 1.3rem; align-items: center; padding: 1rem 4%; background: var(--eb-blue); }
+.eb-top a { color: var(--blanc); min-height: 44px; display: inline-flex; align-items: center; }
+.eb-top a:first-child { font-weight: 750; letter-spacing: .04em; margin-right: auto; text-decoration: none; }
+.eb-flag { height: 5px; background: var(--plum); }
+main { max-width: 1540px; padding: 1.5rem 3%; margin: auto; }
+.eb-heading { max-width: 800px; padding: .5rem 0 1.2rem; }
+.eb-heading h1 { font-size: clamp(1.8rem, 4vw, 2.7rem); line-height: 1.15; margin: .3rem 0 1rem; letter-spacing: -.035em; color: var(--eb-blue); }
+.eb-kicker { font-size: 12px; font-weight: 700; letter-spacing: .1em; color: var(--eb-blue); }
+.eb-layout { display: grid; grid-template-columns: minmax(290px, 380px) minmax(0, 1fr); gap: 1.4rem; align-items: start; }
+.eb-card { background: var(--eb-paper); border: 1px solid var(--eb-border); border-radius: .8rem; padding: 1.2rem; margin-bottom: 1rem; }
+.eb-card h2 { font-size: 1.2rem; color: var(--eb-blue); margin-top: 0; }
+.eb-card summary, .eb-measurements summary { min-height: 44px; cursor: pointer; font-weight: 650; color: var(--eb-blue); }
+.eb-note { color: var(--eb-muted); font-size: 14px; }
+.eb-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+.eb-button { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--eb-blue); border-radius: .4rem; padding: .6rem .8rem; background: var(--surface); color: var(--eb-blue); cursor: pointer; font-size: 14px; min-height: 44px; }
+.eb-primary { background: var(--eb-blue); color: var(--blanc); font-weight: 650; }
+.eb-button:disabled { border-color: var(--rule); color: var(--muted); background: var(--panel); cursor: not-allowed; }
+.eb-button:hover:not(:disabled) { box-shadow: 0 2px 6px #00009120; }
+.eb-check { display: flex; gap: .5rem; align-items: flex-start; font-weight: 400; font-size: 14px; padding: .4rem 0; }
+.eb-anatomy { border-top: 1px solid var(--eb-border); border-bottom: 1px solid var(--eb-border); padding: .5rem 0; margin: .8rem 0; }
+.eb-control-grid { display: grid; gap: .3rem; }
+.eb-reasons { color: var(--error); padding-left: 1.2rem; font-size: 14px; }
+.eb-reasons:empty { display: none; }
+.eb-layout > aside { min-width: 0; }
+.eb-workspace { position: sticky; top: 1rem; min-width: 0; }
+.eb-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; background: var(--panel); padding: .8rem; border: 1px solid var(--eb-border); border-radius: .8rem; }
+figure { margin: 0; min-width: 0; }
+canvas { display: block; width: 100%; height: auto; background: repeating-conic-gradient(var(--surface) 0 25%, var(--panel) 0 50%) 0 0 / 16px 16px; border-radius: .4rem; }
+canvas[tabindex] { touch-action: none; cursor: crosshair; }
+figcaption { font-size: 14px; text-align: center; padding: .55rem .1rem; }
+.eb-status { border-left: 3px solid var(--eb-blue); background: var(--surface); padding: 1rem; font-size: 14px; }
+.eb-readings { background: var(--surface); padding: 1rem; border: 1px solid var(--eb-border); border-radius: .6rem; }
+.eb-readings h3 { margin-top: 0; color: var(--eb-blue); }
+.eb-measures { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .3rem 1rem; font-size: 13px; }
+.eb-measures dt { overflow-wrap: anywhere; color: var(--eb-muted); }
+.eb-measures dd { margin: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.eb-table { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+caption { text-align: left; font-weight: 650; margin: .8rem 0; }
+th, td { text-align: left; padding: .5rem; border-bottom: 1px solid var(--eb-border); }
+th { background: var(--panel); color: var(--eb-blue); }
+.eb-lash-map img { width: 100%; height: auto; background: var(--surface); }
+.eb-footer { border-top: 1px solid var(--eb-border); max-width: 1480px; margin: 1rem auto 0; padding: 1.5rem 3%; color: var(--eb-muted); font-size: 13px; }
+@media (max-width: 850px) {
+  .eb-layout { grid-template-columns: minmax(0, 1fr); }
+  .eb-workspace { position: static; grid-row: 1; }
+  .eb-heading h1 { font-size: 2rem; }
+}
+@media (max-width: 460px) {
+  .eb-comparison { gap: .4rem; padding: .4rem; }
+  .eb-top { gap: .6rem; padding: .6rem 3%; }
+  .eb-top a { font-size: 14px; }
+  .eb-measures { grid-template-columns: 1fr; }
+  .eb-measures dd { padding-bottom: .4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; }
+}

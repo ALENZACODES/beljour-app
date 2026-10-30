@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6B3044">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>BELJOUR — FULL BEAUTY STUDIO — Studio</title>
+  <meta name="description" content="Local editor: reversible photo layers, ten compare modes, on-device previews and clearly labelled simulations.">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="quote-veil.css">
+  <link rel="preload" href="assets/quotes/beauty-quotes.json" as="fetch" crossorigin="anonymous">
+  <script type="module" src="js/ui/quote-veil.js"></script>
+  <link rel="stylesheet" href="shell.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="hair.css">
+  <link rel="stylesheet" href="editor-tools.css">
+  <link rel="stylesheet" href="create.css">
+  <link rel="stylesheet" href="photos.css">
+</head>
+<body class="shell-page theme-auto">
+  <a href="#shell-editor" class="shell-skip">Skip to editor</a>
+  <header class="shell-header lg-topbar" data-tool>
+    <div class="lg-left">
+      <a class="lg-cancel" href="home.html">Cancel</a>
+      <a class="lg-trust-pill" href="trust.html">Trust</a>
+    </div>
+    <span class="lg-title"><span class="lg-studio-brand-name">BELJOUR</span><span class="lg-studio-brand-description">FULL BEAUTY STUDIO</span><span class="lg-studio-brand-tagline">Your best day. Still you.</span></span>
+    <div class="lg-right">
+      <nav aria-label="Project links" class="shell-top-links">
+        <a href="index.html#/photo">Classic workflow</a>
+        <button type="button" id="shell-help-open" class="shell-top-button" aria-haspopup="dialog">Shortcuts <span aria-hidden="true">?</span></button>
+      </nav>
+      <button type="button" class="lg-save" data-save>Save</button>
+    </div>
+  </header>
+  <div id="lg-client-root" class="lg-client-root" aria-label="Page navigation and status"></div>
+  <div class="shell-flag" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="shell-layout" id="shell-editor" data-panel="edit">
+    <div class="shell-tabs" role="tablist" aria-label="Studio panels" id="shell-tabs">
+      <button type="button" role="tab" id="shell-tab-tools" aria-controls="shell-panel-tools" aria-selected="false" tabindex="-1">Tools</button>
+      <button type="button" role="tab" id="shell-tab-edit" aria-controls="shell-panel-edit" aria-selected="true" tabindex="0">Edit</button>
+      <button type="button" role="tab" id="shell-tab-layers" aria-controls="shell-panel-layers" aria-selected="false" tabindex="-1">Layers</button>
+      <button type="button" role="tab" id="shell-tab-history" aria-controls="shell-panel-history" aria-selected="false" tabindex="-1">History</button>
+    </div>
+    <aside class="shell-nav" aria-label="Studio tools" id="shell-panel-tools" data-panel-id="tools">
+      <div class="shell-panel-heading"><span class="shell-eyebrow">01 / TOOLS</span><h2>Studios</h2></div>
+      <div id="shell-nav"></div>
+      <div class="shell-nav-footer">
+        <strong>Private workspace</strong>
+        <p>Local tools run in this browser. Makeup and hair styling open a separate screen, and a photo is sent only after you tick the box next to that action. Skin Moment asks on its own page.</p>
+        <p class="shell-check-row shell-local-only"><input type="checkbox" id="shell-local-only"><label for="shell-local-only">On-device only: never send a photo to YouCam</label></p>
+        <button type="button" id="shell-withdraw" class="shell-button shell-quiet">Withdraw consent</button>
+      </div>
+    </aside>
+    <main class="shell-workspace" aria-label="Photo editing workspace">
+      <div class="shell-toolbar">
+        <div><span class="shell-eyebrow">BELJOUR — FULL BEAUTY STUDIO</span><h1>Every edit, your choice.</h1></div>
+        <div class="shell-actions">
+          <button id="shell-undo" class="shell-button" type="button" title="Undo (Ctrl+Z)">↶ Undo</button>
+          <button id="shell-redo" class="shell-button" type="button" title="Redo (Ctrl+Shift+Z)">↷ Redo</button>
+          <button id="shell-reset" class="shell-button" type="button">Reset</button>
+        </div>
+      </div>
+      <div class="shell-source-bar">
+        <label for="shell-sample" data-dev>Drawn test image</label>
+        <select id="shell-sample" class="shell-select" data-dev></select>
+        <button id="shell-load-sample" type="button" class="shell-button" data-dev>Load sample</button>
+        <button id="shell-demo" type="button" class="shell-button" aria-expanded="false" aria-controls="shell-demo-bar" data-dev>Demo tour</button>
+        <button id="shell-upload" type="button" class="shell-button shell-primary">Add photos</button>
+        <input id="shell-file" type="file" accept="image/*" multiple hidden aria-label="Photo files">
+      </div>
+      <div class="shell-demo-bar" id="shell-demo-bar" hidden>
+        <div class="shell-demo-head">
+          <strong id="shell-demo-label">Demo tour</strong>
+          <label class="shell-visually-hidden" for="shell-demo-scene">Demo scene</label>
+          <select id="shell-demo-scene" class="shell-select"></select>
+          <div class="shell-demo-actions">
+            <button type="button" id="shell-demo-prev" class="shell-button" aria-label="Previous demo scene">‹ Previous</button>
+            <button type="button" id="shell-demo-next" class="shell-button shell-primary" aria-label="Next demo scene">Next ›</button>
+          </div>
+        </div>
+        <p id="shell-demo-line" aria-live="polite">Ten drawn scenes, one for each compare mode. Nothing leaves this device.</p>
+      </div>
+      <details class="shell-precheck" id="shell-precheck" hidden>
+        <summary><span class="shell-precheck-title">Photo check</span> <span id="shell-precheck-summary">Not checked yet</span></summary>
+        <ul id="shell-precheck-list" class="shell-precheck-list"></ul>
+        <p class="shell-small">Measured on this device. Thresholds are starting values until tested on released photos.</p>
+      </details>
+      <div class="shell-compare-bar">
+        <div class="shell-compare-modes" id="shell-compare-modes" role="radiogroup" aria-label="Compare mode"></div>
+        <div class="shell-compare-controls" id="shell-compare-controls"></div>
+      </div>
+      <div class="shell-canvas-frame" id="shell-stage" data-preview="original">
+        <div class="shell-canvas-meta">
+          <span class="shell-dot" aria-hidden="true"></span><span id="shell-source-name">Drawn sample</span>
+          <span class="shell-divider" aria-hidden="true"></span><span id="shell-layer-count">0 layers</span>
+          <span id="shell-provenance" class="shell-provenance"></span>
+        </div>
+        <div class="shell-annotation" id="shell-annotation" hidden aria-live="polite">
+          <strong id="shell-mark-next">Choose a point on the image.</strong>
+          <span id="shell-mark-progress">0 / 0 points</span>
+          <div class="shell-annotation-actions">
+            <button type="button" id="shell-mark-undo" class="shell-button">Undo point</button>
+            <button type="button" id="shell-mark-clear" class="shell-button">Start points again</button>
+            <button type="button" id="shell-mark-commit" class="shell-button shell-primary">Use markings</button>
+            <button type="button" id="shell-mark-cancel" class="shell-button">Cancel</button>
+          </div>
+          <p>Manual marking is approximate. Photo edits are simulations, not health assessments.</p>
+        </div>
+        <div class="shell-canvas-scroll" id="shell-canvas-scroll">
+          <canvas id="shell-canvas" width="240" height="200" role="img" tabindex="0" aria-label="On-device photo edit preview" aria-describedby="shell-compare-description"></canvas>
+        </div>
+        <p id="shell-compare-description" class="shell-visually-hidden">Hold view.</p>
+        <div class="lg-photo-tags">
+          <span id="lg-sim-tag" class="lg-tag" hidden>Simulation, edited photo</span>
+          <details class="lg-check-definition"><summary id="lg-still-tag" class="lg-tag" data-state="not checked">Photo checks: no edits yet</summary><p class="lg-small">Local pixel measurements of dark marks and skin lightness. This does not verify identity. Without recorded face points, the check uses a rough central area. Real-face accuracy is not yet validated.</p></details>
+        </div>
+        <div id="lg-faces" class="lg-faces" role="group" aria-label="Faces in this photo">
+          <button type="button" disabled>1</button><button type="button" disabled>All</button>
+          <span class="lg-small lg-faces-note">One face, or no recorded face points.</span>
+        </div>
+        <div class="shell-canvas-bottom">
+          <p id="shell-measure">Original — no active edits</p>
+          <div class="shell-zoom">
+            <button type="button" id="shell-zoom-out" class="shell-icon" aria-label="Zoom out">−</button>
+            <button type="button" id="shell-zoom-reset" class="shell-icon" aria-label="Reset zoom">1:1</button>
+            <button type="button" id="shell-zoom-in" class="shell-icon" aria-label="Zoom in">+</button>
+            <button type="button" id="shell-before" class="shell-button" title="Hold to see the original" aria-pressed="false">Hold for before</button>
+          </div>
+        </div>
+      </div>
+      <section class="shell-strip-wrap" aria-labelledby="shell-strip-title">
+        <div class="shell-strip-head"><h2 id="shell-strip-title">Previews on your photo</h2><span id="shell-strip-note" class="shell-small">Free, on this device</span></div>
+        <div id="shell-strip" class="shell-strip" role="toolbar" aria-label="Tool options previewed on your photo"></div>
+      </section>
+      <div class="lg-strength">
+        <label for="lg-strength">Strength</label>
+        <input id="lg-strength" type="range" min="1" max="5" step="0.1" value="1.0" data-edit-strength="true" list="lg-ticks" disabled>
+        <output id="lg-strength-value" for="lg-strength">Add an edit</output>
+        <datalist id="lg-ticks"></datalist>
+        <div class="lg-strength-ticks" aria-hidden="true"><span>1.0</span><span>2.3</span><span>3.6</span><span>5.0</span></div>
+      </div>
+      <nav id="lg-categories" class="lg-categories" aria-label="Edit categories"></nav>
+      <div class="lg-editor-actions">
+        <button type="button" id="lg-split" class="shell-button">Split compare</button>
+        <label for="lg-look-name" class="shell-visually-hidden">Name for this look</label>
+        <input id="lg-look-name" type="text" maxlength="40" placeholder="Name this look">
+        <button type="button" id="lg-save-look" class="shell-button shell-primary">Save as My Look</button>
+        <button type="button" id="lg-salon-pack" class="shell-button">Salon Decision Pack</button>
+        <button type="button" id="lg-batch-review" class="shell-button">Apply to photos</button>
+        <button type="button" id="lg-group-faces" class="shell-button">Group photo</button>
+        <button type="button" id="lg-best-selfie" class="shell-button">Best selfie</button>
+        <button type="button" id="lg-export-sizes" class="shell-button">Export sizes</button>
+        <button type="button" id="lg-event-trial" class="shell-button">Event trial</button>
+        <button type="button" id="lg-before-after" class="shell-button">Before / after video</button>
+        <button type="button" id="lg-stickers" class="shell-button">Sticker pack</button>
+        <button type="button" id="lg-tattoo" class="shell-button">Tattoo try-on</button>
+        <button type="button" id="lg-voice-framing" class="shell-button">Voice framing</button>
+        <button type="button" id="lg-blink-rescue" class="shell-button">Blink rescue</button>
+        <button type="button" id="lg-create" class="shell-button">Create: text, drawing, stickers, frames, collage, story</button>
+        <span id="lg-chrome-status" class="shell-small" role="status" aria-live="polite"></span>
+      </div>
+      <button type="button" id="lg-close-deliverable" class="shell-button" hidden>Close pack or batch</button>
+      <section id="lg-deliverable" class="lg-deliverable" hidden></section>
+      <div class="shell-bottom-toolbar">
+        <div><strong>Export</strong><label class="shell-check shell-export-check"><input id="shell-export-label" type="checkbox" checked> Simulation label on export</label></div>
+        <div class="shell-export-actions">
+          <button type="button" id="shell-board" class="shell-button" hidden>Save board PNG</button>
+          <button type="button" id="shell-download" class="shell-button shell-primary">Save photo <span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+      <p id="shell-status" class="shell-status" role="status" aria-live="polite">Ready.</p>
+      <p class="shell-small">Preview rendering is limited to a device-friendly size. It does not predict real-world outcomes. No data is automatically sent to YouCam.</p>
+    </main>
+    <aside class="shell-inspector" aria-label="Layer controls">
+      <section class="shell-panel" id="shell-panel-edit" data-panel-id="edit">
+        <div class="shell-panel-heading"><span class="shell-eyebrow">02 / EDIT</span><h2 id="shell-tool-title">Enhance</h2></div>
+        <p id="shell-tool-text" class="shell-description"></p>
+        <p id="shell-safety" class="shell-safety"></p>
+        <div class="shell-data-flow"><span>DATA FLOW</span><strong id="shell-flow" data-scope="local">stays on this device</strong></div>
+        <div id="shell-guidance" aria-live="polite"></div>
+        <button id="shell-apply" type="button" class="shell-button shell-primary shell-apply">Add local layer</button>
+        <p id="shell-simulation" class="shell-small" hidden>Simulation. Not a prediction of results.</p>
+        <div class="shell-options" id="shell-settings"></div>
+      </section>
+      <section class="shell-panel" id="shell-panel-layers" data-panel-id="layers">
+        <div class="shell-panel-heading"><span class="shell-eyebrow">03 / LAYERS</span><h2>Layer stack</h2></div>
+        <p class="shell-small">Top items render last. Toggle, move, change opacity or remove without changing your original.</p>
+        <ol id="shell-layers" class="shell-layer-list" aria-label="Layers, top first"></ol>
+      </section>
+      <section class="shell-panel shell-history-panel" id="shell-panel-history" data-panel-id="history">
+        <div class="shell-panel-heading"><span class="shell-eyebrow">04 / HISTORY</span><h2>Versions</h2></div>
+        <div id="shell-history" class="shell-history" role="group" aria-label="Undo history"></div>
+      </section>
+    </aside>
+  </div>
+  <div class="shell-scrim" id="shell-scrim" hidden></div>
+  <div class="shell-dialog" id="shell-consent" role="dialog" aria-modal="true" aria-labelledby="shell-consent-title" aria-describedby="shell-consent-text" hidden>
+    <h2 id="shell-consent-title">Before you open a photo</h2>
+    <p id="shell-consent-text">BELJOUR — FULL BEAUTY STUDIO is for adults. Local tools run in this browser and your photo stays on this device. Makeup and hair styling send a photo to YouCam only after you tick the box next to that action.</p>
+    <p class="shell-check-row"><input type="checkbox" id="shell-consent-adult"><label for="shell-consent-adult">I'm 18 or older, and so is everyone in the photos I open.</label></p>
+    <p class="shell-check-row"><input type="checkbox" id="shell-consent-understood"><label for="shell-consent-understood">I understand how photos are used here.</label></p>
+    <p id="shell-consent-error" class="shell-error" role="alert"></p>
+    <div class="shell-dialog-actions">
+      <button type="button" id="shell-consent-cancel" class="shell-button">Not now</button>
+      <button type="button" id="shell-consent-accept" class="shell-button shell-primary">Agree and choose a photo</button>
+    </div>
+  </div>
+  <div class="shell-dialog" id="shell-provider" role="dialog" aria-modal="true" aria-labelledby="shell-provider-title" aria-describedby="shell-provider-facts" hidden>
+    <h2 id="shell-provider-title">Styling sends a photo to YouCam</h2>
+    <ul id="shell-provider-facts" class="shell-plain-list"></ul>
+    <div id="shell-provider-check" class="shell-provider-check"></div>
+    <div class="shell-dialog-actions">
+      <button type="button" id="shell-provider-cancel" class="shell-button">Keep editing here</button>
+      <a id="shell-provider-continue" class="shell-button shell-primary" href="index.html#/tryon">Open the styling screen</a>
+    </div>
+  </div>
+  <div class="shell-dialog shell-dialog-wide" id="shell-help" role="dialog" aria-modal="true" aria-labelledby="shell-help-title" hidden>
+    <h2 id="shell-help-title">Keyboard shortcuts</h2>
+    <p class="shell-check-row"><input type="checkbox" id="shell-single-keys" checked><label for="shell-single-keys">Use single-key shortcuts (letters, digits and brackets)</label></p>
+    <div class="shell-help-table-wrap"><table class="shell-help-table"><caption class="shell-visually-hidden">Studio keyboard shortcuts</caption>
+      <thead><tr><th scope="col">Keys</th><th scope="col">What it does</th></tr></thead><tbody id="shell-help-rows"></tbody></table></div>
+    <div class="shell-dialog-actions"><button type="button" id="shell-help-close" class="shell-button shell-primary">Close</button></div>
+  </div>
+  <p id="shell-announce" class="shell-visually-hidden" aria-live="polite"></p>
+  <p id="shell-alert" class="shell-visually-hidden" aria-live="assertive"></p>
+  <footer class="shell-footer"><span>Designed and built by John Khan.</span><span>Local rendering · Optional YouCam styling · No third-party filters in this round.</span></footer>
+  <script type="module" src="js/ui/shell/entry.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# Third party notices
+
+No third party source files are copied into this repository; the one third party asset in it is the Fraunces font file listed below. Everything below is installed as a dependency or loaded at runtime. `licences.json` is the full ledger, with what still needs a decision; `scripts/check_licences.py` fails the build on anything missing from it.
+
+| Component | Licence | How it's used |
+|---|---|---|
+| YouCam API (Perfect Corp.) | Perfect Corp. terms of service | Makeup try on, hairstyle, hair colour and Skin Analysis with consent on the two approved skin channels (product matching, decisions.md 2026-10-23; Skin Moment, decisions.md 2026-10-28), through the single server-side `api/plumb_api/providers/youcam.py` adapter. Other historical endpoints cannot be re-enabled by the legacy flag. No browser key. |
+| MediaPipe Tasks Vision 0.10.14 (Google) | Apache 2.0 (code and WASM) | Existing runtime, exact package and file hashes in `api/plumb_api/models/runtime.json`. Loaded only from verified same-origin staging. Upstream licence text is retained in `docs/licenses/Apache-2.0.txt` and copied to the site. |
+| MediaPipe BlazeFace short-range, Hair Segmenter and Selfie Multiclass weights (Google) | Apache 2.0, stated by the official model cards | Three exact standalone files are cleared and pinned. Each guide-linked artifact was byte-identical to the pinned release. Model cards, hashes, source links and limitations are recorded in `docs/MODEL-PINS-R14.md` and `api/plumb_api/models/provenance.json`. No weights are included in this source distribution; stage cleared files on the same origin before use. |
+| MediaPipe Face Landmarker bundle (Google) | Apache 2.0, all four components mapped | The official guide links the three model cards to the exact pinned task. Geometry metadata was reproduced byte for byte from explicitly Apache-2.0 source, copyright 2020 The MediaPipe Authors, at commit `fd288e22e1b9fa5c2639dcd01129c15677630057`. The exact source, schema, build and licence hashes are recorded in `api/plumb_api/models/provenance.json`; `scripts/audit_face_metadata.py` repeats the comparison offline. Same-origin staging is required. No model or geometry data is included in this source distribution. |
+| MediaPipe Pose Landmarker bundle (Google) | Whole bundle clearance pending | The tracking model card and component hashes are recorded; separate detector and complete bundle rights mapping remain unresolved. The bundle cannot stage or execute. Manual pose remains available. |
+| FastAPI, Starlette | MIT, BSD 3 Clause | API server |
+| Uvicorn | BSD 3 Clause | ASGI server |
+| httpx | BSD 3 Clause | HTTP client for YouCam |
+| python-multipart | Apache 2.0 | Photo upload parsing |
+| NumPy | BSD 3 Clause for NumPy source; selected binary review pending | Image maths and thin plate spline. The tested 2.3.5 wheel also records GCC runtime components and libquadmath LGPL terms. See `docs/LICENCE-DECISIONS-R14.md`; the ledger retains the unresolved deployed-binary review. |
+| Pillow | MIT-CMU (HPND) | Image decoding, EXIF removal and labels. John's supplied Q5 decision approves Pillow; reconciliation with the existing pending ledger remains documented. No Pillow source was modified. |
+| OpenCV (opencv-python-headless) | Apache 2.0 for OpenCV; MIT packaging; bundled FFmpeg LGPL terms | Image remapping in `services/warp.py`. The tested 5.0.0.93 headless wheel enables FFmpeg. The exact deployed build and notices still need review; headless is not evidence of absent FFmpeg. See `docs/LICENCE-DECISIONS-R14.md`. |
+| TypeScript | Apache 2.0 | Build only |
+| Images made with OpenAI's ChatGPT image tool | OpenAI terms of use: the user owns the output (ASSUMED until John confirms the terms of his own account) | Example faces of invented adults and screen art for Skin Moment, and the hackathon cover and gallery images. Made by John Khan from his own prompts, outside the app; the app never calls OpenAI. The app must show each face with the label "AI-generated example person" and its scores as "Saved example". File names and status are in `licences.json` (corpora and services). |
+| Fraunces, latin 600 weight (The Fraunces Project Authors) | SIL Open Font License 1.1 | Heading serif since the 2026-10-29 restyle. One WOFF2 file is bundled in `web/assets/fonts/` with the full licence text (`web/assets/fonts/Fraunces-OFL.txt`, also copied to the site) and served from this site only; nothing is downloaded from another site. Body text keeps the system sans stack. |
+
+The CIEDE2000 colour difference is implemented from the published paper: G. Sharma, W. Wu, E. N. Dalal, "The CIEDE2000 color difference formula: implementation notes, supplementary test data, and mathematical observations", Color Research and Application, 2005. Its test pairs are used in `api/tests/test_shade.py`.
+
+The sample product range in `api/plumb_api/data/shades.json` and the fibre shades in `api/plumb_api/services/fibre.py` are original and made up. They contain no brand names or real products.
+
+The WCAG contrast check in `web/src/ui/contrast.ts` follows the WCAG 2.x definitions of relative luminance and contrast ratio. The thin plate spline in `api/plumb_api/services/tps.py` follows F. L. Bookstein, "Principal warps: thin-plate splines and the decomposition of deformations", IEEE PAMI, 1989.
+
+The One Euro filter in `web/src/reel/oneEuro.ts` is written from the paper: G. Casiez, N. Roussel, D. Vogel, "1 Euro Filter: A Simple Speed-based Low-pass Filter for Noisy Input in Interactive Systems", CHI 2012. Body bands follow WHO adult BMI categories and NICE guideline NG246.

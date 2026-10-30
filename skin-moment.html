@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6B3044" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1117" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>BELJOUR — Skin Moment</title>
+  <meta name="description" content="Before you buy, after a breakout, or when you wonder if a product is working: your measured skin scores and one plan for what to do next. Cosmetic guidance, not medical advice.">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="quote-veil.css">
+  <link rel="preload" href="assets/quotes/beauty-quotes.json" as="fetch" crossorigin="anonymous">
+  <script type="module" src="js/ui/quote-veil.js"></script>
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="skin-moment.css">
+  <link rel="stylesheet" href="skin-day.css">
+  <link rel="stylesheet" href="photos.css">
+  <script src="config.js"></script>
+</head>
+<body class="lg-page sm-page theme-auto" data-page="skin-moment">
+  <a href="#sm-main" class="lg-hidden sm-skip">Skip to content</a>
+  <header class="lg-topbar">
+    <div class="lg-left">
+      <a class="lg-brand" href="home.html" aria-label="BELJOUR — FULL BEAUTY STUDIO. Your best day. Still you. Home"><span class="lg-brand-stack"><span class="lg-wordmark">BELJOUR</span><span class="lg-brand-descriptor">FULL BEAUTY STUDIO</span></span></a>
+    </div>
+    <span class="lg-title">Skin Moment</span>
+    <div class="lg-right"><a class="lg-trust-pill" href="trust.html">Trust</a></div>
+  </header>
+  <div class="lg-rule" aria-hidden="true"></div>
+  <main id="sm-main" class="sm-main" tabindex="-1">
+    <div id="sm-root" class="sm-root">
+      <noscript><p>Skin Moment needs JavaScript to check your photo on this device.</p></noscript>
+    </div>
+  </main>
+  <footer class="sm-foot">
+    <p>Skin analysis and makeup try-on by the YouCam API from Perfect Corp., only with your consent. Every result says where it came from.</p>
+    <p>Adults only. Cosmetic guidance, not medical advice. Product types only; no brand pays to appear.</p>
+    <p><a href="news.html">What's new in beauty: new ingredients and product types, no brands</a></p>
+    <p><a href="home.html">Home</a> · <a href="studio.html">Photo editor</a> · <a href="trust.html">Privacy and your data</a></p>
+  </footer>
+  <nav class="lg-tabs" aria-label="Main">
+    <a href="home.html">Home</a>
+    <a href="skin-moment.html" aria-current="page">Skin</a>
+    <a href="studio.html">Edit</a>
+    <a href="trust.html">Trust</a>
+  </nav>
+  <div id="announcer" class="visually-hidden" aria-live="polite"></div>
+  <script type="module" src="js/screens/skin-moment.js"></script>
+</body>
+</html>

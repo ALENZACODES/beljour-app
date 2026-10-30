@@ -1,0 +1,99 @@
+/* The saying shown while a page loads (web/src/ui/quote-veil.ts). Plum and cream from the theme
+   tokens in theme.css, so dark mode follows the page. Fraunces (bundled) for Latin text it covers;
+   every other script uses fonts already on the device, named below, with a generic fallback.
+   No font is downloaded. Author: John Khan. */
+.qv {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  background: var(--cream, #FBF6EF);
+  color: var(--ink, #2B1A22);
+  opacity: 0;
+  transition: opacity 450ms ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.qv.qv-in { opacity: 1; }
+.qv.qv-out { opacity: 0; transition-duration: 300ms; pointer-events: none; }
+.qv.qv-still, .qv.qv-still.qv-out { transition: none; }
+.qv.qv-still { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .qv, .qv.qv-out { transition: none; }
+  .qv { opacity: 1; }
+}
+
+.qv-figure {
+  margin: 0;
+  width: min(100%, 44rem);
+  text-align: center;
+}
+.qv-text {
+  margin: 0;
+  color: var(--plum, #6B3044);
+  font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  quotes: none;
+}
+.qv-text.qv-long { font-size: clamp(1.3rem, 1rem + 1.4vw, 2.05rem); }
+.qv-meaning {
+  margin: 1.4rem auto 0;
+  max-width: 34rem;
+  color: var(--ink, #2B1A22);
+  font: 400 clamp(1rem, 0.9rem + 0.45vw, 1.2rem)/1.5 var(--font-sans, system-ui, sans-serif);
+  text-wrap: pretty;
+}
+.qv-meaning::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin: 0 auto 1.1rem;
+  background: var(--plum, #6B3044);
+  opacity: 0.45;
+}
+.qv-by {
+  margin-top: 0.9rem;
+  color: var(--muted, #6E5A63);
+  font: 500 0.8rem/1.4 var(--font-sans, system-ui, sans-serif);
+  letter-spacing: 0.02em;
+}
+.qv-skip {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--rule, #E3D4D0);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted, #6E5A63);
+  font: 600 0.85rem/1 var(--font-sans, system-ui, sans-serif);
+  cursor: pointer;
+}
+.qv-skip:hover { color: var(--plum, #6B3044); border-color: var(--plum, #6B3044); }
+.qv-skip:focus-visible { outline: 3px solid var(--plum, #6B3044); outline-offset: 2px; }
+
+/* Font stacks by script. Only fonts that may already be on the device; nothing is fetched. */
+.qv-f-brand { font-family: var(--font-serif, "Fraunces", Georgia, serif); }
+.qv-f-latin, .qv-f-cyrl { font-family: "Noto Serif", "Source Serif Pro", Georgia, "Times New Roman", serif; }
+.qv-f-grek { font-family: "Noto Serif", "GFS Porson", "Gentium Plus", "Palatino Linotype", Georgia, "Times New Roman", serif; }
+.qv-f-deva { font-family: "Noto Serif Devanagari", "Noto Sans Devanagari", "Kohinoor Devanagari", "Devanagari MT", "Nirmala UI", "Mangal", "FreeSerif", serif; line-height: 1.6; }
+.qv-f-taml { font-family: "Noto Serif Tamil", "Noto Sans Tamil", "Tamil Sangam MN", "Nirmala UI", "Latha", "FreeSerif", serif; line-height: 1.6; }
+.qv-f-hebr { font-family: "Noto Serif Hebrew", "Noto Sans Hebrew", "Times New Roman", "Arial Hebrew", "David", "FreeSerif", serif; }
+.qv-f-arab { font-family: "Noto Naskh Arabic", "Geeza Pro", "Traditional Arabic", "Arabic Typesetting", "Segoe UI", "DejaVu Sans", "FreeSerif", serif; line-height: 1.7; font-weight: 500; }
+.qv-f-urdu { font-family: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", "Noto Naskh Arabic", "Geeza Pro", "Segoe UI", "DejaVu Sans", "FreeSerif", serif; line-height: 2; font-weight: 500; }
+.qv-f-hant { font-family: "Noto Serif CJK TC", "Noto Serif TC", "Songti TC", "PMingLiU", "MingLiU", "Noto Sans CJK TC", serif; line-break: strict; }
+.qv-f-jpan { font-family: "Noto Serif CJK JP", "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Noto Sans CJK JP", serif; line-break: strict; }
+.qv-f-kore { font-family: "Noto Serif CJK KR", "Noto Serif KR", "AppleMyungjo", "Batang", "Noto Sans CJK KR", serif; word-break: keep-all; }
+.qv-f-thai { font-family: "Noto Serif Thai", "Noto Sans Thai", "Thonburi", "Leelawadee UI", "Tahoma", "Loma", serif; line-height: 1.6; }
+.qv-f-hant, .qv-f-jpan, .qv-f-kore, .qv-f-thai, .qv-f-deva, .qv-f-taml, .qv-f-arab, .qv-f-urdu, .qv-f-hebr { font-weight: 500; }
+/* Sizes for scripts whose letters run wider; set on .qv-text so they scale like the rest. */
+.qv-text.qv-f-taml { font-size: clamp(1.3rem, 1rem + 1.6vw, 2.25rem); }
+.qv-text.qv-f-urdu { font-size: clamp(1.35rem, 1rem + 1.7vw, 2.3rem); }
+.qv-text.qv-long { font-size: clamp(1.3rem, 1rem + 1.4vw, 2.05rem); }

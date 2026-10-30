@@ -1,0 +1,39 @@
+/* Create panel in the Studio (web/src/editor/create): text, drawing, stickers, frames, collage and
+   story on her photo. Theme tokens only; 44 px targets; the page stays in view while she works.
+   Author: John Khan. */
+.cr-panel { display: grid; gap: var(--space-3); }
+.cr-panel h2 { margin: 0; font-family: var(--font-serif); color: var(--plum); }
+.cr-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); border-bottom: var(--hairline); padding-bottom: var(--space-2); }
+.lg-deliverable .cr-tab { min-height: 44px; border-radius: 999px; }
+.lg-deliverable .cr-tab[aria-selected="true"] { background: var(--plum); color: var(--blanc); }
+.cr-body { display: grid; gap: var(--space-3); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .cr-body { grid-template-columns: minmax(0, 1.25fr) minmax(280px, 1fr); align-items: start; } }
+.cr-stage-wrap { position: sticky; top: 0; background: var(--panel); border: var(--hairline); border-radius: 10px; padding: var(--space-2); display: grid; place-items: center; }
+.cr-stage { display: block; width: 100%; max-width: 720px; max-height: 70vh; object-fit: contain; height: auto; touch-action: none; cursor: crosshair; border-radius: 4px; background: var(--surface); }
+.cr-stage:focus-visible { outline: 3px solid var(--plum); outline-offset: 3px; }
+.cr-side { display: grid; gap: var(--space-3); min-width: 0; }
+.cr-controls { display: grid; gap: var(--space-3); }
+.cr-section { border: var(--hairline); border-radius: 10px; padding: var(--space-3); background: var(--surface); display: grid; gap: var(--space-2); }
+.cr-section h4 { margin: 0; font-size: 1rem; color: var(--plum); }
+.cr-group { display: grid; gap: 6px; }
+.cr-name { font-weight: 600; font-size: .9rem; color: var(--ink); }
+.cr-choices, .cr-row, .cr-swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.lg-deliverable .cr-choices button[aria-pressed="true"], .lg-deliverable .cr-layer-name[aria-pressed="true"] { background: var(--plum); color: var(--blanc); }
+.lg-deliverable .cr-swatch { width: 44px; height: 44px; min-height: 44px; padding: 0; border: 2px solid var(--rule); border-radius: 50%; }
+.lg-deliverable .cr-swatch[aria-pressed="true"] { border-color: var(--ink); box-shadow: 0 0 0 3px var(--blanc), 0 0 0 5px var(--plum); }
+.lg-deliverable label.cr-field { display: grid; grid-template-columns: 1fr; gap: 4px; margin: 0; }
+.cr-range { width: 100%; min-height: 44px; accent-color: var(--plum); }
+.cr-out { font-variant-numeric: tabular-nums; color: var(--muted); font-size: .85rem; }
+.lg-deliverable .cr-text { width: 100%; box-sizing: border-box; font: inherit; resize: vertical; }
+.cr-sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 6px; }
+.lg-deliverable .cr-sticker { min-height: 60px; padding: 4px; display: grid; place-items: center; background: var(--panel); }
+.cr-thumb { width: 48px; height: 48px; object-fit: contain; pointer-events: none; }
+.cr-layers-title { margin: 0; font-size: 1rem; }
+.cr-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cr-layer { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; border: var(--hairline); border-radius: 8px; padding: 4px; background: var(--surface); }
+.lg-deliverable .cr-layer-name { flex: 1 1 10rem; text-align: left; border-color: transparent; }
+.lg-deliverable .cr-layer button:not(.cr-layer-name) { padding: 8px 10px; }
+.cr-footer { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; }
+.cr-status { margin: 0; }
+.lg-deliverable .cr-select { min-height: 44px; }
+.cr-file-field { display: grid; gap: 6px; justify-items: start; }

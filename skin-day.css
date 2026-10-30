@@ -1,0 +1,131 @@
+/* Your skin today (skin-day.html). Built on theme.css tokens and the Skin Moment page's own
+   classes (skin-moment.css), so light and dark both follow the page's theme-auto class.
+   Author: John Khan. */
+.sd-root { display: block; }
+.sd-head .sm-lede { max-width: 42rem; }
+.sd-now { grid-template-columns: 3rem 1fr; }
+.sd-now-title { font-weight: 700; color: var(--bleu); }
+.sd-jump { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin: 0.8rem 0 0; font-size: 0.92rem; }
+.sd-jump a { min-height: 2.75rem; display: inline-flex; align-items: center; }
+.sd-status:empty { display: none; }
+.sd-due:empty { display: none; }
+.sd-due { margin: 0 0 1rem; }
+.sd-due-item { grid-template-columns: 2.5rem 1fr; }
+
+/* routine */
+.sd-cards { display: grid; gap: 0.9rem; margin-top: 0.75rem; }
+@media (min-width: 760px) { .sd-cards { grid-template-columns: 1fr 1fr; align-items: start; } }
+.sd-card { background: var(--sm-surface); border: 1px solid var(--rule); border-top: 4px solid var(--rule); border-radius: 14px; padding: 0.9rem; box-shadow: var(--sm-shadow); min-width: 0; }
+.sd-card.is-now { border-top-color: var(--bleu); }
+.sd-card-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.sd-card-top h3 { margin: 0; font-family: var(--font-serif); font-weight: 600; font-size: 1.2rem; color: var(--bleu); }
+.sd-now-chip { color: var(--bleu); }
+.sd-count { margin-left: auto; color: var(--muted); font-size: 0.88rem; white-space: nowrap; }
+.sd-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+.sd-step { display: flex; gap: 0.35rem; align-items: stretch; }
+.sd-tick { flex: 1; min-width: 0; display: grid; grid-template-columns: 1.6rem auto minmax(0, 1fr); gap: 0.6rem; align-items: center; text-align: left;
+  min-height: 3.25rem; padding: 0.45rem 0.65rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--sm-tint); color: var(--ink); font: inherit; cursor: pointer; }
+.sd-tick:hover { border-color: var(--bleu); }
+.sd-tick:disabled { cursor: default; opacity: 0.7; border-style: dashed; background: transparent; }
+.sd-tick:disabled:hover { border-color: var(--rule); }
+.sd-tick.is-done { background: color-mix(in srgb, var(--ok) 12%, var(--sm-surface)); border-color: color-mix(in srgb, var(--ok) 45%, var(--rule)); }
+.sd-box { width: 1.45rem; height: 1.45rem; border-radius: 6px; border: 2px solid var(--bleu); display: grid; place-items: center; font-weight: 700; color: var(--blanc); line-height: 1; }
+.sd-tick.is-done .sd-box { background: var(--ok); border-color: var(--ok); }
+.sd-tick .sm-product-pic.has-pic { margin: 0; }
+.sd-tick .sm-product-pic:not(.has-pic) { display: none; }
+.sd-step-text { display: grid; gap: 0.1rem; font-weight: 600; overflow-wrap: anywhere; }
+.sd-tick.is-done .sd-step-text { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--ink) 40%, transparent); }
+.sd-why, .sd-off { font-weight: 400; font-size: 0.82rem; color: var(--muted); text-decoration: none; display: block; }
+.sd-tools { display: flex; gap: 0.25rem; }
+.sd-icon-btn { min-width: 2.75rem; min-height: 2.75rem; border: 1px solid var(--rule); border-radius: 10px; background: var(--sm-surface); color: var(--ink); font: inherit; font-size: 1rem; cursor: pointer; }
+.sd-icon-btn:disabled { opacity: 0.35; cursor: default; }
+.sd-remove { color: var(--error); }
+@media (max-width: 480px) { .sd-step { flex-wrap: wrap; } .sd-tools { width: 100%; justify-content: flex-end; } }
+.sd-add { margin-top: 0.8rem; display: grid; gap: 0.35rem; }
+.sd-add label { font-size: 0.9rem; font-weight: 600; }
+.sd-gap { margin: 0.6rem 0 0; }
+
+.sd-week { margin-top: 1.2rem; }
+.sd-week-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 0.82rem; }
+.sd-week-table th, .sd-week-table td { padding: 0.35rem 0.1rem; text-align: center; border-bottom: var(--hairline); }
+.sd-week-table thead th { color: var(--muted); font-weight: 600; }
+.sd-week-table tbody th { text-align: left; font-weight: 600; width: 4.2rem; }
+.sd-mark { color: var(--muted); }
+.sd-mark.is-done { color: var(--ok); font-weight: 700; font-size: 1rem; }
+.sd-mark.is-part { color: var(--ink); }
+.sd-mark.is-missed { font-size: 0.75rem; }
+@media (max-width: 400px) { .sd-week-table { font-size: 0.75rem; } .sd-week-table tbody th { width: 3.6rem; } }
+
+/* product diary */
+.sd-diary { list-style: none; padding: 0; margin: 0.9rem 0 0; display: grid; gap: 0.8rem; }
+@media (min-width: 760px) { .sd-diary { grid-template-columns: 1fr 1fr; } }
+.sd-product { background: var(--sm-surface); border: 1px solid var(--rule); border-radius: 14px; padding: 0.9rem; box-shadow: var(--sm-shadow); min-width: 0; }
+.sd-product-top { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.7rem; align-items: start; }
+.sd-product-top .sm-product-pic.has-pic img { width: 3.5rem; height: 3.5rem; }
+.sd-product h3 { margin: 0 0 0.2rem; }
+.sd-product p { margin: 0.2rem 0; }
+.sd-result { list-style: none; padding: 0; margin: 0.6rem 0; display: grid; gap: 0.45rem; }
+.sd-result li { line-height: 1.4; }
+.sd-result .sm-chip { margin-right: 0.2rem; }
+.sd-result .sm-change-better .sm-chip, .sd-result li.sm-change-better .sm-chip { color: var(--ok); }
+.sd-result li.sm-change-worse .sm-chip { color: var(--warn); }
+.sd-result li.sm-change-same .sm-chip { color: var(--muted); }
+.sd-result-wait { background: var(--sm-tint); border-radius: 10px; padding: 0.6rem 0.75rem; }
+.sd-picker { margin-top: 0.9rem; }
+.sd-types { border: 0; padding: 0; margin: 0 0 0.9rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.45rem; min-width: 0; }
+.sd-types legend { font-weight: 700; margin-bottom: 0.45rem; padding: 0; }
+.sd-type { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 0.45rem; align-items: center; padding: 0.4rem 0.55rem; min-height: 3rem;
+  border: 1px solid var(--rule); border-radius: 10px; background: var(--sm-tint); cursor: pointer; font-size: 0.88rem; }
+.sd-type:has(input:checked) { border-color: var(--bleu); box-shadow: inset 0 0 0 1px var(--bleu); background: var(--sm-surface); }
+.sd-type input { accent-color: var(--bleu); width: 1.1rem; height: 1.1rem; margin: 0; }
+.sd-type .sm-product-pic.has-pic { margin: 0; }
+.sd-type .sm-product-pic.has-pic img { width: 2.4rem; height: 2.4rem; }
+.sd-type .sm-product-pic:not(.has-pic) { display: none; }
+.sd-picker-row { display: grid; gap: 0.3rem; margin: 0 0 0.8rem; max-width: 22rem; }
+.sd-picker-row label { font-weight: 600; font-size: 0.9rem; }
+.sd-slot { border: 0; padding: 0; margin: 0 0 0.5rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; }
+.sd-slot legend { font-weight: 600; font-size: 0.9rem; padding: 0; margin-bottom: 0.3rem; }
+.sd-slot label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+.sd-slot input { accent-color: var(--bleu); width: 1.1rem; height: 1.1rem; }
+
+/* skin log */
+.sd-q { font-family: var(--font-serif); font-size: 1.25rem; color: var(--bleu); margin: 0.3rem 0 0.6rem; }
+.sd-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.9rem; }
+.sd-feel { min-height: 2.75rem; padding: 0.4rem 1rem; border-radius: 999px; border: 1px solid var(--bleu); background: var(--sm-surface); color: var(--bleu); font: inherit; font-weight: 600; cursor: pointer; }
+.sd-feel.is-on { background: var(--bleu); color: var(--blanc); }
+.sd-feel.is-on::before { content: "✓ "; }
+.sd-patch { margin-bottom: 0.6rem; }
+.sd-warn { border-color: var(--warn); background: var(--warn-bg); margin: 0.4rem 0 0.9rem; }
+.sd-warn p { margin: 0.2rem 0 0.4rem; }
+.sd-pattern { margin-top: 1rem; }
+.sd-pattern-days { list-style: none; padding: 0; margin: 0 0 0.6rem; display: grid; gap: 0.3rem; }
+@media (min-width: 760px) { .sd-pattern-days { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+.sd-pattern-days li { display: flex; flex-wrap: wrap; gap: 0.3rem 0.6rem; align-items: baseline; padding: 0.45rem 0.6rem; border-radius: 10px; background: var(--sm-tint); font-size: 0.88rem; min-width: 0; }
+@media (min-width: 760px) { .sd-pattern-days li { flex-direction: column; align-items: flex-start; } }
+.sd-pattern-days li.is-missed { background: transparent; border: 1px dashed var(--rule); }
+.sd-pattern-day { font-weight: 700; min-width: 3rem; }
+.sd-missed { color: var(--muted); }
+
+/* reminders */
+.sd-rems { list-style: none; padding: 0; margin: 0.6rem 0; display: grid; gap: 0.6rem; }
+@media (min-width: 760px) { .sd-rems { grid-template-columns: repeat(3, 1fr); } }
+.sd-rem { border: 1px solid var(--rule); border-radius: 12px; padding: 0.7rem 0.8rem; background: var(--sm-surface); }
+.sd-rem.is-on { border-color: var(--bleu); }
+.sd-rem p { margin: 0.2rem 0; }
+.sd-rem-top { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; }
+.sd-rem-top input { appearance: none; width: 2.6rem; height: 1.5rem; border-radius: 999px; background: var(--rule); position: relative; cursor: pointer; flex: none; margin: 0; transition: background 0.15s; }
+.sd-rem-top input::after { content: ""; position: absolute; top: 0.15rem; left: 0.15rem; width: 1.2rem; height: 1.2rem; border-radius: 50%; background: var(--sm-surface); box-shadow: 0 1px 2px rgba(0,0,0,0.25); transition: left 0.15s; }
+.sd-rem-top input:checked { background: var(--bleu); }
+.sd-rem-top input:checked::after { left: 1.25rem; }
+.sd-rem-top input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sd-rem-top label { cursor: pointer; min-height: 2.75rem; display: inline-flex; align-items: center; }
+@media (prefers-reduced-motion: reduce) { .sd-rem-top input, .sd-rem-top input::after { transition: none; } }
+.sd-perm { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.sd-data .sm-row { align-items: center; }
+
+/* the Skin Moment page's "today" strip and plan button */
+.sd-strip { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.75rem; align-items: center; background: var(--sm-tint); border-radius: 12px; padding: 0.7rem 0.9rem; margin: 0 0 1.25rem; }
+.sd-strip p { margin: 0; }
+.sd-strip-title { font-weight: 700; color: var(--bleu); }
+@media (max-width: 480px) { .sd-strip { grid-template-columns: auto minmax(0, 1fr); } .sd-strip > a { grid-column: 1 / -1; } }
+.sd-use-plan { margin-top: 0.9rem; }

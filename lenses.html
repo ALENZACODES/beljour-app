@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6B3044" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1C1117" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>BELJOUR — Face lenses</title>
+  <meta name="description" content="Sixty face lenses that follow your face: props, fun warps, one-tap beauty and effects, drawn on this device on a photo or the live mirror. Simulations, our own designs.">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="lenses.css">
+  <link rel="stylesheet" href="photos.css">
+  <script src="config.js"></script>
+</head>
+<body class="lg-page ln-page theme-auto" data-page="lenses">
+  <a href="#ln-main" class="lg-hidden ln-skip">Skip to content</a>
+  <header class="lg-topbar">
+    <div class="lg-left">
+      <a class="lg-brand" href="home.html" aria-label="BELJOUR — FULL BEAUTY STUDIO. Your best day. Still you. Home"><span class="lg-brand-stack"><span class="lg-wordmark">BELJOUR</span><span class="lg-brand-descriptor">FULL BEAUTY STUDIO</span></span></a>
+    </div>
+    <span class="lg-title">Face lenses</span>
+    <div class="lg-right"><a class="lg-trust-pill" href="trust.html">Trust</a></div>
+  </header>
+  <div class="lg-rule" aria-hidden="true"></div>
+  <main id="ln-main" class="ln-main" tabindex="-1">
+    <h1>Face lenses</h1>
+    <p class="lede">Props that follow your face, drawn on this device. Pick one, capture it, or wear it on the live mirror. Nothing is uploaded.</p>
+    <div id="ln-root" class="ln-root">
+      <noscript><p>Face lenses need JavaScript to draw on this device.</p></noscript>
+    </div>
+  </main>
+  <footer class="ln-foot">
+    <p>Every lens is a simulation in our own designs. Adults only. Saved photos carry a small Simulation label unless you turn it off in the Trust Centre, and never carry location data.</p>
+    <p><a href="home.html">Home</a> · <a href="studio.html">Photo editor</a> · <a href="index.html#/video">Video and live</a> · <a href="trust.html">Privacy and your data</a></p>
+  </footer>
+  <nav class="lg-tabs" aria-label="Main">
+    <a href="home.html">Home</a>
+    <a href="skin-moment.html">Skin</a>
+    <a href="studio.html">Edit</a>
+    <a href="trust.html">Trust</a>
+  </nav>
+  <div id="announcer" class="visually-hidden" aria-live="polite"></div>
+  <script type="module" src="js/screens/lenses.js"></script>
+</body>
+</html>

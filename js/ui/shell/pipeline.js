@@ -1,0 +1,265 @@
+/** The R8 shell's preview compositor. Calls the R7 engines; does not copy or
+ * fork their contour tables, colour formulas, posture points or fibre logic.
+ * No file/network/provider access. Deterministic on one source, layers and seed.
+ * Author: John Khan.
+ */
+import { requireColour, encodeChannel, roundHalfEven, SRGB_TO_LINEAR } from "../../engines/core/buffer.js";
+import { enhance, MODES } from "../../engines/local/enhance.js";
+import { readCrown, shadeCard, hairColour } from "../../engines/local/fibre.js";
+import { renderFibres, PRODUCTS } from "../../engines/local/strands.js";
+import { renderBeard, STYLES } from "../../engines/local/beard.js";
+import { plan, renderPosture, FIXES } from "../../engines/local/posture.js";
+import { postureSettings } from "./settings.js";
+import { effective } from "./layers.js";
+import { appearanceOrder } from "./appearance-stack.js";
+import { readiness } from "./catalogue.js";
+import { applyHeroLayer } from "./hero-layer.js";
+import { applyBeautyLayer } from "./beauty-layer.js";
+import { applySkinLayer } from "./skin-layer.js";
+import { applyUnderEyeLayer } from "./under-eye-layer.js";
+import { applyHairBeardTeethLayer } from "./hair-beard-teeth-layer.js";
+import { applyStudioLayer } from "./studio-layer.js";
+import { applyRetouchLayer } from "../../editor/brush/layer.js";
+import { applyFilterLayer } from "../../filters/runtime/layer.js";
+import { applyPortraitLayer } from "../../filters/portrait/layer.js";
+import { regionMask } from "../../data/regions/index.js";
+import { developStage, finishStage, geometryStage, isEditorKind, stagePlan } from "../../editor/adjust/stack.js";
+import { mapToOutput, readGeometry, isIdentity } from "../../editor/crop/geometry.js";
+/** The points after a layer that moved them and was mixed in at `weight` (0-1). A partly mixed
+ * warp has no single true geometry; moving the points by the same share is ASSUMED. */
+export function nextFace(before, after, weight) {
+    if (!before || !after || after.length !== before.length)
+        return before;
+    if (weight >= 1)
+        return after;
+    return before.map((p, i) => [p[0] + weight * (after[i][0] - p[0]), p[1] + weight * (after[i][1] - p[1])]);
+}
+export function copyRGB(img) {
+    requireColour(img);
+    if (img.channels === 3)
+        return { ...img, data: new Uint8Array(img.data) };
+    const out = new Uint8Array(img.width * img.height * 3);
+    for (let i = 0; i < img.width * img.height; i++)
+        out.set(img.data.subarray(i * 4, i * 4 + 3), i * 3);
+    return { width: img.width, height: img.height, channels: 3, data: out };
+}
+/** Linear-light opacity blend with half-even rounding for a reproducible image. */
+export function mixOpacity(base, changed, opacity) {
+    requireColour(base);
+    requireColour(changed);
+    if (base.width !== changed.width || base.height !== changed.height)
+        throw new RangeError("Layer preview size must match source");
+    if (!(Number.isFinite(opacity) && opacity >= 0 && opacity <= 1))
+        throw new RangeError("Opacity must be 0–1");
+    const out = copyRGB(base);
+    if (opacity === 0)
+        return out;
+    // Speed: SRGB_TO_LINEAR[v] is decodeChannel(v / 255) computed once per byte, so the table
+    // lookup gives exactly the same values as decoding each pixel (R7 measurements).
+    // At one opacity the result depends only on the two bytes, so each (base, changed) pair is
+    // worked out once with the same expression and kept in a 256 x 256 table (-1 = not yet
+    // worked out): at most 65536 encodes instead of one per channel of every pixel, and the
+    // same bytes (speed round; the test speed-identical checks every pair).
+    const keep = 1 - opacity, bc = base.channels, cc = changed.channels;
+    const mixed = new Int16Array(65536).fill(-1);
+    for (let i = 0; i < base.width * base.height; i++)
+        for (let c = 0; c < 3; c++) {
+            const key = (base.data[i * bc + c] << 8) | changed.data[i * cc + c];
+            let v = mixed[key];
+            if (v < 0) {
+                const a = SRGB_TO_LINEAR[key >> 8], b = SRGB_TO_LINEAR[key & 255];
+                v = mixed[key] = roundHalfEven(Math.min(255, Math.max(0, encodeChannel(a * keep + b * opacity) * 255)));
+            }
+            out.data[i * 3 + c] = v;
+        }
+    return out;
+}
+function stringParam(layer, name, fallback) {
+    const value = layer.parameters[name];
+    return typeof value === "string" ? value : fallback;
+}
+function numberParam(layer, name, fallback) {
+    const value = layer.parameters[name];
+    return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+export function applyLocalLayer(img, source, layer, lightingRenderer) {
+    requireColour(img);
+    if (!(layer.enabled && layer.strength > 0 && layer.opacity > 0)) {
+        return { image: copyRGB(img), label: "Disabled layer", metrics: { skipped: true } };
+    }
+    if (layer.kind === "styling")
+        throw new Error("This is not an offline local engine. Use the approved styling screen.");
+    if (isEditorKind(layer.kind)) {
+        // One photo-adjustment layer on its own: its develop, geometry and finish parts in stage order.
+        const developed = developStage(img, layer.kind === "crop" ? [] : [layer]);
+        const shaped = geometryStage(developed.image, layer.kind === "crop" ? layer : null);
+        const finished = finishStage(shaped.image, layer.kind === "adjust" ? layer : null);
+        const labels = [...developed.labels, ...shaped.labels, ...finished.labels];
+        return { image: copyRGB(finished.image), label: labels.join(" + ") || "No change", metrics: Object.assign({}, ...developed.metrics, ...shaped.metrics, ...finished.metrics) };
+    }
+    const ready = readiness(layer.kind, source);
+    if (!ready.ready)
+        throw new Error(ready.reason);
+    const hero = applyHeroLayer(img, source, layer);
+    if (hero)
+        return hero;
+    const beauty = applyBeautyLayer(img, source, layer, lightingRenderer);
+    if (beauty)
+        return beauty;
+    const skin = applySkinLayer(img, source, layer);
+    if (skin)
+        return skin;
+    const underEye = applyUnderEyeLayer(img, source, layer);
+    if (underEye)
+        return underEye;
+    const hairBeardTeeth = applyHairBeardTeethLayer(img, source, layer);
+    if (hairBeardTeeth)
+        return hairBeardTeeth;
+    const studio = applyStudioLayer(img, source, layer);
+    if (studio)
+        return studio;
+    const retouch = applyRetouchLayer(img, source, layer);
+    if (retouch)
+        return retouch;
+    if (layer.kind === "filters")
+        return applyFilterLayer(img, source, layer);
+    if (layer.kind === "portrait")
+        return applyPortraitLayer(img, source, layer);
+    if (layer.kind === "enhance") {
+        const requested = stringParam(layer, "mode", "natural");
+        if (!(requested in MODES))
+            throw new RangeError("Unknown enhancement mode");
+        const mode = requested;
+        let faceMask;
+        if (source.face?.length === 478) {
+            try {
+                const known = regionMask("skin", source.face, img.width, img.height, { normalized: false, supersample: 2 });
+                if (known.data.some(value => value > 0))
+                    faceMask = known;
+            }
+            catch (error) {
+                // A missing/invalid geometry mask supplies no skin evidence. Photo-wide
+                // enhancement stays available and records that the cap is unmeasured.
+                if (!(error instanceof RangeError))
+                    throw error;
+            }
+        }
+        const result = enhance(img, mode, { strength: layer.strength / 100,
+            faceMask,
+            steps: {
+                denoise: layer.parameters.denoise !== false, deblur: layer.parameters.deblur !== false,
+                white_balance: layer.parameters.white_balance !== false, colour: layer.parameters.colour !== false,
+                exposure: layer.parameters.exposure !== false, sharpen: layer.parameters.sharpen !== false,
+            },
+        });
+        return { image: result.image, label: result.label, metrics: { mode, noise_before: result.before.noise_sigma,
+                noise_after: result.after.noise_sigma, condition: result.condition.primary,
+                effective_mode: result.safety.plan.effective_mode, exposure_applied: result.steps.exposure_applied === true,
+                normal_preserved: result.steps.normal_preserved === true, unchanged: result.steps.unchanged === true,
+                face_metering: faceMask ? "supplied_face_mask" : "unmeasured",
+                ...(result.safety.face_tone ? { skin_lstar_max_rise: result.safety.face_tone.max_rise } : {}) } };
+    }
+    if (layer.kind === "beard") {
+        const requested = stringParam(layer, "style", "stubble");
+        if (!(requested in STYLES))
+            throw new RangeError("Unknown beard style");
+        const style = requested;
+        const length = Math.max(1, Math.min(5, Math.round(numberParam(layer, "length", 3))));
+        const density = Math.max(1, Math.min(4, Math.ceil(layer.strength / 25)));
+        const result = renderBeard(img, source.face, { style, length, density,
+            colour: stringParam(layer, "colour", "#3B2A22"), seed: 11 });
+        return { image: result.image, label: result.label,
+            metrics: { style, length, density, strands: Number(result.metrics.strands) } };
+    }
+    if (layer.kind === "hair-fibre") {
+        const requested = stringParam(layer, "product", "fibres");
+        if (!PRODUCTS.includes(requested))
+            throw new RangeError("Unknown fibre product");
+        const product = requested;
+        const area = source.crown;
+        const reading = readCrown(img, area);
+        const shade = shadeCard(hairColour(img, reading.split.hair));
+        const result = renderFibres(img, area, reading.split.scalp, shade.top[0].lab, { product, hair: reading.split.hair, amount: layer.strength, seed: 17 });
+        return { image: result.image, label: result.label,
+            metrics: { product, scalp_share: reading.overall_scalp_share, fibres: Number(result.metrics.fibres || 0) } };
+    }
+    if (layer.kind === "posture") {
+        const requested = stringParam(layer, "fix", "lean");
+        if (!(requested in FIXES))
+            throw new RangeError("Unknown posture edit");
+        const fix = requested;
+        if (FIXES[fix].view !== source.body.view)
+            throw new RangeError("Posture fix needs a matching front or side view");
+        const config = postureSettings({ bandShare: numberParam(layer, "band_share", postureSettings().bandShare),
+            capShare: numberParam(layer, "cap_share", postureSettings().capShare) });
+        const p = plan(source.body, fix, layer.strength / 100, { capShare: config.capShare });
+        const result = renderPosture(img, source.person, p, { bandShare: config.bandShare });
+        return { image: result.image, label: result.label,
+            metrics: { fix, cap_share: config.capShare, band_share: config.bandShare,
+                strength_used: result.strengthUsed, cap_scale: p.capScale } };
+    }
+    throw new Error("This layer has no approved local renderer");
+}
+/** Render bottom to top; originals and input layers are never mutated.
+ * Stages (web/src/editor/adjust/stack.ts documents them): develop (Adjust, Colour mixer, Curves,
+ * Selective adjust), then every other layer in her order, then the crop geometry, then the
+ * Adjust finish (vignette, grain, fade). With none of those tools the result is as before. */
+export function renderLayers(source, layers, lightingRenderer) {
+    const visible = effective(layers), plan = stagePlan(visible);
+    // Age texture before the gender warp, so creases follow the face (appearance-stack.ts).
+    const used = appearanceOrder(plan.looks).layers;
+    let current = copyRGB(source.image);
+    // A layer that moves the face (age reshape, gender) hands its points on, so a later face tool
+    // edits the skin, eyes and lips where they now are, not where they were on the original.
+    let face = source.face;
+    const labels = [], metrics = [];
+    if (plan.develop.length) {
+        const developed = developStage(current, plan.develop);
+        current = developed.image;
+        labels.push(...developed.labels);
+        metrics.push(...developed.metrics);
+    }
+    for (const item of used) {
+        const result = applyLocalLayer(current, face === source.face ? source : { ...source, face }, item, lightingRenderer);
+        const weight = item.opacity * (item.kind === "lighting" ? item.strength / 100 : 1);
+        current = mixOpacity(current, result.image, weight);
+        face = nextFace(face, result.face, weight);
+        labels.push(result.label);
+        metrics.push({ ...result.metrics, opacity: item.opacity, strength: item.strength,
+            simulation: item.simulation, source: item.provenance });
+    }
+    if (!plan.geometry && !plan.finish)
+        return { image: current, labels, metrics, effective: visible.length, face };
+    const beforeGeometry = current;
+    const shaped = geometryStage(current, plan.geometry), finished = finishStage(shaped.image, plan.finish);
+    labels.push(...shaped.labels, ...finished.labels);
+    metrics.push(...shaped.metrics, ...finished.metrics);
+    const geometry = plan.geometry ? readGeometry(plan.geometry.parameters) : null;
+    const moved = geometry && !isIdentity(geometry);
+    return { image: finished.image, labels, metrics, effective: visible.length, beforeGeometry,
+        // Face points follow the crop (pixel-centre convention), so tools on the result find the face.
+        face: moved && face ? face.map((p) => {
+            const q = mapToOutput(source.image.width, source.image.height, geometry, [p[0] + 0.5, p[1] + 0.5]);
+            return [q[0] - 0.5, q[1] - 0.5];
+        }) : face,
+        before: moved ? geometryStage(copyRGB(source.image), plan.geometry).image : undefined };
+}
+/** Independent low-level comparison metric, useful in the offline smoke test. */
+export function pixelsChanged(a, b) {
+    requireColour(a);
+    requireColour(b);
+    if (a.width !== b.width || a.height !== b.height)
+        throw new RangeError("Different photo sizes");
+    let pixels = 0, sum = 0;
+    const n = a.width * a.height;
+    for (let i = 0; i < n; i++) {
+        let delta = 0;
+        for (let c = 0; c < 3; c++)
+            delta += Math.abs(a.data[i * a.channels + c] - b.data[i * b.channels + c]);
+        if (delta > 0)
+            pixels++;
+        sum += delta / 3;
+    }
+    return { pixels, percent: 100 * pixels / n, mean: sum / n };
+}
+//# sourceMappingURL=pipeline.js.map

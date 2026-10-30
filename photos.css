@@ -1,0 +1,43 @@
+/* "Add photos" and the My photos strip (web/src/photos/picker.ts), on every photo screen.
+   Colours are the theme tokens from theme.css, so light and dark follow the page.
+   Author: John Khan. */
+.ph-picker { display: grid; gap: 0.6rem; min-width: 0; max-width: 100%; }
+.ph-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.ph-actions input:focus-visible + label { outline: 3px solid var(--plum); outline-offset: 3px; }
+.lg-file-button.lg-file-button-quiet { background: transparent; color: var(--plum); }
+.ph-status { margin: 0; font-size: 0.9rem; }
+
+.ph-strip { min-width: 0; max-width: 100%; border: 1px solid var(--rule); border-radius: 12px; padding: 0.6rem 0.75rem 0.5rem;
+  background: var(--blanc); color: var(--ink); }
+.ph-strip-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.ph-strip-title { margin: 0; font-size: 1rem; color: var(--plum); }
+.ph-count, .ph-note, .ph-dont-keep, .ph-confirm p { font-size: 0.85rem; }
+.ph-note { margin: 0.15rem 0 0.4rem; }
+.ph-list { list-style: none; margin: 0; padding: 0.15rem 0.1rem 0.35rem; display: flex; gap: 0.5rem; overflow-x: auto;
+  overscroll-behavior-x: contain; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.ph-item { position: relative; flex: 0 0 auto; scroll-snap-align: start; }
+.ph-use { display: block; padding: 0; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--rule);
+  width: 64px; height: 64px; cursor: pointer; }
+.ph-use img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ph-use:focus-visible, .ph-remove:focus-visible, .ph-link:focus-visible, .ph-danger:focus-visible { outline: 3px solid var(--plum); outline-offset: 2px; }
+/* The remove button is a 28 px circle, padded out to a 44 px touch target. */
+.ph-item { padding: 8px 8px 0 0; }
+.ph-remove { position: absolute; top: -10px; right: -10px; z-index: 1; isolation: isolate; width: 44px; height: 44px; padding: 8px; border: 0;
+  background: none; cursor: pointer; color: var(--blanc); font: 700 16px/1 system-ui, sans-serif; }
+.ph-remove::before { content: ""; position: absolute; inset: 8px; border-radius: 50%; background: var(--plum); box-shadow: 0 0 0 2px var(--blanc); z-index: -1; }
+.ph-strip-foot { display: flex; flex-wrap: wrap; gap: 0 1rem; align-items: center; justify-content: space-between; }
+.ph-link { min-height: 44px; padding: 0 0.25rem; border: 0; background: none; color: var(--plum); font: inherit; font-size: 0.9rem;
+  text-decoration: underline; cursor: pointer; }
+.ph-dont-keep { display: inline-flex; gap: 0.4rem; align-items: center; min-height: 44px; }
+.ph-confirm { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.25rem; }
+.ph-confirm p { margin: 0; flex: 1 1 100%; }
+.ph-danger { min-height: 44px; padding: 0 1rem; border-radius: 999px; border: 1px solid var(--plum); background: var(--plum); color: var(--blanc);
+  font: inherit; font-weight: 600; cursor: pointer; }
+@media (min-width: 900px) { .ph-use { width: 72px; height: 72px; } }
+
+/* Trust Centre: My photos on this device */
+.ph-trust-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.shell-source-bar .ph-picker { flex: 1 1 100%; }
+.shell-source-bar > .ph-actions:not([hidden]) { display: contents; }
+.ph-picker[hidden] { display: none; }
+.photo-screen > .ph-picker { margin-top: 1.2rem; }

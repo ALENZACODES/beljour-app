@@ -1,0 +1,32 @@
+/** Detailed R17B makeup planning models. Author: John Khan. */
+import { labToLch, rgbToLab } from "../colour.js";
+const finite = (v, name) => { if (!Number.isFinite(v))
+    throw new RangeError(`${name} must be finite`); return v; };
+const unit = (v, name = "value") => Math.min(1, Math.max(0, finite(v, name)));
+const hueDistance = (a, b) => { const d = Math.abs((a - b) % 360); return Math.min(d, 360 - d); };
+export function undertoneAnchor(name) { const map = { cool: 345, neutral: 25, warm: 55, olive: 92 }; if (!(name in map))
+    throw new RangeError("unsupported undertone"); return map[name]; }
+export function rankShades(shades, undertone, role = "lip") {
+    const anchor = undertoneAnchor(undertone), targets = { base: 12, eye: 35, lip: 48, blush: 38, accent: 55 };
+    if (!(role in targets))
+        throw new RangeError("unsupported role");
+    return shades.map(rgb => { const [l, c, h] = labToLch(rgbToLab(rgb)), hs = 1 - hueDistance(h, anchor) / 180, cs = Math.max(0, 1 - Math.abs(c - targets[role]) / 80); return { rgb, role, score: .68 * hs + .32 * cs, chroma: c, lightness: l, rationale: `local Lab/LCh score for ${undertone} undertone` }; }).sort((a, b) => b.score - a.score);
+}
+export function balancedPalette(anchor, undertone) { const [r, g, b] = anchor, candidates = [[r, g, b], [Math.min(255, r * 1.08 + 8), Math.min(255, g * .96 + 4), Math.min(255, b * 1.03)], [Math.max(0, r * .82), Math.max(0, g * .78), Math.max(0, b * .86)], [Math.min(255, r * .92 + 15), Math.min(255, g * 1.02 + 7), Math.min(255, b * .8 + 12)].map(v => Math.round(v))]; return rankShades(candidates, undertone, "accent"); }
+export function deepSkinGuard(sourceL, candidateL, tolerance = 1) { const corrected = Math.min(candidateL, sourceL + Math.max(0, tolerance)); return { corrected, passes: corrected <= sourceL + tolerance }; }
+export function concealerPlan(amount) { const a = unit(amount); return [{ name: "left_inner_eye", centre: [.39, .43], radius: [.055, .035], angleDeg: -12, intensity: .26 + .42 * a, instruction: "small inner-eye placement" }, { name: "right_inner_eye", centre: [.61, .43], radius: [.055, .035], angleDeg: 12, intensity: .26 + .42 * a, instruction: "small inner-eye placement" }, { name: "centre_face", centre: [.5, .57], radius: [.07, .1], angleDeg: 0, intensity: .12 + .25 * a, instruction: "optional centre-face evening" }]; }
+export function correctionPlan(issue, amount) { const a = unit(amount); if (issue === "under_eye")
+    return concealerPlan(a).filter(z => z.name.includes("eye")); if (issue === "redness")
+    return [{ name: "left_cheek", centre: [.34, .57], radius: [.12, .09], angleDeg: 0, intensity: .10 + .25 * a, instruction: "cosmetic green micro-correction" }, { name: "right_cheek", centre: [.66, .57], radius: [.12, .09], angleDeg: 0, intensity: .10 + .25 * a, instruction: "cosmetic green micro-correction" }]; if (issue === "deeper_pigmentation")
+    return [{ name: "checked_region", centre: [.5, .56], radius: [.18, .12], angleDeg: 0, intensity: .12 + .28 * a, instruction: "apply only to a user-checked region" }]; throw new RangeError("unsupported correction issue"); }
+export function blushPlan(shape, amount) { const a = unit(amount), cfg = { balanced: [.34, .56, 8], round: [.34, .54, 18], oval: [.35, .56, 10], square: [.35, .57, 4], heart: [.36, .58, 2], long: [.34, .58, 0] }, v = cfg[shape]; if (!v)
+    throw new RangeError("unsupported face shape"); return [{ name: "left_blush", centre: [v[0], v[1]], radius: [.105, .065], angleDeg: v[2], intensity: .18 + .48 * a, instruction: "optional placement guide" }, { name: "right_blush", centre: [1 - v[0], v[1]], radius: [.105, .065], angleDeg: -v[2], intensity: .18 + .48 * a, instruction: "optional placement guide" }]; }
+export function contourPlan(shape, amount) { const a = unit(amount), y = { round: .61, square: .60, heart: .60, long: .62 }[shape] ?? .61, intensity = .10 + .28 * a; return [{ name: "left_bronze", centre: [.29, y], radius: [.10, .055], angleDeg: -16, intensity, instruction: "colour placement only; no slimming" }, { name: "right_bronze", centre: [.71, y], radius: [.10, .055], angleDeg: 16, intensity, instruction: "colour placement only; no slimming" }, { name: "temple_warmth", centre: [.5, .32], radius: [.23, .055], angleDeg: 0, intensity: intensity * .65, instruction: "optional warmth" }]; }
+export function finishPlan(name, amount) { const a = unit(amount), table = { cream: [.10, .08, 0, .34, .84], powder: [.26, 0, .36, .38, .74], dewy: [.08, .30, 0, .26, .86], matte: [.24, 0, .42, .34, .72], skin_tint: [.06, .05, 0, .18, .90] }, v = table[name]; if (!v)
+    throw new RangeError("unsupported finish"); return { finish: name, smoothing: v[0] * a, highlight: v[1] * a, powder: v[2] * a, coverage: v[3] * a, textureFloor: Math.max(v[4], 1 - (1 - v[4]) * a) }; }
+export function oxidationTimeline(deltaL, deltaChroma, hours = 8) { if (!Number.isFinite(deltaL) || !Number.isFinite(deltaChroma))
+    throw new RangeError("oxidation inputs must be finite"); const count = Math.max(1, Math.min(Math.trunc(hours), 12)); return Array.from({ length: count + 1 }, (_, hour) => { const progress = hour === 0 ? 0 : 1 - 2 ** (-hour / 1.8); return { hour, deltaLEstimate: hour === 0 ? 0 : deltaL * progress, deltaChromaEstimate: hour === 0 ? 0 : deltaChroma * progress, label: "estimate from user-entered formula behaviour" }; }); }
+export function seasonalMix(depthShift, selfTan) { const shift = Math.min(1, Math.max(-1, finite(depthShift, "depthShift") + .35 * unit(selfTan, "selfTan"))), deeper = Math.min(.95, Math.max(.05, .5 + .45 * shift)); return { lighterRatio: 1 - deeper, deeperRatio: deeper, effectiveShift: shift, label: "mixing estimate; verify the result on skin in current lighting" }; }
+export const ORIGINAL_EVENT_LOOKS = { gallery_evening: { lip: [132, 62, 70], blush: [126, 78, 72], eye: [72, 59, 55], finish: "satin", intensity: .58 }, city_lights: { lip: [104, 55, 75], blush: [116, 76, 84], eye: [58, 54, 70], finish: "dewy", intensity: .62 }, soft_velvet: { lip: [118, 66, 62], blush: [122, 82, 72], eye: [74, 61, 52], finish: "matte", intensity: .46 }, copper_hour: { lip: [126, 72, 54], blush: [132, 88, 62], eye: [102, 72, 45], finish: "satin", intensity: .55 } };
+export function eventRecipe(name) { return { name, ...ORIGINAL_EVENT_LOOKS[name], source: "original BELJOUR recipe; no celebrity or third-party reference" }; }
+//# sourceMappingURL=plans.js.map

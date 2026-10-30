@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#6B3044">
+  <meta name="description" content="Consent-first cosmetic sample matching and optional YouCam makeup virtual try-on. Fictional items and local fallback.">
+  <title>Sample Looks · BELJOUR</title>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="commerce.css">
+  <script src="config.js"></script>
+</head>
+<body class="theme-auto">
+<a class="skip" href="#main">Skip to the sample studio</a>
+<header class="commerce-top">
+  <a class="commerce-logo" href="index.html" aria-label="Back to BELJOUR">BELJOUR</a>
+  <nav aria-label="Site"> <a href="studio.html">Studio</a> <a href="trust.html">Trust</a> <a href="index.html">Home</a> </nav>
+</header>
+<div class="commerce-tricolour" aria-hidden="true"><span></span><span></span><span></span></div>
+<main id="main" class="commerce-shell">
+  <div class="commerce-intro">
+    <p class="eyebrow">Skin AI × sample product matching</p>
+    <h1>See the look before choosing a shade.</h1>
+    <p>Use an original photo or a locally drawn illustration. Compare sample colours, see why each was suggested, and collect a demo bag. There is no checkout.</p>
+    <p class="commerce-disclaimer">Every product, swatch and price here is fictional. Matches are not real-product testing, medical advice or a reason to change your skin tone.</p>
+  </div>
+  <div class="commerce-grid">
+    <section class="commerce-panel" aria-labelledby="photo-heading">
+      <p class="step-number">01 / PHOTO</p>
+      <h2 id="photo-heading">Your photo stays yours</h2>
+      <div class="photo-well" id="photo-well"><p id="photo-empty">Choose a JPEG, PNG or WEBP (up to 8 MB), or draw our geometric demonstration illustration. No photo is sent by default.</p><img id="photo-image" alt="Chosen portrait for cosmetic simulation" hidden></div>
+      <label class="commerce-file-label" for="photo-file">Choose a local photo</label>
+      <input id="photo-file" type="file" accept="image/jpeg,image/png,image/webp">
+      <button id="synthetic-button" type="button" class="button-muted">Draw synthetic illustration</button>
+      <p id="photo-details" class="fineprint" aria-live="polite"></p>
+    </section>
+    <section class="commerce-panel" aria-labelledby="consent-heading">
+      <p class="step-number">02 / PRIVATE OR OPTIONAL PROVIDER</p>
+      <h2 id="consent-heading">Choose how to process</h2>
+      <fieldset class="mode-choice">
+        <legend>Processing</legend>
+        <label><input id="mode-local" type="radio" name="processing" value="local" checked> <strong>On this device</strong><span>No upload, no Skin AI, only manually selected sample shades and approximate colour overlays.</span></label>
+        <label><input id="mode-youcam" type="radio" name="processing" value="youcam"> <strong>Consented Skin AI and makeup preview</strong><span>Your selected photo is sent to the BELJOUR key proxy and may be sent to YouCam. The server limits units and falls back locally if unavailable.</span></label>
+      </fieldset>
+      <fieldset id="sharing-consent" class="consent-fieldset" disabled hidden>
+        <legend>Permission for this selected photo</legend>
+        <label><input type="checkbox" id="confirm-adult"> I confirm I am at least 18.</label>
+        <label><input type="checkbox" id="confirm-skin"> I agree to send this photo for optional Skin AI analysis and product matching.</label>
+        <label><input type="checkbox" id="confirm-makeup"> I agree to send this photo for optional YouCam makeup virtual try-on.</label>
+        <p class="fineprint">Skin AI results are cosmetic scores, not a diagnosis. The app removes EXIF metadata before uploading. Local mode stops new provider requests; delete the temporary server copy separately below.</p>
+      </fieldset>
+      <p class="fineprint">You can request deletion of previously uploaded photos even after switching to local mode or disabling the provider.</p>
+      <button id="forget-server-photo" type="button" class="button-muted">Delete temporary server photo</button>
+      <label for="depth">Your starting depth band <span class="fineprint">(1 lightest, 10 deepest)</span></label>
+      <select id="depth" name="depth"><option value="1">1 · Porcelain</option><option value="2">2 · Fair</option><option value="3">3 · Light</option><option value="4">4 · Light-medium</option><option value="5">5 · Medium</option><option value="6">6 · Medium-tan</option><option value="7">7 · Tan</option><option value="8">8 · Deep-tan</option><option value="9" selected>9 · Deep</option><option value="10">10 · Rich-deep</option></select>
+      <label for="undertone">Undertone for local suggestions</label>
+      <select id="undertone" name="undertone"><option value="cool">Cool</option><option value="neutral">Neutral</option><option value="warm" selected>Warm</option><option value="olive">Olive</option></select>
+      <label for="finish">Preferred finish</label>
+      <select id="finish" name="finish"><option value="natural">Natural</option><option value="dewy">Dewy</option><option value="satin">Satin</option><option value="matte">Matte</option></select>
+      <button id="find-matches" type="button" class="button-primary">Find fictional sample products</button>
+      <p id="commerce-status" role="status" aria-live="polite">The local option is selected. Nothing leaves this device.</p>
+    </section>
+  </div>
+  <section class="commerce-panel commerce-results" aria-labelledby="results-heading" id="products-section" hidden>
+    <div class="section-head"><div><p class="step-number">03 / SAMPLE MATCHES</p><h2 id="results-heading">Your sample picks</h2></div><p id="match-provenance" class="fineprint"></p></div>
+    <p>Products are ranked by your chosen finish, the W6 depth/undertone class and optional cosmetic concern scores. Every card explains its order.</p>
+    <div id="match-results" class="commerce-products" aria-live="polite"></div>
+    <section class="commerce-budget-tools" id="sample-budget-tools" aria-labelledby="sample-budget-title">
+      <h3 id="sample-budget-title">Compare fictional sample costs and a three-piece look</h3>
+      <p>Use the results already loaded above. Filtering and the sample total run only in the browser.
+        Your photograph, Skin AI results and account details are never stored in this comparison.</p>
+      <div class="commerce-grid">
+        <div><label for="sample-budget-dollars">Maximum sample total, CAD (tax and shipping excluded)</label>
+          <input type="number" min="0" max="1000" step="5" value="60" id="sample-budget-dollars" inputmode="numeric"></div>
+        <div><label for="sample-shopping-goal">Comparison priority</label>
+          <select id="sample-shopping-goal"><option value="balanced">Balanced sample range</option>
+            <option value="lower-cost">Lower invented sample prices</option>
+            <option value="visual-try-on">Eligible visual try-on</option>
+            <option value="shade-first">Strict depth and undertone consistency</option></select></div>
+      </div>
+      <label class="hair-checkbox"><input type="checkbox" id="sample-visual-only"> Show only sample colours with visual previews</label>
+      <button id="sample-refresh-shortlist" class="button-muted" type="button">Compare the sample picks locally</button>
+      <p id="sample-shortlist-status" role="status" aria-live="polite">Your saved sample ranking is ready for a local comparison.</p>
+      <ol id="sample-shortlist-results"></ol>
+      <button id="sample-apply-look" class="button-muted" type="button" disabled>Use this fictional three-piece look</button>
+      <p class="fineprint">No checkout, inventory, endorsements or real shade validation. Budget comparisons are fictional demonstrations.</p>
+    </section>
+  </section>
+  <div class="commerce-grid commerce-bottom">
+
+    <section class="commerce-panel look-composer" id="look-composer" aria-labelledby="look-title">
+      <p class="eyebrow">OPTIONAL · SAMPLE LOOK</p>
+      <h2 id="look-title">Combine up to three fictional cosmetic effects</h2>
+      <p>Choose one foundation, one cheek colour and one lip colour from the fictional options.
+        Local mode never uploads a photograph; provider mode requires fresh adult and makeup consent.</p>
+      <p class="simulation-disclosure"><strong>Simulation only.</strong> No real physical product or shade has been tested.</p>
+      <ol id="look-steps" aria-live="polite"></ol>
+      <p id="look-subtotal" aria-live="polite">No sample items selected</p>
+      <div class="product-actions">
+        <button type="button" id="preview-look" disabled>Preview combined look</button>
+        <button type="button" id="clear-look">Clear look</button>
+        <button type="button" id="export-look" disabled>Write portable recipe</button>
+      </div>
+      <label for="look-recipe">Portable sample recipe (product IDs and strengths only, never photos)</label>
+      <textarea id="look-recipe" rows="3" maxlength="2048" autocomplete="off" spellcheck="false"></textarea>
+      <button type="button" id="import-look">Import reviewed recipe</button>
+      <p class="fineprint">Recipes and your demo bag contain invented products, not an order.</p>
+    </section>
+
+    <section class="commerce-panel" id="try-on-section" aria-labelledby="try-heading" hidden>
+      <p class="step-number">04 / VISUAL SIMULATION</p>
+      <h2 id="try-heading">Compare the approximate result</h2>
+      <p id="preview-note" class="fineprint">An approximation only. Your original stays unchanged.</p>
+      <div class="comparison" id="comparison"><img id="before-image" alt="Original chosen portrait"><div id="after-clip" class="after-clip"><img id="after-image" alt="Cosmetic simulation on the chosen portrait"></div><span id="comparison-divider" class="comparison-divider" aria-hidden="true"></span></div>
+      <label for="compare-slider">Reveal the after image <output id="compare-output">50%</output></label>
+      <input id="compare-slider" type="range" min="0" max="100" value="50" aria-label="Reveal percentage for before and after">
+      <label for="effect-strength">Sample colour strength <output id="strength-output">50</output></label>
+      <input id="effect-strength" type="range" min="0" max="100" value="50" aria-label="Visual simulation strength">
+      <button id="update-preview" type="button" class="button-muted">Update preview</button>
+      <button id="save-preview" type="button" class="button-primary">Save preview to this device</button>
+      <p class="fineprint">YouCam results, when available, are labelled as YouCam simulations. A local fallback is separately labelled and uses no provider units.</p>
+    </section>
+    <section class="commerce-panel" aria-labelledby="bag-heading" id="bag-panel">
+      <p class="step-number">05 / YOUR DEMO BAG</p>
+      <h2 id="bag-heading">Save items, no checkout</h2>
+      <div id="bag-lines"><p>No sample items yet.</p></div>
+      <p class="bag-total" id="bag-total">Sample subtotal: $0.00 CAD</p>
+      <p id="bag-notice" class="fineprint">Sample prices only. Taxes and delivery are not calculated. No purchases can be made.</p>
+      <button id="clear-bag" type="button" class="button-muted">Clear the bag and wishlist</button>
+      <h3>Wishlist</h3>
+      <div id="wish-items"><p>No saved sample items yet.</p></div>
+    </section>
+  </div>
+  <section class="commerce-panel" id="hair-gallery" aria-labelledby="hair-gallery-heading">
+    <p class="step-number">06 / HAIR REFERENCE STYLES</p>
+    <h2 id="hair-gallery-heading">Explore tonal hair concepts, locally</h2>
+    <p class="fineprint">A separate, drawn portrait demonstrates how the local mask-limited tone engine responds to hundreds of original haircut configurations. This is not automatic hairstyle generation or a prediction of a haircut. No visitor photo or YouCam API is used here.</p>
+    <div class="commerce-grid">
+      <div>
+        <label for="hair-category">Browse style presentation (not your gender)</label>
+        <select id="hair-category"><option value="all">All styles</option><option value="masculine">Masculine-coded references</option><option value="feminine">Feminine-coded references</option><option value="unisex">Unisex references</option></select>
+        <label for="hair-search">Find a local reference style</label>
+        <input id="hair-search" type="search" autocomplete="off" maxlength="120" placeholder="Fade, bob, pixie, curls…">
+        <label for="hair-style">Hair concept</label>
+        <select id="hair-style" aria-describedby="hair-status"></select>
+        <fieldset class="hair-consultation" id="hair-consultation" aria-describedby="hair-preference-explainer">
+          <legend>Your style preferences — never inferred from a photograph</legend>
+          <p id="hair-preference-explainer" class="fineprint">Choose optional texture and fade preferences to sort original local references. Suggestions are not suitability scores, salon advice or guaranteed results.</p>
+          <label for="hair-texture">Style texture</label>
+          <select id="hair-texture"><option value="any">No preference</option><option value="straight">Straight</option><option value="wavy">Wavy</option><option value="curly">Curly</option><option value="coily">Coily</option></select>
+          <label for="hair-length-preference">Preferred length</label>
+          <select id="hair-length-preference"><option value="any">Any length</option><option value="short">Short</option><option value="medium">Medium</option><option value="long">Long</option></select>
+          <label for="hair-fade-preference">Fade height</label>
+          <select id="hair-fade-preference"><option value="any">Any height</option><option value="low">Low</option><option value="mid">Mid</option><option value="high">High</option></select>
+          <label for="hair-shape-preference">Short-side geometry</label>
+          <select id="hair-shape-preference"><option value="any">Any geometry</option><option value="classic">Classic</option><option value="skin">Skin guide</option><option value="drop">Drop</option><option value="burst">Burst</option><option value="temple">Temple</option><option value="shadow">Shadow</option></select>
+          <label for="hair-scalp-preference">Short-side scalp visibility</label>
+          <select id="hair-scalp-preference"><option value="unspecified">No preference</option><option value="keep">Prefer some coverage</option><option value="reveal">Show a close grade</option></select>
+          <label for="hair-maintenance-preference">Approximate styling minutes (0–180)</label>
+          <input id="hair-maintenance-preference" type="number" min="0" max="180" step="5" value="20" inputmode="numeric">
+          <label class="hair-checkbox"><input id="hair-short-sides-only" type="checkbox"> Prefer short-sided references</label>
+          <label class="hair-checkbox"><input id="hair-volume-preference" type="checkbox"> Prefer top emphasis</label>
+          <div class="hair-consult-actions">
+            <button id="hair-recommend" type="button" class="button-muted" disabled>Suggest local concepts</button>
+            <button id="hair-clear-recommendations" type="button" class="button-muted" disabled>Show all concepts</button>
+          </div>
+          <p id="hair-consult-status" role="status" aria-live="polite">Select optional preferences for a local-only concept list.</p>
+          <ol id="hair-consult-list" aria-label="Local hairstyle reference suggestions"></ol>
+        </fieldset>
+        <button type="button" id="hair-render" class="button-primary" disabled>Preview local hair-tone concept</button>
+        <p id="hair-status" role="status" aria-live="polite">Loading original local concepts…</p>
+      </div>
+      <div class="commerce-grid">
+        <figure class="photo-well"><img id="hair-original" alt="Original geometrically drawn portrait before a tonal simulation"><figcaption>Original drawing</figcaption></figure>
+        <figure class="photo-well"><img id="hair-result" alt="Local simulated hair tone on the same geometric illustration"><figcaption>Tonal simulation</figcaption></figure>
+      </div>
+    </div>
+    <section class="hair-palette-workshop" aria-labelledby="hair-palette-title">
+      <h3 id="hair-palette-title">Men’s hair-colour palette and topical hair fibres</h3>
+      <p>Try original, fictional screen colours or a topical hair-fibre appearance guide on an intentionally
+        drawn patch of hair. Only the synthetic illustration is supported; this does not classify or edit your photograph.</p>
+      <div class="commerce-grid">
+        <fieldset class="hair-palette-controls">
+          <legend>Manually choose a local screen shade</legend>
+          <label for="hair-colour-swatch">Fictional hair colour swatch</label>
+          <select id="hair-colour-swatch" aria-describedby="hair-colour-status"></select>
+          <label for="hair-colour-region">Colour area</label>
+          <select id="hair-colour-region"><option value="all">Existing illustrated hair</option>
+            <option value="crown">Crown</option><option value="roots">Hairline / roots</option>
+            <option value="sides">Sides</option></select>
+          <label for="hair-colour-strength">Colour overlay intensity</label>
+          <input type="range" id="hair-colour-strength" min="0" max="100" value="82">
+          <label for="hair-fibre-strength">Illustrative hair-fibre strength</label>
+          <input type="range" id="hair-fibre-strength" min="0" max="100" value="88">
+          <p class="fineprint" id="hair-colour-status" role="status" aria-live="polite">Local colour palette loading.</p>
+          <p class="fineprint" id="hair-fibre-status" role="status" aria-live="polite">Local topical comparison loading.</p>
+        </fieldset>
+        <div class="hair-palette-comparisons">
+          <figure class="photo-well"><img id="hair-colour-result" alt="Original drawing with a simulated user-selected hair colour"><figcaption>Hair tint · screen-only simulation</figcaption></figure>
+          <div class="commerce-grid">
+            <figure class="photo-well"><img id="hair-fibre-original" alt="Intentionally drawn thinning patch, before simulated cosmetic fibres"><figcaption>Before · drawn patch</figcaption></figure>
+            <figure class="photo-well"><img id="hair-fibre-result" alt="Same drawing after cosmetic fibre appearance simulation"><figcaption>After · not hair restoration</figcaption></figure>
+          </div>
+        </div>
+      </div>
+      <p class="fineprint">The display palette does not predict professional dye colour or real fibre coverage.
+        No medical or hair-restoration claims, analysis, purchases or network calls.</p>
+    </section>
+    <p class="fineprint">Nothing outside the drawn hair/scalp mask is changed. On a real photograph, hairstyle rendering requires independently validated landmarks and a cleared hair mask, and is not enabled by this gallery.</p>
+  </section>
+</main>
+<footer class="commerce-footer"><span>Original sample catalogue · John Khan</span> <span>Local visual effects are simulations, not real shade tests.</span> <a href="trust.html">Privacy and trust</a></footer>
+<script type="module" src="js/commerce/page.js"></script>
+
+<!-- R18 Lane C: preloaded static catalogues; no runtime network call or provider token. -->
+<script src="js/commerce-static-data.js"></script>
+
+</body>
+</html>

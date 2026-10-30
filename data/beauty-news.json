@@ -1,0 +1,1050 @@
+{
+ "format": "beljour-beauty-news/1",
+ "version": 1,
+ "updated": "2026-10-29",
+ "author": "John Khan",
+ "note": "Our own plain summaries of new and trending skincare ingredients and product types. No brands, no paid placement. Each entry cites the non-commercial sources it rests on (docs/NEWS-SOURCES.md). Cosmetic information, not medical advice.",
+ "entries": [
+  {
+   "id": "pdrn-serums",
+   "title": "PDRN and polynucleotide serums",
+   "aka": "Salmon DNA",
+   "kind": "ingredient",
+   "what": "Purified fragments of DNA, usually from salmon or trout, sold as serums and creams and given as injections in clinics.",
+   "does": "Most published work is on injections given by clinicians, and it is small: in a two-person report, injections eased facial redness. There is little published evidence yet that serums you apply at home do the same.",
+   "evidence": "early",
+   "concerns": [
+    "redness",
+    "ageing",
+    "texture"
+   ],
+   "suits": "Curious about a trend and happy to treat it as an experiment.",
+   "careful": "Fish allergy: check the source on the label. Injections are a medical procedure; have them only from a licensed clinician.",
+   "found": [
+    "k-beauty and j-beauty shops",
+    "online shops",
+    "clinics"
+   ],
+   "picture": "hyaluronic-serum",
+   "picture_alt": "A plain dropper bottle of serum",
+   "try": "Use it alone for 28 days, with nothing else new, log the nights you use it, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Clinical effects of polynucleotide with hyaluronic acid intradermal injections on facial erythema",
+     "publisher": "Skin Research and Technology (PMC)",
+     "year": 2024,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11388635/"
+    },
+    {
+     "title": "The Effectiveness of Polynucleotides in Esthetic Medicine: A Systematic Review",
+     "publisher": "PubMed",
+     "kind": "peer-reviewed",
+     "read": "title only",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/39645667/"
+    }
+   ]
+  },
+  {
+   "id": "exosome-products",
+   "title": "Exosome serums and treatments",
+   "kind": "product type",
+   "what": "Tiny particles released by cells, often stem cells and in some products plant cells, sold in serums and used in clinics after treatments such as microneedling.",
+   "does": "Lab work suggests they carry signals that may support skin repair, but human studies are few and small. In the United States the FDA says there are no approved exosome products, and it has warned about unapproved ones marketed to treat conditions.",
+   "evidence": "early",
+   "concerns": [
+    "ageing",
+    "texture"
+   ],
+   "suits": "Someone who wants to follow the research before spending on it.",
+   "careful": "Avoid exosome injections, or use on broken skin, outside a regulated clinic. Ask where the exosomes come from and how the product was tested.",
+   "found": [
+    "clinics",
+    "online shops",
+    "k-beauty and j-beauty shops"
+   ],
+   "picture": null,
+   "try": "If you try a cosmetic serum, use it alone for 28 days, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Consumer Alert on Regenerative Medicine Products Including Stem Cells and Exosomes",
+     "publisher": "US Food and Drug Administration",
+     "year": 2024,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://www.fda.gov/vaccines-blood-biologics/consumers-biologics/consumer-alert-regenerative-medicine-products-including-stem-cells-and-exosomes"
+    },
+    {
+     "title": "Exosomes for Aesthetic Dermatology: A Comprehensive Literature Review and Update",
+     "publisher": "PMC",
+     "kind": "peer-reviewed",
+     "read": "title only",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11704993/"
+    }
+   ]
+  },
+  {
+   "id": "signal-peptides",
+   "title": "Signal peptides",
+   "kind": "ingredient",
+   "what": "Short chains of amino acids in serums and creams, meant to signal skin to make more collagen. Palmitoyl pentapeptide-4 is one of the most tested.",
+   "does": "Some placebo-controlled studies of single peptides report small improvements in the look of fine lines. Many studies are small, some are run by makers, and many test a peptide mixed with other ingredients, so the peptide's own effect is hard to separate.",
+   "evidence": "some-trials",
+   "concerns": [
+    "ageing",
+    "texture"
+   ],
+   "suits": "Skin that can't take retinoids and wants a gentle option for fine lines.",
+   "careful": "Usually gentle. Patch test if fragrance or other ingredients in the same product have bothered you before.",
+   "found": [
+    "drugstore",
+    "pharmacy",
+    "online shops"
+   ],
+   "picture": "niacinamide-serum",
+   "picture_alt": "A plain dropper bottle of serum",
+   "try": "Use it alone for 28 days, log the nights, then check in. Fine-line changes are slow, so expect little at 28 days.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Topical Peptide Treatments with Effective Anti-Aging Results",
+     "publisher": "Cosmetics (MDPI)",
+     "year": 2017,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://mdpi.com/2079-9284/4/2/16"
+    }
+   ]
+  },
+  {
+   "id": "copper-peptides",
+   "title": "Copper peptides",
+   "kind": "ingredient",
+   "what": "A small peptide bound to copper (copper tripeptide) in serums and creams.",
+   "does": "Of the cosmetic peptides it has more human trials than most, reporting improvements in the look of fine lines and firmness. The trials are still small.",
+   "evidence": "some-trials",
+   "concerns": [
+    "ageing",
+    "texture"
+   ],
+   "suits": "Someone who wants a peptide with a little more research behind it.",
+   "careful": "Introduce it on its own so you can tell how your skin responds.",
+   "found": [
+    "online shops",
+    "pharmacy"
+   ],
+   "picture": "niacinamide-serum",
+   "picture_alt": "A plain dropper bottle of serum",
+   "try": "Use it alone for 28 days, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Topical Peptide Treatments with Effective Anti-Aging Results",
+     "publisher": "Cosmetics (MDPI)",
+     "year": 2017,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://mdpi.com/2079-9284/4/2/16"
+    }
+   ]
+  },
+  {
+   "id": "ceramide-creams",
+   "title": "Ceramide barrier-repair creams",
+   "kind": "product type",
+   "what": "Moisturisers with ceramides, the fats that help hold the outer layer of skin together, usually with water-attracting ingredients such as glycerin and a film that slows water loss.",
+   "does": "Help dry or irritated skin hold water and support the skin barrier. Reviews report they sit well alongside acne and rosacea treatments. It is not settled whether applied ceramides join the skin's own fats or mainly work as a good moisturiser.",
+   "evidence": "some-trials",
+   "concerns": [
+    "dryness",
+    "redness"
+   ],
+   "suits": "Dry, tight or easily irritated skin, and skin going through drying acne treatments.",
+   "careful": "Fragrance or preservatives can still irritate. Very rich creams can block pores on acne-prone skin.",
+   "found": [
+    "drugstore",
+    "pharmacy"
+   ],
+   "picture": "ceramide-cream",
+   "picture_alt": "A plain jar of barrier cream",
+   "try": "Use it every night for 28 days in place of your usual moisturiser, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Multivesicular Emulsion Ceramide-containing Moisturizers: An Evaluation of Their Role in the Management of Common Skin Disorders",
+     "publisher": "Journal of Clinical and Aesthetic Dermatology (PMC)",
+     "year": 2016,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5300724"
+    },
+    {
+     "title": "Emollients and moisturisers",
+     "publisher": "DermNet",
+     "kind": "dermatology reference",
+     "read": "full text",
+     "url": "https://www.dermnetnz.org/topics/emollients-and-moisturisers/"
+    }
+   ]
+  },
+  {
+   "id": "mineral-sunscreen",
+   "title": "Mineral sunscreens (zinc oxide and titanium dioxide)",
+   "kind": "product type",
+   "what": "Sunscreens whose UV filters are zinc oxide, titanium dioxide or both.",
+   "does": "In its 2019 sunscreen proposal the FDA named these two filters as the ones it proposed as safe and effective, and asked for more safety data on twelve others. Dermatologists advise a broad-spectrum SPF 30 or higher.",
+   "evidence": "well-studied",
+   "concerns": [
+    "dark-spots",
+    "ageing",
+    "redness"
+   ],
+   "suits": "Anyone who prefers these two filters.",
+   "careful": "It still only works with enough product: about a teaspoon for the face and neck, again about every two hours outdoors and after swimming or sweating.",
+   "found": [
+    "drugstore",
+    "pharmacy"
+   ],
+   "picture": "sunscreen",
+   "picture_alt": "A plain tube of face sunscreen",
+   "try": "Use it every morning for 28 days, log the days, then check in; fewer new dark spots is the thing to watch.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "FDA Proposes Sunscreen Regulation Changes (February 2019 summary)",
+     "publisher": "US Food and Drug Administration",
+     "year": 2019,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://www.fda.gov/media/124654/download"
+    },
+    {
+     "title": "Sunscreen Protection and Sunscreen Use: position statement",
+     "publisher": "Canadian Dermatology Association",
+     "year": 2022,
+     "kind": "dermatology association",
+     "read": "full text",
+     "url": "https://dermatology.ca/wp-content/uploads/2022/05/Sunscreen-Protection-and-Sunscreen-Use-Position-Statement-EN.pdf"
+    }
+   ]
+  },
+  {
+   "id": "bemotrizinol",
+   "title": "Bemotrizinol, a UV filter proposed in the United States",
+   "kind": "rule change",
+   "what": "A broad-spectrum UV filter that has been used in sunscreens in many countries.",
+   "does": "In December 2025 the FDA proposed adding it to the list of filters allowed in US sunscreens. The proposal is not final; the FDA said it would issue a final order only after public comment.",
+   "evidence": "rule-change",
+   "concerns": [
+    "dark-spots",
+    "ageing"
+   ],
+   "suits": "Anyone choosing a sunscreen; which filters you can buy depends on where you live.",
+   "careful": "A new filter does not change the basics: enough product, broad spectrum, reapply.",
+   "found": [
+    "drugstore",
+    "pharmacy"
+   ],
+   "picture": "sunscreen",
+   "picture_alt": "A plain tube of face sunscreen",
+   "try": "Whatever filter you pick, use it every morning for 28 days, log the days, then check in.",
+   "trial": false,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "FDA Proposes Expanding Sunscreen Active Ingredient List",
+     "publisher": "US Food and Drug Administration",
+     "year": 2025,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://www.fda.gov/news-events/press-announcements/fda-proposes-expanding-sunscreen-active-ingredient-list"
+    }
+   ]
+  },
+  {
+   "id": "tinted-sunscreen",
+   "title": "Tinted sunscreens with iron oxides",
+   "kind": "product type",
+   "what": "Sunscreens tinted with iron oxide pigments, which also block some visible light, not only UV.",
+   "does": "In a randomised trial of people with melasma who all used a fading cream, a sunscreen that also blocked visible light did better than a UV-only one over 8 weeks. A 2025 summer study, funded by a maker, found the tinted one reduced the colour contrast of patches more, though severity scores fell in both groups.",
+   "evidence": "some-trials",
+   "concerns": [
+    "dark-spots"
+   ],
+   "suits": "People with melasma or dark patches that come back after sun.",
+   "careful": "Choose a shade that matches your own skin, never a lighter one.",
+   "found": [
+    "drugstore",
+    "pharmacy",
+    "k-beauty and j-beauty shops"
+   ],
+   "picture": "skin-tint",
+   "picture_alt": "A plain tube of tinted sunscreen",
+   "try": "Use it every morning for 28 days, log the days, then check in on your dark spots.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Near-visible light and UV photoprotection in the treatment of melasma: a double-blind randomized trial",
+     "publisher": "PubMed",
+     "year": 2013,
+     "kind": "peer-reviewed",
+     "read": "abstract",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/24313385/"
+    },
+    {
+     "title": "Comparison of Visible Light-Protective Tinted Sunscreen to Untinted Sunscreen to Protect Melasma Patients During Summer",
+     "publisher": "Journal of Cosmetic Dermatology (PMC)",
+     "year": 2025,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12475913/"
+    },
+    {
+     "title": "Photoprotection beyond ultraviolet radiation: A review of tinted sunscreens",
+     "publisher": "PubMed",
+     "kind": "peer-reviewed",
+     "read": "title only",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/32335182/"
+    }
+   ]
+  },
+  {
+   "id": "spf-makeup",
+   "title": "Skin tints and makeup with SPF",
+   "kind": "product type",
+   "what": "Skin tints, foundations and powders that carry an SPF number.",
+   "does": "At the thin layer most people actually apply, a 2021 study measured SPF far below the label for every product. Putting sunscreen on first and makeup over it raised protection well above either alone.",
+   "evidence": "some-trials",
+   "concerns": [
+    "dark-spots",
+    "ageing"
+   ],
+   "suits": "Anyone who likes light coverage, used over a sunscreen rather than instead of it.",
+   "careful": "Don't count makeup as your only sunscreen. For the face and neck, dermatologists advise about a teaspoon of sunscreen.",
+   "found": [
+    "drugstore",
+    "online shops"
+   ],
+   "picture": "foundation-sheer",
+   "picture_alt": "A plain bottle of sheer foundation",
+   "try": "Wear sunscreen under it every morning for 28 days, log the days, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Study of sunscreen and makeup SPF at typical applied amounts, and layering (PubMed 33660348)",
+     "publisher": "PubMed",
+     "year": 2021,
+     "kind": "peer-reviewed",
+     "read": "abstract",
+     "url": "https://www.pubmed.gov/33660348/"
+    },
+    {
+     "title": "Sunscreen Protection and Sunscreen Use: position statement",
+     "publisher": "Canadian Dermatology Association",
+     "year": 2022,
+     "kind": "dermatology association",
+     "read": "full text",
+     "url": "https://dermatology.ca/wp-content/uploads/2022/05/Sunscreen-Protection-and-Sunscreen-Use-Position-Statement-EN.pdf"
+    }
+   ]
+  },
+  {
+   "id": "bakuchiol",
+   "title": "Bakuchiol",
+   "kind": "ingredient",
+   "what": "A plant extract from babchi seeds, sold as a gentler alternative to retinol.",
+   "does": "In one 12-week randomised double-blind trial of 44 people, bakuchiol 0.5% twice a day and retinol 0.5% once a day both reduced wrinkle area and pigmentation by similar amounts, and bakuchiol caused less scaling and stinging.",
+   "evidence": "some-trials",
+   "concerns": [
+    "ageing",
+    "dark-spots"
+   ],
+   "suits": "Skin that peels or stings on retinol.",
+   "careful": "One main trial so far. Patch test. If pregnant or breastfeeding, ask a doctor or pharmacist before starting any new active.",
+   "found": [
+    "drugstore",
+    "online clean-beauty shops"
+   ],
+   "picture": null,
+   "try": "Use it alone for 28 days, log the nights, then check in. The trial ran 12 weeks, so 28 days is an early look.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Prospective, randomized, double-blind assessment of topical bakuchiol and retinol for facial photoageing",
+     "publisher": "British Journal of Dermatology (PubMed)",
+     "year": 2019,
+     "kind": "peer-reviewed",
+     "read": "abstract",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/29947134/"
+    }
+   ]
+  },
+  {
+   "id": "retinal",
+   "title": "Retinal (retinaldehyde)",
+   "kind": "ingredient",
+   "what": "A form of vitamin A one conversion step from retinoic acid, where retinol needs two.",
+   "does": "Because of that, reviews describe it as stronger than retinol. Prescription retinoic acid is stronger still, with more redness, dryness and irritation.",
+   "evidence": "some-trials",
+   "concerns": [
+    "ageing",
+    "texture"
+   ],
+   "suits": "Someone already used to retinol who wants a step up without a prescription.",
+   "careful": "Not for pregnancy or when planning one: European medicines advice says topical retinoid medicines must not be used then, so ask a doctor before using any vitamin A product. Start a few nights a week; dryness and peeling are common at first.",
+   "found": [
+    "pharmacy",
+    "online shops"
+   ],
+   "picture": "retinoid-cream",
+   "picture_alt": "A plain tube of night cream",
+   "try": "Start two or three nights a week, log each night, and check in at 28 days.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "A Clinician's Guide to Topical Retinoids",
+     "publisher": "Journal of Cutaneous Medicine and Surgery (PMC)",
+     "year": 2021,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8750127"
+    },
+    {
+     "title": "Updated measures for pregnancy prevention during retinoid use",
+     "publisher": "European Medicines Agency",
+     "year": 2018,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://www.ema.europa.eu/de/news/updated-measures-pregnancy-prevention-during-retinoid-use"
+    }
+   ]
+  },
+  {
+   "id": "adapalene",
+   "title": "Adapalene gel 0.1% without a prescription",
+   "kind": "ingredient",
+   "what": "A retinoid gel for acne. The FDA approved the 0.1% gel for sale without a prescription in the United States, the first retinoid sold that way, for people aged 12 and up.",
+   "does": "Used once a day to treat acne. It was a prescription medicine from 1996 before the switch.",
+   "evidence": "well-studied",
+   "concerns": [
+    "breakouts",
+    "texture"
+   ],
+   "suits": "Mild to moderate acne in teens and adults who can stick with it for weeks.",
+   "careful": "Redness, peeling, dryness, itching, stinging and more sun sensitivity are common at first. If pregnant, planning a pregnancy or breastfeeding, ask a doctor before use.",
+   "found": [
+    "drugstore",
+    "pharmacy"
+   ],
+   "picture": "retinoid-cream",
+   "picture_alt": "A plain tube of gel",
+   "try": "Use a thin layer at night for 28 days, log the nights, then check in; acne can look worse before it looks better.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "FDA approves adapalene gel 0.1% for over-the-counter acne treatment (news update)",
+     "publisher": "US Food and Drug Administration",
+     "year": 2016,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://fda.gov/media/102714/download"
+    }
+   ]
+  },
+  {
+   "id": "trifarotene",
+   "title": "Trifarotene, a prescription retinoid",
+   "kind": "ingredient",
+   "what": "A prescription retinoid cream the FDA approved in October 2019 for acne, from age 9.",
+   "does": "The first topical retinoid studied on acne of both the face and the chest and back. In large trials more people reached clear or almost clear skin than with the plain cream base.",
+   "evidence": "well-studied",
+   "concerns": [
+    "breakouts"
+   ],
+   "suits": "Acne on the face, chest or back, through a dermatologist or doctor.",
+   "careful": "Irritation (redness, scaling, dryness, stinging) is common at first. Retinoids are avoided in pregnancy; talk to the prescriber.",
+   "found": [
+    "prescription"
+   ],
+   "picture": null,
+   "try": "If it is prescribed, log the nights and check in at 28 days to bring real numbers to your follow-up.",
+   "trial": false,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Assessing the Safety and Efficacy of Trifarotene in the Treatment of Acne Vulgaris",
+     "publisher": "Therapeutics and Clinical Risk Management",
+     "year": 2021,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://www.dovepress.com/assessing-the-safety-and-efficacy-of-trifarotene-in-the-treatment-of-a-peer-reviewed-fulltext-article-TCRM"
+    }
+   ]
+  },
+  {
+   "id": "clascoterone",
+   "title": "Clascoterone cream, a prescription acne cream",
+   "kind": "ingredient",
+   "what": "A cream that blocks androgen hormones where it is applied: a different way of treating acne from retinoids and antibiotics.",
+   "does": "In two 12-week trials of 1,440 people with moderate to severe acne, about 18 to 20% reached treatment success, against 7 to 9% on the plain cream base.",
+   "evidence": "well-studied",
+   "concerns": [
+    "breakouts"
+   ],
+   "suits": "People aged 12 and up with acne, through a doctor.",
+   "careful": "Skin irritation in 7 to 12% of people. Lab signs of adrenal suppression and high potassium were seen in a small number. Pregnancy data are limited.",
+   "found": [
+    "prescription"
+   ],
+   "picture": null,
+   "try": "If it is prescribed, log the nights and check in at 28 days to bring real numbers to your follow-up.",
+   "trial": false,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Clascoterone cream for acne (drug review)",
+     "publisher": "American Family Physician (American Academy of Family Physicians)",
+     "year": 2021,
+     "kind": "medical association",
+     "read": "full text",
+     "url": "https://www.aafp.org/pubs/afp/issues/2021/0700/p93.pdf"
+    }
+   ]
+  },
+  {
+   "id": "azelaic-acid",
+   "title": "Azelaic acid",
+   "kind": "ingredient",
+   "what": "A gentle acid in creams, gels and lotions; 15% and 20% strengths are registered medicines in some countries.",
+   "does": "Used for mild to moderate acne, the bumps of rosacea, and the marks acne leaves behind and melasma.",
+   "evidence": "well-studied",
+   "concerns": [
+    "breakouts",
+    "redness",
+    "dark-spots"
+   ],
+   "suits": "Acne-prone or rosacea-prone skin, and people who want an option besides benzoyl peroxide.",
+   "careful": "Very sensitive skin or eczema can sting. It can make skin slightly paler where applied, more noticeable on darker skin. Worsening of asthma has been reported. Stop and get advice for severe redness, scaling or burning.",
+   "found": [
+    "pharmacy",
+    "drugstore",
+    "prescription"
+   ],
+   "picture": "azelaic-cream",
+   "picture_alt": "A plain tube of azelaic acid cream",
+   "try": "Use it alone for 28 days, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Azelaic acid",
+     "publisher": "DermNet",
+     "kind": "dermatology reference",
+     "read": "full text",
+     "url": "https://dermnetnz.org/topics/azelaic-acid"
+    },
+    {
+     "title": "FAQs: Benzene in acne products containing benzoyl peroxide",
+     "publisher": "American Academy of Dermatology",
+     "kind": "dermatology association",
+     "read": "full text",
+     "url": "https://www.aad.org/public/diseases/a-z/benzoyl-peroxide-faqs"
+    }
+   ]
+  },
+  {
+   "id": "tranexamic-acid",
+   "title": "Tranexamic acid serums and creams",
+   "kind": "ingredient",
+   "what": "A medicine that is also used on the skin, in serums and creams, for melasma.",
+   "does": "In a 2025 randomised trial of 50 women, a 5% cream twice a day lowered melasma scores about as much as tablets did over 12 weeks.",
+   "evidence": "some-trials",
+   "concerns": [
+    "dark-spots"
+   ],
+   "suits": "Melasma and stubborn dark patches, used with daily sunscreen.",
+   "careful": "One person in the cream group stopped because of redness and itching. Tablets are a prescription medicine with blood-clot cautions, and using it for skin is off-label in many places; ask a doctor about tablets.",
+   "found": [
+    "pharmacy",
+    "online shops",
+    "k-beauty and j-beauty shops",
+    "prescription"
+   ],
+   "picture": "hyaluronic-serum",
+   "picture_alt": "A plain dropper bottle of serum",
+   "try": "Use it alone, with sunscreen every day, for 28 days, log the nights, then check in on your dark spots.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Randomized Clinical Trial on the Efficacy of Oral Tranexamic Acid Versus Topical Tranexamic Acid in Treatment of Melasma",
+     "publisher": "Journal of Cosmetic Dermatology (PMC)",
+     "year": 2025,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12418907"
+    },
+    {
+     "title": "Tranexamic acid",
+     "publisher": "DermNet",
+     "kind": "dermatology reference",
+     "read": "full text",
+     "url": "https://dermnetnz.org/topics/tranexamic-acid"
+    }
+   ]
+  },
+  {
+   "id": "cysteamine",
+   "title": "Cysteamine cream",
+   "kind": "ingredient",
+   "what": "A short-contact cream for melasma and other dark patches: on for about 15 minutes, then washed off.",
+   "does": "A randomised placebo-controlled trial found it faded epidermal melasma. Change may show at 6 weeks, with more at 8 to 12.",
+   "evidence": "some-trials",
+   "concerns": [
+    "dark-spots"
+   ],
+   "suits": "Melasma or marks after spots, for someone who will keep to the timed routine.",
+   "careful": "Warmth, burning or redness for up to 30 minutes is common, and it smells of sulphur. It is for patches of extra pigment, not for changing your overall skin colour.",
+   "found": [
+    "pharmacy",
+    "dermatologist offices"
+   ],
+   "picture": null,
+   "try": "Follow the timed routine for 28 days, log the nights, then check in on your dark spots.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Cysteamine cream",
+     "publisher": "DermNet",
+     "year": 2017,
+     "kind": "dermatology reference",
+     "read": "full text",
+     "url": "https://pro.dermnetnz.org/topics/cysteamine-cream"
+    }
+   ]
+  },
+  {
+   "id": "niacinamide",
+   "title": "Niacinamide",
+   "kind": "ingredient",
+   "what": "A form of vitamin B3 in serums and moisturisers, usually at 2 to 5%.",
+   "does": "Studies report less water loss through the skin, less oil and shine, fewer acne spots (a 4% gel did as well as an antibiotic gel in one trial), and in older skin, less blotchiness and redness.",
+   "evidence": "well-studied",
+   "concerns": [
+    "breakouts",
+    "redness",
+    "dark-spots",
+    "dryness",
+    "ageing"
+   ],
+   "suits": "Most skin types, including people who can't use retinoids or fruit acids.",
+   "careful": "Usually well tolerated; twice a day can dry the skin. It is not a sunscreen.",
+   "found": [
+    "drugstore",
+    "pharmacy",
+    "k-beauty and j-beauty shops"
+   ],
+   "picture": "niacinamide-serum",
+   "picture_alt": "A plain dropper bottle of niacinamide serum",
+   "try": "Use it alone for 28 days, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Nicotinamide",
+     "publisher": "DermNet",
+     "kind": "dermatology reference",
+     "read": "full text",
+     "url": "https://dermnetnz.org/topics/nicotinamide"
+    }
+   ]
+  },
+  {
+   "id": "vitamin-c",
+   "title": "Vitamin C serums",
+   "kind": "ingredient",
+   "what": "Serums with L-ascorbic acid, the most studied form, or more stable forms of it.",
+   "does": "Small placebo-controlled studies report improvement in the look of sun-related lines. A strong formula reduced melasma in one study, though it is likely less effective than prescription fading creams. About 10 to 20% is typical; above 20% adds irritation without more benefit.",
+   "evidence": "some-trials",
+   "concerns": [
+    "dark-spots",
+    "ageing"
+   ],
+   "suits": "Morning use under sunscreen, for dull skin or early sun marks.",
+   "careful": "Low-pH serums can sting sensitive skin.",
+   "found": [
+    "drugstore",
+    "pharmacy",
+    "online shops",
+    "k-beauty and j-beauty shops"
+   ],
+   "picture": "vitamin-c-serum",
+   "picture_alt": "A plain amber dropper bottle of vitamin C serum",
+   "try": "Use it each morning under sunscreen for 28 days, log the days, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Topical Vitamin C and the Skin: Mechanisms of Action and Clinical Applications",
+     "publisher": "Journal of Clinical and Aesthetic Dermatology (PMC)",
+     "year": 2017,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5605218/"
+    }
+   ]
+  },
+  {
+   "id": "alpha-arbutin",
+   "title": "Alpha-arbutin strength limits in the EU",
+   "kind": "rule change",
+   "what": "Alpha-arbutin is sold in serums aimed at dark spots. It is one of the substances that can release hydroquinone.",
+   "does": "EU safety scientists judged it safe up to 2% in face creams and 0.5% in body lotions, and a 2024 EU regulation set those limits, with transition dates from 2025.",
+   "evidence": "rule-change",
+   "concerns": [
+    "dark-spots"
+   ],
+   "suits": "Anyone comparing dark-spot serums: the EU limit is a useful check on strength.",
+   "careful": "Combining it with other hydroquinone-releasing products was not part of the safety assessment.",
+   "found": [
+    "online shops",
+    "k-beauty and j-beauty shops",
+    "drugstore"
+   ],
+   "picture": "hyaluronic-serum",
+   "picture_alt": "A plain dropper bottle of serum",
+   "try": "If you try a dark-spot serum, use it alone with daily sunscreen for 28 days, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Scientific Committee on Consumer Safety opinion on alpha-arbutin (SCCS/1552/15)",
+     "publisher": "European Commission, Scientific Committee on Consumer Safety",
+     "year": 2015,
+     "kind": "regulator",
+     "read": "summary page",
+     "url": "https://health.ec.europa.eu/publications/arbutin_en"
+    },
+    {
+     "title": "Commission Regulation (EU) 2024/996 on Vitamin A, Alpha-Arbutin and Arbutin in cosmetic products",
+     "publisher": "EUR-Lex",
+     "year": 2024,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://eur-lex.europa.eu/eli/reg/2024/996/oj"
+    }
+   ]
+  },
+  {
+   "id": "vitamin-a-limits",
+   "title": "Retinol strength limits in the EU",
+   "kind": "rule change",
+   "what": "Retinol and its esters (retinyl acetate, retinyl palmitate) are the vitamin A forms in most cosmetic night creams.",
+   "does": "A 2024 EU regulation caps them at 0.3% retinol equivalent in face and most other products and 0.05% in body lotions, with transition dates from 2025.",
+   "evidence": "rule-change",
+   "concerns": [
+    "ageing",
+    "texture"
+   ],
+   "suits": "Anyone comparing retinol products; higher strengths may still be sold elsewhere.",
+   "careful": "Not for pregnancy or when planning one: European medicines advice says topical retinoid medicines must not be used then, so ask a doctor before using any vitamin A product.",
+   "found": [
+    "drugstore",
+    "pharmacy",
+    "online shops"
+   ],
+   "picture": "retinoid-cream",
+   "picture_alt": "A plain tube of night cream",
+   "try": "Start two or three nights a week, log each night, and check in at 28 days.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Commission Regulation (EU) 2024/996 on Vitamin A, Alpha-Arbutin and Arbutin in cosmetic products",
+     "publisher": "EUR-Lex",
+     "year": 2024,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://eur-lex.europa.eu/eli/reg/2024/996/oj"
+    },
+    {
+     "title": "Updated measures for pregnancy prevention during retinoid use",
+     "publisher": "European Medicines Agency",
+     "year": 2018,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://www.ema.europa.eu/de/news/updated-measures-pregnancy-prevention-during-retinoid-use"
+    }
+   ]
+  },
+  {
+   "id": "microbiome-skincare",
+   "title": "Microbiome skincare (prebiotics, probiotics and postbiotics)",
+   "kind": "product type",
+   "what": "Products meant to support the bacteria that live on skin, with food for them, bacteria, or what bacteria make.",
+   "does": "An imbalance of skin bacteria is linked with acne and eczema, but evidence that these products change either is early.",
+   "evidence": "early",
+   "concerns": [
+    "breakouts",
+    "dryness",
+    "redness"
+   ],
+   "suits": "Someone curious, and happy to judge it on what their own skin does.",
+   "careful": "Ask what was tested: many claims come from lab work, not people.",
+   "found": [
+    "online clean-beauty shops",
+    "drugstore",
+    "k-beauty and j-beauty shops"
+   ],
+   "picture": "moisturiser-light",
+   "picture_alt": "A plain pump bottle of light moisturiser",
+   "try": "Use it alone for 28 days, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Skin Deep: The Potential of Microbiome Cosmetics",
+     "publisher": "Journal of Microbiology (PubMed)",
+     "year": 2024,
+     "kind": "peer-reviewed",
+     "read": "abstract",
+     "url": "https://pubmed.ncbi.nlm.nih.gov/38625646/"
+    }
+   ]
+  },
+  {
+   "id": "hydrocolloid-patches",
+   "title": "Hydrocolloid pimple patches",
+   "kind": "product type",
+   "what": "Small gel stickers, the same material as some wound dressings, placed over a spot.",
+   "does": "A dermatology association says they can protect a spot and help it heal, and they stop you picking. Picking or squeezing raises the risk of infection, scars and marks, more so on darker skin.",
+   "evidence": "early",
+   "concerns": [
+    "breakouts"
+   ],
+   "suits": "The odd spot you are tempted to pick.",
+   "careful": "See a dermatologist if a spot doesn't improve or you have several deep, painful ones.",
+   "found": [
+    "drugstore",
+    "pharmacy",
+    "k-beauty and j-beauty shops"
+   ],
+   "picture": "spot-patches",
+   "picture_alt": "A plain sheet of round spot patches",
+   "try": "Log the nights you wear one, then check in at 28 days.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Dermatologists' tips for treating a painful pimple at home (news page)",
+     "publisher": "American Academy of Dermatology",
+     "kind": "dermatology association",
+     "read": "full text",
+     "url": "https://aad.org/news/how-to-treat-painful-pimple-home"
+    },
+    {
+     "title": "Narrative Review of the Use of Hydrocolloids in Dermatology: Applications and Benefits",
+     "publisher": "PMC",
+     "kind": "peer-reviewed",
+     "read": "title only",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11856799/"
+    }
+   ]
+  },
+  {
+   "id": "microneedle-patches",
+   "title": "Microneedle spot patches",
+   "kind": "product type",
+   "what": "Patches with tiny points that dissolve into a spot, sometimes carrying an ingredient.",
+   "does": "In one randomised trial of 35 people, dissolving microneedle patches cleared inflamed spots in about 5 to 7 days against 8 for untreated spots, and redness after the spot eased faster. Patches without the steroid some carried also helped.",
+   "evidence": "early",
+   "concerns": [
+    "breakouts",
+    "redness"
+   ],
+   "suits": "A single inflamed spot.",
+   "careful": "The steroid patches in the trial are medicines. Use cosmetic patches as directed and not on broken skin.",
+   "found": [
+    "k-beauty and j-beauty shops",
+    "drugstore",
+    "online shops"
+   ],
+   "picture": "spot-patches",
+   "picture_alt": "A plain sheet of round spot patches",
+   "try": "Log the nights you use one, then check in at 28 days.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Efficacy and Safety of Detachable Microneedle Patch Containing Triamcinolone Acetonide in the Treatment of Inflammatory Acne",
+     "publisher": "Clinical, Cosmetic and Investigational Dermatology (PMC)",
+     "year": 2023,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10252967/"
+    }
+   ]
+  },
+  {
+   "id": "benzoyl-peroxide-storage",
+   "title": "Benzoyl peroxide: storage and benzene testing",
+   "kind": "rule change",
+   "what": "Benzoyl peroxide is a common acne ingredient in washes, gels and creams. It can break down into benzene with heat or long storage.",
+   "does": "In 2025 the FDA tested 95 acne products: more than 90% had no detectable or extremely low benzene, a few were recalled, and the FDA called the cancer risk very low.",
+   "evidence": "rule-change",
+   "concerns": [
+    "breakouts"
+   ],
+   "suits": "Anyone already using it.",
+   "careful": "Store it at room temperature or cooler, throw it out if it has been left in high heat (above about 26 °C / 78 °F), replace it every 10 to 12 weeks, and bin anything past its expiry date.",
+   "found": [
+    "drugstore",
+    "pharmacy"
+   ],
+   "picture": "benzoyl-gel",
+   "picture_alt": "A plain tube of spot gel",
+   "try": "Log the nights you use it, then check in at 28 days.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Limited voluntary recalls after FDA testing of acne products for benzene (alert)",
+     "publisher": "US Food and Drug Administration",
+     "year": 2025,
+     "kind": "regulator",
+     "read": "full text",
+     "url": "https://www.fda.gov/drugs/drug-safety-and-availability/limited-number-voluntary-recalls-initiated-after-fda-testing-acne-products-benzene-findings-show"
+    },
+    {
+     "title": "FAQs: Benzene in acne products containing benzoyl peroxide",
+     "publisher": "American Academy of Dermatology",
+     "kind": "dermatology association",
+     "read": "full text",
+     "url": "https://www.aad.org/public/diseases/a-z/benzoyl-peroxide-faqs"
+    }
+   ]
+  },
+  {
+   "id": "hypochlorous-acid",
+   "title": "Hypochlorous acid sprays",
+   "kind": "product type",
+   "what": "A pH-neutral spray long used in wound care, now sold for acne-prone and irritated skin.",
+   "does": "It kills bacteria and fungi in the lab and may calm inflammation. Clinical studies are small, often without a comparison group, and some are run by makers.",
+   "evidence": "early",
+   "concerns": [
+    "breakouts",
+    "redness"
+   ],
+   "suits": "Someone wanting a gentle extra step, not a replacement for acne treatment.",
+   "careful": "Formulas differ in stability and pH, which changes how well they work and how they feel.",
+   "found": [
+    "pharmacy",
+    "drugstore",
+    "online shops"
+   ],
+   "picture": null,
+   "try": "Use it alone for 28 days, log the days, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Status Report on Topical Hypochlorous Acid: Clinical Relevance of Specific Formulations, Potential Modes of Action, and Study Outcomes",
+     "publisher": "Journal of Clinical and Aesthetic Dermatology (PMC)",
+     "year": 2018,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6303114/"
+    }
+   ]
+  },
+  {
+   "id": "centella",
+   "title": "Centella asiatica (cica) creams",
+   "kind": "ingredient",
+   "what": "An extract of a plant long used in wound care, now common in creams for sensitive skin.",
+   "does": "In a 2025 study of 88 women with sensitive skin, a cream with centella, a ceramide and panthenol reduced stinging, redness and water loss over 4 weeks. With no comparison group and three actives, the effect can't be put down to centella alone.",
+   "evidence": "early",
+   "concerns": [
+    "redness",
+    "dryness"
+   ],
+   "suits": "Sensitive or easily irritated skin.",
+   "careful": "Plant extracts can cause allergy; patch test first.",
+   "found": [
+    "k-beauty and j-beauty shops",
+    "drugstore",
+    "pharmacy"
+   ],
+   "picture": "moisturiser-rich",
+   "picture_alt": "A plain jar of rich cream",
+   "try": "Use it every night for 28 days, log the nights, then check in on redness.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "The Effectiveness and Safety of a Skin Care Product With Centella asiatica Leaf Extract ... in Subjects With Sensitive Skin: A Prospective, Observational Study",
+     "publisher": "Journal of Cosmetic Dermatology (PMC)",
+     "year": 2025,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12274965/"
+    },
+    {
+     "title": "Topical Application of Centella asiatica in Wound Healing: Recent Insights into Mechanisms and Clinical Efficacy",
+     "publisher": "PMC",
+     "kind": "peer-reviewed",
+     "read": "title only",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11510310/"
+    }
+   ]
+  },
+  {
+   "id": "ectoin",
+   "title": "Ectoin",
+   "kind": "ingredient",
+   "what": "A water-binding molecule used in creams for dry, irritated skin.",
+   "does": "A 2022 review of six small studies found 5.5 to 7% ectoin creams eased dryness and itch in eczema, with very low to moderate certainty. The review was funded by a maker.",
+   "evidence": "early",
+   "concerns": [
+    "dryness",
+    "redness"
+   ],
+   "suits": "Dry, itchy or irritated skin.",
+   "careful": "Eczema that flares needs a doctor's plan; a cream like this sits alongside it.",
+   "found": [
+    "pharmacy",
+    "online shops"
+   ],
+   "picture": "moisturiser-rich",
+   "picture_alt": "A plain jar of rich cream",
+   "try": "Use it every night for 28 days, log the nights, then check in.",
+   "trial": true,
+   "added": "2026-10-29",
+   "sources": [
+    {
+     "title": "Topical Ectoine Application in Children and Adults to Treat Inflammatory Diseases (systematic review)",
+     "publisher": "Dermatology and Therapy (Springer)",
+     "year": 2022,
+     "kind": "peer-reviewed",
+     "read": "full text",
+     "url": "https://link.springer.com/10.1007/s13555-021-00676-9"
+    }
+   ]
+  }
+ ]
+}
