@@ -1,9 +1,3 @@
-/** R8 editor document controller: all effects are reversible settings over one source.
- * Does not store photos in history, send network requests or hold API keys.
- * R9 adds option picks from the thumbnail strip and the compare frames, on the same
- * history and layer stack (no second table).
- * Author: John Khan.
- */
 import { checkFace } from "../../engines/shape/geometry.js";
 import { requireMask } from "../../engines/core/buffer.js";
 import { browserShellRenderer } from "./gpu-renderer.js";
@@ -14,9 +8,13 @@ import { SINGLE_KINDS } from "../../editor/adjust/stack.js";
 import { ADJUST_KINDS } from "./types.js";
 /** A new layer's strength: the gentle default for looks; the photo-adjustment tools start at 100,
  * because their sliders are the amount and every slider starts at no change. */
+export const SHAVE_DEFAULT = 30;
 export function defaultStrength(kind) {
     // Lighting is a whole-scene simulation: its preview tiles and its buttons run at full, so Add does too.
-    return ADJUST_KINDS.includes(kind) || kind === "lighting" ? 100 : GENTLE_DEFAULT;
+    if (ADJUST_KINDS.includes(kind) || kind === "lighting")
+        return 100;
+    // Beard removal starts at 30: its full-beard estimate covers most of the beard there already.
+    return kind === "shave" ? SHAVE_DEFAULT : GENTLE_DEFAULT;
 }
 import { History, initialState } from "./history.js";
 import { appendLayer, editLayer, moveLayer, removeLayer } from "./layers.js";
@@ -96,6 +94,15 @@ export class Editor {
         if (person.width !== this.photo.image.width || person.height !== this.photo.image.height)
             throw new RangeError("The person area must match the photo size.");
         this.photo = { ...this.photo, geometryRevision: ++this.sourceVersion, person: { ...person, data: Float32Array.from(person.data) } };
+        this.frameCache.clear();
+        this.studioCache.clear();
+        this.invalidate();
+    }
+    /** Attach body control points read on this device (pose model), keeping face points and edits. */
+    setBody(body) {
+        if (body.width !== this.photo.image.width || body.height !== this.photo.image.height)
+            throw new RangeError("The body points must match the photo size.");
+        this.photo = { ...this.photo, geometryRevision: ++this.sourceVersion, body };
         this.frameCache.clear();
         this.studioCache.clear();
         this.invalidate();

@@ -78,8 +78,12 @@ export function applyMakeup(image, mesh, strength, options = {}) {
         // A tint relative to her own skin: the blush's colour difference from her measured skin is
         // added, at most 22 a*/b* units, so it reads as colour on her skin and not a painted patch,
         // and clearly at the default strength (owner bar, Oct 30: nothing faint).
-        const st = map.stats, amount = Math.min(1, 1.05 * e);
-        const da = Math.max(-22, Math.min(22, Math.sign(blush[1] - st.a) * Math.max(10, Math.abs(blush[1] - st.a)))), db = Math.max(-16, Math.min(16, blush[2] - st.b));
+        // Scaled to her skin's lightness (review, Oct 30): on deep skin a fixed redness read as red
+        // patches, so the tint, its reach and its floor shrink with depth (tone 1 at L* 65+, 0.4 at L* 45-).
+        const st = map.stats, tone = skinTone(st.L), amount = Math.min(1, 1.05 * e) * (0.3 + 0.7 * tone);
+        const reach = 22 * tone * tone, floor = 10 * tone * tone;
+        metrics.skin_l = Math.round(st.L * 10) / 10;
+        const da = Math.max(-reach, Math.min(reach, Math.sign(blush[1] - st.a) * Math.max(floor, Math.abs(blush[1] - st.a)))), db = Math.max(-16 * tone, Math.min(16 * tone, blush[2] - st.b));
         const dl = Math.min(0, blush[0] - st.L) * 0.4;
         for (let i = 0; i < n; i++) {
             const w = Math.max(spots[0][i], spots[1][i]) * map.skin[i] * amount;
@@ -161,8 +165,12 @@ export function applyMakeup(image, mesh, strength, options = {}) {
         // Local lip texture: each pixel's lightness against a softened lip, so lines and highlights stay.
         const smoothL = blur(lab.L, rect.w, rect.h, 0.03 * iod);
         // A pale shade on dark lips is held to a believable lift (ASSUMED 10 L*).
-        const shiftL = Math.min(lip[0] - mL, 10);
-        const amount = 0.95 * Math.min(1, e * 1.3);
+        // On deep skin a bright shade is held closer to her own lips (lift and chroma scale with skin
+        // lightness), so it reads as lipstick on her lips and not as paint on top (review, Oct 30).
+        const lipTone = skinTone(map.stats.L);
+        const lipMix = 0.5 + 0.5 * lipTone;
+        const shiftL = Math.min(lip[0] - mL, 10 * lipTone);
+        const amount = 0.95 * Math.min(1, e * 1.3) * (0.5 + 0.5 * lipTone);
         for (let i = 0; i < n; i++) {
             const w = soft[i] * amount;
             if (!(w > 0.002))
@@ -176,8 +184,10 @@ export function applyMakeup(image, mesh, strength, options = {}) {
                 target += 1.4 * Math.max(0, detail) + 6 * smoothstep(1, 5, detail);
             L[i] += w * (target - L[i]);
             // Chroma pushed a little past the shade so a colour near her own lips still reads as lipstick.
-            A[i] += w * (lip[1] + (lip[1] - mA) * 0.35 + (lab.a[i] - mA) * 0.35 - A[i]);
-            B[i] += w * (lip[2] + (lab.b[i] - mB) * 0.35 - B[i]);
+            // On deep skin the shade's colour is mixed with her own lip colour (k < 1), so it sits in her lips.
+            const tA = mA + (lip[1] - mA) * lipMix, tB = mB + (lip[2] - mB) * lipMix;
+            A[i] += w * (tA + (lip[1] - mA) * 0.35 * lipTone + (lab.a[i] - mA) * 0.35 - A[i]);
+            B[i] += w * (tB + (lab.b[i] - mB) * 0.35 - B[i]);
             touch(i, 1);
         }
         Object.assign(metrics, { lip: true, finish, lip_l_before: Math.round(mL * 10) / 10, lip_l_shift: Math.round(shiftL * 10) / 10 });
@@ -191,4 +201,8 @@ export const LOOKS = [
     { id: "montmartre", name: "Montmartre", lip: "#A3283A", finish: "satin", blush: "#C46F72", shadow: "#5B4A48", liner: "#1C1717" },
     { id: "camargue", name: "Camargue", lip: "#8E5446", finish: "matte", blush: "#B97462", shadow: "#7A5A48", liner: "#33261F" },
 ];
+/** Skin depth factor for makeup strength: 1 at L* 65 and lighter, down to 0.4 at L* 45 and deeper. ASSUMED. */
+export function skinTone(L) {
+    return Math.max(0.4, Math.min(1, 0.4 + 0.6 * (L - 45) / 20));
+}
 //# sourceMappingURL=makeup.js.map

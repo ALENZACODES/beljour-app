@@ -26,7 +26,7 @@ export const NECK_START = OVAL.indexOf(288), NECK_END = OVAL.indexOf(58);
 export const UPPER_LIP = [291, 409, 270, 269, 267, 0, 37, 39, 40, 185, 61];
 export const NECKLINES = { high: 0, natural: 0.18, low: 0.4 };
 export const EDGES = { sharp: null, faded: 0.1 };
-export const MOUSTACHE_FEATHER = 0.6, MOUSTACHE_TOP = 0.75;
+export const MOUSTACHE_FEATHER = 0.6, MOUSTACHE_TOP = 0.9;
 export const CHEEK_SHARE = 0.6, TOP_SHARE = 0.55, NOSE_GAP = 0.05, LIP_MARGIN = 0.05, CORNER_OUT = 0.12;
 export const STYLES = {
     stubble: { region: "full", length: [0.008, 0.02], density: 900, width: [0.6, 1.0], shadow: 0.1 },
@@ -48,7 +48,7 @@ export function outline(face, f, region) {
         // A full moustache fills most of the upper lip, up to just under the nose.
         const lip = UPPER_LIP.map((i) => add(face[i], down, -0.015 * iod));
         const mTopR = lerp(mouthR, face[LANDMARKS.right_ala], MOUSTACHE_TOP), mTopL = lerp(mouthL, face[LANDMARKS.left_ala], MOUSTACHE_TOP);
-        const mNose = add(face[LANDMARKS.subnasale], down, 0.02 * iod);
+        const mNose = add(face[LANDMARKS.subnasale], down, 0.01 * iod);
         return [add(mouthL, across, 0.05 * iod), ...lip, add(mouthR, across, -0.05 * iod), mTopR, mNose, mTopL];
     }
     if (region !== "full")

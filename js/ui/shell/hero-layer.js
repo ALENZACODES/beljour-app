@@ -3,10 +3,10 @@ import { genderTargets, LABEL as GENDER_LABEL } from "../../engines/local/gender
 import { meshWarp } from "../../engines/warp/mesh.js";
 import { apply } from "../../engines/warp/field.js";
 import { easeStrength, rootStrength } from "./strength-curve.js";
-/** Level to engine amount: Normal (33) -> 88, Extra (66) -> 95, Hyper (100) -> 100, linear between and
+/** Level to engine amount: Normal (33) -> 72, Extra (66) -> 88, Hyper (100) -> 100, linear between and
  * 0 at Original, so each named level reads clearly and Normal < Extra < Hyper. ASSUMED values, tuned
  * with the Batch 2 probe on the synthetic samples. The eased strength mixes the level. */
-export const GENDER_LEVEL_AMOUNT = [[0, 0], [33, 88], [66, 95], [100, 100]];
+export const GENDER_LEVEL_AMOUNT = [[0, 0], [33, 72], [66, 88], [100, 100]];
 /** A steeper curve than the colour tools: the face-only warp moves few pixels, so 30 already gives 83%. */
 export const GENDER_POWER = 0.15;
 export function genderAmount(slider, strength) {

@@ -43,6 +43,7 @@ import { hashModel } from "../../vision/model-registry.js";
 import { defaultVisionClient } from "../../vision/client.js";
 import { GENDER_LEVELS } from "./thumbnails.js";
 import { autoCrown, autoPlacement } from "./auto-hair.js";
+import { bodyFromPose } from "./auto-body.js";
 import { faceReaderReady, stagedModels } from "../../vision/staged.js";
 import { toRGBA } from "../../engines/core/buffer.js";
 import { readHeader } from "../../image/decode.js";
@@ -670,21 +671,26 @@ export class ShellView {
             if (!still())
                 return;
             const img = this.editor.source.image, { width, height } = img;
-            let faces = 0;
+            let faces = 0, noFace = false;
             if (this.editor.source.face?.length !== 478) {
                 // The shared face map (face/map-reader.ts): the same cached reading its panel shows.
                 const map = await faceMapFor(img, { key: studioMapKey(this.editor.source) });
-                if (!still() || map.status !== "mapped" || !map.faces.length)
+                if (!still())
                     return;
-                const all = map.faces.map((face) => face.map(([x, y]) => [x, y]));
-                if (all.length === 1)
-                    this.editor.setFace(all[0]);
+                if (map.status === "mapped" && map.faces.length) {
+                    const all = map.faces.map((face) => face.map(([x, y]) => [x, y]));
+                    if (all.length === 1)
+                        this.editor.setFace(all[0]);
+                    else
+                        this.editor.setFaces(all);
+                    faces = all.length;
+                }
                 else
-                    this.editor.setFaces(all);
-                faces = all.length;
+                    noFace = true;
             }
             let hairNote = "";
-            if (!this.editor.source.hair && (await stagedModels()).has("hair-segmenter") && vision.ready("hair-segmentation")) {
+            // With no face read (a small face in a full-body photo), only the body points below run.
+            if (!noFace && !this.editor.source.hair && (await stagedModels()).has("hair-segmenter") && vision.ready("hair-segmentation")) {
                 const hair = await vision.detect("hair-segmentation", { width, height, rgba: Uint8ClampedArray.from(toRGBA(img)).buffer });
                 const seg = hair.ok ? hair.output?.segmentation : undefined;
                 if (seg && seg.channels.length >= 2 && this.editor.source.id === sourceId && !this.editor.document.layers.length) {
@@ -723,6 +729,28 @@ export class ShellView {
                         }
                     this.editor.setPerson({ width, height, channels: 1, data });
                     hairNote = hairNote ? `${hairNote}, person area` : "Person area";
+                }
+            }
+            // Posture: body points from the pose model staged on this device (auto-body.ts); she can re-mark them.
+            if (!this.editor.source.body && (await stagedModels()).has("pose-landmarker-lite") && vision.ready("pose")) {
+                const found = await vision.detect("pose", { width, height, rgba: Uint8ClampedArray.from(toRGBA(img)).buffer }, { maxFaces: 1 });
+                const poses = found.ok ? found.output?.poses ?? [] : [];
+                const body = poses.length === 1 ? bodyFromPose(poses[0], width, height) : null;
+                if (body && this.editor.source.id === sourceId && !this.editor.document.layers.length) {
+                    if (!this.editor.source.person) {
+                        const seg = found.output?.segmentation;
+                        if (seg && seg.channels.length) {
+                            const plane = seg.channels[0], data = new Float32Array(width * height);
+                            for (let y = 0; y < height; y++)
+                                for (let x = 0; x < width; x++) {
+                                    const sx = Math.min(seg.width - 1, Math.floor((x + 0.5) * seg.width / width)), sy = Math.min(seg.height - 1, Math.floor((y + 0.5) * seg.height / height));
+                                    data[y * width + x] = Math.min(1, Math.max(0, plane[sy * seg.width + sx]));
+                                }
+                            this.editor.setPerson({ width, height, channels: 1, data });
+                        }
+                    }
+                    this.editor.setBody(body);
+                    hairNote = hairNote ? `${hairNote}, body points (${body.view} view)` : `Body points (${body.view} view)`;
                 }
             }
             if (!faces && !hairNote)

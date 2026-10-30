@@ -2,6 +2,7 @@
   "format": "beljour-staged-models/1",
   "models": [
     "hair-segmenter",
+    "pose-landmarker-lite",
     "face-landmarker-478",
     "face-detector-short",
     "selfie-multiclass"

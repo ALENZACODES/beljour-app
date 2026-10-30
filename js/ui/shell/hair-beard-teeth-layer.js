@@ -47,7 +47,8 @@ export function applyHairBeardTeethLayer(image, source, layer) {
         // A full beard hides the skin: paint the labelled estimate from her cheek instead of refusing.
         // A part-mixed estimate lets the hidden beard show through as a grey ghost, so this path uses a
         // steeper curve (FULL_POWER): 30 already covers most of the beard.
-        const estimate = estimateFullBeard(image, source.face, Math.min(100, 100 * rootStrength(layer.strength, FULL_POWER)));
+        // Coverage follows the steep curve; how clean the shave is (stubble left) follows the slider itself.
+        const estimate = estimateFullBeard(image, source.face, Math.min(100, 100 * rootStrength(layer.strength, FULL_POWER)), [], layer.strength / 100);
         if (isShaveRefusal(estimate))
             return unchanged(image, estimate.message, "Clean-shave visual estimate.", { status: "refused", reason_code: estimate.code });
         return { image: { ...image, data: estimate.image }, label: estimate.label,

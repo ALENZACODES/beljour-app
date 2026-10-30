@@ -17,6 +17,7 @@ export const SAMPLE_PHOTOS = [
     { file: "sample-hair-grey-roots.jpg", name: "Grey roots", use: "hair" },
     { file: "sample-studio-busy-background.jpg", name: "Busy background", use: "background" },
     { file: "sample-full-body-standing.jpg", name: "Full body, standing", use: "body" },
+    { file: "sample-full-body-leaning.jpg", name: "Full body, leaning", use: "body" },
     { file: "sample-group-four-adults.jpg", name: "Group of four adults", use: "group" },
 ];
 export const sampleUrl = (s) => `assets/samples/${s.file}`;

@@ -70,7 +70,7 @@ export class MediaPipeRunners {
                 ...common, numFaces: faces, outputFaceBlendshapes: true, outputFacialTransformationMatrixes: true,
             });
             case "pose": return this.sdk.PoseLandmarker.createFromOptions(fileset, {
-                ...common, numPoses: Math.min(2, faces), outputSegmentationMasks: true,
+                ...common, numPoses: Math.min(2, faces), outputSegmentationMasks: false, // 0.10.14 CPU aborts on pose masks (image_frame ChannelSize); person-seg gives the area
             });
             case "hair-segmentation":
             case "person-segmentation": return this.sdk.ImageSegmenter.createFromOptions(fileset, {

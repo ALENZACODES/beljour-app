@@ -47,8 +47,31 @@ function cel(rgb, source, w, h, levels, ink, threshold) {
     }
     return { rgb: out, band };
 }
+/** Cartoon bands (R2): shading read from a lightly smoothed brightness, so bands follow her face's
+ * light rather than skin texture (no blotches); soft steps between bands; highlights keep her own
+ * tone instead of being pulled down into grey specks; only clear dark marks (moles, freckles,
+ * more than MARK_FLOOR levels below their surroundings) are drawn back. */
+export const CARTOON_SOFT = 0.24, MARK_FLOOR = 6;
 function cartoon(rgb, w, h) {
-    return cel(kuwahara(rgb, w, h, 2).rgb, rgb, w, h, 3, 0.8, 0.03).rgb;
+    const painted = kuwahara(rgb, w, h, 2).rgb, n = w * h, levels = 3;
+    const lum = boxPlane(lumaPlane(painted, n, 1), w, h, Math.max(1, Math.round(Math.min(w, h) / 200)));
+    const base = boxPlane(lum, w, h, Math.max(2, Math.floor(Math.min(h, w) / 16)));
+    const rel = new Float64Array(n), half = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+        rel[i] = lum[i] / base[i];
+        half[i] = rel[i] / 2;
+    }
+    const edge = sobel(half, w, h), src = lumaPlane(rgb, n), local = boxPlane(src, w, h, MARK_RADIUS);
+    const out = new Float64Array(n * 3);
+    for (let i = 0; i < n; i++) {
+        const t = Math.min(1, Math.max(0, rel[i])) * levels, f = Math.floor(t);
+        const band = Math.min(1, (f + smooth01((t - f - 0.5) / CARTOON_SOFT + 0.5)) / levels);
+        const scale = (rel[i] >= 1 ? 1 : band / rel[i]) * (1 - 0.8 * smooth01((edge[i] - 0.03) / 0.05));
+        const mark = Math.min(0, src[i] - local[i] + MARK_FLOOR);
+        for (let k = 0; k < 3; k++)
+            out[i * 3 + k] = painted[i * 3 + k] * scale + mark;
+    }
+    return out;
 }
 function comic(rgb, w, h) {
     const { rgb: flat, band } = cel(rgb, rgb, w, h, 2, 0.9, 0.025);

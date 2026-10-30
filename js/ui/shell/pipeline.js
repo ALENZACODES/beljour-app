@@ -201,9 +201,13 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
         const length = Math.max(1, Math.min(5, Math.round(numberParam(layer, "length", 3))));
         // Eased like the face tools: Natural (50) is density 3 of 4, so the beard reads at the default.
         const eased = Math.max(0, Math.min(1, layer.strength / 100)) * (2 - Math.max(0, Math.min(1, layer.strength / 100)));
-        const density = Math.max(1, Math.min(4, Math.round(1 + 3 * eased)));
-        const result = renderBeard(img, source.face, { style, length, density,
-            colour: stringParam(layer, "colour", "#241915"), seed: 11 });
+        // A moustache is a small area: it starts one density step fuller and one length longer, so it
+        // fills the upper lip rather than drawing a pencil line (review, Oct 30).
+        const moustache = style === "moustache";
+        const density = Math.max(1, Math.min(4, Math.round(1 + 3 * eased) + (moustache ? 1 : 0)));
+        const longer = moustache && typeof layer.parameters.length !== "number" ? Math.min(5, length + 1) : length;
+        const result = renderBeard(img, source.face, { style, length: longer, density,
+            colour: stringParam(layer, "colour", defaultBeardColour(img, source.face)), seed: 11 });
         return { image: result.image, label: result.label,
             metrics: { style, length, density, strands: Number(result.metrics.strands) } };
     }
@@ -315,5 +319,19 @@ export function pixelsChanged(a, b) {
         sum += delta / 3;
     }
     return { pixels, percent: 100 * pixels / n, mean: sum / n };
+}
+/** Default beard colour: dark brown, or near-black on deep skin (upper-lip luma under 90), where
+ * dark brown strands barely separate from the skin. Her own colour choice always wins. */
+export function defaultBeardColour(img, face) {
+    const iod = Math.hypot(face[263][0] - face[33][0], face[263][1] - face[33][1]);
+    const cx = (face[2][0] + face[0][0]) / 2, cy = (face[2][1] + face[0][1]) / 2, r = Math.max(2, Math.round(0.12 * iod));
+    let sum = 0, count = 0;
+    for (let y = Math.max(0, Math.round(cy - r / 2)); y <= Math.min(img.height - 1, Math.round(cy + r / 2)); y++)
+        for (let x = Math.max(0, Math.round(cx - r)); x <= Math.min(img.width - 1, Math.round(cx + r)); x++) {
+            const o = (y * img.width + x) * img.channels;
+            sum += 0.299 * img.data[o] + 0.587 * img.data[o + 1] + 0.114 * img.data[o + 2];
+            count++;
+        }
+    return count && sum / count < 90 ? "#0E0A09" : "#241915";
 }
 //# sourceMappingURL=pipeline.js.map

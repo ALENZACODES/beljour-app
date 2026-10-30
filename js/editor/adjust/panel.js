@@ -83,8 +83,33 @@ export function mixerScreen(host) {
     resetAll.disabled = !layer || Object.keys(params).filter((k) => k !== SKIN_PROTECT_KEY).length === 0;
     resetAll.addEventListener("click", () => commit(host, "mixer", skinProtect ? {} : { [SKIN_PROTECT_KEY]: false }, "Reset all colours", layer));
     const panel = h("section", { class: "ed-panel", "aria-label": "Colour mixer" }, swatches, ...sliders, h("p", { class: "shell-check-row" }, protect, h("label", { for: "ed-skin-protect" }, "Protect skin tones")), h("p", { class: "shell-hint" }, skinProtect ? "Skin tones keep their colour while you change oranges and reds."
-        : "Skin protection is off: orange and red changes reach skin too."), h("div", { class: "ed-actions" }, resetAll), orderNote());
+        : "Skin protection is off: orange and red changes reach skin too."), 
+    // Review, Oct 30: on a mostly grey, black or skin photo the protected mixer barely moves; say so.
+    skinProtect && colourOutsideSkin(editor.source.image) < LITTLE_COLOUR
+        ? h("p", { class: "shell-hint ed-mixer-little", role: "note" }, "This photo has little colour outside skin (mostly greys, black, white and skin tones), so with skin protection on the mixer changes very little here. Turn protection off to include skin tones, or use Adjust for warmth and contrast.")
+        : null, h("div", { class: "ed-actions" }, resetAll), orderNote());
     rememberFocus(panel, "mixer");
     return panel;
+}
+/** Share of the photo under which the protected mixer is said to have little to change. ASSUMED. */
+export const LITTLE_COLOUR = 0.04;
+/** Share of pixels (sampled every 3rd row and column) with clear colour that is not a skin hue. */
+export function colourOutsideSkin(img) {
+    let coloured = 0, total = 0;
+    for (let y = 0; y < img.height; y += 3)
+        for (let x = 0; x < img.width; x += 3) {
+            const o = (y * img.width + x) * img.channels, r = img.data[o], g = img.data[o + 1], b = img.data[o + 2];
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            total++;
+            if (max < 40 || (max - min) / max < 0.2)
+                continue;
+            let hue = max === r ? ((g - b) / (max - min)) * 60 : max === g ? (2 + (b - r) / (max - min)) * 60 : (4 + (r - g) / (max - min)) * 60;
+            if (hue < 0)
+                hue += 360;
+            if (hue >= 5 && hue <= 50)
+                continue; // skin hues (held by protection)
+            coloured++;
+        }
+    return total ? coloured / total : 0;
 }
 //# sourceMappingURL=panel.js.map
