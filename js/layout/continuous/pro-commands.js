@@ -1,4 +1,4 @@
-/** The five named commands are owned by Workstream H, not reimplemented here. */
+/** The five named commands are owned by Lane H, not reimplemented here. */
 export const PRO_COMMANDS = [
     "/IDENTITYLOCK",
     "/CLEANUP",

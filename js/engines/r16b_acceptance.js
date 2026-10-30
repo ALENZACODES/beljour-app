@@ -289,7 +289,7 @@ const BY_ID = new Map(CONTRACTS.map((row) => [row.feature, row]));
 export function contract(feature) {
     const row = BY_ID.get(feature);
     if (!row)
-        throw new Error(`unsupported R16 Workstream B feature: ${feature}`);
+        throw new Error(`unsupported R16 Lane B feature: ${feature}`);
     return row;
 }
 export function grouped() {

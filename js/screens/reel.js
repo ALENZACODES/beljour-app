@@ -8,7 +8,6 @@
  * The finished file never leaves this device.
  */
 import { api } from "../api.js";
-import { ensureConsent } from "../ui/one-consent.js";
 import { PALETTE, withAlpha } from "../ui/palette.js";
 import { applyStyling } from "../ui/styling-tasks.js";
 import { appConsent, PROVIDER_FACTS } from "../ui/shell/consent.js";
@@ -58,6 +57,7 @@ export function renderReel(main, ctx) {
     keyCount.addEventListener("input", () => (keyOut.textContent = `${keyCount.value} frames, up to ${keyCount.value} units`));
     const tag = h("input", { type: "checkbox", id: "edited-tag", checked: true });
     // Photo consent for the key frames: each uploaded frame is cleared for makeup only while this is ticked.
+    const send = h("input", { type: "checkbox", id: "send-frames", "aria-describedby": "send-frames-facts" });
     const go = h("button", { class: "btn", disabled: true }, "Make my reel");
     const result = h("div", {});
     let file = null;
@@ -80,12 +80,16 @@ export function renderReel(main, ctx) {
             say(`${Math.round(video.duration)} seconds, ${video.videoWidth} by ${video.videoHeight}.${tall ? "" : " It isn't vertical, so it will be framed to 9:16."}`);
             go.disabled = false;
         };
-    }, false)), video, h("p", { class: "proc" }, h("label", { for: "key-count" }, "Frames sent to YouCam"), keyCount, keyOut), h("p", { class: "check" }, tag, h("label", { for: "edited-tag" }, " Add a small \"edited\" tag in the corner")), h("p", { class: "fine provider-label", id: "send-frames-label" }, "YouCam · sends the chosen frames for this makeup preview · 1 unit per new frame"), h("details", { id: "send-frames-facts" }, h("summary", {}, "What is sent, and what happens to it"), h("ul", { class: "plain-list" }, ...PROVIDER_FACTS.map((fact) => h("li", {}, fact)))), go, progress, status, result, h("p", { class: "fine" }, "Each new frame costs one YouCam unit. Your clip and the finished reel stay on this device; only the chosen frames are sent, then deleted."));
+    }, false)), video, h("p", { class: "proc" }, h("label", { for: "key-count" }, "Frames sent to YouCam"), keyCount, keyOut), h("p", { class: "check" }, tag, h("label", { for: "edited-tag" }, " Add a small \"edited\" tag in the corner")), h("p", { class: "check" }, send, h("label", { for: "send-frames" }, " Send the chosen frames to YouCam for this makeup preview")), h("details", { id: "send-frames-facts" }, h("summary", {}, "What is sent, and what happens to it"), h("ul", { class: "plain-list" }, ...PROVIDER_FACTS.map((fact) => h("li", {}, fact)))), go, progress, status, result, h("p", { class: "fine" }, "Each new frame costs one YouCam unit. Your clip and the finished reel stay on this device; only the chosen frames are sent, then deleted."));
     go.addEventListener("click", async () => {
         if (!file)
             return;
-        if (!(await ensureConsent())) {
-            say("Nothing has been sent.");
+        if (!send.checked) {
+            say("Tick \"Send the chosen frames to YouCam\" first. Nothing has been sent.");
+            return;
+        }
+        if (!appConsent.hasVisit) {
+            say("Confirm the visit consent on the Photo step first. Nothing has been sent.");
             return;
         }
         go.disabled = true;

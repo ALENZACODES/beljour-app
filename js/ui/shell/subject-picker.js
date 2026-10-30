@@ -33,7 +33,7 @@ export function attachSubjectPicker(doc, host, snapshot, actions) {
     panel.setAttribute("aria-label", "Multi-person photo selection");
     panel.append(judgeNode(doc, "h3", "lg-judge-section-title", "Which person receives the edit?"));
     if (!snapshot.boxes.length) {
-        panel.append(judgeParagraph(doc, "No face boxes supplied. Detection from uploaded photos is pending Workstream A's public subject API. "
+        panel.append(judgeParagraph(doc, "No face boxes supplied. Detection from uploaded photos is pending Lane A's public subject API. "
             + "Do not assume a main face. Existing fixed-position edits remain illustrative only."));
         host.append(panel);
         return;

@@ -5,12 +5,12 @@
  * her own photo (opened on this device; needs the face reader), or a drawn face when neither is
  * there. Face points come from the face reader through vision/client.ts when the build staged it
  * (as skin-moment.ts checks), otherwise from the example pictures' fixed framing, which the page
- * says. Live: the existing live mirror (reel/live/mirror.ts) with the lens as its per-frame
+ * says. Points come from the shared face map (face/map-reader.ts), one reading per picture; her own
+ * photo with no face found says so and gets no placement. Live: the existing live mirror (reel/live/mirror.ts) with the lens as its per-frame
  * effect and the face reader measuring each frame, only after she agrees to the camera.
  * Nothing is uploaded. Captures go through save/export.ts. Author: John Khan.
  */
 import { announce, h, loadImage } from "../dom.js";
-import { ensureConsent } from "../ui/one-consent.js";
 import { fromRGBA, toRGBA } from "../engines/core/buffer.js";
 import { facePhoto } from "../engines/local/beard.js";
 import { symmetricFace } from "../engines/local/face-synthetic.js";
@@ -22,7 +22,7 @@ import { browserMirrorDeps, modelsReady } from "../reel/live/browser.js";
 import { LiveMirror } from "../reel/live/mirror.js";
 import { downloadFile } from "../save/download.js";
 import { canvasEncoder } from "../save/export.js";
-import { defaultVisionClient } from "../vision/client.js";
+import { faceMapFor } from "../face/map-reader.js";
 import { faceReaderReady } from "../vision/staged.js";
 import { photoPicker } from "../photos/picker.js";
 import { framingPoints } from "./shape-art.js";
@@ -47,12 +47,11 @@ function pixelsOf(img, side = PREVIEW_SIDE) {
 }
 /** True when the build staged the face reader and it is ready (vision/staged.ts). */
 const readerReady = () => faceReaderReady();
-async function readPoints(image) {
-    const c = document.createElement("canvas");
-    paint(c, image);
-    const found = await defaultVisionClient().detectImage("face-landmarks", c, image.width, image.height, { maxFaces: 1 });
-    const face = found.faces?.[0];
-    return face && face.landmarks.length === 478 ? face.landmarks.map((p) => [p.x * image.width, p.y * image.height]) : null;
+/** Face points from the shared face map (face/map-reader.ts): one reading per picture, the same
+ * points every tool gets. `key` names the picture (its address, or the opened file). */
+async function readPoints(image, key) {
+    const map = await faceMapFor(image, { key });
+    return map.points ? map.points.map(([x, y]) => [x, y]) : null;
 }
 function drawnFace() {
     const w = 480, hgt = 600, pts = symmetricFace(w, hgt, 250, 330);
@@ -144,7 +143,7 @@ export async function renderLenses(root) {
             const url = URL.createObjectURL(f);
             try {
                 const image = pixelsOf(await loadImage(url));
-                const points = (await readerReady()) ? await readPoints(image) : null;
+                const points = (await readerReady()) ? await readPoints(image, `lens-photo:${f.name}:${f.size}:${f.lastModified}`) : null;
                 show({ image, points, note: points || (await readerReady()) ? "" : NEEDS_READER, label: "Your photo." });
             }
             catch {
@@ -157,6 +156,7 @@ export async function renderLenses(root) {
     // Live mirror ---------------------------------------------------------------------------
     const video = h("video", { class: "ln-hidden", muted: "", playsinline: "" });
     const live = h("canvas", { class: "ln-live", role: "img", "aria-label": "Live mirror with the lens" });
+    const agree = h("input", { type: "checkbox", id: "ln-camera" });
     const startBtn = h("button", { class: "lg-button", type: "button" }, "Start the live mirror");
     const liveNote = h("p", { class: "fine", "aria-live": "polite" });
     let mirror = null;
@@ -172,21 +172,17 @@ export async function renderLenses(root) {
         }
         mirror ??= new LiveMirror(browserMirrorDeps(video, live));
         mirror.setEffect(new LensEffect(lens.id, pictures, false), { face: true, person: false }, Number(strength.value));
-        if (!(await ensureConsent())) {
-            liveNote.textContent = "The camera stays off.";
-            return;
-        }
-        const started = await mirror.start(true);
+        const started = await mirror.start(agree.checked);
         if (started.started) {
             startBtn.textContent = "Stop the live mirror";
             liveNote.textContent = "Camera on. Nothing is recorded or uploaded.";
         }
         else
-            liveNote.textContent = started.reason === "camera_consent" ? "Continue on the consent screen to turn on the camera." : "The camera could not be opened.";
+            liveNote.textContent = started.reason === "camera_consent" ? "Tick the box to turn on the camera." : "The camera could not be opened.";
     });
     grid.addEventListener("click", () => { if (mirror?.state === "on")
         mirror.setEffect(new LensEffect(lens.id, pictures, false), { face: true, person: false }, Number(strength.value)); });
-    root.append(h("section", { class: "ln-stage" }, title, preview, label, h("label", { for: strength.id }, "Strength", strength), saveBtn, status), h("section", { class: "ln-source" }, h("h2", {}, "Picture"), people, framing, h("p", { class: "ln-own" }, "Or use your own photo. It stays on this device."), upload.element), h("section", { class: "ln-pick" }, h("h2", {}, "Lenses"), grid), h("section", { class: "ln-livebox" }, h("h2", {}, "Live mirror"), live, video, h("p", { class: "fine" }, "Uses your camera on this device. Nothing is recorded or uploaded."), startBtn, liveNote));
+    root.append(h("section", { class: "ln-stage" }, title, preview, label, h("label", { for: strength.id }, "Strength", strength), saveBtn, status), h("section", { class: "ln-source" }, h("h2", {}, "Picture"), people, framing, h("p", { class: "ln-own" }, "Or use your own photo. It stays on this device."), upload.element), h("section", { class: "ln-pick" }, h("h2", {}, "Lenses"), grid), h("section", { class: "ln-livebox" }, h("h2", {}, "Live mirror"), live, video, h("p", { class: "check" }, agree, h("label", { for: agree.id }, "Turn on my camera on this device for the live mirror")), startBtn, liveNote));
     draw();
     thumbs();
     // Example people and lens pictures arrive after first paint.
@@ -199,7 +195,7 @@ export async function renderLenses(root) {
         b.addEventListener("click", async () => {
             try {
                 const image = pixelsOf(await loadImage(url));
-                const read = reader ? await readPoints(image) : null;
+                const read = reader ? await readPoints(image, `lens-example:${url}`) : null;
                 const points = read ?? framingPoints(image.width, image.height).map(([x, y]) => [x, y]);
                 show({ image, points, note: read ? "" : FRAMING_NOTE, label: `${EXAMPLE_LABEL}.`, estimated: !read });
             }

@@ -12,26 +12,38 @@ export function paint(canvas, image, options = {}) {
     canvas.height = image.height;
     ctx.putImageData(new ImageData(new Uint8ClampedArray(toRGBA(image)), image.width, image.height), 0, 0);
     if (options.overlay !== false && options.simulate)
-        label(ctx, image.width, image.height, options.label ?? "Photo simulation");
+        label(ctx, image.width, image.height, options.label ?? SIMULATION_TAG);
     const zoom = options.zoom ?? 1;
     if (!(zoom >= 0.25 && zoom <= 8))
         throw new RangeError("Zoom must be 25–800%");
     canvas.style.width = `${Math.round(image.width * zoom)}px`;
     canvas.style.height = `${Math.round(image.height * zoom)}px`;
 }
+/** The honesty tag every simulated picture carries: short, so it can sit in a corner. */
+export const SIMULATION_TAG = "Edited \u00b7 simulation";
+/** A small, quiet tag in the bottom-right corner: a translucent dark pill with light text, about
+ * 2% of the shorter side tall, so it reads on any photo without covering her. Long text is cut. */
 export function label(ctx, width, height, text) {
-    const font = Math.max(11, Math.round(Math.min(width, height) / 23));
-    const padding = Math.max(6, Math.round(font / 2));
-    const str = text.length > 80 ? text.slice(0, 80) : text;
+    const font = Math.max(9, Math.round(Math.min(width, height) / 52));
+    const padX = Math.max(4, Math.round(font * 0.6)), padY = Math.max(2, Math.round(font * 0.3));
+    const margin = Math.max(4, Math.round(font * 0.7));
+    const str = text.length > 48 ? text.slice(0, 48) : text;
     ctx.save();
-    ctx.font = `600 ${font}px system-ui, sans-serif`;
-    const metrics = ctx.measureText(str);
-    const h = font + padding * 2;
-    ctx.fillStyle = withAlpha(PALETTE.plum, 0.92); // the label travels with the picture: fixed palette
-    ctx.fillRect(0, height - h, Math.min(width, metrics.width + 2 * padding), h);
-    ctx.fillStyle = PALETTE.cream;
+    ctx.font = `500 ${font}px system-ui, sans-serif`;
+    const w = Math.min(width - 2 * margin, ctx.measureText(str).width + 2 * padX), h = font + 2 * padY;
+    const x = width - margin - w, y = height - margin - h, r = h / 2;
+    ctx.fillStyle = "rgba(20, 14, 18, 0.38)"; // the tag travels with the picture: fixed colours
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arc(x + w - r, y + r, r, -Math.PI / 2, Math.PI / 2);
+    ctx.lineTo(x + r, y + h);
+    ctx.arc(x + r, y + r, r, Math.PI / 2, Math.PI * 1.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = withAlpha(PALETTE.cream, 0.92);
     ctx.textBaseline = "middle";
-    ctx.fillText(str, padding, height - h / 2, Math.max(1, width - padding * 2));
+    ctx.fillText(str, x + padX, y + h / 2 + 0.5, Math.max(1, w - 2 * padX));
     ctx.restore();
 }
 /** How long the download link's object URL stays alive after the click. Some browsers start

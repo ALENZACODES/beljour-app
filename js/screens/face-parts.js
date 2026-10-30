@@ -5,8 +5,10 @@ import { localPreviewError, measuredMesh } from "./local-preview.js";
 const ORDER = ["nose", "lips", "eyes", "brows"];
 const shown = (value) => `${value} · ${value === 0 ? "Original" : value < 0 ? "Reduce" : "Increase"}`;
 export function facePartsSection(ctx, dependencies) {
-    const section = h("section", { class: "face-parts" }, h("h2", {}, "Face parts"), h("p", {}, "Small local simulations of the nose, lips, eyes or brows on your own photo."));
-    open(section, ctx, dependencies);
+    const section = h("section", { class: "face-parts" }, h("h2", {}, "Face parts"), h("p", {}, "Opt-in. Small local simulations of the nose, lips, eyes or brows on your own photo. Nothing here is on until you turn it on."));
+    const turnOn = h("button", { class: "btn btn-quiet", type: "button" }, "Turn on face part previews");
+    turnOn.addEventListener("click", () => { turnOn.remove(); open(section, ctx, dependencies); });
+    section.append(turnOn);
     return section;
 }
 function open(section, ctx, dependencies) {

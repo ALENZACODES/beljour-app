@@ -10,7 +10,7 @@ function fx(id, label, category, feature, provider, built, note, extra = {}) {
         optIn: extra.optIn ?? false, simulation: extra.simulation ?? true, studio: extra.studio, note };
 }
 export const EFFECTS = [
-    fx("smooth", "Smooth, texture kept", "Skin", 25, "local", true, "On this device, as the skin polish inside Portrait looks: pores and marks kept. Not a separate slider yet."),
+    fx("smooth", "Smooth, texture kept", "Skin", 25, "local", true, "On this device, in Skin: spots and blotches fade, pores and marks kept. Never lightens your skin on average.", { studio: "skin" }),
     fx("blemish", "Blemishes", "Skin", 26, "local", true, "On this device, on the Skin screen: spot healing, with tap-to-heal. Moles and freckles are kept unless you mark them."),
     fx("tone", "Even tone", "Skin", 29, "local", true, "On this device. Evens colour and redness; never lightens skin. Not medical advice.", { studio: "skin" }),
     fx("freckles", "Freckles", "Skin", 104, "local", true, "On this device. Drawn freckles; your own marks are kept.", { studio: "skin" }),
@@ -18,11 +18,12 @@ export const EFFECTS = [
     fx("matte", "Matte", "Skin", 105, "local", true, "On this device. Softens shine; texture kept.", { studio: "skin" }),
     fx("glow", "Glow", "Skin", 106, "local", true, "On this device. Cassis or Collioure; average skin lightness kept.", { studio: "skin" }),
     fx("dark-circles", "Dark circles", "Skin", 28, "local", true, "On this device. Matched to your own cheek, never past it; marks kept. Not medical advice.", { studio: "under-eye" }),
-    fx("makeup", "Makeup", "Makeup", 33, "youcam", true, "Sends this photo to YouCam when you start it.", { studio: "makeup" }),
+    fx("makeup", "Makeup", "Makeup", 33, "local", true, "On this device: lipstick, blush, eyeshadow and eyeliner from your face points; lip lines and skin texture kept. The YouCam try-on stays on its own screen.", { studio: "face-makeup" }),
+    fx("makeup-youcam", "Makeup try-on (YouCam)", "Makeup", null, "youcam", true, "Sent to YouCam only after you tick the box.", { studio: "makeup" }),
     fx("eye-makeup", "Eyeshadow, liner and mascara", "Makeup", 35, "local", true, "On this device, in the Eyes, brows and art studio. Mascara coats only lashes you trace."),
-    fx("foundation", "Foundation", "Makeup", 101, "local", true, "On this device, on the Shade screen: your matched shade, never lighter than your skin."),
+    fx("foundation", "Foundation", "Makeup", 101, "local", true, "On this device, in Skin and on the Shade screen: your matched shade from jaw to hairline, never lighter than your skin.", { studio: "skin" }),
     fx("teeth", "Teeth whitening", "Makeup", 31, "local", true, "On this device. A natural cap: a few shades lighter, never paper white or blue. Not dental advice.", { studio: "teeth" }),
-    fx("hair-style", "Hair style and colour", "Hair", 14, "youcam", true, "Sends this photo to YouCam when you start it.", { studio: "hair-style" }),
+    fx("hair-style", "Hair style and colour", "Hair", 14, "youcam", true, "Sent to YouCam only after you tick the box.", { studio: "hair-style" }),
     fx("recolour", "Curl-preserving recolour", "Hair", 13, "local", true, "Local simulation inside your marked hair area.", { studio: "recolour" }),
     fx("balayage", "Balayage painter", "Hair", 21, "local", true, "User-painted placement with an assumed first-session lift plan.", { studio: "balayage" }),
     fx("hair-fibre", "Hair fibres", "Hair", 18, "local", true, "On this device.", { studio: "hair-fibre" }),

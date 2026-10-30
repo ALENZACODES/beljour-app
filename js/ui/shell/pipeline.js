@@ -19,12 +19,18 @@ import { applySkinLayer } from "./skin-layer.js";
 import { applyUnderEyeLayer } from "./under-eye-layer.js";
 import { applyHairBeardTeethLayer } from "./hair-beard-teeth-layer.js";
 import { applyStudioLayer } from "./studio-layer.js";
+import { applyMakeupLayer } from "./makeup-layer.js";
+import { autoFix } from "../../engines/beauty/auto-fix.js";
 import { applyRetouchLayer } from "../../editor/brush/layer.js";
 import { applyFilterLayer } from "../../filters/runtime/layer.js";
 import { applyPortraitLayer } from "../../filters/portrait/layer.js";
 import { regionMask } from "../../data/regions/index.js";
 import { developStage, finishStage, geometryStage, isEditorKind, stagePlan } from "../../editor/adjust/stack.js";
 import { mapToOutput, readGeometry, isIdentity } from "../../editor/crop/geometry.js";
+/** `face` is where the face points are after the whole stack (the photo's own points when no
+ * layer moved them, undefined when the photo has none). */
+/** The Enhance mode that runs the one-tap auto fix; the other modes are the guarded rescue modes. */
+export const AUTO_FIX = "auto";
 /** The points after a layer that moved them and was mixed in at `weight` (0-1). A partly mixed
  * warp has no single true geometry; moving the points by the same share is ASSUMED. */
 export function nextFace(before, after, weight) {
@@ -106,6 +112,9 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
     const beauty = applyBeautyLayer(img, source, layer, lightingRenderer);
     if (beauty)
         return beauty;
+    const makeup = applyMakeupLayer(img, source, layer);
+    if (makeup)
+        return makeup;
     const skin = applySkinLayer(img, source, layer);
     if (skin)
         return skin;
@@ -127,6 +136,17 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
         return applyPortraitLayer(img, source, layer);
     if (layer.kind === "enhance") {
         const requested = stringParam(layer, "mode", "natural");
+        if (requested === AUTO_FIX) {
+            // One-tap auto fix (engines/beauty/auto-fix.ts): white balance, levels, local contrast, noise, colour.
+            const fixed = autoFix(img, source.face?.length === 478 ? source.face : undefined, layer.strength, {
+                denoise: layer.parameters.denoise !== false, deblur: layer.parameters.deblur !== false,
+                white_balance: layer.parameters.white_balance !== false, colour: layer.parameters.colour !== false,
+                exposure: layer.parameters.exposure !== false, sharpen: layer.parameters.sharpen !== false
+            });
+            return { image: { width: img.width, height: img.height, channels: img.channels, data: fixed.image }, label: fixed.label,
+                metrics: { mode: AUTO_FIX, condition: "auto", effective_mode: AUTO_FIX, exposure_applied: true, normal_preserved: false,
+                    unchanged: fixed.metrics.unchanged === true, ...fixed.metrics } };
+        }
         if (!(requested in MODES))
             throw new RangeError("Unknown enhancement mode");
         const mode = requested;
@@ -221,7 +241,8 @@ export function renderLayers(source, layers, lightingRenderer) {
     }
     for (const item of used) {
         const result = applyLocalLayer(current, face === source.face ? source : { ...source, face }, item, lightingRenderer);
-        const weight = item.opacity * (item.kind === "lighting" ? item.strength / 100 : 1);
+        // Lighting mixes by strength on an ease-out, so the gentle default (30) already shows the light.
+        const weight = item.opacity * (item.kind === "lighting" ? 1 - (1 - item.strength / 100) ** 1.7 : 1);
         current = mixOpacity(current, result.image, weight);
         face = nextFace(face, result.face, weight);
         labels.push(result.label);

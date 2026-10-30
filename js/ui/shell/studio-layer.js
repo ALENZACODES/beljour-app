@@ -3,6 +3,7 @@ import { StudioRefusal } from "../../engines/studio/common.js";
 import { INDUSTRIES } from "../../engines/studio/headshot.js";
 import { SIDES } from "../../engines/studio/relight.js";
 import { renderStudio } from "../../engines/studio/studio.js";
+import { keyLight } from "../../engines/beauty/key-light.js";
 import { illustrate, LOOKS } from "../../engines/studio/illustration.js";
 /** Tools the editor layer runs. Background removal (transparent PNG) stays in the engine until export carries alpha. */
 export const STUDIO_LAYER_TOOLS = ["blur", "replace", "relight", "headshot", "authentic"];
@@ -49,6 +50,11 @@ export function applyStudioLayer(image, source, layer) {
     const industry = text(layer, "industry", STUDIO_DEFAULTS);
     if (!Object.hasOwn(BACKDROPS, backdrop) || !Object.hasOwn(SIDES, side) || !Object.hasOwn(INDUSTRIES, industry))
         throw new RangeError("Unknown studio option");
+    if (tool === "relight" && source.face?.length === 478) {
+        // A soft key light shaped by her face points (engines/beauty/key-light.ts); face average kept.
+        const lit = keyLight(image, source.face, layer.strength, side, { person: source.person?.data });
+        return { image: { ...image, data: lit.image }, label: lit.label, metrics: { ...lit.metrics, tool, mask_source: "face points" } };
+    }
     try {
         const result = renderStudio(tool, image, source.person?.data, source.face, { strength: layer.strength, backdrop, side, industry });
         const metrics = { ...result.metrics, mask_source: "person area" };

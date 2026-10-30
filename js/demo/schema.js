@@ -7,6 +7,7 @@
  *
  * Author: John Khan.
  */
+import { FINISHES as MAKEUP_FINISHES, LOOKS as MAKEUP_LOOKS } from "../engines/beauty/makeup.js";
 import { presetIds } from "../engines/shade/lighting.js";
 import { LEVELS } from "../engines/haircolour/generated/levels.js";
 import { MODES } from "../engines/local/enhance.js";
@@ -15,7 +16,7 @@ import { PRODUCTS } from "../engines/local/strands.js";
 import { FIXES } from "../engines/local/posture.js";
 import { GLOWS } from "../engines/skin/finish.js";
 import { SHIFTS as UNDERTONES } from "../engines/skin/glow-tan.js";
-import { TOOLS as SKIN_TOOLS } from "../engines/skin/studio.js";
+import { SKIN_LAYER_TOOLS as SKIN_TOOLS } from "../ui/shell/skin-layer.js";
 import { STAGES as GREY_STAGES } from "../engines/haircolour/grey.js";
 import { portraitLook } from "../filters/portrait/looks.js";
 import { LOOKS as ILLUSTRATION_LOOKS } from "../engines/studio/illustration.js";
@@ -32,7 +33,7 @@ export class SceneError extends Error {
 }
 const SAMPLE_VIEW = { "body-front": "front", "body-side": "side" };
 const NEEDS = {
-    older: ["portrait"], younger: ["portrait"], gender: ["portrait"], enhance: SAMPLE_IDS, lighting: SAMPLE_IDS, recolour: ["crown"], balayage: [], beard: ["portrait"], "hair-fibre": ["crown"], posture: ["body-front", "body-side"], skin: ["portrait"],
+    older: ["portrait"], younger: ["portrait"], gender: ["portrait"], enhance: SAMPLE_IDS, lighting: SAMPLE_IDS, recolour: ["crown"], balayage: [], beard: ["portrait"], "hair-fibre": ["crown"], posture: ["body-front", "body-side"], "face-makeup": ["portrait"], skin: ["portrait"],
     portrait: ["portrait"], "under-eye": ["portrait"], "teeth": ["portrait"], "shave": ["portrait"], "grey": ["crown"],
     studio: ["portrait"], illustration: SAMPLE_IDS, retouch: [],
 };
@@ -56,6 +57,7 @@ function unit(value, where, min, max) {
         throw new SceneError(`${where} must be ${min}–${max}`);
     return value;
 }
+const makeupColour = (v) => v === "none" || (typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v));
 export function validateLayer(raw, sample, index) {
     const where = `Layer ${index + 1}`;
     const value = obj(raw, where);
@@ -79,7 +81,7 @@ export function validateLayer(raw, sample, index) {
             history: value => typeof value === "string" && value in LEVELS.lift_per_session,
             toner: value => typeof value === "string" && value in LEVELS.toners,
             softness: value => Number.isInteger(value) && Number(value) >= 0 && Number(value) <= 64 },
-        enhance: { mode: (v) => typeof v === "string" && v in MODES },
+        enhance: { mode: (v) => typeof v === "string" && (v === "auto" || v in MODES) },
         beard: { style: (v) => typeof v === "string" && v in STYLES, length: (v) => Number.isInteger(v) && Number(v) >= 1 && Number(v) <= 5,
             colour: (v) => typeof v === "string" && /^#[0-9A-Fa-f]{6}$/.test(v) },
         "hair-fibre": { product: (v) => typeof v === "string" && PRODUCTS.includes(v) },
@@ -91,6 +93,9 @@ export function validateLayer(raw, sample, index) {
             style: (v) => typeof v === "string" && v in GLOWS, undertone: (v) => typeof v === "string" && v in UNDERTONES,
             direction: (v) => v === "add", density: (v) => typeof v === "number" && v >= 0 && v <= 100,
             redness: (v) => typeof v === "number" && v >= 0 && v <= 100 },
+        "face-makeup": { look: (v) => typeof v === "string" && MAKEUP_LOOKS.some((look) => look.id === v),
+            lip: makeupColour, blush: makeupColour, shadow: makeupColour, liner: makeupColour,
+            finish: (v) => typeof v === "string" && MAKEUP_FINISHES.includes(v) },
         "under-eye": { include_bags: (v) => typeof v === "boolean" },
         "teeth": {},
         "shave": {},

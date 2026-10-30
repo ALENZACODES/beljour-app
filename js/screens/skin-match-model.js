@@ -51,7 +51,7 @@ export class SkinMatchController {
             return this.state;
         const photoId = this.photoId();
         if (answers.agreed !== true) {
-            throw new ConsentMissing("Continue on the consent screen to send this photo, or use the local estimate. Nothing was sent.");
+            throw new ConsentMissing("Tick the box to send this photo, or use the local estimate. Nothing was sent.");
         }
         return this.request(photoId, { photo_id: photoId, consent: attestation(photoId, this.now()), ...(concerns ? { concerns } : {}) }, "youcam");
     }

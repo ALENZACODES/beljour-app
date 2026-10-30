@@ -1,5 +1,5 @@
 export const CATALOGUE = [
-    { id: "enhance", title: "Enhance", description: "Denoise, light, colour and detail, worked out on this device.",
+    { id: "enhance", title: "Enhance", description: "Auto fix in one tap: white balance, light, contrast, noise and colour, worked out on this device. Rescue modes for dark, blurry or faded photos.",
         category: "Local studio", source: "local", sample: "low-light",
         safety: "Local enhancement on this photo; no detail is invented.", shortcut: "E" },
     { id: "hair-fibre", title: "Hair fibres", description: "Crown coverage, fibre strands, spray or powder on an outlined crown.",
@@ -11,7 +11,10 @@ export const CATALOGUE = [
     { id: "posture", title: "Posture edit", description: "Guarded body warp and background fill, with manual body points.",
         category: "Local studio", source: "local", sample: "body-front",
         safety: "Photo edit. Not a posture assessment and not medical advice.", shortcut: "P" },
-    { id: "makeup", title: "Makeup", description: "Makeup previews use the approved YouCam task gateway after a quote and click.",
+    { id: "face-makeup", title: "Makeup", description: "Lipstick (matte, satin or gloss), blush, eyeshadow and eyeliner, drawn on this device from your face points. Lip lines and skin texture stay.",
+        category: "Local studio", source: "local", sample: "portrait",
+        safety: "Makeup simulation on this device; your photo is not sent anywhere. Preview, not a promise.", shortcut: "" },
+    { id: "makeup", title: "Makeup try-on (YouCam)", description: "Makeup previews use the approved YouCam task gateway after a quote and click.",
         category: "YouCam styling", source: "youcam", sample: "portrait",
         safety: "Sent to YouCam, deleted after the result. Preview, not a promise.", shortcut: "M" },
     { id: "hair-style", title: "Hair Studio", description: "73 offline haircut ideas, one synthetic example, reference rights, pose guard and variant planning. Real requests use the existing YouCam styling gateway.",
@@ -35,7 +38,7 @@ export const CATALOGUE = [
         category: "Local studio", source: "local", sample: "crown", safety: "Local simulation. No straightening or new hair is generated.", shortcut: "" },
     { id: "balayage", title: "Balayage painter", description: "Paint the placement, choose colour history and preview the estimated first session.",
         category: "Local studio", source: "local", sample: "crown", safety: "Local simulation. Lift limits are estimates; a colourist and strand test decide the real result.", shortcut: "" },
-    { id: "skin", title: "Skin", description: "Freckles, Tan, Matte, Glow and Even tone on the skin your face points outline. Texture, freckles and moles stay.",
+    { id: "skin", title: "Skin", description: "Smooth, Foundation, Freckles, Tan, Matte, Glow and Even tone on the skin your face points outline, up to the hairline. Pores, freckles and moles stay.",
         category: "Local studio", source: "local", sample: "portrait", safety: "Local simulation, not medical advice. Only tan removal lightens skin, and only when you turn it on.", shortcut: "" },
     { id: "under-eye", title: "Under-eye", description: "Dark circles and eye-bag shadow brought toward your own cheek colour, never past it. Marks and texture stay.",
         category: "Local studio", source: "local", sample: "portrait", safety: "Local simulation, not medical advice. It never lightens past your own cheek.", shortcut: "" },
@@ -88,7 +91,7 @@ export function readiness(id, photo) {
         return { ready: false, reason: "Mark the hair area on your own photo first." };
     if (id === "balayage" && !photo.hairPaint)
         return { ready: false, reason: "Paint where you want the lightening placed first." };
-    if (["older", "younger", "gender", "beard", "skin", "portrait", "under-eye", "teeth", "shave"].includes(id) && photo.face?.length !== 478)
+    if (["older", "younger", "gender", "beard", "face-makeup", "skin", "portrait", "under-eye", "teeth", "shave"].includes(id) && photo.face?.length !== 478)
         return { ready: false, reason: "Read face points on this device, load matching recorded points, or try the drawn portrait sample." };
     if (id === "posture" && (!photo.body || !photo.person))
         return { ready: false, reason: "Mark the body control points and person area below, or use the drawn body sample." };

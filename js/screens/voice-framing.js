@@ -3,8 +3,8 @@
  * never stored; the camera stops when the panel closes. Author: John Khan.
  */
 import { h } from "../dom.js";
-import { ensureConsent } from "../ui/one-consent.js";
 import { rgbFromRGBA, uploadedSource } from "../ui/shell/demo.js";
+import { appConsent } from "../ui/shell/consent.js";
 import { browserSpeech, framingCue, VoiceGuide } from "../vision/framing-voice.js";
 import { devicePoints } from "./best-selfie.js";
 import { defaultVisionClient } from "../vision/client.js";
@@ -56,7 +56,7 @@ export function voiceFramingScreen(open, deps = {}) {
         }
     };
     start.addEventListener("click", async () => {
-        if (!(await (deps.consent ?? (() => ensureConsent()))())) {
+        if (!(deps.consent ?? (() => appConsent.hasVisit))()) {
             show("Confirm photo consent before starting the camera.");
             return;
         }

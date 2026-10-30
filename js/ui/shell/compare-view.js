@@ -10,7 +10,7 @@
  * Author: John Khan.
  */
 import { toRGBA } from "../../engines/core/buffer.js";
-import { label as drawLabel, downloadCanvas } from "./canvas.js";
+import { label as drawLabel, downloadCanvas, SIMULATION_TAG } from "./canvas.js";
 import { COMPARE_MODES, MODE_INFO, splitOrientation, stopGridValues } from "./compare.js";
 import { stacksFor, targetLayer } from "./compare-frames.js";
 import { PHONE_MAX, stageBox } from "./compare-layout.js";
@@ -323,7 +323,7 @@ export class CompareController {
         ctx.putImageData(new ImageData(new Uint8ClampedArray(toRGBA(view.image)), view.image.width, view.image.height), 0, 0);
         drawCaptions(ctx, view);
         if (view.simulation)
-            drawLabel(ctx, view.image.width, view.image.height, "Photo simulation · BELJOUR — FULL BEAUTY STUDIO");
+            drawLabel(ctx, view.image.width, view.image.height, SIMULATION_TAG);
         const single = MODE_INFO[this.session.mode].inputs === "pair" && !["side-by-side", "loupe"].includes(this.session.mode);
         const scale = view.layout.displayScale * (single ? this.hooks.zoom() : 1);
         canvas.style.width = `${Math.round(view.image.width * scale)}px`;

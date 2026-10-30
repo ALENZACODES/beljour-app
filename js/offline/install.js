@@ -13,7 +13,7 @@ export class OfflineInstaller {
         if (this.pending)
             return this.pending;
         this.state = "installing";
-        this.pending = this.host.register("service-worker.js", { scope: "./", updateViaCache: "none" })
+        this.pending = this.host.register("/service-worker.js", { scope: "/", updateViaCache: "none" })
             .then((registration) => {
             this.registration = registration;
             this.state = registration.waiting ? "update_waiting" : registration.active ? "ready" : "installing";

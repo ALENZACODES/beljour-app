@@ -120,8 +120,8 @@ export class SeasonBookController {
         const port = this.port;
         if (typeof port.readShadeHistory !== "function" ||
             typeof port.readUndertoneProfile !== "function" ||
-            typeof port.matchUsingWorkstreamF !== "function") {
-            this.statusMessage = "Workstream F personal matching has not been connected.";
+            typeof port.matchUsingLaneF !== "function") {
+            this.statusMessage = "Lane F personal matching has not been connected.";
             this.emit();
             return;
         }
@@ -143,7 +143,7 @@ export class SeasonBookController {
             if (!evidence.undertone?.confirmed) {
                 throw new SeasonContractError("profile_required", "An explicit undertone profile is required");
             }
-            const raw = await port.matchUsingWorkstreamF(evidence);
+            const raw = await port.matchUsingLaneF(evidence);
             if (!this.current(ticket)) {
                 return;
             }

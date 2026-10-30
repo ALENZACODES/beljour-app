@@ -35,7 +35,7 @@ export function proofWallReading(value) {
                 : "No permission to use local edits",
         },
         {
-            id: "download", heading: "File transfer",
+            id: "download", heading: "File handoff",
             state: value.requestedDownload ? "observed" : "pending",
             description: value.requestedDownload
                 ? "Download requested; saved file not independently confirmed"

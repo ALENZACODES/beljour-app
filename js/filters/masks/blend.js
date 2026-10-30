@@ -1,4 +1,5 @@
 import { regionMask } from "../../data/regions/index.js";
+import { fullSkinMask } from "../../engines/beauty/face-regions.js";
 import { decode1, encode1, unitToByte } from "../colour/space.js";
 export const NO_MASKS = { skin: null, person: null, source: "none", note: "" };
 export const LANDMARK_NOTE = "Background only keeps the face as you see it; hair and body take the look (no person outline yet).";
@@ -23,8 +24,19 @@ export function validateFilterMasks(masks, width, height) {
     check(masks.person);
 }
 /** Skin from the mesh's skin region; the face oval stands in for the person (face only). */
-export function fromLandmarks(points, width, height) {
-    const skin = regionMask("skin", points, width, height, { normalized: false, supersample: 2 });
+export function fromLandmarks(points, width, height, image) {
+    // With the photo: her skin up to the hairline (engines/beauty/face-regions.ts), so the guard
+    // has no edge across the forehead where the mesh's skin region stops. Without it: the mesh region.
+    let skin = regionMask("skin", points, width, height, { normalized: false, supersample: 2 });
+    if (image && image.width === width && image.height === height) {
+        try {
+            skin = { width, height, channels: 1, data: fullSkinMask(image, points) };
+        }
+        catch (error) {
+            if (!(error instanceof RangeError))
+                throw error;
+        }
+    }
     const oval = regionMask("face_oval", points, width, height, { normalized: false, supersample: 2 });
     return { skin, person: oval, source: "landmarks", note: LANDMARK_NOTE };
 }

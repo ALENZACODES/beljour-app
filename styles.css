@@ -257,7 +257,7 @@ main:focus-visible { outline: none; }  /* focused by the router after each scree
   .palette-fields > input[type="text"] { flex: 1 1 100%; width: 100%; }
 }
 
-/* Workstream D r21d: make the classic photo rail safe at phone widths.
+/* Lane D r21d: make the classic photo rail safe at phone widths.
  * Navigation uses the shared client bar; feature screens keep their own logic.
  */
 @media (max-width: 760px) {
@@ -351,7 +351,7 @@ main:focus-visible { outline: none; }  /* focused by the router after each scree
   }
 }
 
-/* Workstream D: visible BELJOUR lockup, no two-letter icon. Legacy element IDs unchanged. */
+/* Lane D: visible BELJOUR lockup, no two-letter icon. Legacy element IDs unchanged. */
 .brand { display: inline-grid; gap: 0.16rem; padding-left: 0; white-space: nowrap; }
 .brand-wordmark { font: 400 clamp(1.25rem, 3vw, 2rem)/1 var(--font-serif);
   letter-spacing: -0.02em; }

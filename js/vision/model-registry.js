@@ -4,7 +4,6 @@
  * directly calls this module. No model weights are committed to the repo.
  * Author: John Khan.
  */
-import { siteRoot } from "./site-root.js";
 import { MODEL_CATALOG } from "./generated/model-catalog.js";
 import { MODEL_LICENCES, ALLOWED_LICENCES } from "./generated/model-licences.js";
 export class ModelGateError extends Error {
@@ -110,7 +109,20 @@ export function modelAssetPath(item) {
     if (!item.sha256 || !SHA256.test(item.sha256) || !item.bytes || !FILE_NAME.test(item.filename)) {
         throw new ModelGateError(`model ${item.id}: exact asset pin required`);
     }
-    return `${siteRoot()}models/${item.sha256}/${item.filename}`;
+    return `/models/${item.sha256}/${item.filename}`;
+}
+/** A site-root path ("/models/...") resolved against where the app is served, so the build works
+ * at a domain root and under a sub-path (for example a GitHub Pages project site). This module
+ * lives at js/vision/, two folders below the site root. */
+export function siteUrl(path) {
+    if (!path.startsWith("/") || !/^https?:/.test(import.meta.url))
+        return path;
+    try {
+        return new URL(`../..${path}`, import.meta.url).href;
+    }
+    catch {
+        return path;
+    }
 }
 /** Byte-for-byte SHA-256, using the same lowercase hex encoding as hashlib. */
 export async function hashModel(bytes) {
@@ -124,7 +136,7 @@ export async function hashModel(bytes) {
 export async function fetchVerifiedModel(name, registry, fetcher = fetch, signal) {
     const item = registry.approve(name); // no network before the policy decision
     signal?.throwIfAborted();
-    const response = await fetcher(modelAssetPath(item), {
+    const response = await fetcher(siteUrl(modelAssetPath(item)), {
         method: "GET", mode: "same-origin", credentials: "omit", redirect: "error", cache: "no-store", signal,
     });
     if (response.status === 404)
@@ -132,12 +144,13 @@ export async function fetchVerifiedModel(name, registry, fetcher = fetch, signal
     if (!response.ok || response.type === "opaque" || response.type === "opaqueredirect" || response.redirected) {
         throw new ModelGateError(`model ${name}: download rejected`);
     }
+    // A host may compress the file in transit (GitHub Pages gzips .task files); the header then gives the
+    // compressed length. The decoded size and SHA-256 below are what actually guard the bytes.
     const length = response.headers.get("content-length");
-    // Hosts such as GitHub Pages gzip the transfer, so the header then counts compressed bytes;
-    // the decoded size and SHA-256 below are still checked exactly.
-    const encoded = (response.headers.get("content-encoding") ?? "identity").toLowerCase() !== "identity";
-    if (length && !encoded && Number(length) !== item.bytes)
+    const encoding = (response.headers.get("content-encoding") ?? "identity").trim().toLowerCase();
+    if (length && encoding === "identity" && Number(length) !== item.bytes) {
         throw new ModelGateError(`model ${name}: length header mismatch`);
+    }
     if (!response.body)
         throw new ModelGateError(`model ${name}: no readable response body`);
     const chunks = [];

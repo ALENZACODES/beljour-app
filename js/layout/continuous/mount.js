@@ -228,7 +228,7 @@ export function mountContinuousDemo(doc, host, onExit, options = {}) {
         }
         else if (snapshot.step === "faces") {
             stageContent.append(judgeParagraph(doc, `${snapshot.faceCount} known drawn figure boxes. Their locations are authored, not inferred. `
-                + "Automatic detection on real photos requires the checked Workstream A subject port."));
+                + "Automatic detection on real photos requires the checked Lane A subject port."));
         }
         else if (snapshot.step === "subject") {
             stageContent.append(judgeParagraph(doc, "Main subject is selected by default. Tap a box or use Tab and Enter to choose the other person."));

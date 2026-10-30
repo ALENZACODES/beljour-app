@@ -1,11 +1,12 @@
 import { defaultVisionClient } from "../vision/client.js";
+import { faceMapFor } from "./map-reader.js";
+/** The selected face of a photo, from the shared face map (face/map-reader.ts): a picture is read
+ * once and every tool that asks about it gets the same points. Null when there is no face or the
+ * face reader cannot run here (callers already say so; none invents points). */
 export async function readFace(image) {
-    const width = image instanceof HTMLImageElement ? image.naturalWidth : image.width;
-    const height = image instanceof HTMLImageElement ? image.naturalHeight : image.height;
-    const vision = defaultVisionClient();
-    const result = await vision.detectImage("face-landmarks", image, width, height, { maxFaces: 6 });
-    const chosen = result.faces?.find((face) => face.id === vision.selectedFace) ?? result.faces?.[0];
-    return chosen ? { points: chosen.landmarks, blendshapes: chosen.blendshapes } : null;
+    const map = await faceMapFor(image);
+    const chosen = map.normalized;
+    return chosen ? { points: chosen.map((p) => ({ x: p.x, y: p.y, z: p.z })), blendshapes: map.blendshapes } : null;
 }
 /** Existing recording code wants a sync last-frame reading. Queue at most one
  * worker frame and return the last completed landmarks; do not block rendering. */

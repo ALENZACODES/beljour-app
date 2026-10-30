@@ -25,6 +25,30 @@ export function photoMeanLab(image) {
     }
     return sum.map(v => v / sampled);
 }
+/** Dye lifts dark hair only so far in one go: the target's lightness is held to at most
+ * MAX_HAIR_LIFT L* above her hair's own average, and its chroma eased down with it, so a light
+ * shade on black hair reads as a rich dark version of that shade instead of a painted wig.
+ * Darker targets are untouched. ASSUMED limit from the example faces. */
+export const MAX_HAIR_LIFT = 18;
+export function believableTarget(image, hair, target) {
+    let sum = 0, weight = 0;
+    const step = Math.max(1, Math.floor(hair.length / 40000));
+    for (let i = 0; i < hair.length; i += step) {
+        const w = hair[i];
+        if (!(w > 0.5))
+            continue;
+        const p = i * image.channels;
+        sum += w * srgbToLab([image.data[p], image.data[p + 1], image.data[p + 2]])[0];
+        weight += w;
+    }
+    if (!(weight > 0))
+        return target;
+    const mean = sum / weight, limit = mean + MAX_HAIR_LIFT;
+    if (target[0] <= limit)
+        return target;
+    const scale = Math.sqrt(Math.max(0.2, limit / Math.max(1, target[0])));
+    return [limit, target[1] * scale, target[2] * scale];
+}
 export function applyBeautyLayer(image, source, layer, lightingRenderer) {
     if (layer.kind === "lighting") {
         const id = parameter(layer, "preset", "daylight");
@@ -40,7 +64,7 @@ export function applyBeautyLayer(image, source, layer, lightingRenderer) {
     if (layer.kind === "recolour") {
         if (!source.hair)
             throw new RangeError("Mark the hair area before recolouring.");
-        const target = srgbToLab(hexToRgb(parameter(layer, "colour", "#6B3F2A")));
+        const target = believableTarget(image, source.hair.data, srgbToLab(hexToRgb(parameter(layer, "colour", "#6B3F2A"))));
         const result = recolourHair(image, source.hair.data, target, { strength: layer.strength / 100 });
         return { image: { ...image, data: Uint8Array.from(result.image) }, label: `Local simulation. ${result.label}`,
             metrics: { geometry_lock: result.checks.geometry_lock, outside_unchanged: result.checks.outside_unchanged,

@@ -18,9 +18,10 @@ export function releaseLocalPhoto(ctx) {
 /** Shared by routing and navigation labels. Local screens need local pixels;
  * provider screens need the separately prepared server photo. */
 export function routeReady(ctx, route) {
-    // Body, Reel and Video ask the single consent themselves when a photo, clip or camera is opened.
-    if (["photo", "privacy", "palettes", "body", "reel", "video"].includes(route))
+    if (["photo", "privacy", "palettes"].includes(route))
         return true;
+    if (["body", "reel", "video"].includes(route))
+        return ctx.consent;
     if (["skin", "shade", "proportions", "previews"].includes(route))
         return !!ctx.photoSrc;
     return ctx.consent && !!ctx.photo;

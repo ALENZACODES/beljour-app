@@ -81,6 +81,16 @@ export class Editor {
             : { ...current, body: selection.controls, person: selection.mask };
         this.load(updated, selection.kind === "crown" ? "hair-fibre" : "posture");
     }
+    /** Attach the person area the on-device segmenter read, keeping face points and edits. */
+    setPerson(person) {
+        requireMask(person);
+        if (person.width !== this.photo.image.width || person.height !== this.photo.image.height)
+            throw new RangeError("The person area must match the photo size.");
+        this.photo = { ...this.photo, geometryRevision: ++this.sourceVersion, person: { ...person, data: Float32Array.from(person.data) } };
+        this.frameCache.clear();
+        this.studioCache.clear();
+        this.invalidate();
+    }
     /** Commit a manual hair mask without changing source pixels or settings history. */
     setHair(hair, placement) {
         for (const mask of [hair, placement]) {

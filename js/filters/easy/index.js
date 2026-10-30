@@ -1,4 +1,4 @@
-/** Workstream B original EASY filters. Author: John Khan. */
+/** Lane B original EASY filters. Author: John Khan. */
 export { LABEL as BRIDAL_LABEL, DEFAULT_BRIDAL, flashCheck, renderBridal } from "./bridal.js";
 export * from "./catalogue.js";
 export * from "./common.js";

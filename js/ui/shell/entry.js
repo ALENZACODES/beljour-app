@@ -19,7 +19,7 @@ window.addEventListener("pagehide", () => {
     stopOfflineTools();
     shellClient.destroy();
 }, { once: true });
-// R15 Workstream B standalone local studio; no shared compositing changes. Author: John Khan.
+// R15 Lane B standalone local studio; no shared compositing changes. Author: John Khan.
 import { installEyesBrowsLink } from "../eyes-brows/install.js";
 installEyesBrowsLink(document.querySelector(".shell-top-links"));
 window.addEventListener("pageshow", (event) => {

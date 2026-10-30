@@ -31,6 +31,13 @@ export function recipeFor(layer) {
         throw new RangeError("Pick a look for this filter layer");
     return catalogue().get(id);
 }
+/** The Studio slider to the look's own strength: an ease-out, so the app's gentle default (30)
+ * already reads as the look (about 54) and 100 is the full recipe. ASSUMED from the example faces. */
+export function lookStrength(slider) {
+    if (!(Number.isFinite(slider) && slider >= 0 && slider <= 100))
+        return slider;
+    return Math.round(1000 * (1 - (1 - slider / 100) ** 2.2)) / 10;
+}
 export function settingsFor(layer) {
     const p = layer.parameters;
     const flag = (key) => (typeof p[key] === "boolean" ? p[key] : undefined);
@@ -52,7 +59,7 @@ export function settingsFor(layer) {
     }
     const level = typeof p.level === "number" ? checkedLevel(p.level) : undefined;
     return {
-        ...(level === undefined ? { strength: layer.strength } : { level }),
+        ...(level === undefined ? { strength: lookStrength(layer.strength) } : { level }),
         identityLock: flag("identity_lock") ?? true,
         guard: flag("guard"),
         protectSkin: flag("protect"),
@@ -162,7 +169,7 @@ export function masksFor(source) {
         maskMemoBytes -= cached.bytes;
         maskMemo.delete(key);
     }
-    const masks = source.face && source.face.length >= 468 ? fromLandmarks(source.face, width, height)
+    const masks = source.face && source.face.length >= 468 ? fromLandmarks(source.face, width, height, source.image)
         : source.person ? fromPerson(source.person) : NO_MASKS;
     // Estimate first. For a 12 MP face the masks alone can exceed the memo
     // budget, so avoid allocating an otherwise unused second person-mask copy.

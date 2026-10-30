@@ -11,7 +11,7 @@ export class Session {
     landmarks = null;
     regions = [];
     diary_values = [.25, .3, .4, .35, .28];
-    health_consent = true; // single device consent covers it (owner, Oct 29)
+    health_consent = false;
     get image() { return this.imageValue ? { ...this.imageValue, data: this.imageValue.data.slice() } : null; }
     get result() { return this.resultValue ? { ...this.resultValue, pixels: this.resultValue.pixels.slice(), warnings: [...this.resultValue.warnings], metrics: structuredClone(this.resultValue.metrics) } : null; }
     get version() { return this.rev; }
@@ -21,7 +21,7 @@ export class Session {
         this.imageValue = { ...i, data: i.data.slice() };
         this.landmarks = landmarks?.map(p => [p[0], p[1]]) ?? null;
         this.regions = [];
-        this.health_consent = true;
+        this.health_consent = false;
         this.invalidate();
     }
     select(id) { const c = card(id); this.feature = id; this.style = c.styles[0] ?? ""; this.regions = []; this.invalidate(); }

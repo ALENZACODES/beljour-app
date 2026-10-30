@@ -1,5 +1,5 @@
 /** App shell: header, step bar, pinned photo panel and hash routing. */
-import { api, apiBase, store } from "./api.js";
+import { api, store } from "./api.js";
 import { STEPS, releaseLocalPhoto, routeReady } from "./ctx.js";
 import { announce, clear, h } from "./dom.js";
 import { mountClientShell } from "./layout/client-shell.js";
@@ -37,7 +37,7 @@ const ctx = {
 };
 let clientShell = mountClientShell(document, window, {
     page: "classic",
-    health: apiBase() === null ? undefined : () => api.health().then(() => true).catch(() => false),
+    health: () => api.health().then(() => true).catch(() => false),
     retryView: () => { void route(); },
 });
 let routeRevision = new RouteRevision();
@@ -194,7 +194,7 @@ window.addEventListener("pageshow", event => {
         return;
     clientShell = mountClientShell(document, window, {
         page: "classic",
-        health: apiBase() === null ? undefined : () => api.health().then(() => true).catch(() => false),
+        health: () => api.health().then(() => true).catch(() => false),
         retryView: () => { void route(); },
     });
     routeRevision = new RouteRevision();
@@ -211,16 +211,11 @@ api.health().then((hl) => {
     if (!appConsent.localOnly)
         void resumePending(store, api.resumeTasks).catch(() => undefined);
 }).catch(() => {
-    if (apiBase() === null) {
-        mode.textContent = "On-device mode: cloud features are off";
-        mode.className = "mode demo";
-        return;
-    }
     clientShell.connection?.tracker.setService(false);
     mode.textContent = "Server asleep or offline";
     mode.className = "mode off";
 });
-// R15 Workstream B additive navigation. Author: John Khan.
+// R15 Lane B additive navigation. Author: John Khan.
 import { installEyesBrowsLink } from "./ui/eyes-brows/install.js";
 installEyesBrowsLink(document.querySelector(".foot"));
 //# sourceMappingURL=main.js.map

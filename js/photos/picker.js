@@ -10,7 +10,6 @@
  * Author: John Khan.
  */
 import { h } from "../dom.js";
-import { ensureConsent } from "../ui/one-consent.js";
 import { sniff } from "../image/decode.js";
 import { MAX_PHOTOS, myPhotos } from "./library.js";
 import { head, looksLikeHeic, PhotoOpenError, preparePhoto, OPEN_MESSAGE } from "./prepare.js";
@@ -52,9 +51,6 @@ async function forScreen(file, prepared, prepare) {
     return new File([ready.photo], `${baseName(file.name)}.jpg`, { type: "image/jpeg", lastModified: file.lastModified });
 }
 export function photoPicker(options) {
-    // The single device consent is asked before a file is prepared, decoded or kept (Batch 1).
-    if (!options.gate)
-        options = { ...options, gate: () => ensureConsent() };
     const library = options.library ?? myPhotos();
     const prepare = options.prepare ?? ((f) => preparePhoto(f));
     const takes = options.takes ?? "many";

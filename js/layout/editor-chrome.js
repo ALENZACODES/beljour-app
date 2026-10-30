@@ -31,13 +31,14 @@ import { BRUSH_NAMES } from "../editor/brush/layer.js";
 import { createScreen } from "../editor/create/panel.js";
 import { applyStory } from "../editor/create/tabs.js";
 import { STORIES } from "../editor/create/story.js";
+import { faceMapPanel, studioMapKey } from "../screens/face-map.js";
 /** The Create panel's tabs, by the panel id a Home link uses (#tool=<id>). */
 export const CREATE_PANELS = {
     text: "text", draw: "draw", stickerlayer: "stickers", frames: "frames", collage: "collage", story: "story"
 };
 /** The panels a link from Home may open directly (#tool=<id>); batch needs a saved look. */
 export const HASH_TOOLS = ["faces", "selfie", "blink", "sizes", "event", "video", "stickers", "tattoo", "framing", "batch",
-    "text", "draw", "stickerlayer", "frames", "collage", "story"];
+    "text", "draw", "stickerlayer", "frames", "collage", "story", "facemap"];
 export function parseHash(hash) {
     let value;
     try {
@@ -175,6 +176,8 @@ export class EditorChrome {
             this.doc.querySelector('#shell-compare-modes [data-mode="split-vertical"]')?.click();
             this.say("Split compare: drag the line or use the arrow keys on the photo.");
         });
+        // A new photo opens on its Face map, the first step every face tool stands on (face-map.ts).
+        this.doc.addEventListener("beljour:new-photo", () => this.openDeliverable("facemap", undefined, false));
         this.doc.getElementById("lg-batch-review")?.addEventListener("click", () => this.openDeliverable("batch"));
         this.doc.getElementById("lg-group-faces")?.addEventListener("click", () => this.openDeliverable("faces"));
         this.doc.getElementById("lg-best-selfie")?.addEventListener("click", () => this.openDeliverable("selfie"));
@@ -389,7 +392,29 @@ export class EditorChrome {
             this.refresh();
         }
     }
-    openDeliverable(kind, layers = this.editor.document.layers) {
+    /** Hand the Face map's points to the open photo's face tools: only for the photo it was read
+     * from, and only while there are no edits (attaching points starts the edits afresh). */
+    attachMap(map, sourceId) {
+        const editor = this.view.editor;
+        if (editor.source.id !== sourceId || !map.points || editor.document.layers.length)
+            return;
+        const same = editor.source.face?.length === 478 && editor.source.face.every((p, i) => p[0] === map.points[i][0] && p[1] === map.points[i][1]);
+        if (same)
+            return;
+        try {
+            if (map.faces.length >= 2 && map.faces.length <= 6)
+                editor.setFaces(map.faces);
+            else
+                editor.setFace(map.points);
+            this.view.draw();
+            this.refresh();
+            this.say("Face map ready: the face tools now use these 478 points.");
+        }
+        catch (error) {
+            this.say(error instanceof Error ? error.message : String(error));
+        }
+    }
+    openDeliverable(kind, layers = this.editor.document.layers, scroll = true) {
         const panel = this.doc.getElementById("lg-deliverable");
         if (!panel)
             return;
@@ -404,6 +429,13 @@ export class EditorChrome {
                 panel.replaceChildren(screen.element);
                 this.closePanel = () => { this.createPanel = null; screen.dispose(); };
                 this.createPanel = screen.panel;
+            }
+            else if (kind === "facemap") {
+                const source = this.view.editor.source;
+                if (source.kind === "sample")
+                    throw new Error("The Face map reads a photo: open a photo or the example person first.");
+                panel.replaceChildren(faceMapPanel({ source: source.image, key: studioMapKey(source), label: source.label || "Your photo", level: 2,
+                    onMap: (map) => this.attachMap(map, source.id) }));
             }
             else if (kind === "faces") {
                 const group = this.groupSession();
@@ -444,7 +476,8 @@ export class EditorChrome {
             }
             panel.hidden = false;
             this.doc.getElementById("lg-close-deliverable")?.removeAttribute("hidden");
-            panel.scrollIntoView({ block: "nearest" });
+            if (scroll)
+                panel.scrollIntoView({ block: "nearest" });
         }
         catch (error) {
             this.say(error instanceof Error ? error.message : String(error));

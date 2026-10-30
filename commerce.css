@@ -94,7 +94,7 @@ button:disabled { cursor: not-allowed; opacity: .6; }
 .hair-consultation #hair-consult-status { font-size: .9rem; }
 @media (max-width: 560px) { .hair-consultation { padding: .65rem; } .hair-consultation .hair-consult-actions > button { flex: 1 1 100%; } }
 
-/* Workstream C R19: separate synthetic-only tint and fibre comparison. */
+/* Lane C R19: separate synthetic-only tint and fibre comparison. */
 .hair-palette-workshop { border: 1px solid var(--rule); border-radius: .75rem; padding: 1rem; margin-top: 1rem; }
 .hair-palette-workshop h3 { margin-top: 0; }
 .hair-palette-controls { min-width: 0; border: 1px solid var(--rule); border-radius: .6rem; padding: .85rem; }
@@ -107,7 +107,7 @@ button:disabled { cursor: not-allowed; opacity: .6; }
 .hair-palette-comparisons figcaption { margin: .35rem 0; font-size: .85rem; }
 @media (max-width: 740px) { .hair-palette-workshop { padding: .65rem; } }
 
-/* Workstream C R19 fictional sample budget and vendor-independent comparison. */
+/* Lane C R19 fictional sample budget and vendor-independent comparison. */
 .commerce-budget-tools { border-top: 1px solid var(--rule); padding-top: 1rem; margin-top: 1rem; }
 .commerce-budget-tools h3 { margin-top: .2rem; }
 .commerce-budget-tools select, .commerce-budget-tools input[type="number"] { display: block; width: 100%; min-height: 2.75rem; font-size: 1rem; margin-top: .35rem; padding: .5rem; }

@@ -2,7 +2,7 @@ import { engineToVisible, visibleToEngine, setStrengthRange, PreviewDebouncer } 
 /** Working studio UI (R8 shell, extended in R9). Native buttons and inputs; no framework, CDN or
  * third-party art. The editor page never calls fetch and never sends a user photo anywhere.
  * R9 adds: the ten compare modes (compare-view.ts), visit consent before opening a photo and a
- * styling transfer that explains what is sent (consent.ts), the on-device pre-check and the
+ * styling hand-off that explains what is sent (consent.ts), the on-device pre-check and the
  * thumbnail strip, both computed in the shell worker, the demo tour (web/src/demo/), the phone
  * panel tabs, a keyboard map with a shortcuts dialog, and live-region announcements.
  * Author: John Khan.
@@ -11,7 +11,9 @@ import { SIDEBAR_SECTIONS, defaultSample, readiness, tool, toolsIn } from "./cat
 import { Editor } from "./controller.js";
 import { readLocalImage, SAMPLE_IDS, SAMPLE_NAMES, uploadedSource } from "./demo.js";
 import { EXAMPLE_LABEL, examplePeople, framingPoints } from "../../screens/shape-art.js";
-import { paint, downloadCanvas, label as burnLabel } from "./canvas.js";
+import { faceMapFor } from "../../face/map-reader.js";
+import { studioMapKey } from "../../screens/face-map.js";
+import { paint, downloadCanvas, label as burnLabel, SIMULATION_TAG } from "./canvas.js";
 import { isEmpty as createIsEmpty } from "../../editor/create/doc.js";
 import { burnCreate, releaseCanvas, showsEditedPhoto } from "../../editor/create/export.js";
 import { sharedAssets } from "../../editor/create/assets.js";
@@ -38,6 +40,9 @@ import { DemoTour, demoHash, parseDemoHash } from "../../demo/loader.js";
 import { PHONE_MAX } from "./compare-layout.js";
 import { HairStudio } from "../studios/hair/view.js";
 import { hashModel } from "../../vision/model-registry.js";
+import { defaultVisionClient } from "../../vision/client.js";
+import { faceReaderReady, stagedModels } from "../../vision/staged.js";
+import { toRGBA } from "../../engines/core/buffer.js";
 import { readHeader } from "../../image/decode.js";
 import { photoPicker } from "../../photos/picker.js";
 import { heroAppearanceScreen } from "../../screens/hero-appearance.js";
@@ -53,8 +58,9 @@ import { SIDES } from "../../engines/studio/relight.js";
 import { LOOKS as ILLUSTRATION_LOOKS } from "../../engines/studio/illustration.js";
 import { GLOWS } from "../../engines/skin/finish.js";
 import { SHIFTS as UNDERTONES } from "../../engines/skin/glow-tan.js";
-import { TOOLS as SKIN_TOOLS } from "../../engines/skin/studio.js";
-import { SKIN_TOOL_NAMES } from "./skin-layer.js";
+import { SKIN_LAYER_TOOLS as SKIN_TOOLS, SKIN_TOOL_NAMES } from "./skin-layer.js";
+import { MAKEUP_PRODUCTS, MAKEUP_PRODUCT_NAMES, lookParams } from "./makeup-layer.js";
+import { FINISHES, LOOKS as MAKEUP_LOOKS } from "../../engines/beauty/makeup.js";
 import { presetIds, preset } from "../../engines/shade/lighting.js";
 import { LEVELS } from "../../engines/haircolour/generated/levels.js";
 import { filterControls } from "../../filters/runtime/controls.js";
@@ -324,6 +330,8 @@ export class ShellView {
             this.inform(`Photo ready (${image.width}×${image.height}, local preview). No upload occurred.`);
             this.draw();
             this.afterSource({ type: file.type, bytes: file.size });
+            this.newPhoto();
+            void this.readFacePoints(source.id);
         }
         catch (error) {
             this.inform(error instanceof Error ? error.message : String(error));
@@ -374,14 +382,13 @@ export class ShellView {
         find("shell-zoom-reset").addEventListener("click", () => this.safely(() => this.editor.zoom(1)));
         find("shell-download").addEventListener("click", () => { void this.exportPreview(); });
     }
-    /** R9 controls: consent, provider transfer, demo tour, tabs, shortcuts and the keyboard map. */
+    /** R9 controls: consent, provider hand-off, demo tour, tabs, shortcuts and the keyboard map. */
     wireR9() {
         find("shell-consent-understood").nextElementSibling.textContent = VISIT_STATEMENTS[0].text;
-        find("shell-consent-statement").textContent = VISIT_STATEMENTS[0].text;
         find("shell-consent-cancel").addEventListener("click", () => this.consentModal.close(false));
         find("shell-consent-accept").addEventListener("click", () => {
             try {
-                appConsent.acceptVisit({ understood: true });
+                appConsent.acceptVisit({ understood: find("shell-consent-understood").checked });
                 this.consentModal.close(true);
             }
             catch (error) {
@@ -530,26 +537,48 @@ export class ShellView {
         if (appConsent.hasVisit)
             return true;
         find("shell-consent-error").textContent = "";
-        const ok = await this.consentModal.open(find("shell-consent-accept"));
+        const ok = await this.consentModal.open(find("shell-consent-understood"));
         if (!ok)
             this.inform("No photo opened. Drawn samples need no consent.");
         return ok;
     }
-    /** The styling transfer: what is sent, the pre-check for styling, then a link to the styling screen. */
+    /** The styling hand-off: what is sent, the pre-check for styling, then a link to the styling screen. */
     async openProvider() {
         const studio = this.editor.document.studio;
-        const target = studio === "makeup" ? "index.html#/tryon" : "index.html#/photo";
-        // No dialog (owner's order): the cloud action carries its own inline label, and this button
-        // either opens the styling screen or says plainly why it can't.
+        const go = find("shell-provider-continue");
+        go.href = studio === "makeup" ? "index.html#/tryon" : "index.html#/photo";
+        const box = find("shell-provider-check");
+        go.hidden = appConsent.localOnly;
         if (appConsent.localOnly) {
-            this.inform(LOCAL_ONLY_REASON);
+            box.replaceChildren(node("p", "shell-error", LOCAL_ONLY_REASON));
+            const closed = await this.providerModal.open(find("shell-provider-cancel"));
+            if (!closed)
+                this.inform("On-device only is on. Nothing was sent.");
             return;
         }
-        if (!serverConfigured()) {
-            this.inform("YouCam styling is off in this on-device preview. Nothing was sent. The on-device tools in the list still work.");
-            return;
-        }
-        window.location.href = target;
+        box.replaceChildren(node("p", "shell-small", "Checking this photo for styling on this device…"));
+        const ticket = ++this.precheckTicket;
+        this.client.precheck(this.editor.source.image, { purpose: "styling", face: this.editor.source.face }).then((report) => {
+            if (ticket !== this.precheckTicket)
+                return;
+            const list = node("ul", "shell-precheck-list");
+            for (const c of report.checks.filter((x) => x.level !== "pass")) {
+                const li = node("li", "shell-check-item");
+                li.dataset.level = c.level;
+                li.textContent = `${c.title}: ${c.message}`;
+                list.append(li);
+            }
+            box.replaceChildren(node("p", "", this.editor.source.kind === "sample"
+                ? "This is a drawn sample. On the styling screen you choose the photo to send."
+                : "This photo stays here. On the styling screen you choose the photo to send and tick the box to send it."), list);
+        }, () => box.replaceChildren(node("p", "shell-small", "The photo check couldn't run here; the styling screen checks before sending.")));
+        const ok = await this.providerModal.open(find("shell-provider-cancel"));
+        if (!ok)
+            this.inform("Kept editing here. Nothing was sent.");
+    }
+    /** A new photo is open: the editor chrome opens its Face map first (studio.html, face-map.ts). */
+    newPhoto() {
+        document.dispatchEvent(new CustomEvent("beljour:new-photo", { detail: { id: this.editor.source.id } }));
     }
     /** Measure the new source in the worker, and refresh the strip. */
     /** Refresh everything that depends on the open photo (pre-check, canvas); public for the chrome's panels. */
@@ -575,8 +604,8 @@ export class ShellView {
     }
     /** A first visit opens on an AI-generated example person (assets/shape/ or the Skin Moment
      * faces), not a drawn test picture, when those pictures are in the build. Face points come from
-     * the pictures' fixed passport framing, the same estimate the other screens use for them, and
-     * the label says so. Skipped once she has opened anything herself. */
+     * the shared face map; only a build without the face reader uses the pictures' fixed passport
+     * framing, and the label says so. Skipped once she has opened anything herself. */
     async openExamplePerson() {
         const person = (await examplePeople())[0];
         if (!person)
@@ -598,13 +627,85 @@ export class ShellView {
                 return;
             g.drawImage(img, 0, 0, w, hgt);
             const image = rgbFromRGBA(g.getImageData(0, 0, w, hgt));
-            const source = { ...uploadedSource(image, "upload:example-person-1"), label: `${EXAMPLE_LABEL}, not a real person`,
-                face: framingPoints(w, hgt) };
+            const plain = uploadedSource(image, "upload:example-person-1");
+            // The shared face map (face/map-reader.ts) reads the example face; only when this build has
+            // no face reader does the labelled example fall back to its picture's fixed framing.
+            const map = await faceMapFor(image, { key: studioMapKey(plain) });
+            if (!(this.editor.source.id.startsWith("sample:") && !this.editor.document.layers.length && !this.draft && !this.tour.current))
+                return;
+            const face = map.points ? map.points.map(([x, y]) => [x, y]) : map.status === "unavailable" ? framingPoints(w, hgt) : undefined;
+            const source = { ...plain, label: `${EXAMPLE_LABEL}, not a real person`, ...(face ? { face } : {}) };
             this.editor.load(source, this.editor.document.studio);
-            this.inform(`${EXAMPLE_LABEL} ready: an invented person, not a real one. Face area estimated from the picture's framing. Open a photo to use your own.`);
+            this.inform(`${EXAMPLE_LABEL} ready: an invented person, not a real one. ${map.points ? "Face mapped on this device." : map.status === "unavailable" ? "Face area estimated from the picture's framing (no face reader in this build)." : "No face was found in this picture, so the face tools stay off."} Open a photo to use your own.`);
             this.afterSource();
+            this.newPhoto();
+            void this.readFacePoints(source.id);
         }
         catch { /* the drawn sample stays open */ }
+    }
+    /** Read the photo's 478 face points and its hair area with the on-device models, when this build
+     * staged them, so every face tool lands on her real face instead of a framing estimate. Runs only
+     * while the photo is still open with no edits yet (attaching points resets edits). Pixels go to
+     * the local vision worker only. */
+    async readFacePoints(sourceId) {
+        try {
+            const vision = defaultVisionClient();
+            if (!(await faceReaderReady(vision)))
+                return;
+            const still = () => this.editor.source.id === sourceId && !this.editor.document.layers.length && !this.draft;
+            if (!still())
+                return;
+            const img = this.editor.source.image, { width, height } = img;
+            let faces = 0;
+            if (this.editor.source.face?.length !== 478) {
+                // The shared face map (face/map-reader.ts): the same cached reading its panel shows.
+                const map = await faceMapFor(img, { key: studioMapKey(this.editor.source) });
+                if (!still() || map.status !== "mapped" || !map.faces.length)
+                    return;
+                const all = map.faces.map((face) => face.map(([x, y]) => [x, y]));
+                if (all.length === 1)
+                    this.editor.setFace(all[0]);
+                else
+                    this.editor.setFaces(all);
+                faces = all.length;
+            }
+            let hairNote = "";
+            if (!this.editor.source.hair && (await stagedModels()).has("hair-segmenter") && vision.ready("hair-segmentation")) {
+                const hair = await vision.detect("hair-segmentation", { width, height, rgba: Uint8ClampedArray.from(toRGBA(img)).buffer });
+                const seg = hair.ok ? hair.output?.segmentation : undefined;
+                if (seg && seg.channels.length >= 2 && this.editor.source.id === sourceId && !this.editor.document.layers.length) {
+                    const plane = seg.channels[seg.channels.length - 1], data = new Float32Array(width * height);
+                    for (let y = 0; y < height; y++)
+                        for (let x = 0; x < width; x++) {
+                            const sx = Math.min(seg.width - 1, Math.floor((x + 0.5) * seg.width / width)), sy = Math.min(seg.height - 1, Math.floor((y + 0.5) * seg.height / height));
+                            data[y * width + x] = Math.min(1, Math.max(0, plane[sy * seg.width + sx]));
+                        }
+                    this.editor.setHair({ width, height, channels: 1, data });
+                    hairNote = "Hair area";
+                }
+            }
+            if (!this.editor.source.person && (await stagedModels()).has("selfie-multiclass") && vision.ready("person-segmentation")) {
+                const found = await vision.detect("person-segmentation", { width, height, rgba: Uint8ClampedArray.from(toRGBA(img)).buffer });
+                const seg = found.ok ? found.output?.segmentation : undefined;
+                if (seg && seg.channels.length >= 2 && this.editor.source.id === sourceId) {
+                    // Channel 0 is the background; the person is everything else.
+                    const plane = seg.channels[0], data = new Float32Array(width * height);
+                    for (let y = 0; y < height; y++)
+                        for (let x = 0; x < width; x++) {
+                            const sx = Math.min(seg.width - 1, Math.floor((x + 0.5) * seg.width / width)), sy = Math.min(seg.height - 1, Math.floor((y + 0.5) * seg.height / height));
+                            data[y * width + x] = Math.min(1, Math.max(0, 1 - plane[sy * seg.width + sx]));
+                        }
+                    this.editor.setPerson({ width, height, channels: 1, data });
+                    hairNote = hairNote ? `${hairNote}, person area` : "Person area";
+                }
+            }
+            if (!faces && !hairNote)
+                return;
+            const parts = [faces ? `Face points for ${faces === 1 ? "this face" : `${faces} faces`}` : "", hairNote].filter(Boolean);
+            this.inform(`${parts.join(" and ")} read on this device. Nothing was uploaded.`);
+            this.draw();
+        }
+        catch { /* the photo stays usable; face tools say what they need */ }
     }
     openDemo(id) {
         this.safely(() => {
@@ -710,11 +811,11 @@ export class ShellView {
                 }
                 const ctx = copy.getContext("2d");
                 if (ctx && simulated && showsEditedPhoto(create))
-                    burnLabel(ctx, copy.width, copy.height, "Photo simulation · BELJOUR — FULL BEAUTY STUDIO");
+                    burnLabel(ctx, copy.width, copy.height, SIMULATION_TAG);
             }
             else {
                 copy = node("canvas");
-                paint(copy, preview.image, { label: "Photo simulation · BELJOUR — FULL BEAUTY STUDIO", simulate: simulated, zoom: 1 });
+                paint(copy, preview.image, { label: SIMULATION_TAG, simulate: simulated, zoom: 1 });
             }
             try {
                 await downloadCanvas(copy);
@@ -940,7 +1041,7 @@ export class ShellView {
         const settings = node("section", "shell-controls");
         settings.append(node("h3", "", "Tool options"));
         if (layer.kind === "enhance") {
-            settings.append(labelled("Enhance mode", select(Object.keys(MODES).map((m) => ({ value: m, label: m.replaceAll("_", " ") })), getParam(layer, "mode", "natural"), (v) => param("mode", v))));
+            settings.append(labelled("Enhance mode", select(["auto", ...Object.keys(MODES)].map((m) => ({ value: m, label: m === "auto" ? "Auto fix" : m.replaceAll("_", " ") })), getParam(layer, "mode", "auto"), (v) => param("mode", v))));
             const steps = node("div", "shell-step-grid");
             for (const step of ENHANCE_STEPS)
                 steps.append(check(step.replaceAll("_", " "), layer.parameters[step] !== false, (v) => param(step, v)));
@@ -1002,8 +1103,22 @@ export class ShellView {
             settings.append(labelled("Toner estimate", select(Object.keys(LEVELS.toners).map(value => ({ value, label: value })), getParam(layer, "toner", "none"), value => param("toner", value))));
             settings.append(node("p", "shell-hint", "Local simulation of the first session; change the placement in the tool panel."));
         }
+        if (layer.kind === "face-makeup") {
+            settings.append(labelled("Look", select(MAKEUP_LOOKS.map((look) => ({ value: look.id, label: look.name })), getParam(layer, "look", MAKEUP_LOOKS[0].id), (v) => this.safely(() => this.editor.applyOption("face-makeup", lookParams(v), MAKEUP_LOOKS.find((look) => look.id === v)?.name ?? v)))));
+            for (const product of MAKEUP_PRODUCTS) {
+                const current = getParam(layer, product, "none"), on = current !== "none";
+                const colour = node("input", "shell-colour");
+                colour.type = "color";
+                colour.value = on ? current : "#8E3B46";
+                colour.disabled = !on;
+                colour.addEventListener("change", () => param(product, colour.value));
+                settings.append(check(MAKEUP_PRODUCT_NAMES[product], on, (v) => param(product, v ? colour.value : "none")), labelled(`${MAKEUP_PRODUCT_NAMES[product]} colour`, colour));
+            }
+            settings.append(labelled("Lipstick finish", select(FINISHES.map((value) => ({ value, label: value[0].toUpperCase() + value.slice(1) })), getParam(layer, "finish", "satin"), (v) => param("finish", v))));
+            settings.append(node("p", "shell-hint", "Makeup simulation on this device. Strength is how much product; your lip lines and skin texture stay."));
+        }
         if (layer.kind === "skin") {
-            const skinTool = getParam(layer, "tool", "tone");
+            const skinTool = getParam(layer, "tool", "smooth");
             settings.append(labelled("Skin tool", select(SKIN_TOOLS.map((value) => ({ value, label: SKIN_TOOL_NAMES[value] })), skinTool, (v) => param("tool", v))));
             if (skinTool === "glow")
                 settings.append(labelled("Glow look", select(Object.entries(GLOWS).map(([value, look]) => ({ value, label: look.name })), getParam(layer, "style", "cassis"), (v) => param("style", v))));
@@ -1022,7 +1137,7 @@ export class ShellView {
                 if (allowed)
                     settings.append(labelled("Tan", select([{ value: "add", label: "Add a tan" }, { value: "remove", label: "Remove a tan (lightens)" }], getParam(layer, "direction", "add"), (v) => param("direction", v))));
             }
-            settings.append(node("p", "shell-hint", "Local simulation, not medical advice. Only tan removal lightens skin, and its button says so."));
+            settings.append(node("p", "shell-hint", "Local simulation, not medical advice. Only tan removal lightens skin, and only when you tick the box."));
         }
         if (layer.kind === "studio") {
             const tool = getParam(layer, "tool", "blur");
@@ -1089,7 +1204,7 @@ export class ShellView {
                 return;
             const simulate = result.labels.some((l) => /simulat|photo edit/i.test(l));
             paint(this.canvas, result.image, { zoom: this.editor.document.zoom,
-                label: "Photo simulation · BELJOUR — FULL BEAUTY STUDIO", simulate });
+                label: SIMULATION_TAG, simulate });
             find("shell-measure").textContent = result.effective
                 ? `${result.effective} active edit${result.effective === 1 ? "" : "s"} · ${pixelsChanged(this.editor.source.image, result.image).percent.toFixed(1)}% of pixels changed`
                 : "Original — no active edits";
@@ -1127,10 +1242,4 @@ export class ShellView {
     }
 }
 export function mountShell() { return new ShellView(); }
-/** Whether a styling server is configured (same rule as api.ts, read here without importing the API client). */
-function serverConfigured() {
-    const scope = globalThis;
-    const raw = scope.BELJOUR_API ?? scope.PLUMB_API;
-    return typeof raw === "string" && /^https?:\/\/[^\s/?#]+$/i.test(raw.trim().replace(/\/+$/, ""));
-}
 //# sourceMappingURL=view.js.map

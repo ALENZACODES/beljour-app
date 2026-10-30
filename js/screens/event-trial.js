@@ -3,10 +3,10 @@
  * kept after the panel closes. Author: John Khan.
  */
 import { LongWork } from "../ui/long-work.js";
-import { ensureConsent } from "../ui/one-consent.js";
 import { h } from "../dom.js";
 import { paint } from "../ui/shell/canvas.js";
 import { readLocalImage, uploadedSource } from "../ui/shell/demo.js";
+import { appConsent } from "../ui/shell/consent.js";
 import { upgradeMyLook } from "../save/validate.js";
 import { MAX_PHOTOS, runEventTrial } from "../save/event-trial.js";
 import { devicePoints } from "./best-selfie.js";
@@ -31,7 +31,7 @@ export function eventTrialScreen(looks, deps = {}) {
         coverage.replaceChildren();
         const signal = work.begin();
         try {
-            if (!(await (deps.consent ?? (() => ensureConsent()))()))
+            if (!(deps.consent ?? (() => appConsent.hasVisit))())
                 throw new Error("Confirm photo consent before opening photos.");
             const chosen = saved.find((l) => l.id === pick.value) ?? saved[0];
             if (files.length > MAX_PHOTOS)

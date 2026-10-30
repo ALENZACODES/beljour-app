@@ -1,15 +1,16 @@
 /** Skin Moment page (web/skin-moment.html): lays out the states from skin-moment-model.ts. The
  * photo is opened and checked on this device with the app's own code (screens/photo.ts
- * normalizePhoto, the face model through vision/client.ts as face/landmarks.ts uses it, and
+ * normalizePhoto, the shared face map from face/map-reader.ts, shown in the Face map panel, and
  * face/quality.ts) before anything is sent; the request goes
  * through api.ts. With no server configured the page runs from saved examples.
  * Author: John Khan.
  */
 import { api, apiBase, ApiError } from "../api.js";
-import { ensureConsent } from "../ui/one-consent.js";
 import { announce, h, loadImage } from "../dom.js";
 import { toRGBA } from "../engines/core/buffer.js";
 import { lighting, runChecks } from "../face/quality.js";
+import { faceMapFor } from "../face/map-reader.js";
+import { faceMapPanel } from "./face-map.js";
 import { LOCAL_ONLY_KEY } from "../ui/shell/consent.js";
 import { makeSample } from "../ui/shell/demo.js";
 import { defaultVisionClient } from "../vision/client.js";
@@ -19,7 +20,7 @@ import { photoPicker } from "../photos/picker.js";
 import { AI_PERSON, ART_DIR, art, concernIcon, exampleFace, presentFiles, productPicture, uiIcon } from "./skin-moment-art.js";
 import { buyExample, demoTryOn, examplePersonLook, examplePersonPreview, examplePersonSoftened, foundationPreview, framingPoints, SAVED } from "./skin-moment-demo.js";
 import { loadFaces, MOMENT_FACE } from "./skin-moment-faces.js";
-import { DEMO_SERVER_NOTE, DeviceHistory, LOCAL_TEXT, MOMENTS, MomentController, NO_SERVER_NOTE, PhotoNotReady, STEP_NAMES, UNITS_OUT, consentText, errorArt, photoChecks, resultView, sendLine, stepIndex, unitsStatusLine, whatIsSent, } from "./skin-moment-model.js";
+import { DEMO_SERVER_NOTE, DeviceHistory, LOCAL_TEXT, MOMENTS, MomentController, NO_SERVER_NOTE, PhotoNotReady, STEP_NAMES, UNITS_OUT, consentText, errorArt, photoChecks, resultView, stepIndex, unitsStatusLine, whatIsSent, } from "./skin-moment-model.js";
 import { addDays, localDay, whileUsed } from "../engines/skin-daily/index.js";
 import { routineFromPlan, timeLine } from "../engines/skin-daily/routine.js";
 import { checkinDays, DailyStore, diaryResult, entryName } from "../engines/skin-daily/store.js";
@@ -63,18 +64,20 @@ async function checkPhoto(file) {
     const url = URL.createObjectURL(blob);
     let face = null;
     let points = null;
+    let shown = null;
     const vision = defaultVisionClient();
     if (await faceModelReady(vision)) {
         try {
             const image = await loadImage(url);
-            const result = await vision.detectImage("face-landmarks", image, image.naturalWidth, image.naturalHeight, { maxFaces: 6 });
-            // ok: false means the face model couldn't run here (weights not staged, worker failed): the
-            // check is unavailable, not failed. ok with no face is a real "no face found".
-            if (result.ok) {
-                const chosen = result.faces?.find((f) => f.id === vision.selectedFace) ?? result.faces?.[0] ?? null;
+            // The shared face map (face/map-reader.ts): one reading of this photo, reused by the Face
+            // map panel below and the foundation preview. "unavailable" means the reader couldn't run
+            // here: the check is unavailable, not failed. A mapped photo with no face is "no face found".
+            const map = await faceMapFor(image, { key: url });
+            if (map.status !== "unavailable") {
+                shown = image;
                 let light = null;
-                if (chosen) {
-                    const xs = chosen.landmarks.map((p) => p.x * width), ys = chosen.landmarks.map((p) => p.y * height);
+                if (map.points) {
+                    const xs = map.points.map((p) => p[0]), ys = map.points.map((p) => p[1]);
                     const c = document.createElement("canvas");
                     c.width = c.height = 96;
                     const g = c.getContext("2d");
@@ -83,16 +86,16 @@ async function checkPhoto(file) {
                         g.drawImage(image, x, y, Math.max(1, Math.max(...xs) - x), Math.max(1, Math.max(...ys) - y), 0, 0, 96, 96);
                         light = lighting(g.getImageData(0, 0, 96, 96).data);
                     }
-                    points = chosen.landmarks.map((p) => [p.x * width, p.y * height]);
+                    points = map.points.map(([x, y]) => [x, y]);
                 }
-                face = runChecks(chosen?.landmarks ?? null, width, height, light, true);
+                face = runChecks(map.normalized, width, height, light, true);
             }
         }
         catch {
             face = null;
         }
     }
-    return { photo: { blob, url, width, height, points }, checks: photoChecks({ width, height, bytes: blob.size, face }) };
+    return { photo: { blob, url, width, height, points, image: shown }, checks: photoChecks({ width, height, bytes: blob.size, face }) };
 }
 /* ------------------------------- small pieces ------------------------------- */
 function progress(state) {
@@ -304,10 +307,6 @@ export function mountSkinMoment(root, start = "") {
             onPhotos: async ([chosen]) => {
                 if (!chosen)
                     return;
-                if (!(await ensureConsent())) {
-                    working.textContent = "No photo opened.";
-                    return;
-                }
                 working.textContent = "Checking the photo on this device. Nothing is uploaded yet.";
                 const { photo: next, checks } = await checkPhoto(chosen);
                 setPhoto(next);
@@ -331,13 +330,13 @@ export function mountSkinMoment(root, start = "") {
                 }
             } }, sendLabel);
         return [
-            ...heading("Add one clear photo", `${info.title} · ${s.mode === "local" ? "Local estimate: nothing goes to YouCam" : live ? "Sends to YouCam" : "Saved example mode"}`),
-            h("p", { class: "lg-small sm-send-line provider-label" }, s.mode === "local" ? LOCAL_TEXT : live ? sendLine(s.moment) : `${sendLine(s.moment)} when a server is connected. This copy has none, so a saved example shows.`),
+            ...heading("Add one clear photo", `${info.title} · ${s.mode === "local" ? "Local estimate: nothing goes to YouCam" : live ? "Sending to YouCam with your consent" : "Saved example mode"}`),
             h("ul", { class: "sm-tips", "aria-label": "Tips for a good photo" }, ...tips.map(([name, text]) => h("li", {}, art(name), h("span", {}, text)))),
             h("div", { class: "sm-card sm-photo" }, h("div", { class: "sm-photo-pick" }, photo && p ? h("img", { class: "sm-photo-preview", src: photo.url, alt: "Your photo, ready on this device" })
                 : h("div", { class: "sm-photo-empty", "aria-hidden": "true" }, art("tip-fill-frame")), picker.element, h("p", { class: "lg-small" }, "JPEG, PNG or WEBP. It's turned upright and its file details are removed on this device.")), h("div", { class: "sm-photo-checks" }, h("h2", {}, uiIcon("selfie-frame"), "Photo checks"), p ? h("p", { class: `sm-verdict sm-verdict-${p.verdict}` }, p.note) : working.textContent ? working : h("p", { class: "lg-small" }, "Add a photo and it's checked here before anything is sent."), p ? checkList(p.checks) : null, h("div", { class: "sm-actions" }, send), !live ? h("p", { class: "lg-small" }, onDevice ? "On-device mode is on, so the saved example shows with or without a photo." : "No server is connected, so the saved example shows with or without a photo.") : null, sendNote)),
-            h("div", { class: "sm-actions sm-actions-back" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.back()) }, "← Choose a different moment")),
-            h("div", { class: "sm-actions", hidden: s.mode !== "youcam" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.localOnly()) }, "Use a local estimate instead")),
+            // The Face map: the first step for her photo, from the same reading as the checks above.
+            ...(photo?.image && p ? [faceMapPanel({ source: photo.image, key: photo.url, label: "Your photo", level: 2 })] : []),
+            h("div", { class: "sm-actions sm-actions-back" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.back()) }, "← Back to consent")),
         ];
     }
     /* loading */
@@ -499,8 +498,8 @@ export function mountSkinMoment(root, start = "") {
         const drawn = examplePersonPreview(read.before, read.points);
         return drawn ? { before: read.before, after: drawn.image, framed: read.framed, shade: drawn.shade, lab: drawn.lab, points: read.points } : null;
     }
-    /** An example-person picture at most 480 px wide, with its face points: from the face model
-     * when it runs here, else from the pictures' fixed framing. */
+    /** An example-person picture at most 480 px wide, with its face points: from the shared face map
+     * when the face reader runs here, else from the pictures' fixed framing (labelled examples only). */
     async function examplePicture(url) {
         try {
             const image = await loadImage(url);
@@ -514,13 +513,11 @@ export function mountSkinMoment(root, start = "") {
             g.drawImage(image, 0, 0, w, hgt);
             const before = { width: w, height: hgt, channels: 4, data: g.getImageData(0, 0, w, hgt).data };
             let points = null;
-            const vision = defaultVisionClient();
-            if (await faceModelReady(vision)) {
+            if (await faceModelReady(defaultVisionClient())) {
                 try {
-                    const found = await vision.detectImage("face-landmarks", c, w, hgt, { maxFaces: 1 });
-                    const face = found.ok ? found.faces?.[0] : undefined;
-                    if (face)
-                        points = face.landmarks.map((p) => [p.x * w, p.y * hgt]);
+                    const map = await faceMapFor(c, { key: `sm-example:${url}:${w}x${hgt}` });
+                    if (map.points)
+                        points = map.points.map(([x, y]) => [x, y]);
                 }
                 catch {
                     points = null;

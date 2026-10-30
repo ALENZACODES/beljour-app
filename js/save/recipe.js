@@ -28,6 +28,7 @@ export const TOOLS = Object.freeze({
     nose: { label: "Nose", provider: "local" },
     tan: { label: "Tan", provider: "local" },
     skin: { label: "Skin", provider: "local" },
+    "face-makeup": { label: "Makeup on this device", provider: "local" },
     "under-eye": { label: "Under-eye", provider: "local" },
     "teeth": { label: "Teeth whitening", provider: "local" },
     "shave": { label: "Beard removal", provider: "local" },

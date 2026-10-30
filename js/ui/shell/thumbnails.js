@@ -25,6 +25,8 @@ import { renderLayers } from "./pipeline.js";
 import { scaleSource } from "./scale.js";
 import { POSTURE_DEFAULTS } from "./settings.js";
 import { SKIN_DEFAULTS } from "./skin-layer.js";
+import { MAKEUP_DEFAULTS, lookParams } from "./makeup-layer.js";
+import { LOOKS as MAKEUP_LOOKS } from "../../engines/beauty/makeup.js";
 import { UNDER_EYE_DEFAULTS } from "./under-eye-layer.js";
 import { ILLUSTRATION_DEFAULTS, STUDIO_DEFAULTS } from "./studio-layer.js";
 import { retouchDefaults } from "../../editor/brush/layer.js";
@@ -57,9 +59,11 @@ export function defaultParams(kind, source) {
     if (kind === "portrait")
         return defaultPortraitParams();
     if (kind === "enhance")
-        return { mode: "natural" };
+        return { mode: "auto" };
     if (kind === "skin")
         return { ...SKIN_DEFAULTS };
+    if (kind === "face-makeup")
+        return { ...MAKEUP_DEFAULTS };
     if (kind === "under-eye")
         return { ...UNDER_EYE_DEFAULTS };
     if (kind === "grey")
@@ -109,10 +113,12 @@ export function optionsFor(kind, source) {
     if (kind === "balayage")
         return ["none", "ash", "violet"].map((p, i) => make("toner", p, i));
     if (kind === "enhance")
-        return Object.keys(MODES).map((m, i) => make("mode", m, i));
+        return ["auto", ...Object.keys(MODES)].map((m, i) => ({ ...make("mode", m, i), label: m === "auto" ? "Auto fix" : words(m) }));
+    if (kind === "face-makeup")
+        return MAKEUP_LOOKS.map((look, i) => ({ ...make("look", look.id, i), label: look.name, params: lookParams(look.id) }));
     // Skin: one tile per tool. Tan tiles only ever add a tan; removal is never offered as a tile.
     if (kind === "skin")
-        return [["tone", {}, "Even tone"], ["matte", {}, "Matte"], ["glow", { style: "cassis" }, "Glow Cassis"],
+        return [["smooth", {}, "Smooth"], ["foundation", {}, "Foundation"], ["tone", {}, "Even tone"], ["matte", {}, "Matte"], ["glow", { style: "cassis" }, "Glow Cassis"],
             ["glow", { style: "collioure" }, "Glow Collioure"], ["freckles", {}, "Freckles"], ["tan", { direction: "add" }, "Tan"]]
             .map(([t, extra, label], i) => ({ ...make("tool", `${t}${"style" in extra ? `-${extra.style}` : ""}`, i), label,
             params: { ...base, tool: t, ...extra, allow_lightening: false } }));
