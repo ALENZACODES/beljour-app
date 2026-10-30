@@ -29,11 +29,11 @@
   <div class="tricolore" aria-hidden="true"></div>
   <main class="fixture-shell" id="recorder">
     <h1>Record vision test fixtures</h1>
-    <p class="fixture-guidance">Use photos of adults who have signed a release for testing. This page never uploads a photo, and exported JSON contains no photo pixels. Landmark coordinates can still identify someone. Store fixtures securely.</p>
+    <p class="fixture-guidance">Use photos of people who have signed a release for testing. This page never uploads a photo, and exported JSON contains no photo pixels. Landmark coordinates can still identify someone. Store fixtures securely.</p>
     <section class="fixture-panel" aria-label="Release and photo">
       <label for="release">Signed release reference (an ID, not a person's name)</label>
       <input type="text" id="release" maxlength="80" placeholder="release-case-001" autocomplete="off" spellcheck="false">
-      <label><input type="checkbox" id="consent"> I have a signed release for this adult's image and landmarks.</label>
+      <label><input type="checkbox" id="consent"> I have a signed release for this person's image and landmarks.</label>
       <label for="photo">Select a JPG or PNG from your device</label>
       <input type="file" id="photo" accept="image/jpeg,image/png">
       <p id="model-status" class="fine">Checking model licence gates…</p>
@@ -89,7 +89,7 @@
           <label for="pro-rotate">Rotate degrees <input id="pro-rotate" data-pro-edit type="number" min="-180" max="180" step="0.1" value="0"></label>
         </div>
       </fieldset>
-      <!-- Lane E r22e: local, source-anchored masks and comparison. -->
+      <!-- Workstream E r22e: local, source-anchored masks and comparison. -->
       <fieldset>
         <legend>Local masks</legend>
         <p>Choose Brush, then draw on the preview. Gradients can be added at the coordinates below.

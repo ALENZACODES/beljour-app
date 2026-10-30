@@ -51,8 +51,7 @@ function makeProfile() {
 }
 function selectedFinish() { return el("finish").value; }
 function consentValues() {
-    return [el("confirm-adult").checked,
-        el("confirm-skin").checked, el("confirm-makeup").checked];
+    return [el("confirm-skin").checked, el("confirm-makeup").checked];
 }
 function setPhotoDisplay(photo) {
     const img = el("photo-image");
@@ -73,7 +72,7 @@ function showMode() {
     const field = el("sharing-consent");
     field.hidden = !live;
     field.disabled = !live;
-    announce(live ? "YouCam is optional. Tick adult status and each sharing purpose before upload." :
+    announce(live ? "YouCam is optional. Tick each sharing purpose before upload." :
         "Local-only preview is active. The YouCam provider is off or no proxy is configured; no photo will be uploaded.");
 }
 function sourceName(result) {
@@ -248,7 +247,7 @@ async function start() {
             displayedBefore = photo.canvas.toDataURL("image/jpeg", .82);
             setPhotoDisplay(photo);
             controller.setPhoto(true);
-            for (const id of ["confirm-adult", "confirm-skin", "confirm-makeup"])
+            for (const id of ["confirm-skin", "confirm-makeup"])
                 el(id).checked = false;
             el("products-section").hidden = true;
             el("try-on-section").hidden = true;
@@ -276,7 +275,7 @@ async function start() {
             previewEpoch += 1;
             chosenProduct = null;
             previewResult = null;
-            for (const consent of ["confirm-adult", "confirm-skin", "confirm-makeup"]) {
+            for (const consent of ["confirm-skin", "confirm-makeup"]) {
                 el(consent).checked = false;
             }
             el("products-section").hidden = true;
@@ -284,14 +283,14 @@ async function start() {
             showMode();
         });
     }
-    for (const id of ["confirm-adult", "confirm-skin", "confirm-makeup"]) {
+    for (const id of ["confirm-skin", "confirm-makeup"]) {
         el(id).addEventListener("change", () => controller.grant(...consentValues()));
     }
     el("forget-server-photo").addEventListener("click", () => {
         void (async () => {
             try {
                 if (await controller.forgetServerPhoto()) {
-                    for (const id of ["confirm-adult", "confirm-skin", "confirm-makeup"]) {
+                    for (const id of ["confirm-skin", "confirm-makeup"]) {
                         el(id).checked = false;
                     }
                     el("products-section").hidden = true;

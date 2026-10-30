@@ -1,4 +1,4 @@
-/** Adult appearance controls and the actual photo/mesh capability boundary.
+/** Appearance controls and the actual photo/mesh capability boundary.
  * A pending model cannot be replaced by invented points. Released fixtures must
  * match the selected file's SHA-256 and original dimensions. Author: John Khan.
  */
@@ -7,7 +7,6 @@ import { STOPS as GENDER_STOPS } from "../engines/local/gender.js";
 import { validateFixture } from "../vision/fixtures.js";
 import { defaultVisionClient } from "../vision/client.js";
 import { toRGBA } from "../engines/core/buffer.js";
-import { appConsent } from "../ui/shell/consent.js";
 import { appearanceStackReport, StackError } from "../ui/shell/appearance-stack.js";
 /** The joint check line when age and the gender appearance are both on; empty otherwise. */
 export function stackLine(editor) {
@@ -89,15 +88,17 @@ export function heroAppearanceScreen(editor, changed, deps = {}) {
     const read = h("button", { type: "button", class: "btn btn-quiet", onclick: async () => {
             read.disabled = true;
             try {
-                if (!(deps.consent ?? (() => appConsent.hasVisit))())
-                    throw new Error("Confirm adult photo consent before reading face points.");
+                // The photo on screen was opened under the single consent (built-in samples need none).
+                if (!(await (deps.consent ?? (() => true))()))
+                    throw new Error("No face points were read.");
+                status.textContent = "Face reader loading on this device…";
                 current();
                 const source = editor.source, result = await (deps.detect ?? detect)(source);
                 current();
                 if (!result.ok)
                     throw new Error(result.error ?? "Face reading is unavailable.");
                 if (!result.faces?.length)
-                    throw new Error("No face found. Try a clear front-facing adult photo.");
+                    throw new Error("No face found. Try a clear front-facing photo.");
                 showFaces(result.faces.map(face => ({ id: face.id,
                     points: face.landmarks.map(point => [point.x * source.image.width, point.y * source.image.height]) })));
             }
@@ -116,8 +117,8 @@ export function heroAppearanceScreen(editor, changed, deps = {}) {
         if (!file)
             return;
         try {
-            if (!(deps.consent ?? (() => appConsent.hasVisit))())
-                throw new Error("Confirm adult photo consent before attaching recorded face points.");
+            if (!(await (deps.consent ?? (() => true))()))
+                throw new Error("No face points were attached.");
             if (file.size > 28_000_000)
                 throw new Error("Recorded points file is too large.");
             current();
@@ -150,6 +151,6 @@ export function heroAppearanceScreen(editor, changed, deps = {}) {
         }
     }
     const layer = [...editor.document.layers].reverse().find(row => row.kind === kind);
-    return h("section", { class: "hero-appearance-screen", "aria-label": "Adult appearance simulation" }, h("h2", {}, kind === "gender" ? "Choose an appearance" : kind === "beard" ? "Face points for this photo" : `${kind === "older" ? "Older" : "Younger"} appearance`), controls, stack, h("p", { class: "fine" }, `Overall strength: ${layer?.strength ?? 30} of 100. Starts gently; adjust Strength below.${kind === "gender" ? " Original returns this appearance layer to zero change." : ""}`), h("p", { class: "fine" }, "Local simulation. Face-only geometry; no hidden makeup or hairstyle. Not a prediction of age, identity or sex. Real-face quality is not yet validated."), editor.source.face ? h("p", { class: "fine" }, editor.source.kind === "sample" ? "Drawn example with synthetic points. Open your own photo for a real-photo edit." : "Using face points attached to this photo.") : null, read, h("label", {}, "Or load matching recorded points ", fixture), picks, status, h("p", { class: "fine" }, "Points are read locally. A recording must match the photo hash and orientation. Face points stay in memory and are never included in saved looks."));
+    return h("section", { class: "hero-appearance-screen", "aria-label": "Appearance simulation" }, h("h2", {}, kind === "gender" ? "Choose an appearance" : kind === "beard" ? "Face points for this photo" : `${kind === "older" ? "Older" : "Younger"} appearance`), controls, stack, h("p", { class: "fine" }, `Overall strength: ${layer?.strength ?? 30} of 100. Starts gently; adjust Strength below.${kind === "gender" ? " Original returns this appearance layer to zero change." : ""}`), h("p", { class: "fine" }, "Local simulation. Face-only geometry; no hidden makeup or hairstyle. Not a prediction of age, identity or sex. Real-face quality is not yet validated."), editor.source.face ? h("p", { class: "fine" }, editor.source.kind === "sample" ? "Drawn example with synthetic points. Open your own photo for a real-photo edit." : "Using face points attached to this photo.") : null, read, h("label", {}, "Or load matching recorded points ", fixture), picks, status, h("p", { class: "fine" }, "Points are read locally. A recording must match the photo hash and orientation. Face points stay in memory and are never included in saved looks."));
 }
 //# sourceMappingURL=hero-appearance.js.map

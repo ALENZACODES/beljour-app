@@ -61,12 +61,7 @@ export function renderSkin(main, ctx, dependencies = localPreviewDependencies) {
         const softer = h("button", { class: "btn btn-quiet", type: "button" }, "Preview softer age-look texture");
         const older = h("button", { class: "btn btn-quiet", type: "button" }, "Preview older age-look texture");
         const preview = h("div", { "aria-live": "polite" });
-        const adult = h("input", { type: "checkbox", id: "local-age-adult" });
         const run = async (kind) => {
-            if (kind !== "texture" && !adult.checked) {
-                status.textContent = "Confirm that this is your adult photo before an age-look simulation.";
-                return;
-            }
             const own = ++revision;
             texture.disabled = softer.disabled = older.disabled = true;
             try {
@@ -92,7 +87,7 @@ export function renderSkin(main, ctx, dependencies = localPreviewDependencies) {
         texture.addEventListener("click", () => run("texture"));
         softer.addEventListener("click", () => run("softer"));
         older.addEventListener("click", () => run("older"));
-        main.append(h("section", {}, h("h2", {}, "Local texture simulations"), texture, h("label", { for: adult.id }, adult, "This is my adult photo and I want an age-look simulation."), h("div", { class: "row" }, softer, older), status, preview), touchUpSection(ctx, dependencies), photoFixSection(ctx, dependencies));
+        main.append(h("section", {}, h("h2", {}, "Local texture simulations"), texture, h("div", { class: "row" }, softer, older), status, preview), touchUpSection(ctx, dependencies), photoFixSection(ctx, dependencies));
     }
     else
         main.append(h("p", { class: "notice" }, "Texture and age-look previews need face points. No saved face will be substituted."));

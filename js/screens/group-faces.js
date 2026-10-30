@@ -3,6 +3,7 @@
  * no face identity, nothing stored. Author: John Khan.
  */
 import { h } from "../dom.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { paint } from "../ui/shell/canvas.js";
 import { canvasEncoder } from "../save/export.js";
 import { downloadFile } from "../save/download.js";
@@ -10,7 +11,6 @@ import { MultiFaceError } from "../save/multi-face.js";
 import { MAX_SHOTS, mergeBestFaces, MergeError } from "../save/group-merge.js";
 import { toRGBA } from "../engines/core/buffer.js";
 import { readLocalImage } from "../ui/shell/demo.js";
-import { appConsent } from "../ui/shell/consent.js";
 import { defaultVisionClient } from "../vision/client.js";
 /** Every face's points in a shot from the on-device face model, or null when it is not available. */
 async function deviceFaces(image) {
@@ -42,8 +42,8 @@ function bestFacesSection(session, deps) {
         use.disabled = true;
         view.replaceChildren();
         try {
-            if (!(deps.consent ?? (() => appConsent.hasVisit))())
-                throw new Error("Confirm adult photo consent before opening more shots.");
+            if (!(await (deps.consent ?? (() => ensureConsent()))()))
+                throw new Error("Confirm photo consent before opening more shots.");
             if (!files.length)
                 return;
             if (files.length > MAX_SHOTS - 1)

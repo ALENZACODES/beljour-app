@@ -136,7 +136,7 @@
 /* Retired recorded integrations must use a neutral grey, not provider colours. */
 .badge-replaced { color: #586174; background: #f1f2f4; border-color: #c5cbd3; }
 
-/* Lane D r21d — one accessible public feature bar across Home, Studio, Trust and Photo lab.
+/* Workstream D r21d — one accessible public feature bar across Home, Studio, Trust and Photo lab.
  * All new rules are scoped to lg-client-root and use the shared clinic palette.
  * Red is a non-text border accent only. Body copy remains ink or muted.
  */
@@ -513,7 +513,7 @@
   }
 }
 
-/* Lane D r22d: judge walkthrough on Home only; original screens stay unchanged.
+/* Workstream D r22d: judge walkthrough on Home only; original screens stay unchanged.
  * Readable palette from the theme tokens: plum for text and rules, the accent red for a border only, never body text.
  */
 .lg-judge-launch {
@@ -670,7 +670,7 @@ body[data-judge-active="true"] .lg-tabs { display: none; }
   .lg-judge-root * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }
 
-/* Lane D r22d-cp3: readable, keyboard-first rehearsal and evidence panels. */
+/* Workstream D r22d-cp3: readable, keyboard-first rehearsal and evidence panels. */
 .lg-judge-elapsed {
   display: inline-block;
   margin: 0.4rem 0;

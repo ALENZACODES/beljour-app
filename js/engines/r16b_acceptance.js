@@ -4,8 +4,8 @@ const RAW = [
         "lips",
         "Fuller lips shape control",
         "W45_TEST_ANATOMICAL_CAP",
-        "Adult-gated geometry stays bounded by observed lip anatomy; zero strength is identity; output remains a simulation.",
-        "adult",
+        "Geometry stays bounded by observed lip anatomy; zero strength is identity; output remains a simulation.",
+        "",
         ["locality", "zero_identity", "geometry_cap", "real_face_review"],
     ],
     [
@@ -23,7 +23,7 @@ const RAW = [
         "Lip tint and blush PMU states",
         "W47_TEST_FADE_ORDER",
         "Fresh, healed and fade display states are monotonically weaker and are never described as retention predictions.",
-        "adult",
+        "",
         ["fade_order", "copy_review", "deep_lip_review"],
     ],
     [
@@ -31,8 +31,8 @@ const RAW = [
         "lips",
         "Lip flip appearance",
         "W48_TEST_UPPER_LIP_BOUND",
-        "Adult-gated upper-lip appearance shift stays within a conservative geometry cap and makes no treatment claim.",
-        "adult",
+        "Upper-lip appearance shift stays within a conservative geometry cap and makes no treatment claim.",
+        "",
         ["geometry_cap", "locality", "copy_review"],
     ],
     [
@@ -41,7 +41,7 @@ const RAW = [
         "Filler dose-style comparison",
         "W49_TEST_STYLE_NOT_DOSE",
         "Dose wording is a visual style label only; geometry remains capped and no real millilitre-to-outcome mapping is claimed.",
-        "adult",
+        "",
         ["geometry_cap", "copy_review", "real_face_review"],
     ],
     [
@@ -50,7 +50,7 @@ const RAW = [
         "Gum-show appearance consultation",
         "W50_TEST_CHECKED_GUM_ONLY",
         "Only checked gum and tooth polygons are used; output is static and contains no diagnosis or treatment recommendation.",
-        "adult region",
+        "region",
         ["annotation_provenance", "locality", "copy_review"],
     ],
     [
@@ -59,7 +59,7 @@ const RAW = [
         "Veneer design preview",
         "W51_TEST_CHECKED_TEETH_ONLY",
         "Only checked teeth are edited; shape and shade are bounded; no automatic segmentation model or clinical outcome is claimed.",
-        "adult region",
+        "region",
         ["annotation_provenance", "shade_review", "irreversibility_copy"],
     ],
     [
@@ -68,7 +68,7 @@ const RAW = [
         "Tooth-gap preference preview",
         "W52_TEST_KEEP_FIRST_CLASS",
         "Keep is a first-class option; partial and visual closure are bounded; no beauty score or orthodontic outcome is presented.",
-        "adult region",
+        "region",
         ["annotation_provenance", "midline_check", "copy_review"],
     ],
     [
@@ -77,7 +77,7 @@ const RAW = [
         "Tooth and gum character",
         "W53_TEST_GUM_GUIDE_DISCLOSURE",
         "Checked gum and teeth drive the guide; tooth character remains editable; surgical context is disclosed without treatment advice.",
-        "adult region",
+        "region",
         ["annotation_provenance", "gum_line_check", "copy_review"],
     ],
     [
@@ -122,7 +122,7 @@ const RAW = [
         "Smile in motion",
         "W58_TEST_CHECKED_FRAME_STABILITY",
         "At least two time-ordered checked frames are required; annotation jumps are bounded; automatic tracking is not claimed.",
-        "adult sequence",
+        "sequence",
         ["frame_provenance", "temporal_stability", "real_sequence_review"],
     ],
     [
@@ -279,7 +279,6 @@ export const CONTRACTS = RAW.map((row) => ({
     name: row[2],
     testId: row[3],
     passDefinition: row[4],
-    requiresAdult: hasFlag(row[5], "adult"),
     requiresCheckedRegion: hasFlag(row[5], "region"),
     requiresCheckedSequence: hasFlag(row[5], "sequence"),
     requiresHealthConsent: hasFlag(row[5], "health"),
@@ -290,7 +289,7 @@ const BY_ID = new Map(CONTRACTS.map((row) => [row.feature, row]));
 export function contract(feature) {
     const row = BY_ID.get(feature);
     if (!row)
-        throw new Error(`unsupported R16 Lane B feature: ${feature}`);
+        throw new Error(`unsupported R16 Workstream B feature: ${feature}`);
     return row;
 }
 export function grouped() {
@@ -313,7 +312,6 @@ export function auditCatalogue() {
             smile: groups.smile.length,
             skin_more: groups.skin_more.length,
         },
-        adultRows: CONTRACTS.filter((row) => row.requiresAdult).length,
         checkedRegionRows: CONTRACTS.filter((row) => row.requiresCheckedRegion).length,
         checkedSequenceRows: CONTRACTS.filter((row) => row.requiresCheckedSequence).length,
         healthConsentRows: CONTRACTS.filter((row) => row.requiresHealthConsent).length,
@@ -323,8 +321,6 @@ export function auditCatalogue() {
 export function prerequisites(feature, input = {}) {
     const row = contract(feature);
     const reasons = [];
-    if (row.requiresAdult && input.adultConfirmed !== true)
-        reasons.push("18+ confirmation missing");
     if (row.requiresCheckedRegion && (input.checkedRegions ?? 0) < 1)
         reasons.push("checked local region missing");
     if (row.requiresCheckedSequence && (input.checkedFrames ?? 0) < 2)

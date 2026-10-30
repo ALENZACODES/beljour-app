@@ -36,8 +36,6 @@ export function mountEyesBrows(root) {
     const controls = h("div", { class: "eb-control-grid" });
     const amount = h("input", { type: "range", min: 0, max: 100, value: 35, step: 1, "aria-label": "Simulation amount" });
     const amountOutput = h("output", {}, "35%");
-    const adult = h("input", { type: "checkbox" });
-    const adultLabel = h("label", { class: "eb-check" }, adult, " I confirm I am 18 or older. This is a consultation simulation, not a treatment prediction.");
     const light = h("input", { type: "range", min: -80, max: 80, step: 5, value: 0, "aria-label": "Light angle in degrees" });
     const lightOutput = h("output", {}, "0°");
     const lightLabel = h("label", {}, "Light angle ", light, lightOutput);
@@ -66,7 +64,7 @@ export function mountEyesBrows(root) {
     const markHelp = h("p", { class: "eb-note" }, "Drag on the result canvas to mark hair or trace a visible lash from root to tip. Keyboard-only users can import a checked observation file. No blank trace is turned into an invented lash.");
     const header = h("header", { class: "eb-heading" }, h("p", { class: "eb-kicker" }, "BELJOUR / LOCAL STUDIO"), h("h1", {}, "Eyes, brows and original art"), h("p", {}, "Explore placement and texture, with each assumption visible."));
     const load = h("section", { class: "eb-card", "aria-label": "Local inputs" }, h("h2", {}, "1. Open and check"), h("label", {}, "Photo on this device ", photoInput), h("div", { class: "eb-actions" }, h("button", { type: "button", class: "eb-button", onclick: () => loadDrawn() }, "Use drawn fixture"), h("button", { type: "button", class: "eb-button", onclick: () => clearPhoto() }, "Clear photo and observations")), detect, modelNote, h("label", {}, "Checked local geometry file ", evidenceInput), h("button", { type: "button", class: "eb-button", onclick: () => void exportEvidence() }, "Export observations for this photo"), caption);
-    const editing = h("section", { class: "eb-card", "aria-label": "Simulation controls" }, h("h2", {}, "2. Choose a simulation"), h("label", {}, "Feature ", selector), summary, styles, anatomyGroup, h("label", {}, "Amount ", amount, amountOutput), controls, adultLabel, lightLabel, animate, limitation, reasons, h("div", { class: "eb-actions" }, run, cancel, reset, compare, save));
+    const editing = h("section", { class: "eb-card", "aria-label": "Simulation controls" }, h("h2", {}, "2. Choose a simulation"), h("label", {}, "Feature ", selector), summary, styles, anatomyGroup, h("label", {}, "Amount ", amount, amountOutput), controls, lightLabel, animate, limitation, reasons, h("div", { class: "eb-actions" }, run, cancel, reset, compare, save));
     const observations = h("details", { class: "eb-card" }, h("summary", {}, "Hair protection and observed lashes"), tool, h("label", {}, "Hair brush radius ", brush), h("label", { class: "eb-check" }, showEvidence, " Show marks and traces"), markHelp, evidenceCount, h("div", { class: "eb-actions" }, noHair, clearHair, undoTrace));
     root.replaceChildren(header, h("div", { class: "eb-layout" }, h("aside", {}, load, editing, observations), h("section", { class: "eb-workspace", "aria-label": "Local comparison" }, h("div", { class: "eb-comparison" }, h("figure", {}, original, h("figcaption", {}, "Original")), h("figure", {}, result, h("figcaption", {}, "Simulation / evidence marks"))), status, readings)));
     function stopMotion() {
@@ -89,7 +87,6 @@ export function mountEyesBrows(root) {
         noHair.disabled = clearHair.disabled = undoTrace.disabled = !session.hasPhoto;
         const measured = session.observations;
         evidenceCount.textContent = `${measured?.count ?? 0} observed lashes; hair ${measured?.hairDeclared ? "checked" : "not marked"}.`;
-        adult.checked = session.adultConfirmed;
         if (!session.result)
             readings.replaceChildren();
     }
@@ -142,7 +139,6 @@ export function mountEyesBrows(root) {
         limitation.textContent = item.limitation;
         styles.replaceChildren(...item.choices.map(choice => h("option", { value: choice.value }, choice.label)));
         styles.hidden = item.choices.length === 0;
-        adultLabel.hidden = !item.requiresAdult;
         anatomyGroup.hidden = item.family !== "eyes";
         lightLabel.hidden = animate.hidden = item.id !== "W67";
         controls.replaceChildren();
@@ -303,7 +299,6 @@ export function mountEyesBrows(root) {
     selector.addEventListener("change", () => { stopMotion(); worker.cancel(); session.select(selector.value); featureControls(); draw(); });
     styles.addEventListener("change", () => { session.setStyle(styles.value); changed(); });
     amount.addEventListener("input", () => { session.setAmount(Number(amount.value) / 100); amountOutput.textContent = `${amount.value}%`; changed(); });
-    adult.addEventListener("change", () => { session.confirmAdult(adult.checked); changed(); });
     rightEye.addEventListener("change", () => { session.setAnatomy("right", rightEye.value); changed(); });
     leftEye.addEventListener("change", () => { session.setAnatomy("left", leftEye.value); changed(); });
     light.addEventListener("input", () => { session.setAngle(Number(light.value)); lightOutput.textContent = `${light.value}°`; changed(); });

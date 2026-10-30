@@ -3,6 +3,7 @@
  * Author: John Khan.
  */
 import { h } from "../dom.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { paint } from "../ui/shell/canvas.js";
 import { appConsent, VISIT_STATEMENTS } from "../ui/shell/consent.js";
 import { createShellClient } from "../ui/shell/worker-protocol.js";
@@ -23,9 +24,8 @@ export function batchReviewScreen(name, layers, deps = {}) {
     const pause = h("button", { type: "button", class: "btn btn-quiet" }, "Pause after this photo");
     const save = h("button", { type: "button", class: "btn btn-primary" }, "Save all ZIP");
     const clear = h("button", { type: "button", class: "btn btn-quiet" }, "Clear this batch");
-    const adult = h("input", { type: "checkbox", "aria-label": VISIT_STATEMENTS[0].text });
-    const understood = h("input", { type: "checkbox", "aria-label": VISIT_STATEMENTS[1].text });
-    const consent = h("fieldset", {}, h("legend", {}, "Before choosing photos"), h("label", {}, adult, VISIT_STATEMENTS[0].text), h("label", {}, understood, VISIT_STATEMENTS[1].text));
+    const understood = h("input", { type: "checkbox", "aria-label": VISIT_STATEMENTS[0].text });
+    const consent = h("fieldset", {}, h("legend", {}, "Before choosing photos"), h("label", {}, understood, VISIT_STATEMENTS[0].text));
     const compare = new Map();
     const say = (error) => { status.textContent = error instanceof Error ? error.message : String(error); };
     const draw = () => {
@@ -49,7 +49,7 @@ export function batchReviewScreen(name, layers, deps = {}) {
                 }
                 catch (error) {
                     say(error);
-                } } }, "I confirm adult faces");
+                } } }, "It has a face");
             const none = h("button", { type: "button", class: "btn btn-quiet", disabled: model.running || !item.before,
                 onclick: () => { try {
                     model.confirmFaces(item.id, false);
@@ -80,7 +80,7 @@ export function batchReviewScreen(name, layers, deps = {}) {
                 } } }, "Redo this photo");
             grid.append(h("li", { class: "batch-review-card", "data-id": item.id }, h("h3", {}, item.name), canvas, h("p", { class: "fine" }, `${item.status}: ${item.note}`), toggle, item.faces.kind === "unknown" || item.faces.kind === "none" ? h("div", { class: "row" }, contains, none) : null, h("label", {}, "Per-photo strength ", strength, amount), redo));
         }
-        input.disabled = model.running || model.disposed || !gate.visit;
+        input.disabled = model.running || model.disposed;
         start.disabled = model.running || model.disposed || !rows.some(row => row.status === "ready") || !model.compatibility.ready.length;
         pause.disabled = !model.running;
         save.disabled = model.running || !rows.some(row => row.status === "done");
@@ -88,18 +88,17 @@ export function batchReviewScreen(name, layers, deps = {}) {
         status.textContent = model.summary();
     };
     const updateConsent = () => {
-        if (adult.checked && understood.checked)
-            gate.acceptVisit({ adult: true, understood: true });
-        input.disabled = !gate.visit || model.running || model.disposed;
-        consent.hidden = Boolean(gate.visit);
+        if (understood.checked)
+            gate.acceptVisit({ understood: true });
+        input.disabled = model.running || model.disposed;
+        consent.hidden = true; // the single consent is asked once, when photos are first opened
     };
-    adult.addEventListener("change", updateConsent);
     understood.addEventListener("change", updateConsent);
     input.addEventListener("change", async () => {
         const files = Array.from(input.files ?? []);
         input.value = "";
-        if (!gate.visit) {
-            status.textContent = "Confirm the two statements before opening photos.";
+        if (!gate.visit && (gate !== appConsent || !(await ensureConsent()))) {
+            status.textContent = "No photos opened.";
             return;
         }
         try {
@@ -131,9 +130,7 @@ export function batchReviewScreen(name, layers, deps = {}) {
     const removeConsentListener = gate.subscribe(() => {
         if (!gate.visit) {
             model.cancel();
-            input.disabled = true;
-            consent.hidden = false;
-            adult.checked = understood.checked = false;
+            understood.checked = false;
         }
     });
     const element = h("section", { class: "batch-review-screen", "aria-label": "Batch review" }, h("h2", {}, "Apply this look to your photos"), h("p", {}, `Look: ${name}. Photo-wide Enhance, Filters and Lighting can run here at each photo's original size.`), h("p", { class: "fine" }, "Automatic face reading, when available, decides whether a photo has a face. If unavailable, confirm faces yourself. These edits cover the whole photo; selecting or reshaping individual people is not available in this batch."), ...(model.compatibility.unavailable.length ? [h("p", { class: "fine" }, "The following edits will be left out:"), h("ul", {}, ...model.compatibility.unavailable.map(note => h("li", {}, note)))] : []), model.compatibility.ready.length ? null : h("p", { class: "fine" }, "No supported edits in this look. Add Enhance, Filters or Lighting in the editor, then reopen the batch."), consent, input, h("div", { class: "row" }, start, pause, save, clear), status, grid, h("p", { class: "fine" }, "Up to 100 photos; JPEG, PNG or WebP, 25 MB and 24 megapixels each. One original is processed at a time. Up to 100 MB of encoded results stay in memory; past that the finished photos download as a numbered album part and the batch keeps going. JPEG exports flatten transparent areas onto white, remove location metadata and mark simulations."));

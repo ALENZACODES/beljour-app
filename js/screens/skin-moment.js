@@ -6,6 +6,7 @@
  * Author: John Khan.
  */
 import { api, apiBase, ApiError } from "../api.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { announce, h, loadImage } from "../dom.js";
 import { toRGBA } from "../engines/core/buffer.js";
 import { lighting, runChecks } from "../face/quality.js";
@@ -18,7 +19,7 @@ import { photoPicker } from "../photos/picker.js";
 import { AI_PERSON, ART_DIR, art, concernIcon, exampleFace, presentFiles, productPicture, uiIcon } from "./skin-moment-art.js";
 import { buyExample, demoTryOn, examplePersonLook, examplePersonPreview, examplePersonSoftened, foundationPreview, framingPoints, SAVED } from "./skin-moment-demo.js";
 import { loadFaces, MOMENT_FACE } from "./skin-moment-faces.js";
-import { DEMO_SERVER_NOTE, DeviceHistory, LOCAL_TEXT, MOMENTS, MomentController, NO_SERVER_NOTE, PhotoNotReady, STEP_NAMES, UNITS_OUT, CONSENT_TEXT, consentText, errorArt, photoChecks, resultView, stepIndex, unitsStatusLine, whatIsSent, } from "./skin-moment-model.js";
+import { DEMO_SERVER_NOTE, DeviceHistory, LOCAL_TEXT, MOMENTS, MomentController, NO_SERVER_NOTE, PhotoNotReady, STEP_NAMES, UNITS_OUT, consentText, errorArt, photoChecks, resultView, sendLine, stepIndex, unitsStatusLine, whatIsSent, } from "./skin-moment-model.js";
 import { addDays, localDay, whileUsed } from "../engines/skin-daily/index.js";
 import { routineFromPlan, timeLine } from "../engines/skin-daily/routine.js";
 import { checkinDays, DailyStore, diaryResult, entryName } from "../engines/skin-daily/store.js";
@@ -184,7 +185,7 @@ export function mountSkinMoment(root, start = "") {
             todayStrip(),
             h("div", { class: "sm-hero" }, h("div", { class: "sm-hero-text" }, ...heading("What's your skin moment?", "Skin Moment"), h("p", { class: "sm-lede" }, "Pick the one you're in right now. You get your measured skin scores and one plan: what to do today, this week, and what to stop."), live ? demoNote : h("p", { class: "sm-notice", role: "note" }, onDevice ? ON_DEVICE_NOTE : NO_SERVER_NOTE)), art("welcome-hero", { className: "sm-hero-art" })),
             h("ul", { class: "sm-moments", "aria-label": "Choose your moment" }, ...cards),
-            h("section", { class: "sm-how", "aria-labelledby": "sm-how-h" }, h("h2", { id: "sm-how-h" }, "How it works"), h("ol", { class: "sm-how-steps" }, h("li", {}, h("strong", {}, "Pick your moment. "), "Each one asks a different question of your skin."), h("li", {}, h("strong", {}, "Say what may be sent. "), "Agree to the YouCam calls your moment makes, each named first, or keep it to a local estimate."), h("li", {}, h("strong", {}, "Add one photo. "), "It is checked on this device first, so no unit is spent on a photo that can't be read."), h("li", {}, h("strong", {}, "Get one plan. "), "Today, this week, what to stop, and when to see a dermatologist, each with its reason.")), h("p", { class: "lg-small" }, "Adults only. Cosmetic guidance, not medical advice. No brand pays to appear. ", h("a", { href: "trust.html" }, "How your photo is handled"), ".")),
+            h("section", { class: "sm-how", "aria-labelledby": "sm-how-h" }, h("h2", { id: "sm-how-h" }, "How it works"), h("ol", { class: "sm-how-steps" }, h("li", {}, h("strong", {}, "Pick your moment. "), "Each one asks a different question of your skin."), h("li", {}, h("strong", {}, "Say what may be sent. "), "Agree to the YouCam calls your moment makes, each named first, or keep it to a local estimate."), h("li", {}, h("strong", {}, "Add one photo. "), "It is checked on this device first, so no unit is spent on a photo that can't be read."), h("li", {}, h("strong", {}, "Get one plan. "), "Today, this week, what to stop, and when to see a dermatologist, each with its reason.")), h("p", { class: "lg-small" }, "Cosmetic guidance, not medical advice. No brand pays to appear. ", h("a", { href: "trust.html" }, "How your photo is handled"), ".")),
             live ? judgePanel() : null,
         ].filter((x) => !!x);
     }
@@ -278,7 +279,6 @@ export function mountSkinMoment(root, start = "") {
     function consent(s) {
         const info = momentInfo(s.moment);
         const list = whatIsSent(s.moment);
-        const adult = h("input", { type: "checkbox", id: "sm-adult" });
         const agreed = h("input", { type: "checkbox", id: "sm-agree" });
         const problem = h("p", { class: "sm-problem", role: "alert", id: "sm-consent-problem" }, s.problem ?? "");
         if (!s.problem)
@@ -287,9 +287,9 @@ export function mountSkinMoment(root, start = "") {
             ...heading("Before anything is sent", `${info.title} · ${info.question}`),
             h("div", { class: "sm-split" }, h("section", { class: "sm-card", "aria-labelledby": "sm-sent-h" }, art("privacy", { className: "sm-card-art" }), h("h2", { id: "sm-sent-h" }, uiIcon("privacy-lock"), "What is sent"), h("ul", { class: "sm-list sm-list-sent" }, ...list.sent.map((x) => h("li", {}, x))), h("h2", {}, "What stays with you"), h("ul", { class: "sm-list sm-list-kept" }, ...list.kept.map((x) => h("li", {}, x)))), h("form", { class: "sm-card sm-consent", "aria-labelledby": "sm-agree-h", onsubmit: (e) => {
                     e.preventDefault();
-                    go(() => controller.agree({ adult: adult.checked, agreed: agreed.checked }));
-                } }, h("h2", { id: "sm-agree-h" }, uiIcon("consent-tick"), "Your choice"), live ? null : h("p", { class: "sm-notice", role: "note" }, onDevice ? ON_DEVICE_NOTE : "No server is connected to this copy, so nothing will be sent: you'll see a saved example."), h("p", { class: "sm-tick" }, adult, h("label", { for: "sm-adult" }, CONSENT_TEXT[0])), h("p", { class: "sm-tick" }, agreed, h("label", { for: "sm-agree" }, consentText(s.moment))), problem, h("div", { class: "sm-actions" }, h("button", { type: "submit", class: "lg-button lg-primary" }, "Agree and add a photo"), h("button", { type: "button", class: "lg-button", "aria-describedby": "sm-local-d",
-                onclick: () => go(() => controller.localOnly({ adult: adult.checked })) }, "Local estimate only")), h("p", { class: "lg-small", id: "sm-local-d" }, LOCAL_TEXT))),
+                    go(() => controller.agree({ agreed: agreed.checked }));
+                } }, h("h2", { id: "sm-agree-h" }, uiIcon("consent-tick"), "Your choice"), live ? null : h("p", { class: "sm-notice", role: "note" }, onDevice ? ON_DEVICE_NOTE : "No server is connected to this copy, so nothing will be sent: you'll see a saved example."), h("p", { class: "sm-tick" }, agreed, h("label", { for: "sm-agree" }, consentText(s.moment))), problem, h("div", { class: "sm-actions" }, h("button", { type: "submit", class: "lg-button lg-primary" }, "Agree and add a photo"), h("button", { type: "button", class: "lg-button", "aria-describedby": "sm-local-d",
+                onclick: () => go(() => controller.localOnly()) }, "Local estimate only")), h("p", { class: "lg-small", id: "sm-local-d" }, LOCAL_TEXT))),
             h("div", { class: "sm-actions sm-actions-back" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.back()) }, "← Choose a different moment")),
         ];
     }
@@ -304,6 +304,10 @@ export function mountSkinMoment(root, start = "") {
             onPhotos: async ([chosen]) => {
                 if (!chosen)
                     return;
+                if (!(await ensureConsent())) {
+                    working.textContent = "No photo opened.";
+                    return;
+                }
                 working.textContent = "Checking the photo on this device. Nothing is uploaded yet.";
                 const { photo: next, checks } = await checkPhoto(chosen);
                 setPhoto(next);
@@ -327,11 +331,13 @@ export function mountSkinMoment(root, start = "") {
                 }
             } }, sendLabel);
         return [
-            ...heading("Add one clear photo", `${info.title} · ${s.mode === "local" ? "Local estimate: nothing goes to YouCam" : live ? "Sending to YouCam with your consent" : "Saved example mode"}`),
+            ...heading("Add one clear photo", `${info.title} · ${s.mode === "local" ? "Local estimate: nothing goes to YouCam" : live ? "Sends to YouCam" : "Saved example mode"}`),
+            h("p", { class: "lg-small sm-send-line provider-label" }, s.mode === "local" ? LOCAL_TEXT : live ? sendLine(s.moment) : `${sendLine(s.moment)} when a server is connected. This copy has none, so a saved example shows.`),
             h("ul", { class: "sm-tips", "aria-label": "Tips for a good photo" }, ...tips.map(([name, text]) => h("li", {}, art(name), h("span", {}, text)))),
             h("div", { class: "sm-card sm-photo" }, h("div", { class: "sm-photo-pick" }, photo && p ? h("img", { class: "sm-photo-preview", src: photo.url, alt: "Your photo, ready on this device" })
                 : h("div", { class: "sm-photo-empty", "aria-hidden": "true" }, art("tip-fill-frame")), picker.element, h("p", { class: "lg-small" }, "JPEG, PNG or WEBP. It's turned upright and its file details are removed on this device.")), h("div", { class: "sm-photo-checks" }, h("h2", {}, uiIcon("selfie-frame"), "Photo checks"), p ? h("p", { class: `sm-verdict sm-verdict-${p.verdict}` }, p.note) : working.textContent ? working : h("p", { class: "lg-small" }, "Add a photo and it's checked here before anything is sent."), p ? checkList(p.checks) : null, h("div", { class: "sm-actions" }, send), !live ? h("p", { class: "lg-small" }, onDevice ? "On-device mode is on, so the saved example shows with or without a photo." : "No server is connected, so the saved example shows with or without a photo.") : null, sendNote)),
-            h("div", { class: "sm-actions sm-actions-back" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.back()) }, "← Back to consent")),
+            h("div", { class: "sm-actions sm-actions-back" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.back()) }, "← Choose a different moment")),
+            h("div", { class: "sm-actions", hidden: s.mode !== "youcam" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.localOnly()) }, "Use a local estimate instead")),
         ];
     }
     /* loading */

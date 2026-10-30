@@ -12,7 +12,7 @@
  * that fall, rise, orbit the head or twinkle, in the face's own frame so they follow her.
  * `boost` doubles them while the trigger holds. Every size, offset and count is ASSUMED, chosen
  * on drawn faces. Names are ours, in the app's French place style; all designs are our own.
- * Adults only, like the rest of the app. Author: John Khan.
+ * Author: John Khan.
  */
 import { ANCHORS } from "./anchors.js";
 import { BEAUTY_LABEL } from "./beauty.js";

@@ -1,4 +1,4 @@
-/** Additive navigation hook for the parallel lane. Author: John Khan. */
+/** Additive navigation hook for the parallel workstream. Author: John Khan. */
 export function installEyesBrowsLink(container) {
     if (!container || container.querySelector("[data-eyes-brows-link]"))
         return;

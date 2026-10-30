@@ -1,10 +1,10 @@
-/** Original adult PMU pigment simulations, healed first. Author: John Khan. */
-import { boolean, byte, choice, colour, finish, number, options } from "./contracts.js";
+/** Original PMU pigment simulations, healed first. Author: John Khan. */
+import { byte, choice, colour, finish, number, options } from "./contracts.js";
 import { luminance } from "./evidence.js";
 import { drawPath, pointAt, project, union } from "./geometry.js";
 export const PMU_STATES = ["healed", "fresh", "faded"];
 export const PMU_METHODS = ["microblading", "powder", "nano"];
-export const CONSULT_NOTE = "For an adult professional consultation. Pigment placement is illustrative; it does not predict a healed result.";
+export const CONSULT_NOTE = "For a professional consultation. Pigment placement is illustrative; it does not predict a healed result.";
 export function noise(index, seed) {
     let value = (Math.imul(index, 1664525) + Math.imul(seed, 1013904223)) >>> 0;
     value ^= value >>> 16;
@@ -56,10 +56,7 @@ export function pigmentLayer(image, frames, method, state, density, seed) {
     return { alpha, strokeCount };
 }
 export function renderPigment(image, frames, feature, settings) {
-    const opts = options(settings, ["amount", "colour", "state", "density", "seed", "method", "adultConfirmed"]);
-    const adult = boolean(opts.adultConfirmed ?? false, "adultConfirmed");
-    if (!adult)
-        throw new RangeError("adult self-attestation is required for pigment procedure simulations");
+    const opts = options(settings, ["amount", "colour", "state", "density", "seed", "method"]);
     const amount = number(opts.amount ?? 0.5, "amount", 0, 1), density = number(opts.density ?? 0.45, "density", 0, 0.75);
     const state = choice(opts.state ?? "healed", "state", PMU_STATES);
     const method = choice(opts.method ?? (feature === "W71" ? "microblading" : "powder"), "method", PMU_METHODS);
@@ -91,7 +88,7 @@ export function renderPigment(image, frames, feature, settings) {
         warnings.push("This pigment has low contrast on the observed brow area. Actual payoff and retention need professional assessment.");
     if (state === "fresh")
         warnings.push("Fresh pigment is darker here. The default comparison is healed.");
-    return finish(image, output, alpha, { feature, method, state, adult_confirmed: adult, pigment_strokes: strokeCount,
+    return finish(image, output, alpha, { feature, method, state, pigment_strokes: strokeCount,
         new_hair_claim: false, density, maximum_opacity: maximum, observed_pigment_contrast: contrast, prediction: false }, warnings);
 }
 export function compareMethods(image, frames, settings) {

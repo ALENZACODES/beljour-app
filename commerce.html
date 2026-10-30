@@ -45,7 +45,6 @@
       </fieldset>
       <fieldset id="sharing-consent" class="consent-fieldset" disabled hidden>
         <legend>Permission for this selected photo</legend>
-        <label><input type="checkbox" id="confirm-adult"> I confirm I am at least 18.</label>
         <label><input type="checkbox" id="confirm-skin"> I agree to send this photo for optional Skin AI analysis and product matching.</label>
         <label><input type="checkbox" id="confirm-makeup"> I agree to send this photo for optional YouCam makeup virtual try-on.</label>
         <p class="fineprint">Skin AI results are cosmetic scores, not a diagnosis. The app removes EXIF metadata before uploading. Local mode stops new provider requests; delete the temporary server copy separately below.</p>
@@ -93,7 +92,7 @@
       <p class="eyebrow">OPTIONAL · SAMPLE LOOK</p>
       <h2 id="look-title">Combine up to three fictional cosmetic effects</h2>
       <p>Choose one foundation, one cheek colour and one lip colour from the fictional options.
-        Local mode never uploads a photograph; provider mode requires fresh adult and makeup consent.</p>
+        Local mode never uploads a photograph; provider mode requires fresh makeup consent.</p>
       <p class="simulation-disclosure"><strong>Simulation only.</strong> No real physical product or shade has been tested.</p>
       <ol id="look-steps" aria-live="polite"></ol>
       <p id="look-subtotal" aria-live="polite">No sample items selected</p>
@@ -213,7 +212,7 @@
 <footer class="commerce-footer"><span>Original sample catalogue · John Khan</span> <span>Local visual effects are simulations, not real shade tests.</span> <a href="trust.html">Privacy and trust</a></footer>
 <script type="module" src="js/commerce/page.js"></script>
 
-<!-- R18 Lane C: preloaded static catalogues; no runtime network call or provider token. -->
+<!-- R18 Workstream C: preloaded static catalogues; no runtime network call or provider token. -->
 <script src="js/commerce-static-data.js"></script>
 
 </body>

@@ -1,6 +1,5 @@
 /** Validated R16B lip contracts. Author: John Khan. */
 export const FEATURES = ["W45", "W46", "W47", "W48", "W49", "W54", "W55", "W56", "W57"];
-export const ADULT_FEATURES = new Set(["W45", "W47", "W48", "W49"]);
 export const STYLES = { W45: ["natural_plump", "cupid_focus", "keyhole", "vertical_lift"], W46: ["balanced", "cupid_only", "soft_outer"], W47: ["healed", "fresh", "month_6", "month_12", "month_18"], W48: ["rest", "smile"], W49: ["0.5_ml_style", "1.0_ml_style"], W54: ["blue_based", "neutral", "warm_based"], W55: ["matte", "satin", "gloss", "stain"], W56: ["two_hours", "coffee", "meal"], W57: ["sheer", "medium", "opaque"] };
 export const LABEL = "Local lip simulation. Cosmetic or consultation preview only; not a predicted clinical result.";
 export const VERSION = "lips-r16b/1";
@@ -23,10 +22,7 @@ export function parseOptions(v) {
     const style = v.style ?? "";
     if (style && !STYLES[v.feature].includes(style))
         throw new RangeError("unsupported lip style");
-    const adult = v.adult_confirmed ?? false;
-    if (ADULT_FEATURES.has(v.feature) && !adult)
-        throw new Error("18+ confirmation required");
-    return { feature: v.feature, amount: finite(v.amount ?? .5, "amount", 0, 1), style, colour: rgb(v.colour ?? [155, 55, 75], "colour"), liner_colour: rgb(v.liner_colour ?? [103, 42, 55], "liner_colour"), shine: finite(v.shine ?? .25, "shine", 0, 1), feather: finite(v.feather ?? .18, "feather", 0, 1), preserve_texture: finite(v.preserve_texture ?? 1, "preserve_texture", .5, 1), adult_confirmed: adult, daylight: finite(v.daylight ?? .5, "daylight", 0, 1), two_tone_balance: finite(v.two_tone_balance ?? .5, "two_tone_balance", 0, 1), seed: finite(v.seed ?? 17, "seed", 0, 2 ** 32 - 1), metadata: v.metadata ?? {} };
+    return { feature: v.feature, amount: finite(v.amount ?? .5, "amount", 0, 1), style, colour: rgb(v.colour ?? [155, 55, 75], "colour"), liner_colour: rgb(v.liner_colour ?? [103, 42, 55], "liner_colour"), shine: finite(v.shine ?? .25, "shine", 0, 1), feather: finite(v.feather ?? .18, "feather", 0, 1), preserve_texture: finite(v.preserve_texture ?? 1, "preserve_texture", .5, 1), daylight: finite(v.daylight ?? .5, "daylight", 0, 1), two_tone_balance: finite(v.two_tone_balance ?? .5, "two_tone_balance", 0, 1), seed: finite(v.seed ?? 17, "seed", 0, 2 ** 32 - 1), metadata: v.metadata ?? {} };
 }
 export function validatePhoto(p) {
     if (!Number.isInteger(p.width) || !Number.isInteger(p.height) || p.width < 8 || p.height < 8 || p.width * p.height > 4194304)

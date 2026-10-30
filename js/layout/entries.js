@@ -21,7 +21,7 @@ if (page === "home") {
 }
 else if (page === "trust")
     mountTrust();
-// Lane D r21d: shared client bar for Home and Trust.
+// Workstream D r21d: shared client bar for Home and Trust.
 if (page === "home" || page === "trust")
     mountClientShell(document, window, { page });
 // BFCache restores the document without rerunning its module entry.
@@ -30,7 +30,7 @@ window.addEventListener("pageshow", (event) => {
         mountClientShell(document, window, { page });
     }
 });
-// Lane D r22d: opt-in judge walkthrough on Home; no provider call or photo upload.
+// Workstream D r22d: opt-in judge walkthrough on Home; no provider call or photo upload.
 if (page === "home") {
     mountJudgeEntry(document, window);
     mountTimingEntry(document, window);

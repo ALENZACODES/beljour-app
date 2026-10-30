@@ -1,9 +1,9 @@
-/** Release verification categories for the public browser handoff. Author: John Khan. */
+/** Release verification categories for the public browser transfer. Author: John Khan. */
 import { realDemoRoute } from "../judge-live-routes.js";
 const CHECKS = [
     {
         id: "upload", title: "Open and retain the original", classification: "operator", route: "photo",
-        expectation: "An authorized adult photo opens in the normal photo flow.",
+        expectation: "An authorized photo opens in the normal photo flow.",
         proofNeeded: "Inspect the original, its local state and the error on an unsupported file.",
         recovery: "Return to the original without replacing it with the illustration.",
     },

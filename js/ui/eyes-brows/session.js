@@ -12,7 +12,6 @@ export class PreviewSession {
     styleValue = featureById("W59").choices[0].value;
     amountValue = 0.35;
     angleValue = 0;
-    adultValue = false;
     anatomyValue = { right: "open", left: "open" };
     controlsValue = {};
     observations = null;
@@ -23,7 +22,6 @@ export class PreviewSession {
     get style() { return this.styleValue; }
     get amount() { return this.amountValue; }
     get angle() { return this.angleValue; }
-    get adultConfirmed() { return this.adultValue; }
     get anatomy() { return { ...this.anatomyValue }; }
     get running() { return this.active !== null; }
     get version() { return this.revision; }
@@ -39,7 +37,6 @@ export class PreviewSession {
         this.mesh = null;
         this.synthetic = synthetic;
         this.observations = new Observations(image.width, image.height);
-        this.adultValue = false;
         this.controlsValue = {};
         this.anatomyValue = { right: "open", left: "open" };
         this.invalidate();
@@ -48,7 +45,6 @@ export class PreviewSession {
         this.source = null;
         this.mesh = null;
         this.observations = null;
-        this.adultValue = false;
         this.synthetic = false;
         this.controlsValue = {};
         this.invalidate();
@@ -101,12 +97,6 @@ export class PreviewSession {
         this.angleValue = angle;
         this.invalidate();
     }
-    confirmAdult(confirmed) {
-        if (typeof confirmed !== "boolean")
-            throw new RangeError("Adult confirmation must be an explicit choice.");
-        this.adultValue = confirmed;
-        this.invalidate();
-    }
     setAnatomy(side, value) {
         if (side !== "right" && side !== "left")
             throw new RangeError("Unknown eye side.");
@@ -130,7 +120,7 @@ export class PreviewSession {
     }
     reasons() {
         return unavailableReasons(this.featureValue, { photo: this.hasPhoto, mesh: this.hasMesh,
-            hair: this.observations?.hairDeclared ?? false, traces: this.observations?.count ?? 0, adultConfirmed: this.adultValue });
+            hair: this.observations?.hairDeclared ?? false, traces: this.observations?.count ?? 0 });
     }
     job() {
         const reasons = this.reasons();
@@ -139,7 +129,7 @@ export class PreviewSession {
         const id = ++this.revision;
         this.active = id;
         return { id, image: cloneImage(this.source), landmarks: this.landmarks, feature: this.featureValue,
-            amount: this.amountValue, style: this.styleValue, angle: this.angleValue, adultConfirmed: this.adultValue,
+            amount: this.amountValue, style: this.styleValue, angle: this.angleValue,
             anatomy: this.anatomy, hairMask: this.observations?.hairDeclared ? this.observations.mask : null,
             lashes: this.observations?.traces ?? [], controls: { ...this.controlsValue } };
     }

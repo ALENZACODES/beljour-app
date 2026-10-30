@@ -12,7 +12,7 @@ export function renderJob(job, clock = () => performance.now()) {
     let out;
     let warnings = [c.limitation];
     if (c.family === "lips") {
-        const r = renderLip(photo, job.landmarks, { feature: job.feature, amount: job.amount, style: job.style, adult_confirmed: job.adult });
+        const r = renderLip(photo, job.landmarks, { feature: job.feature, amount: job.amount, style: job.style });
         out = { data: r.data, report: r.report };
     }
     else if (c.family === "smile") {
@@ -20,11 +20,11 @@ export function renderJob(job, clock = () => performance.now()) {
         if (job.feature === "W58") {
             const a2 = { ...ann, teeth: ann.teeth.map(([x, y]) => [Math.min(1, x + .003), y]) };
             const stability = sequenceStability([ann, a2]);
-            const r = renderSmile(photo, { feature: "W58", amount: job.amount, adult_confirmed: job.adult, frame_annotations: [ann, a2] });
+            const r = renderSmile(photo, { feature: "W58", amount: job.amount, frame_annotations: [ann, a2] });
             out = { data: r.data, report: { ...r.report, ...stability } };
         }
         else {
-            const r = renderSmile(photo, { feature: job.feature, amount: job.amount, adult_confirmed: job.adult, annotation: ann });
+            const r = renderSmile(photo, { feature: job.feature, amount: job.amount, annotation: ann });
             out = { data: r.data, report: r.report };
         }
     }

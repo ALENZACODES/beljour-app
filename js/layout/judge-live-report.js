@@ -92,7 +92,7 @@ export function formatRealProductVisitReport(report) {
     lines.push("", "Evidence and privacy boundaries");
     lines.push(...report.notes);
     lines.push("No personal source image, filename, face, consent choice or provider reply is included.");
-    lines.push("External verification must use the deployed build, a released adult source and approved units.");
+    lines.push("External verification must use the deployed build, a released source and approved units.");
     return lines.join("\n") + "\n";
 }
 export function prepareRealProductDownload(report) {

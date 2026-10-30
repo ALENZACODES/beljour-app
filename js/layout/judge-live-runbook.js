@@ -1,7 +1,7 @@
 import { realDemoRoutes } from "./judge-live-routes.js";
 export const REAL_DEMO_CUES = [
     { route: "photo", targetSeconds: 15,
-        action: "Open the real product with an authorized adult source.",
+        action: "Open the real product with an authorized source.",
         explanation: "This is a new source selection, not a transfer from the drawn Judge Mode sample.",
         stopCondition: "Stop if visit consent or source processing fails." },
     { route: "studio", targetSeconds: 25,

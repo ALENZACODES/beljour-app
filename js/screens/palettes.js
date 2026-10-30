@@ -1,3 +1,4 @@
+import { ensureConsent } from "../ui/one-consent.js";
 import { h } from "../dom.js";
 import { resize } from "../engines/core/buffer.js";
 import { mixColours, moreChroma, assessShade, MIX_LABEL, SUITABILITY_LABEL } from "../engines/palette/colour.js";
@@ -258,28 +259,27 @@ export function paletteScreen(ctx, deps = {}) {
             extractionList.append(h("li", {}, chip(colour.hex, name), h("code", {}, colour.hex), h("p", {}, `${Math.round(colour.share * 100)}% of sampled visible colour; mean difference ${colour.meanDeltaE.toFixed(2)} ΔE00.`), checks(colour.hex), h("button", { type: "button", class: "btn btn-quiet", onclick: () => add(colour.hex, name) }, `Add ${name}`)));
         }
     };
-    const adult = h("input", { type: "checkbox", "aria-label": VISIT_STATEMENTS[0].text });
-    const understood = h("input", { type: "checkbox", "aria-label": VISIT_STATEMENTS[1].text });
-    const consent = h("fieldset", {}, h("legend", {}, "Before opening a reference photo"), h("label", {}, adult, VISIT_STATEMENTS[0].text), h("label", {}, understood, VISIT_STATEMENTS[1].text));
+    const understood = h("input", { type: "checkbox", "aria-label": VISIT_STATEMENTS[0].text });
+    const consent = h("fieldset", {}, h("legend", {}, "Before opening a reference photo"), h("label", {}, understood, VISIT_STATEMENTS[0].text));
     const updateConsent = () => {
-        if (adult.checked && understood.checked) {
-            gate.acceptVisit({ adult: true, understood: true });
+        if (understood.checked) {
+            gate.acceptVisit({ understood: true });
             ctx.consent = true;
         }
-        sourceInput.disabled = !gate.hasVisit;
-        consent.hidden = gate.hasVisit;
+        sourceInput.disabled = false;
+        consent.hidden = true; // the single consent is asked at the first photo open
     };
-    adult.addEventListener("change", updateConsent);
     understood.addEventListener("change", updateConsent);
     sourceInput.addEventListener("change", async () => {
         const file = sourceInput.files?.[0];
         sourceInput.value = "";
         if (!file)
             return;
-        if (!gate.hasVisit) {
-            referenceStatus.textContent = "Confirm the two statements before opening a photo.";
+        if (!gate.hasVisit && (gate !== appConsent || !(await ensureConsent()))) {
+            referenceStatus.textContent = "No photo opened.";
             return;
         }
+        ctx.consent = gate.hasVisit;
         const version = ++request;
         run.disabled = true;
         clearReference.disabled = false;

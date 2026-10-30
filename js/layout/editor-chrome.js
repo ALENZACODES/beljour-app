@@ -15,7 +15,6 @@ import { strengthLabel, hapticTick } from "../ui/shell/stops.js";
 import { engineToVisible, visibleToEngine, parseVisibleStrength, PreviewDebouncer, setStrengthRange, } from "./strength-scale.js";
 import { mountStudioIdentity } from "../ui/shell/studio-identity.js";
 import { paintFaceChip } from "./face-chip.js";
-import { salonPackScreen } from "../screens/salon-pack.js";
 import { batchReviewScreen } from "../screens/batch-review.js";
 import { groupFacesScreen } from "../screens/group-faces.js";
 import { bestSelfieScreen } from "../screens/best-selfie.js";
@@ -36,7 +35,7 @@ import { STORIES } from "../editor/create/story.js";
 export const CREATE_PANELS = {
     text: "text", draw: "draw", stickerlayer: "stickers", frames: "frames", collage: "collage", story: "story"
 };
-/** The panels a link from Home may open directly (#tool=<id>); salon and batch need a saved look. */
+/** The panels a link from Home may open directly (#tool=<id>); batch needs a saved look. */
 export const HASH_TOOLS = ["faces", "selfie", "blink", "sizes", "event", "video", "stickers", "tattoo", "framing", "batch",
     "text", "draw", "stickerlayer", "frames", "collage", "story"];
 export function parseHash(hash) {
@@ -58,9 +57,9 @@ export function parseHash(hash) {
         return { kind: "look", id: look[1] };
     if (/^try=(?:filters|portrait):[A-Z]{1,2}\d{1,3}$/.test(value))
         return { kind: "try", value };
-    const action = /^(salon|batch)=(look-[0-9a-f]{8})$/.exec(value);
-    if (action)
-        return { kind: action[1], id: action[2] };
+    const batch = /^batch=(look-[0-9a-f]{8})$/.exec(value);
+    if (batch)
+        return { kind: "batch", id: batch[1] };
     const studio = /^studio=([a-z-]+)$/.exec(value);
     if (studio && STUDIO_IDS.includes(studio[1]))
         return { kind: "studio", studio: studio[1] };
@@ -176,7 +175,6 @@ export class EditorChrome {
             this.doc.querySelector('#shell-compare-modes [data-mode="split-vertical"]')?.click();
             this.say("Split compare: drag the line or use the arrow keys on the photo.");
         });
-        this.doc.getElementById("lg-salon-pack")?.addEventListener("click", () => this.openDeliverable("salon"));
         this.doc.getElementById("lg-batch-review")?.addEventListener("click", () => this.openDeliverable("batch"));
         this.doc.getElementById("lg-group-faces")?.addEventListener("click", () => this.openDeliverable("faces"));
         this.doc.getElementById("lg-best-selfie")?.addEventListener("click", () => this.openDeliverable("selfie"));
@@ -331,7 +329,7 @@ export class EditorChrome {
                     : `${tried.name} couldn't be added: ${res.skipped.join("; ")}`);
             }
         }
-        else if (action.kind === "salon" || action.kind === "batch") {
+        else if (action.kind === "batch") {
             const look = this.looks.get(action.id);
             if (!look)
                 this.say("That saved look is not in this browser.");
@@ -339,17 +337,10 @@ export class EditorChrome {
                 const name = this.doc.getElementById("lg-look-name");
                 if (name)
                     name.value = look.name;
-                if (action.kind === "batch") {
-                    const layers = look.steps.map((step, i) => ({ id: `saved-${i}`, kind: step.kind, name: step.kind,
-                        strength: step.strength, parameters: { ...step.params }, enabled: true, opacity: 1, provenance: "local",
-                        origin: "photo", simulation: !["enhance", "filters"].includes(step.kind) }));
-                    this.openDeliverable("batch", layers);
-                }
-                else {
-                    const result = applySteps(this.editor, look.steps);
-                    this.openDeliverable("salon");
-                    this.say(`Photos are not stored. Open your photo and reapply ${look.name} for your own pack. ${result.skipped.join("; ")}`);
-                }
+                const layers = look.steps.map((step, i) => ({ id: `saved-${i}`, kind: step.kind, name: step.kind,
+                    strength: step.strength, parameters: { ...step.params }, enabled: true, opacity: 1, provenance: "local",
+                    origin: "photo", simulation: !["enhance", "filters"].includes(step.kind) }));
+                this.openDeliverable("batch", layers);
             }
         }
         else if (action.kind === "category") {
@@ -414,8 +405,6 @@ export class EditorChrome {
                 this.closePanel = () => { this.createPanel = null; screen.dispose(); };
                 this.createPanel = screen.panel;
             }
-            else if (kind === "salon")
-                panel.replaceChildren(salonPackScreen(this.view.editor, name));
             else if (kind === "faces") {
                 const group = this.groupSession();
                 if (!group)

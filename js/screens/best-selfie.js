@@ -3,10 +3,10 @@
  * device only and nothing is kept after the panel closes. Author: John Khan.
  */
 import { LongWork } from "../ui/long-work.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { h } from "../dom.js";
 import { paint } from "../ui/shell/canvas.js";
 import { readLocalImage, uploadedSource } from "../ui/shell/demo.js";
-import { appConsent } from "../ui/shell/consent.js";
 import { MAX_PHOTOS, rankSelfies, SelfieError } from "../ui/shell/best-selfie.js";
 import { defaultVisionClient } from "../vision/client.js";
 import { toRGBA } from "../engines/core/buffer.js";
@@ -31,8 +31,8 @@ export function bestSelfieScreen(open, deps = {}) {
         list.replaceChildren();
         const signal = work.begin();
         try {
-            if (!(deps.consent ?? (() => appConsent.hasVisit))())
-                throw new Error("Confirm adult photo consent before comparing photos.");
+            if (!(await (deps.consent ?? (() => ensureConsent()))()))
+                throw new Error("Confirm photo consent before comparing photos.");
             if (files.length > MAX_PHOTOS)
                 throw new SelfieError("too_many_photos", `Compare at most ${MAX_PHOTOS} photos at a time.`);
             status.textContent = "Checking your photos on this device…";

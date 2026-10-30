@@ -1,5 +1,5 @@
 /** Mandatory image-bound identity guard adapter for women's local previews.
- * ASSUMED temporary Lane H interface. This proxy is not face recognition:
+ * ASSUMED temporary Workstream H interface. This proxy is not face recognition:
  * similarity means RGB proximity only; it cannot establish same-person identity.
  * Author: John Khan.
  */

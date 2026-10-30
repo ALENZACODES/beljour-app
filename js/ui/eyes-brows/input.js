@@ -81,7 +81,7 @@ export async function pixelFingerprint(image) {
     const digest = await crypto.subtle.digest("SHA-256", payload);
     return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
 }
-/** Nothing in an imported document can grant consent or set the adult switch. */
+/** Nothing in an imported document can grant consent. */
 export function parseEvidence(text, image, fingerprint) {
     validateImage(image);
     if (new TextEncoder().encode(text).length > MAX_EVIDENCE_BYTES)

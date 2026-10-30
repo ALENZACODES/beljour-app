@@ -1,5 +1,5 @@
 /** Self-contained, accessible A7 controls for an existing photo editor.
- * No automatic screen mounting; Lane D may install this through a public hook.
+ * No automatic screen mounting; Workstream D may install this through a public hook.
  * State stays in memory and never contains raw photo bytes or landmarks.
  * Author: John Khan.
  */

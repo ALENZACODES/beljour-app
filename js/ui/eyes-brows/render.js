@@ -17,10 +17,6 @@ export function validateJob(job) {
         throw new RangeError("Invalid preview amount.");
     if (!Number.isFinite(job.angle) || Math.abs(job.angle) > 80)
         throw new RangeError("Invalid light angle.");
-    if (typeof job.adultConfirmed !== "boolean")
-        throw new RangeError("Invalid adult confirmation.");
-    if (feature.requiresAdult && !job.adultConfirmed)
-        throw new RangeError("Adult confirmation is required.");
     validateAnatomy(job.anatomy);
     if (!Array.isArray(job.lashes) || job.lashes.length > 256)
         throw new RangeError("Invalid lash evidence.");
@@ -73,8 +69,6 @@ export function renderJob(job, clock = () => performance.now()) {
             options.state = job.style;
         if (job.feature === "W72")
             options.method = job.style;
-        if (job.feature === "W71" || job.feature === "W72")
-            options.adultConfirmed = job.adultConfirmed;
         if (job.feature === "W74")
             options.site = job.style;
         const result = renderBrows(job.image, job.landmarks, job.feature, options);
@@ -85,7 +79,7 @@ export function renderJob(job, clock = () => performance.now()) {
     }
     const result = renderArtistic(job.feature, job.image, {
         landmarks: job.landmarks ?? undefined, hairMask: job.hairMask ?? undefined,
-        params: { amount: job.amount, ...job.controls, ...(job.feature === "rain-expression" ? { adult_confirmed: job.adultConfirmed } : {}) },
+        params: { amount: job.amount, ...job.controls },
     });
     return { pixels: result.image, label: result.label, warnings: [...result.warnings],
         metrics: { ...result.metrics, geometry: result.geometry }, elapsedMs: Math.max(0, clock() - started) };

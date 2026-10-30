@@ -3,7 +3,7 @@ import { api, apiBase } from "../api.js";
 import { localShadeSection } from "./shade-local.js";
 import { announce, clear, h } from "../dom.js";
 import { costButton, errorBox, sourceNote, swatch } from "../ui/widgets.js";
-import { foundationDecision } from "../salon/spec.js";
+import { foundationDecision } from "../decision/spec.js";
 import { decisionSection } from "./decision-sheet.js";
 function item(ctx, s, kind, detail) {
     return h("li", { class: "shade" }, swatch(s.hex, s.name), h("div", {}, h("strong", {}, s.name), h("p", { class: "fine" }, detail)), h("div", { class: "shade-actions" }, h("button", { class: "btn btn-small", onclick: () => { ctx.tryon = { ...ctx.tryon, [kind]: s.id }; ctx.go("tryon"); } }, "Try it on"), s.shop ? h("a", { href: s.shop, target: "_blank", rel: "noopener", class: "link" }, "Find it in store") : null));
@@ -31,7 +31,7 @@ export function renderShade(main, ctx) {
             return;
         ctx.localShade = result;
         // The foundation spec sheet appears only once there is a confident local reading.
-        sheet.replaceChildren(...(result && !result.refused ? [decisionSection("makeup", options => foundationDecision(result, options), { name: () => "Foundation shade", photos: false })] : []));
+        sheet.replaceChildren(...(result && !result.refused ? [decisionSection(options => foundationDecision(result, options), { name: () => "Foundation shade" })] : []));
     }), sheet, h("p", {}, h("a", { href: "#/palettes", class: "link" }, "Mix a personal palette or extract colours from a reference photo")), apiBase() && ctx.photo ? costButton("Measure my colours", { photo_id: ctx.photo.photo_id, action: "shade" }, async () => {
         try {
             render(out, ctx, await api.shade(ctx.photo.photo_id, ctx.face?.points.map(point => [point.x, point.y, point.z ?? 0])));

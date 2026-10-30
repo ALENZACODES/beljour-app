@@ -1,4 +1,4 @@
-/** Explicit client-facing R20c local exports. No import of other lanes.
+/** Explicit client-facing R20c local exports. No import of other workstreams.
  * Author: John Khan.
  */
 export { applyPreviewTiled } from './tiled.js';

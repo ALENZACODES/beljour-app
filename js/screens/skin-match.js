@@ -8,11 +8,10 @@ import { announce, clear, h } from "../dom.js";
 import { YOUCAM_PRODUCTS } from "../ui/provider-labels.js";
 import { CONSENT_TEXT, ConsentMissing, NOT_TESTED, SkinMatchController, view } from "./skin-match-model.js";
 function consentForm(controller, note) {
-    const adult = h("input", { type: "checkbox", id: "skin-match-adult" });
     const agreed = h("input", { type: "checkbox", id: "skin-match-agree" });
     const send = h("button", { class: "btn", type: "button", onclick: async () => {
             try {
-                await controller.analyse({ adult: adult.checked, agreed: agreed.checked });
+                await controller.analyse({ agreed: agreed.checked });
             }
             catch (err) {
                 if (err instanceof ConsentMissing) {
@@ -24,7 +23,7 @@ function consentForm(controller, note) {
             }
         } }, "Send to YouCam and match");
     const local = h("button", { class: "btn btn-quiet", type: "button", onclick: () => { void controller.localOnly(); } }, "Local estimate only");
-    return h("form", { class: "consent", onsubmit: (e) => e.preventDefault() }, h("p", {}, h("label", { for: "skin-match-adult" }, adult, " ", CONSENT_TEXT[0])), h("p", {}, h("label", { for: "skin-match-agree" }, agreed, " ", CONSENT_TEXT[1])), h("div", { class: "row" }, send, local));
+    return h("form", { class: "consent", onsubmit: (e) => e.preventDefault() }, h("p", {}, h("label", { for: "skin-match-agree" }, agreed, " ", CONSENT_TEXT)), h("div", { class: "row" }, send, local));
 }
 function draw(box, controller, state) {
     const v = view(state);

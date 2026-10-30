@@ -1,4 +1,4 @@
-/** Typed catalogue for the six R19B Lane B easy filters. Author: John Khan. */
+/** Typed catalogue for the six R19B Workstream B easy filters. Author: John Khan. */
 import { LABEL as BRIDAL_LABEL } from "./bridal.js";
 import { LABEL as EYE_LABEL } from "./eye-colour.js";
 import { LABEL as FUN_LABEL } from "./fun.js";
@@ -12,7 +12,6 @@ export const FILTERS = [
         name: "Playful Paws",
         label: FUN_LABEL,
         provider: "local",
-        adultOnly: true,
         identityPolicy: "preserve_iris_and_marks",
         requiredInputs: ["left_eye", "right_eye", "nose", "mouth", "mouth_open"],
         scopeNote: "Still-photo original artwork only; tongue is conditional on mouth openness.",
@@ -23,7 +22,6 @@ export const FILTERS = [
         name: "Archive Flash",
         label: RETRO_LABEL,
         provider: "local",
-        adultOnly: true,
         identityPolicy: "preserve_iris_and_marks",
         requiredInputs: ["photo", "optional_background_mask"],
         scopeNote: "Photo treatment only: no generated clothing or branded yearbook template.",
@@ -34,7 +32,6 @@ export const FILTERS = [
         name: "Iris Tint",
         label: EYE_LABEL,
         provider: "local",
-        adultOnly: true,
         identityPolicy: "change_iris_preserve_marks",
         requiredInputs: ["iris_mask", "pupil_mask", "highlight_mask"],
         scopeNote: "Local iris colour only; pupil, limbal edge treatment and highlight remain protected.",
@@ -45,7 +42,6 @@ export const FILTERS = [
         name: "Atelier Frames",
         label: GLASSES_LABEL,
         provider: "local",
-        adultOnly: true,
         identityPolicy: "preserve_iris_and_marks",
         requiredInputs: ["left_eye", "right_eye"],
         scopeNote: "Front-view v1 with original procedural frame geometry; no brand frames or logos.",
@@ -56,7 +52,6 @@ export const FILTERS = [
         name: "Sunlit Skin",
         label: SUMMER_LABEL,
         provider: "local",
-        adultOnly: true,
         identityPolicy: "preserve_iris_and_marks",
         requiredInputs: ["skin_mask", "undertone", "optional_cheek_nose_mask"],
         scopeNote: "Additive warmth only by default; no tan-removal or skin-lightening control.",
@@ -67,7 +62,6 @@ export const FILTERS = [
         name: "Ceremony Light Check",
         label: BRIDAL_LABEL,
         provider: "local",
-        adultOnly: true,
         identityPolicy: "preserve_iris_and_marks",
         requiredInputs: ["skin_mask", "lip_mask", "eye_makeup_mask", "cheek_mask"],
         scopeNote: "Local makeup plus daylight, venue and camera-flash drift report; no gown generation.",
@@ -77,13 +71,13 @@ export const SKIPPED = [
     {
         gapRow: 4,
         name: "Closed-mouth smile with eye crinkle",
-        reason: "Already shipped in Lane A EASY-filter scope.",
+        reason: "Already shipped in Workstream A EASY-filter scope.",
         owner: "A",
     },
     {
         gapRow: 28,
         name: "Warm teeth whitening",
-        reason: "Already shipped in Lane A EASY-filter scope.",
+        reason: "Already shipped in Workstream A EASY-filter scope.",
         owner: "A",
     },
 ];
@@ -96,7 +90,7 @@ export function byId(filterId) {
 export function byGapRow(gapRow) {
     const found = FILTERS.find(item => item.gapRow === gapRow);
     if (!found)
-        throw new Error(`gap row ${gapRow} is not built by Lane B r19b`);
+        throw new Error(`gap row ${gapRow} is not built by Workstream B r19b`);
     return found;
 }
 export function validateCatalogue() {
@@ -125,8 +119,6 @@ export function validateCatalogue() {
     for (const spec of FILTERS) {
         if (spec.provider !== "local")
             problems.push(`${spec.filterId}: provider must stay local`);
-        if (!spec.adultOnly)
-            problems.push(`${spec.filterId}: adults-only flag missing`);
         if (spec.label.includes("\n"))
             problems.push(`${spec.filterId}: label must be one line`);
     }

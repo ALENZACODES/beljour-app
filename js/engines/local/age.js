@@ -2,7 +2,7 @@
  * Inspiration: DECA (shape/appearance layers), FLAME (expression separated from shape),
  * face-parsing.PyTorch (region-specific edits). concept only, no code copied.
  * Our own polyline, crease and seeded spot algorithms: no GANs, weights or APIs.
- * Not an age prediction. Adult photos only. Author: John Khan.
+ * Not an age prediction. Author: John Khan.
  */
 import { LANDMARKS } from "../../data/face/generated/anatomy.js";
 import { CONTOURS, regionMask } from "../../data/regions/index.js";
@@ -245,7 +245,7 @@ export function renderAge(input, mesh, options) {
             }
         }
     }
-    return { image: output, editMask, layersUsed: layers, label: LABEL, adultOnly: true, face,
+    return { image: output, editMask, layersUsed: layers, label: LABEL, face,
         metrics: { stop: options.stop, strength_used: (options.strength ?? 1) * guardScale,
             guard_scale: guardScale, wrinkle_pixels: wrinklePixels, wrinkle_contrast: wrinkleContrast,
             spots_drawn: spots, grey_pixels: greyPixels, texture_amount: texture, colour_amount: colour,

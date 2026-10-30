@@ -19,7 +19,7 @@ const KEYBOARD = Object.freeze({
     trust: "Check the delete control can be reached by keyboard alone.",
 });
 const CAPTIONS = Object.freeze({
-    photo: "Start from a permitted adult photo, never the drawn demo image.",
+    photo: "Start from a permitted photo, never the drawn demo image.",
     studio: "Show one actually supported editor operation and before/after.",
     hair: "Show the approved hair flow only after a fresh quote and consent.",
     makeup: "Show a supported makeup try-on, or an explicit unavailable result.",

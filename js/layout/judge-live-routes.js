@@ -6,7 +6,7 @@ const ROUTES = [
     {
         id: "photo", clientId: "classic", title: "Start the real Photo lab",
         boundary: "on-device", purpose: "Open a new photo with the regular application, not this local illustration.",
-        prerequisite: "Use an authorized adult photo and complete the visit consent screen.",
+        prerequisite: "Use an authorized photo and complete the visit consent screen.",
         confirmation: "Verify the original remains available after local selection.",
         fallback: "If the photo cannot be read, stop; do not claim it was imported.",
     },

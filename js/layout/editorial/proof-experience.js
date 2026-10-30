@@ -5,7 +5,7 @@ import { proofWallReading, renderProofWall } from "./proof.js";
 export function renderProofExperience(doc, input) {
     const root = doc.createElement("section");
     root.className = "lg-editorial-proof-experience";
-    root.setAttribute("aria-label", "Local Proof Wall review and image handoff");
+    root.setAttribute("aria-label", "Local Proof Wall review and image transfer");
     root.append(renderProofWall(doc, proofWallReading(input)));
     const footer = doc.createElement("div");
     footer.className = "lg-editorial-proof-actions";

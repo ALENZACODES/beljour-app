@@ -35,7 +35,7 @@ function lookCard(store, id, onChange, holiday) {
     const look = store.get(id);
     const download = h("a", { class: "lg-link", download: `${look.name.replace(/[^\w-]+/g, "-")}.look.json`,
         href: "data:application/json;charset=utf-8," + encodeURIComponent(exportText(look)) }, "Share file");
-    return h("li", { class: "lg-look" }, h("strong", { class: "lg-look-name" }, look.name), h("span", { class: "lg-small" }, describe(look)), h("span", { class: "lg-look-actions" }, h("a", { class: "lg-button lg-primary", href: studioLink(`look=${look.id}`) }, "Apply"), h("a", { class: "lg-link", href: studioLink(`salon=${look.id}`) }, "Salon pack"), h("a", { class: "lg-link", href: studioLink(`batch=${look.id}`) }, "Apply to photos"), download, holiday ? occasionPicker(holiday, id, look.name) : null, h("button", { type: "button", class: "lg-link", onclick: () => { store.remove(id); onChange(); holiday?.refresh(); } }, "Remove")));
+    return h("li", { class: "lg-look" }, h("strong", { class: "lg-look-name" }, look.name), h("span", { class: "lg-small" }, describe(look)), h("span", { class: "lg-look-actions" }, h("a", { class: "lg-button lg-primary", href: studioLink(`look=${look.id}`) }, "Apply"), h("a", { class: "lg-link", href: studioLink(`batch=${look.id}`) }, "Apply to photos"), download, holiday ? occasionPicker(holiday, id, look.name) : null, h("button", { type: "button", class: "lg-link", onclick: () => { store.remove(id); onChange(); holiday?.refresh(); } }, "Remove")));
 }
 export function renderLooks(list, store, holiday = null) {
     clear(list);

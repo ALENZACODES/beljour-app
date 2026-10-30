@@ -8,9 +8,7 @@
   <title>BELJOUR — FULL BEAUTY STUDIO — Studio</title>
   <meta name="description" content="Local editor: reversible photo layers, ten compare modes, on-device previews and clearly labelled simulations.">
   <link rel="stylesheet" href="theme.css">
-  <link rel="stylesheet" href="quote-veil.css">
   <link rel="preload" href="assets/quotes/beauty-quotes.json" as="fetch" crossorigin="anonymous">
-  <script type="module" src="js/ui/quote-veil.js"></script>
   <link rel="stylesheet" href="shell.css">
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="hair.css">
@@ -48,7 +46,7 @@
       <div id="shell-nav"></div>
       <div class="shell-nav-footer">
         <strong>Private workspace</strong>
-        <p>Local tools run in this browser. Makeup and hair styling open a separate screen, and a photo is sent only after you tick the box next to that action. Skin Moment asks on its own page.</p>
+        <p>Local tools run in this browser. YouCam actions say on the button what is sent and how many units they use.</p>
         <p class="shell-check-row shell-local-only"><input type="checkbox" id="shell-local-only"><label for="shell-local-only">On-device only: never send a photo to YouCam</label></p>
         <button type="button" id="shell-withdraw" class="shell-button shell-quiet">Withdraw consent</button>
       </div>
@@ -147,7 +145,6 @@
         <label for="lg-look-name" class="shell-visually-hidden">Name for this look</label>
         <input id="lg-look-name" type="text" maxlength="40" placeholder="Name this look">
         <button type="button" id="lg-save-look" class="shell-button shell-primary">Save as My Look</button>
-        <button type="button" id="lg-salon-pack" class="shell-button">Salon Decision Pack</button>
         <button type="button" id="lg-batch-review" class="shell-button">Apply to photos</button>
         <button type="button" id="lg-group-faces" class="shell-button">Group photo</button>
         <button type="button" id="lg-best-selfie" class="shell-button">Best selfie</button>
@@ -196,15 +193,15 @@
     </aside>
   </div>
   <div class="shell-scrim" id="shell-scrim" hidden></div>
-  <div class="shell-dialog" id="shell-consent" role="dialog" aria-modal="true" aria-labelledby="shell-consent-title" aria-describedby="shell-consent-text" hidden>
-    <h2 id="shell-consent-title">Before you open a photo</h2>
-    <p id="shell-consent-text">BELJOUR — FULL BEAUTY STUDIO is for adults. Local tools run in this browser and your photo stays on this device. Makeup and hair styling send a photo to YouCam only after you tick the box next to that action.</p>
-    <p class="shell-check-row"><input type="checkbox" id="shell-consent-adult"><label for="shell-consent-adult">I'm 18 or older, and so is everyone in the photos I open.</label></p>
-    <p class="shell-check-row"><input type="checkbox" id="shell-consent-understood"><label for="shell-consent-understood">I understand how photos are used here.</label></p>
+  <div class="shell-dialog" id="shell-consent" data-consent-gate="single" role="dialog" aria-modal="true" aria-labelledby="shell-consent-title" aria-describedby="shell-consent-text" hidden>
+    <h2 id="shell-consent-title">Before your first photo</h2>
+    <p id="shell-consent-text">Asked once on this device. You can withdraw it on the Trust page.</p>
+    <p class="shell-check-row" hidden><input type="checkbox" id="shell-consent-understood" checked><label for="shell-consent-understood">I understand how photos are used here.</label></p>
+    <p id="shell-consent-statement"></p>
     <p id="shell-consent-error" class="shell-error" role="alert"></p>
     <div class="shell-dialog-actions">
       <button type="button" id="shell-consent-cancel" class="shell-button">Not now</button>
-      <button type="button" id="shell-consent-accept" class="shell-button shell-primary">Agree and choose a photo</button>
+      <button type="button" id="shell-consent-accept" class="shell-button shell-primary">Continue</button>
     </div>
   </div>
   <div class="shell-dialog" id="shell-provider" role="dialog" aria-modal="true" aria-labelledby="shell-provider-title" aria-describedby="shell-provider-facts" hidden>

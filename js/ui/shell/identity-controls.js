@@ -33,7 +33,7 @@ export function renderIdentityControls(doc, options) {
         const decision = options.controller.evaluate(options.family, options.photoRevision, options.strength);
         note.textContent = decision.safeToClaimProtected
             ? "Identity lock is enforced for this edit."
-            : "Protection is requested, but the Lane H engine is not connected; no identity guarantee is claimed.";
+            : "Protection is requested, but the Workstream H engine is not connected; no identity guarantee is claimed.";
         note.dataset.identityLock = "on";
         note.dataset.engineStatus = decision.status;
     };
@@ -45,7 +45,7 @@ export function renderIdentityControls(doc, options) {
         updateNote();
         options.onTune?.(value);
     });
-    const help = element(doc, "p", "There is no one-tap off control. This value is only a UI request until Lane H is integrated.");
+    const help = element(doc, "p", "There is no one-tap off control. This value is only a UI request until Workstream H is integrated.");
     help.className = "lg-guard-note";
     details.append(summary, tuning.box, help);
     section.append(heading, note, strength.box, details);

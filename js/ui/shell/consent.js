@@ -1,11 +1,11 @@
 /** Consent gate (plan N22, round brief item 1): nothing reaches the styling provider without it.
  *
  * Two levels:
- *  1. Visit consent, once per browser tab: the person confirms they are 18 or older and that
- *     they understand how photos are used. Needed before opening a photo from the device.
- *     It is the only consent record kept between pages of the same tab, in sessionStorage,
- *     and it holds no photo, file name, face data or provider identifier: just the version,
- *     the two answers and the time. Storage failures fall back to memory for this page.
+ *  1. Visit consent, once per device (localStorage): the person confirms they understand how photos are
+ *     used. Needed before opening a photo from the device. There is no age question (John's
+ *     decision of 2026-10-29). It is the only consent record kept between pages of the same
+ *     tab, in sessionStorage, and it holds no photo, file name, face data or provider
+ *     identifier: just the version, the answer and the time. Storage failures fall back to memory for this page.
  *  2. Photo consent, per uploaded photo and per scope (makeup or hair styling): given by a
  *     deliberate tick next to the action that sends the photo, held in memory only, and
  *     ended by withdrawal, by a new photo, or after 30 minutes.
@@ -17,15 +17,14 @@
  *
  * Author: John Khan.
  */
-export const CONSENT_VERSION = "beljour-consent/1";
+export const CONSENT_VERSION = "beljour-consent/2";
 export const STORAGE_KEY = "beljour.consent";
 export const LOCAL_ONLY_KEY = "beljour.local-only";
 export const LOCAL_ONLY_REASON = "On-device only is on, so nothing is sent to YouCam. Turn it off in the studio to use makeup and hair styling.";
 export const PHOTO_CONSENT_MS = 30 * 60 * 1000;
 export const STYLING_ACTIONS = ["makeup", "hair-color", "hair-style", "hair-transfer", "hair-bang", "hair-curl", "hair-extension", "hair-volume"];
 export const VISIT_STATEMENTS = [
-    { id: "adult", text: "I'm 18 or older, and so is everyone in the photos I open." },
-    { id: "understood", text: "I understand that local tools run on this device, and that a photo is sent to YouCam only when I agree to it for a makeup or hair styling action or a Skin Moment skin analysis." },
+    { id: "understood", text: "Your photos are processed on this device. A photo is sent to YouCam only when you start an action labelled YouCam, and that label says what is sent and how many units it uses." },
 ];
 export const PROVIDER_FACTS = [
     "Only the photo you chose is sent, for the one makeup or hair styling action you start.",
@@ -45,7 +44,7 @@ export function scopeTitle(scope) {
     return scope === "makeup" ? "makeup preview" : "hair styling preview";
 }
 export function attestationFor(grant, photoId, action) {
-    return { version: CONSENT_VERSION, adult: true, scope: scopeFor(action), photo_id: photoId, given_at: grant.at };
+    return { version: CONSENT_VERSION, scope: scopeFor(action), photo_id: photoId, given_at: grant.at };
 }
 export class ConsentRequired extends Error {
     need;
@@ -63,13 +62,13 @@ export function readVisit(raw, now) {
     try {
         const value = JSON.parse(raw);
         const keys = Object.keys(value).sort().join(",");
-        if (keys !== "adult,at,understood,version")
+        if (keys !== "at,understood,version")
             return null;
-        if (value.version !== CONSENT_VERSION || value.adult !== true || value.understood !== true)
+        if (value.version !== CONSENT_VERSION || value.understood !== true)
             return null;
         if (typeof value.at !== "number" || !Number.isFinite(value.at) || value.at > now + 60_000)
             return null;
-        return { version: CONSENT_VERSION, adult: true, understood: true, at: value.at };
+        return { version: CONSENT_VERSION, understood: true, at: value.at };
     }
     catch {
         return null;
@@ -113,6 +112,22 @@ export class ConsentGate {
     }
     get visit() { return this.visitRecord ? { ...this.visitRecord } : null; }
     get hasVisit() { return this.visitRecord !== null; }
+    /** Re-read the stored decision (another tab changed it). */
+    reload() {
+        let next = null;
+        try {
+            next = readVisit(this.store?.getItem(STORAGE_KEY) ?? null, this.clock());
+        }
+        catch {
+            return;
+        }
+        if (JSON.stringify(next) === JSON.stringify(this.visitRecord))
+            return;
+        this.visitRecord = next;
+        if (!next)
+            this.grants.clear();
+        this.changed({ kind: "visit", at: this.clock(), detail: next ? "Consent given in another tab" : "Consent withdrawn in another tab" });
+    }
     get localOnly() { return this.localOnlyFlag; }
     /** Turn on-device only on or off. Turning it on also ends every photo consent. */
     setLocalOnly(on) {
@@ -130,13 +145,11 @@ export class ConsentGate {
         catch { /* memory only */ }
         this.changed({ kind: "local-only", at: this.clock(), detail: on ? "On-device only turned on" : "On-device only turned off" });
     }
-    /** Record visit consent. Both answers must be an explicit yes. */
+    /** Record visit consent. The answer must be an explicit yes. */
     acceptVisit(answers) {
-        if (answers.adult !== true)
-            throw new ConsentRequired("visit", "BELJOUR — FULL BEAUTY STUDIO is for adults. Your best day. Still you. Confirm you're 18 or older to open a photo.");
         if (answers.understood !== true)
             throw new ConsentRequired("visit", "Please confirm you understand how photos are used.");
-        const record = { version: CONSENT_VERSION, adult: true, understood: true, at: this.clock() };
+        const record = { version: CONSENT_VERSION, understood: true, at: this.clock() };
         this.visitRecord = record;
         try {
             this.store?.setItem(STORAGE_KEY, JSON.stringify(record));
@@ -156,7 +169,7 @@ export class ConsentGate {
         if (!scopes.length || !scopes.every((s) => s === "makeup" || s === "hair"))
             throw new RangeError("Choose makeup, hair styling or both");
         if (othersConfirmed !== true)
-            throw new ConsentRequired("photo", "Everyone in the photo must be an adult who agreed to it.");
+            throw new ConsentRequired("photo", "Everyone in the photo must have agreed to it.");
         const at = this.clock();
         const previous = this.grants.get(photoId);
         const merged = [...new Set([...(previous && previous.expires > at ? previous.scopes : []), ...scopes])].sort();
@@ -170,13 +183,19 @@ export class ConsentGate {
         if (this.localOnlyFlag)
             return { allowed: false, need: "local-only", reason: LOCAL_ONLY_REASON };
         if (!this.visitRecord)
-            return { allowed: false, need: "visit", reason: "Confirm you're 18 or older and how photos are used before anything is sent." };
-        const grant = this.grants.get(photoId);
-        if (!grant)
-            return { allowed: false, need: "photo", reason: `Tick "Send this photo to YouCam" to start a ${scopeTitle(scope)}.` };
+            return { allowed: false, need: "visit", reason: "Confirm how photos are used before anything is sent." };
+        let grant = this.grants.get(photoId);
+        // The single consent covers named cloud actions: starting a YouCam-labelled action is the
+        // per-photo choice, so no second tick is asked for.
+        if (!grant || !grant.scopes.includes(scope) || grant.expires <= this.clock()) {
+            if (!PHOTO_ID.test(photoId))
+                return { allowed: false, need: "photo", reason: "Open a photo first." };
+            this.grantPhoto(photoId, [scope]);
+            grant = this.grants.get(photoId);
+        }
         if (grant.expires <= this.clock()) {
             this.grants.delete(photoId);
-            return { allowed: false, need: "expired", reason: "Consent to send this photo has expired. Tick the box again to continue." };
+            return { allowed: false, need: "expired", reason: "Consent to send this photo has expired. Continue once more to send it." };
         }
         if (!grant.scopes.includes(scope))
             return { allowed: false, need: "scope", reason: `This photo was only cleared for ${grant.scopes.map(scopeTitle).join(" and ")}.` };
@@ -215,7 +234,8 @@ export class ConsentGate {
 }
 function browserStore() {
     try {
-        const store = globalThis.sessionStorage;
+        // One consent per device (owner's order, Oct 29): every page and every new tab reads it.
+        const store = globalThis.localStorage;
         return store ?? null;
     }
     catch {
@@ -224,4 +244,9 @@ function browserStore() {
 }
 /** The one gate for this page. Classic screens and the studio share the stored visit record. */
 export const appConsent = new ConsentGate(() => Date.now(), browserStore());
+// Another tab gave or withdrew the one consent: follow it here too.
+if (typeof window !== "undefined" && typeof window.addEventListener === "function") {
+    window.addEventListener("storage", (event) => { if (event.key === STORAGE_KEY || event.key === null)
+        appConsent.reload(); });
+}
 //# sourceMappingURL=consent.js.map

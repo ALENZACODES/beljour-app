@@ -2,7 +2,7 @@ import { engineToVisible, visibleToEngine, setStrengthRange, PreviewDebouncer } 
 /** Working studio UI (R8 shell, extended in R9). Native buttons and inputs; no framework, CDN or
  * third-party art. The editor page never calls fetch and never sends a user photo anywhere.
  * R9 adds: the ten compare modes (compare-view.ts), visit consent before opening a photo and a
- * styling hand-off that explains what is sent (consent.ts), the on-device pre-check and the
+ * styling transfer that explains what is sent (consent.ts), the on-device pre-check and the
  * thumbnail strip, both computed in the shell worker, the demo tour (web/src/demo/), the phone
  * panel tabs, a keyboard map with a shortcuts dialog, and live-region announcements.
  * Author: John Khan.
@@ -374,15 +374,14 @@ export class ShellView {
         find("shell-zoom-reset").addEventListener("click", () => this.safely(() => this.editor.zoom(1)));
         find("shell-download").addEventListener("click", () => { void this.exportPreview(); });
     }
-    /** R9 controls: consent, provider hand-off, demo tour, tabs, shortcuts and the keyboard map. */
+    /** R9 controls: consent, provider transfer, demo tour, tabs, shortcuts and the keyboard map. */
     wireR9() {
-        find("shell-consent-adult").nextElementSibling.textContent = VISIT_STATEMENTS[0].text;
-        find("shell-consent-understood").nextElementSibling.textContent = VISIT_STATEMENTS[1].text;
+        find("shell-consent-understood").nextElementSibling.textContent = VISIT_STATEMENTS[0].text;
+        find("shell-consent-statement").textContent = VISIT_STATEMENTS[0].text;
         find("shell-consent-cancel").addEventListener("click", () => this.consentModal.close(false));
         find("shell-consent-accept").addEventListener("click", () => {
             try {
-                appConsent.acceptVisit({ adult: find("shell-consent-adult").checked,
-                    understood: find("shell-consent-understood").checked });
+                appConsent.acceptVisit({ understood: true });
                 this.consentModal.close(true);
             }
             catch (error) {
@@ -531,44 +530,26 @@ export class ShellView {
         if (appConsent.hasVisit)
             return true;
         find("shell-consent-error").textContent = "";
-        const ok = await this.consentModal.open(find("shell-consent-adult"));
+        const ok = await this.consentModal.open(find("shell-consent-accept"));
         if (!ok)
             this.inform("No photo opened. Drawn samples need no consent.");
         return ok;
     }
-    /** The styling hand-off: what is sent, the pre-check for styling, then a link to the styling screen. */
+    /** The styling transfer: what is sent, the pre-check for styling, then a link to the styling screen. */
     async openProvider() {
         const studio = this.editor.document.studio;
-        const go = find("shell-provider-continue");
-        go.href = studio === "makeup" ? "index.html#/tryon" : "index.html#/photo";
-        const box = find("shell-provider-check");
-        go.hidden = appConsent.localOnly;
+        const target = studio === "makeup" ? "index.html#/tryon" : "index.html#/photo";
+        // No dialog (owner's order): the cloud action carries its own inline label, and this button
+        // either opens the styling screen or says plainly why it can't.
         if (appConsent.localOnly) {
-            box.replaceChildren(node("p", "shell-error", LOCAL_ONLY_REASON));
-            const closed = await this.providerModal.open(find("shell-provider-cancel"));
-            if (!closed)
-                this.inform("On-device only is on. Nothing was sent.");
+            this.inform(LOCAL_ONLY_REASON);
             return;
         }
-        box.replaceChildren(node("p", "shell-small", "Checking this photo for styling on this device…"));
-        const ticket = ++this.precheckTicket;
-        this.client.precheck(this.editor.source.image, { purpose: "styling", face: this.editor.source.face }).then((report) => {
-            if (ticket !== this.precheckTicket)
-                return;
-            const list = node("ul", "shell-precheck-list");
-            for (const c of report.checks.filter((x) => x.level !== "pass")) {
-                const li = node("li", "shell-check-item");
-                li.dataset.level = c.level;
-                li.textContent = `${c.title}: ${c.message}`;
-                list.append(li);
-            }
-            box.replaceChildren(node("p", "", this.editor.source.kind === "sample"
-                ? "This is a drawn sample. On the styling screen you choose the photo to send."
-                : "This photo stays here. On the styling screen you choose the photo to send and tick the box to send it."), list);
-        }, () => box.replaceChildren(node("p", "shell-small", "The photo check couldn't run here; the styling screen checks before sending.")));
-        const ok = await this.providerModal.open(find("shell-provider-cancel"));
-        if (!ok)
-            this.inform("Kept editing here. Nothing was sent.");
+        if (!serverConfigured()) {
+            this.inform("YouCam styling is off in this on-device preview. Nothing was sent. The on-device tools in the list still work.");
+            return;
+        }
+        window.location.href = target;
     }
     /** Measure the new source in the worker, and refresh the strip. */
     /** Refresh everything that depends on the open photo (pre-check, canvas); public for the chrome's panels. */
@@ -620,7 +601,7 @@ export class ShellView {
             const source = { ...uploadedSource(image, "upload:example-person-1"), label: `${EXAMPLE_LABEL}, not a real person`,
                 face: framingPoints(w, hgt) };
             this.editor.load(source, this.editor.document.studio);
-            this.inform(`${EXAMPLE_LABEL} ready: an invented adult, not a real person. Face area estimated from the picture's framing. Open a photo to use your own.`);
+            this.inform(`${EXAMPLE_LABEL} ready: an invented person, not a real one. Face area estimated from the picture's framing. Open a photo to use your own.`);
             this.afterSource();
         }
         catch { /* the drawn sample stays open */ }
@@ -1041,7 +1022,7 @@ export class ShellView {
                 if (allowed)
                     settings.append(labelled("Tan", select([{ value: "add", label: "Add a tan" }, { value: "remove", label: "Remove a tan (lightens)" }], getParam(layer, "direction", "add"), (v) => param("direction", v))));
             }
-            settings.append(node("p", "shell-hint", "Local simulation, not medical advice. Only tan removal lightens skin, and only when you tick the box."));
+            settings.append(node("p", "shell-hint", "Local simulation, not medical advice. Only tan removal lightens skin, and its button says so."));
         }
         if (layer.kind === "studio") {
             const tool = getParam(layer, "tool", "blur");
@@ -1146,4 +1127,10 @@ export class ShellView {
     }
 }
 export function mountShell() { return new ShellView(); }
+/** Whether a styling server is configured (same rule as api.ts, read here without importing the API client). */
+function serverConfigured() {
+    const scope = globalThis;
+    const raw = scope.BELJOUR_API ?? scope.PLUMB_API;
+    return typeof raw === "string" && /^https?:\/\/[^\s/?#]+$/i.test(raw.trim().replace(/\/+$/, ""));
+}
 //# sourceMappingURL=view.js.map

@@ -1,4 +1,4 @@
-/** R16 Lane B local studio UI. Author: John Khan. */
+/** R16 Workstream B local studio UI. Author: John Khan. */
 import { h } from "../../dom.js";
 import { PHOTO_MARK } from "../palette.js";
 import { readFace } from "../../face/landmarks.js";
@@ -20,14 +20,14 @@ function mount(root) {
             g.append(h("option", { value: c.id }, `${c.id}  · ${c.name} `));
         feature.append(g);
     }
-    const style = h("select", { "aria-label": "Style" }), amount = h("input", { type: "range", min: 0, max: 100, value: 35, step: 1, "aria-label": "Amount" }), amountOut = h("output", {}, "35%"), adult = h("input", { type: "checkbox" }), health = h("input", { type: "checkbox" });
+    const style = h("select", { "aria-label": "Style" }), amount = h("input", { type: "range", min: 0, max: 100, value: 35, step: 1, "aria-label": "Amount" }), amountOut = h("output", {}, "35%"), health = h("input", { type: "checkbox", checked: true });
     const summary = h("p", {}), limit = h("p", { class: "r16-note" }), missing = h("ul", { class: "r16-missing" });
     const original = h("canvas", { width: 320, height: 360, "aria-label": "Original local photo" }), result = h("canvas", { width: 320, height: 360, "aria-label": "Simulation result" });
     const run = h("button", { type: "button" }, "Preview locally"), cancel = h("button", { type: "button" }, "Cancel"), compare = h("button", { type: "button" }, "Show original"), save = h("button", { type: "button" }, "Download labelled PNG"), clearRegion = h("button", { type: "button" }, "Clear region"), detect = h("button", { type: "button" }, "Detect local face points"), fixtureButton = h("button", { type: "button" }, "Use labelled drawn fixture");
     const regionHelp = h("p", { class: "r16-note" }, "For checked-region features, click at least three points around the relevant local area. Dental features use a teeth polygon; W50/W53 can add a gum polygon by holding Shift while clicking.");
     const details = h("pre", { class: "r16-details" });
-    root.replaceChildren(h("header", { class: "r16-hero" }, h("p", {}, "LOCAL STUDIO · ON THIS DEVICE"), h("h1", {}, "Lips, smile and Skin & More"), h("p", {}, "All previews run in this browser. Simulation labels stay on. Not yet tested on real faces.")), h("main", { class: "r16-layout" }, h("aside", {}, h("section", {}, h("h2", {}, "1. Photo"), input, h("div", { class: "r16-actions" }, fixtureButton, detect), h("p", { class: "r16-note" }, "Photos are not uploaded by this studio.")), h("section", {}, h("h2", {}, "2. Feature"), feature, summary, h("label", {}, "Style ", style), h("label", {}, "Amount ", amount, amountOut), h("label", { class: "r16-check" }, adult, " I confirm I am 18+ for consultation simulations."), h("label", { class: "r16-check" }, health, " I consent to keeping this skin diary data only in this local session."), limit, missing), h("section", {}, h("h2", {}, "3. Checked region"), regionHelp, clearRegion, h("div", { class: "r16-actions" }, run, cancel, compare, save))), h("section", { class: "r16-work" }, h("div", { class: "r16-canvases" }, h("figure", {}, original, h("figcaption", {}, "Original")), h("figure", {}, result, h("figcaption", {}, "Simulation / region marks"))), status, details)));
-    function configure() { const c = card(session.feature); summary.textContent = c.summary; limit.textContent = c.limitation; style.replaceChildren(...c.styles.map(s => h("option", { value: s }, s.replaceAll("_", " ")))); style.hidden = c.styles.length === 0; adult.parentElement.hidden = !c.adult; health.parentElement.hidden = c.id !== "W83"; refresh(); }
+    root.replaceChildren(h("header", { class: "r16-hero" }, h("p", {}, "LOCAL STUDIO · ON THIS DEVICE"), h("h1", {}, "Lips, smile and Skin & More"), h("p", {}, "All previews run in this browser. Simulation labels stay on. Not yet tested on real faces.")), h("main", { class: "r16-layout" }, h("aside", {}, h("section", {}, h("h2", {}, "1. Photo"), input, h("div", { class: "r16-actions" }, fixtureButton, detect), h("p", { class: "r16-note" }, "Photos are not uploaded by this studio.")), h("section", {}, h("h2", {}, "2. Feature"), feature, summary, h("label", {}, "Style ", style), h("label", {}, "Amount ", amount, amountOut), h("label", { class: "r16-check" }, health, " I consent to keeping this skin diary data only in this local session."), limit, missing), h("section", {}, h("h2", {}, "3. Checked region"), regionHelp, clearRegion, h("div", { class: "r16-actions" }, run, cancel, compare, save))), h("section", { class: "r16-work" }, h("div", { class: "r16-canvases" }, h("figure", {}, original, h("figcaption", {}, "Original")), h("figure", {}, result, h("figcaption", {}, "Simulation / region marks"))), status, details)));
+    function configure() { const c = card(session.feature); summary.textContent = c.summary; limit.textContent = c.limitation; style.replaceChildren(...c.styles.map(s => h("option", { value: s }, s.replaceAll("_", " ")))); style.hidden = c.styles.length === 0; health.parentElement.hidden = true; refresh(); }
     function refresh() { missing.replaceChildren(...session.reasons().map(x => h("li", {}, x))); run.disabled = session.reasons().length > 0; save.disabled = !session.result; compare.disabled = !session.result; cancel.disabled = false; draw(); }
     function draw() {
         const image = session.image;
@@ -131,7 +131,6 @@ function mount(root) {
     feature.addEventListener("change", () => { session.select(feature.value); drawing = []; configure(); });
     style.addEventListener("change", () => { session.style = style.value; session.invalidate(); refresh(); });
     amount.addEventListener("input", () => { session.amount = Number(amount.value) / 100; amountOut.textContent = `${amount.value} %`; session.invalidate(); refresh(); });
-    adult.addEventListener("change", () => { session.adult = adult.checked; session.invalidate(); refresh(); });
     health.addEventListener("change", () => { session.health_consent = health.checked; session.invalidate(); refresh(); });
     clearRegion.addEventListener("click", () => { drawing = []; session.clearRegions(); refresh(); });
     run.addEventListener("click", () => void preview());

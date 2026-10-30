@@ -1,4 +1,4 @@
-/** Public Lane E entry for local short-clip preset planning. */
+/** Public Workstream E entry for local short-clip preset planning. */
 export { CLIP_PRESETS, drawClipLabel, resolveClipPreset } from "./short-clips.js";
 export { ClipJob, ClipJobError, createClipJob } from "./clip-jobs.js";
 export { ReelJobScope, ReelScopeError, withReelJobScope } from "./session.js";

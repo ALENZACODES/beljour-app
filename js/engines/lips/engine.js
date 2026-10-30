@@ -102,6 +102,6 @@ export function renderLip(photo, landmarks, raw) {
         if (data[o] !== photo.data[o] || data[o + 1] !== photo.data[o + 1] || data[o + 2] !== photo.data[o + 2])
             changed++;
     }
-    return { data, coverage, report: { feature: req.feature, style: req.style, label: LABEL, version: VERSION, notes, changed_fraction: changed / coverage.length, texture_preserved: true, adult_confirmed: req.adult_confirmed } };
+    return { data, coverage, report: { feature: req.feature, style: req.style, label: LABEL, version: VERSION, notes, changed_fraction: changed / coverage.length, texture_preserved: true } };
 }
 //# sourceMappingURL=engine.js.map

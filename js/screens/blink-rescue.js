@@ -3,9 +3,9 @@
  * model). She confirms both photos are of her. The result opens as a new photo in the editor;
  * nothing is uploaded or kept. Author: John Khan. */
 import { h } from "../dom.js";
+import { ensureConsent } from "../ui/one-consent.js";
 import { paint } from "../ui/shell/canvas.js";
 import { readLocalImage } from "../ui/shell/demo.js";
-import { appConsent } from "../ui/shell/consent.js";
 import { BlinkError, rescueBlink } from "../save/blink-rescue.js";
 import { TransferError } from "../save/region-transfer.js";
 import { devicePoints } from "./best-selfie.js";
@@ -31,8 +31,8 @@ export function blinkRescueScreen(source, open, deps = {}) {
         if (!file)
             return;
         try {
-            if (!(deps.consent ?? (() => appConsent.hasVisit))())
-                throw new Error("Confirm adult photo consent before opening another photo.");
+            if (!(await (deps.consent ?? (() => ensureConsent()))()))
+                throw new Error("Confirm photo consent before opening another photo.");
             const from = source();
             if (!from.face)
                 throw new Error("This photo needs its face points first: Older, Younger or Gender, then Find face points.");

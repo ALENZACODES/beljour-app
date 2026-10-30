@@ -1,13 +1,10 @@
-export const CONSENT_VERSION = "beljour-consent/1";
+export const CONSENT_VERSION = "beljour-consent/2";
 export const NOT_TESTED = "not tested against real products";
-export const CONSENT_TEXT = [
-    "I am 18 or older.",
-    "Send this photo to YouCam for a skin analysis. YouCam deletes it after the result. Units come from this app's free allowance.",
-];
+export const CONSENT_TEXT = "Send this photo to YouCam for a skin analysis. YouCam deletes it after the result. Units come from this app's free allowance.";
 export class ConsentMissing extends Error {
 }
 export function attestation(photoId, givenAt) {
-    return { version: CONSENT_VERSION, adult: true, scope: "skin", photo_id: photoId, given_at: givenAt };
+    return { version: CONSENT_VERSION, scope: "skin", photo_id: photoId, given_at: givenAt };
 }
 function errorFields(err) {
     const e = err;
@@ -48,13 +45,13 @@ export class SkinMatchController {
             throw new RangeError("open the screen with a photo first");
         return id;
     }
-    /** Send to YouCam. Both consent answers are required; nothing is sent without them. */
+    /** Send to YouCam. The consent tick is required; nothing is sent without it. */
     async analyse(answers, concerns) {
         if (this.busy)
             return this.state;
         const photoId = this.photoId();
-        if (answers.adult !== true || answers.agreed !== true) {
-            throw new ConsentMissing("Tick both boxes to send this photo, or use the local estimate. Nothing was sent.");
+        if (answers.agreed !== true) {
+            throw new ConsentMissing("Continue on the consent screen to send this photo, or use the local estimate. Nothing was sent.");
         }
         return this.request(photoId, { photo_id: photoId, consent: attestation(photoId, this.now()), ...(concerns ? { concerns } : {}) }, "youcam");
     }

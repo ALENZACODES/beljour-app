@@ -7,5 +7,5 @@ export function requireRegions(annotation, ...names) {
             throw new Error(`checked ${String(name)}  annotation required`);
     }
 }
-export function renderFeature(pixels, width, height, feature, annotation, amount, adultConfirmed) { return renderSmile({ width, height, channels: 4, data: pixels }, { feature: feature, amount, adult_confirmed: adultConfirmed, annotation }).data; }
+export function renderFeature(pixels, width, height, feature, annotation, amount) { return renderSmile({ width, height, channels: 4, data: pixels }, { feature: feature, amount, annotation }).data; }
 //# sourceMappingURL=shared.js.map

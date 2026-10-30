@@ -88,6 +88,8 @@ export function photoScreen(ctx, deps = {}) {
     let opening = null, stream = null, activeUpload = null;
     let lastVisit = gate.hasVisit, lastLocalOnly = gate.localOnly;
     let consentInitialised = false;
+    // The single consent appears once, when the first photo is opened, then the open carries on.
+    let pendingOpen = null;
     const status = h("div", { class: "status", "aria-live": "polite" });
     const ready = h("div", { class: "photo-ready", "aria-live": "polite" });
     const prepare = h("button", { type: "button", class: "btn", disabled: true }, "Prepare photo on app server");
@@ -97,6 +99,16 @@ export function photoScreen(ctx, deps = {}) {
     const take = h("button", { type: "button", class: "btn", disabled: true }, "Take photo");
     const stop = h("button", { type: "button", class: "btn btn-quiet", disabled: true }, "Stop camera");
     const say = (message) => { status.replaceChildren(h("p", {}, message)); };
+    /** True when the single consent is still needed: shows it once and runs the open afterwards. */
+    const needConsent = (run) => {
+        if (gate.hasVisit)
+            return false;
+        pendingOpen = run;
+        syncConsent();
+        consent.scrollIntoView?.({ block: "center" });
+        continueButton.focus();
+        return true;
+    };
     const stopCamera = () => {
         cameraGeneration++;
         stream?.getTracks().forEach(track => track.stop());
@@ -163,7 +175,7 @@ export function photoScreen(ctx, deps = {}) {
     };
     const begin = () => {
         if (disposed || !gate.hasVisit) {
-            say("Confirm both visit statements before opening a photo.");
+            say("Confirm the visit statement before opening a photo.");
             return null;
         }
         generation++;
@@ -221,6 +233,8 @@ export function photoScreen(ctx, deps = {}) {
         }
     };
     const open = async (blob) => {
+        if (needConsent(() => { void open(blob); }))
+            return;
         const job = begin();
         if (!job)
             return;
@@ -289,6 +303,8 @@ export function photoScreen(ctx, deps = {}) {
         }
     });
     start.addEventListener("click", async () => {
+        if (needConsent(() => start.click()))
+            return;
         if (disposed || !gate.hasVisit)
             return;
         stopCamera();
@@ -336,6 +352,8 @@ export function photoScreen(ctx, deps = {}) {
         }
     });
     const sample = h("button", { type: "button", class: "btn btn-quiet", onclick: async () => {
+            if (needConsent(() => sample.click()))
+                return;
             const job = begin();
             if (!job)
                 return;
@@ -354,6 +372,8 @@ export function photoScreen(ctx, deps = {}) {
     // build. A starting photo only: every after is made by the app's own engines on this device.
     const examples = h("div", { class: "example-people", hidden: true });
     const openExample = async (person) => {
+        if (needConsent(() => { void openExample(person); }))
+            return;
         const job = begin();
         if (!job)
             return;
@@ -395,11 +415,11 @@ export function photoScreen(ctx, deps = {}) {
         if (disposed || !people.length)
             return;
         examples.hidden = false;
-        examples.replaceChildren(h("p", { class: "fine" }, `Try on an example person (${EXAMPLE_LABEL.replace(" example person", "")}). Invented adults, not real people. The after is always made by this app on your device.`), h("div", { class: "example-row" }, ...people.map((person) => h("button", { type: "button", class: "example-person", onclick: () => { void openExample(person); } }, h("img", { src: person.url, alt: "", width: 72, height: 72, loading: "lazy" }), h("span", {}, person.label)))));
+        examples.replaceChildren(h("p", { class: "fine" }, `Try on an example person (${EXAMPLE_LABEL.replace(" example person", "")}). Invented people, not real ones. The after is always made by this app on your device.`), h("div", { class: "example-row" }, ...people.map((person) => h("button", { type: "button", class: "example-person", onclick: () => { void openExample(person); } }, h("img", { src: person.url, alt: "", width: 72, height: 72, loading: "lazy" }), h("span", {}, person.label)))));
     });
-    const agree = h("input", { type: "checkbox", id: "agree" }), adult = h("input", { type: "checkbox", id: "adult" });
-    const continueButton = h("button", { type: "button", class: "btn", disabled: true }, "Agree and continue");
-    const consent = h("section", {}, h("p", { class: "lede" }, "Confirm these statements before opening a photo. Opening and checking it happens on this device."), h("p", { class: "check" }, agree, h("label", { for: "agree" }, VISIT_STATEMENTS[1].text)), h("p", { class: "check" }, adult, h("label", { for: "adult" }, VISIT_STATEMENTS[0].text)), continueButton);
+    const continueButton = h("button", { type: "button", class: "btn" }, "Continue");
+    const notNow = h("button", { type: "button", class: "btn btn-quiet" }, "Not now");
+    const consent = h("section", { class: "one-consent", role: "region", "aria-label": "Before your first photo", "data-consent-gate": "single" }, h("h2", {}, "Before your first photo"), h("p", { class: "lede" }, VISIT_STATEMENTS[0].text), h("p", { class: "fine" }, "Asked once on this device. You can withdraw it on the Trust page."), h("div", { class: "row" }, continueButton, notNow));
     const controls = h("section", {}, h("p", { class: "lede" }, "Face the camera in soft, even light. Keep your whole face in view. JPEG, PNG or WEBP: up to 25 MB and 24 megapixels."), h("div", { class: "capture" }, h("div", { class: "cam-box" }, video), h("div", { class: "row" }, start, take, stop)), picker.element, h("div", { class: "row" }, sample), examples, status, ready, prepareNote, prepare);
     const syncConsent = () => {
         const visit = gate.hasVisit, localOnly = gate.localOnly, changed = !consentInitialised || lastVisit !== visit || lastLocalOnly !== localOnly;
@@ -407,8 +427,8 @@ export function photoScreen(ctx, deps = {}) {
         lastVisit = visit;
         lastLocalOnly = localOnly;
         ctx.consent = visit;
-        consent.hidden = visit;
-        controls.hidden = !visit;
+        consent.hidden = visit || !pendingOpen;
+        controls.hidden = false;
         if (changed && !visit) {
             generation++;
             serverGeneration++;
@@ -427,16 +447,14 @@ export function photoScreen(ctx, deps = {}) {
         }
         syncPrepare();
     };
-    const tick = () => { continueButton.disabled = !agree.checked || !adult.checked; };
-    agree.addEventListener("change", tick);
-    adult.addEventListener("change", tick);
     continueButton.addEventListener("click", () => {
-        if (gate === appConsent)
-            appConsent.acceptVisit({ adult: adult.checked, understood: agree.checked });
-        else
-            gate.acceptVisit({ adult: adult.checked, understood: agree.checked });
+        gate.acceptVisit({ understood: true });
+        const run = pendingOpen;
+        pendingOpen = null;
         syncConsent();
+        run?.();
     });
+    notNow.addEventListener("click", () => { pendingOpen = null; syncConsent(); say("No photo opened. Nothing was read or sent."); });
     const unsubscribe = gate.subscribe(syncConsent);
     syncConsent();
     drawReady();

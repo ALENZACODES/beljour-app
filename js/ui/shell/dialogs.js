@@ -1,4 +1,4 @@
-/** Modal dialogs for the studio: consent, the styling hand-off and the shortcuts list.
+/** Modal dialogs for the studio: consent, the styling transfer and the shortcuts list.
  *
  * While a dialog is open the rest of the page is inert (not focusable, not read), Tab stays in
  * the dialog, Escape closes it, and focus goes back to the control that opened it.

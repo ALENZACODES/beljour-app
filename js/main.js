@@ -220,7 +220,7 @@ api.health().then((hl) => {
     mode.textContent = "Server asleep or offline";
     mode.className = "mode off";
 });
-// R15 Lane B additive navigation. Author: John Khan.
+// R15 Workstream B additive navigation. Author: John Khan.
 import { installEyesBrowsLink } from "./ui/eyes-brows/install.js";
 installEyesBrowsLink(document.querySelector(".foot"));
 //# sourceMappingURL=main.js.map

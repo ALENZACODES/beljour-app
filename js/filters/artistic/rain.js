@@ -1,9 +1,9 @@
 /** Bounded expression displacement and procedural tears. Author: John Khan. */
 import { regionMask } from "../../data/regions/index.js";
 import { boundField, faceFrame, jacobian, minValue, pathDistance, quadratic } from "./geometry.js";
-import { EffectUnavailable, bilinear, blend, clamp01, landmarks, number, parameters, photo, result, smooth01 } from "./types.js";
+import { bilinear, blend, clamp01, landmarks, number, parameters, photo, result, smooth01 } from "./types.js";
 export const DEFAULTS = { amount: 0.65, expression: 0.65, tears: 0.7,
-    asymmetry: 0.25, phase: 0.0, tear_length: 0.45, adult_confirmed: false };
+    asymmetry: 0.25, phase: 0.0, tear_length: 0.45 };
 export const LABEL = "Rain Expression simulation. Expression and tears are drawn locally.";
 export function expressionField(points, width, height, p) {
     const frame = faceFrame(points), n = width * height;
@@ -83,11 +83,6 @@ export function tearLayers(points, width, height, p) {
 }
 export function rainExpression(image, mesh, params) {
     const src = photo(image), p = parameters(params, DEFAULTS), n = src.width * src.height;
-    if (typeof p.adult_confirmed !== "boolean")
-        throw new RangeError("adult_confirmed must be an explicit boolean");
-    if (p.adult_confirmed !== true) {
-        throw new EffectUnavailable("adult_confirmation_required", "Confirm you are 18 or older before an expression simulation.");
-    }
     const amount = number(p.amount, "amount", 0, 1), expression = number(p.expression, "expression", 0, 1);
     const tears = number(p.tears, "tears", 0, 1), asymmetry = number(p.asymmetry, "asymmetry", -1, 1);
     const phase = number(p.phase, "phase", 0, 1), length = number(p.tear_length, "tear_length", 0.15, 0.75);

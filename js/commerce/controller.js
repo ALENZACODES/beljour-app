@@ -14,7 +14,7 @@ import { toLegacy, validateLevel } from "./strength.js";
 export class ConsentRequired extends Error {
     scope;
     constructor(scope) {
-        super(`Confirm adult status and photo sharing for ${scope} first. Nothing was sent.`);
+        super(`Confirm photo sharing for ${scope} first. Nothing was sent.`);
         this.scope = scope;
     }
 }
@@ -34,7 +34,6 @@ export class CommerceController {
     media;
     clock;
     capabilities;
-    consentAdult = false;
     consentSkin = false;
     consentMakeup = false;
     consentTime = 0;
@@ -57,7 +56,6 @@ export class CommerceController {
             analysedBy: null, units: 0, localReason: null, bag: this.bag.snapshot(), preview: null };
     }
     resetConsent() {
-        this.consentAdult = false;
         this.consentSkin = false;
         this.consentMakeup = false;
         this.consentTime = 0;
@@ -81,13 +79,12 @@ export class CommerceController {
             message: mode === "local" ? "Local only. Nothing will be uploaded." :
                 "Read the consent choices before any upload." };
     }
-    grant(adult, skin, makeup) {
-        const before = this.consentAdult && (this.consentSkin || this.consentMakeup);
+    grant(skin, makeup) {
+        const before = this.consentSkin || this.consentMakeup;
         const now = this.clock();
-        this.consentAdult = adult === true;
         this.consentSkin = skin === true;
         this.consentMakeup = makeup === true;
-        const after = this.consentAdult && (this.consentSkin || this.consentMakeup);
+        const after = this.consentSkin || this.consentMakeup;
         if (!before && after)
             this.consentTime = now;
         if (!after)
@@ -95,13 +92,13 @@ export class CommerceController {
     }
     hasConsent(scope) {
         const age = this.clock() - this.consentTime;
-        return this.consentAdult && this.consentTime > 0 && age >= 0 && age <= MAX_CONSENT_AGE_MS &&
+        return this.consentTime > 0 && age >= 0 && age <= MAX_CONSENT_AGE_MS &&
             (scope === "skin" ? this.consentSkin : this.consentMakeup);
     }
     attestation(scope, photoId) {
         if (!this.hasConsent(scope))
             throw new ConsentRequired(scope);
-        return { version: "beljour-consent/1", adult: true, scope,
+        return { version: "beljour-consent/2", scope,
             photo_id: photoId, given_at: this.consentTime };
     }
     enabled() {
@@ -123,7 +120,7 @@ export class CommerceController {
         const existing = this.state.photoId;
         if (existing)
             return existing;
-        if (!this.consentAdult || (!this.consentSkin && !this.consentMakeup))
+        if (!this.consentSkin && !this.consentMakeup)
             throw new ConsentRequired("skin");
         const clean = await this.media.upload();
         // In particular, a mode/photo switch during canvas re-encoding must not upload.

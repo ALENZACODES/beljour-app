@@ -1,5 +1,5 @@
 /** Public mask-only short-sides render with fail-closed input handling.
- * Assumed pixel guard will be replaced by Lane H public identity API.
+ * Assumed pixel guard will be replaced by Workstream H public identity API.
  * This is a tonal consultation simulation, not generated hair. Author: John Khan.
  */
 import { validateLevel, toLegacy } from "../../commerce/strength.js";

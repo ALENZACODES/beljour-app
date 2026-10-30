@@ -1,4 +1,4 @@
-const definitions = { W50: "checked gum region only; bounded reduction; adult consultation label; no diagnosis", W51: "checked teeth only; no automatic segmentation model; bounded shape/shade; alpha preserved", W52: "checked teeth only; optional spacing remains available; no orthodontic claim", W53: "checked teeth and gum only; character preserved; no treatment recommendation", W58: "two or more checked frames; bounded frame-to-frame motion; no automatic tracking claim" };
+const definitions = { W50: "checked gum region only; bounded reduction; consultation label; no diagnosis", W51: "checked teeth only; no automatic segmentation model; bounded shape/shade; alpha preserved", W52: "checked teeth only; optional spacing remains available; no orthodontic claim", W53: "checked teeth and gum only; character preserved; no treatment recommendation", W58: "two or more checked frames; bounded frame-to-frame motion; no automatic tracking claim" };
 export function assessSmile(feature, locality, alphaPreserved, annotationValid) {
     if (!definitions[feature])
         throw new Error("unknown smile feature");
