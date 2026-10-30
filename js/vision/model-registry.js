@@ -144,9 +144,13 @@ export async function fetchVerifiedModel(name, registry, fetcher = fetch, signal
     if (!response.ok || response.type === "opaque" || response.type === "opaqueredirect" || response.redirected) {
         throw new ModelGateError(`model ${name}: download rejected`);
     }
+    // A host may compress the file in transit (GitHub Pages gzips .task files); the header then gives the
+    // compressed length. The decoded size and SHA-256 below are what actually guard the bytes.
     const length = response.headers.get("content-length");
-    if (length && Number(length) !== item.bytes)
+    const encoding = (response.headers.get("content-encoding") ?? "identity").trim().toLowerCase();
+    if (length && encoding === "identity" && Number(length) !== item.bytes) {
         throw new ModelGateError(`model ${name}: length header mismatch`);
+    }
     if (!response.body)
         throw new ModelGateError(`model ${name}: no readable response body`);
     const chunks = [];
