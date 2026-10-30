@@ -18,7 +18,9 @@ export class VisionWorkerClient {
     tracker = new FaceTracker();
     nextId = 1;
     chosenFace = null;
-    constructor(registry = DEFAULT_MODELS, factory = () => new Worker(new URL("./media-worker.js", import.meta.url), { type: "module", name: "beljour-vision" }), timeoutMs = 20_000) {
+    constructor(registry = DEFAULT_MODELS, factory = () => new Worker(
+    // A classic worker: MediaPipe needs importScripts, which module workers refuse (media-worker-boot.ts).
+    new URL("./media-worker-boot.js", import.meta.url), { name: "beljour-vision" }), timeoutMs = 20_000) {
         this.registry = registry;
         this.factory = factory;
         this.timeoutMs = timeoutMs;
