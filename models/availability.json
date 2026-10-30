@@ -1,10 +1,5 @@
 {
   "format": "beljour-staged-models/1",
-  "models": [
-    "hair-segmenter",
-    "face-landmarker-478",
-    "face-detector-short",
-    "selfie-multiclass"
-  ],
-  "runtime": "0.10.14"
+  "models": [],
+  "runtime": null
 }

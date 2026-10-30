@@ -2,12 +2,12 @@
  * using bytes whose SHA-256 and commercial licence have been checked first.
  * This worker has no YouCam code or credentials. Author: John Khan.
  */
-import { DEFAULT_MODELS, ModelDownloads, siteUrl } from "./model-registry.js";
+import { DEFAULT_MODELS, ModelDownloads } from "./model-registry.js";
 import { MODEL_RUNTIME } from "./generated/model-runtime.js";
 import { requireVisionRequest, transferResponse } from "./protocol.js";
 import { MediaPipeRunners, facePipelineAvailability } from "./runners.js";
-const SDK_URL = siteUrl(`${MODEL_RUNTIME.baseUrl}/vision_bundle.mjs`);
-const WASM_URL = siteUrl(`${MODEL_RUNTIME.baseUrl}/wasm`);
+const SDK_URL = `${MODEL_RUNTIME.baseUrl}/vision_bundle.mjs`;
+const WASM_URL = `${MODEL_RUNTIME.baseUrl}/wasm`;
 const downloads = new ModelDownloads(DEFAULT_MODELS);
 // No cleared YuNet browser runtime or weights are registered in this snapshot.
 // Preserve the existing cleared legacy path with explicit result diagnostics.

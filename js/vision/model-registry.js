@@ -111,19 +111,6 @@ export function modelAssetPath(item) {
     }
     return `/models/${item.sha256}/${item.filename}`;
 }
-/** A site-root path ("/models/...") resolved against where the app is served, so the build works
- * at a domain root and under a sub-path (for example a GitHub Pages project site). This module
- * lives at js/vision/, two folders below the site root. */
-export function siteUrl(path) {
-    if (!path.startsWith("/") || !/^https?:/.test(import.meta.url))
-        return path;
-    try {
-        return new URL(`../..${path}`, import.meta.url).href;
-    }
-    catch {
-        return path;
-    }
-}
 /** Byte-for-byte SHA-256, using the same lowercase hex encoding as hashlib. */
 export async function hashModel(bytes) {
     if (!globalThis.crypto?.subtle)
@@ -136,7 +123,7 @@ export async function hashModel(bytes) {
 export async function fetchVerifiedModel(name, registry, fetcher = fetch, signal) {
     const item = registry.approve(name); // no network before the policy decision
     signal?.throwIfAborted();
-    const response = await fetcher(siteUrl(modelAssetPath(item)), {
+    const response = await fetcher(modelAssetPath(item), {
         method: "GET", mode: "same-origin", credentials: "omit", redirect: "error", cache: "no-store", signal,
     });
     if (response.status === 404)
@@ -144,13 +131,9 @@ export async function fetchVerifiedModel(name, registry, fetcher = fetch, signal
     if (!response.ok || response.type === "opaque" || response.type === "opaqueredirect" || response.redirected) {
         throw new ModelGateError(`model ${name}: download rejected`);
     }
-    // A host may compress the file in transit (GitHub Pages gzips .task files); the header then gives the
-    // compressed length. The decoded size and SHA-256 below are what actually guard the bytes.
     const length = response.headers.get("content-length");
-    const encoding = (response.headers.get("content-encoding") ?? "identity").trim().toLowerCase();
-    if (length && encoding === "identity" && Number(length) !== item.bytes) {
+    if (length && Number(length) !== item.bytes)
         throw new ModelGateError(`model ${name}: length header mismatch`);
-    }
     if (!response.body)
         throw new ModelGateError(`model ${name}: no readable response body`);
     const chunks = [];
