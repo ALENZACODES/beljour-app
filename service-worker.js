@@ -2,17 +2,20 @@
  * queries and model files are never cached here. No automatic skipWaiting or claim.
  * Author: John Khan. */
 "use strict";
-importScripts("/offline-manifest.js");
+importScripts("offline-manifest.js");
+// Works at the domain root or under a sub-path such as /beljour-app/.
+const BASE_PATH = new URL("./", self.location.href).pathname;
+const scoped = (path) => BASE_PATH + path.slice(1);
 const inventory = self.BELJOUR_OFFLINE;
 const CACHE_PREFIX = "beljour-public-shell-";
 if (!inventory || !/^[a-f0-9]{24}$/.test(inventory.version) || !Array.isArray(inventory.assets)) throw new Error("Invalid offline inventory");
 const assets = new Map();
 for (const row of inventory.assets) {
   if (!row || typeof row.path !== "string" || !/^\/(?:[a-zA-Z0-9_-]+\/)*[a-zA-Z0-9_.-]+$/.test(row.path) ||
-    /(?:^|\/)(?:api|models|photos)(?:\/|$)/.test(row.path) || !/\.(?:js|css|html|svg|webmanifest|jpeg)$/.test(row.path) ||
+    /^\/(?:api|models|photos)(?:\/|$)/.test(row.path) || !/\.(?:js|css|html|svg|webmanifest|jpeg)$/.test(row.path) ||
     !/^[a-f0-9]{64}$/.test(row.sha256) || !Number.isInteger(row.bytes) || row.bytes < 1 || row.bytes > 4 * 1024 * 1024 ||
-    assets.has(row.path)) throw new Error("Unsafe offline asset");
-  assets.set(row.path, row);
+    assets.has(scoped(row.path))) throw new Error("Unsafe offline asset");
+  assets.set(scoped(row.path), row);
 }
 const CACHE_NAME = CACHE_PREFIX + inventory.version;
 function allowedRequest(request) {
@@ -21,7 +24,7 @@ function allowedRequest(request) {
   return url.origin === self.location.origin && !url.search && !url.hash && assets.has(url.pathname);
 }
 async function verifiedResponse(row) {
-  const url = new URL(row.path, self.location.origin).href;
+  const url = new URL(scoped(row.path), self.location.origin).href;
   const response = await fetch(new Request(url, { credentials: "omit", redirect: "error", cache: "reload", mode: "same-origin" }));
   if (!response.ok || response.status !== 200 || response.type === "opaque" || response.redirected ||
     response.headers.has("set-cookie") || response.headers.get("vary") === "*") throw new Error("Offline asset refused");
@@ -37,7 +40,7 @@ self.addEventListener("install", (event) => {
     const existed = (await caches.keys()).includes(CACHE_NAME);
     const cache = await caches.open(CACHE_NAME);
     try {
-      for (const row of assets.values()) await cache.put(new URL(row.path, self.location.origin).href, await verifiedResponse(row));
+      for (const row of assets.values()) await cache.put(new URL(scoped(row.path), self.location.origin).href, await verifiedResponse(row));
     } catch (error) {
       if (!existed) await caches.delete(CACHE_NAME);
       throw error;

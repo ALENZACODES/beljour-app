@@ -4,6 +4,7 @@
  * directly calls this module. No model weights are committed to the repo.
  * Author: John Khan.
  */
+import { siteRoot } from "./site-root.js";
 import { MODEL_CATALOG } from "./generated/model-catalog.js";
 import { MODEL_LICENCES, ALLOWED_LICENCES } from "./generated/model-licences.js";
 export class ModelGateError extends Error {
@@ -109,7 +110,7 @@ export function modelAssetPath(item) {
     if (!item.sha256 || !SHA256.test(item.sha256) || !item.bytes || !FILE_NAME.test(item.filename)) {
         throw new ModelGateError(`model ${item.id}: exact asset pin required`);
     }
-    return `/models/${item.sha256}/${item.filename}`;
+    return `${siteRoot()}models/${item.sha256}/${item.filename}`;
 }
 /** Byte-for-byte SHA-256, using the same lowercase hex encoding as hashlib. */
 export async function hashModel(bytes) {

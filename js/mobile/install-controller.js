@@ -53,7 +53,7 @@ export function createInstallController(port) {
         if (!worker?.scriptURL)
             return false;
         try {
-            return new URL(worker.scriptURL).pathname === "/service-worker.js";
+            return new URL(worker.scriptURL).pathname.endsWith("/service-worker.js");
         }
         catch {
             return false;
@@ -91,7 +91,7 @@ export function createInstallController(port) {
                 return;
             state.setOffline("enabling");
             try {
-                const result = await port.workers.register("/service-worker.js", { scope: "/" });
+                const result = await port.workers.register("service-worker.js", { scope: "./" });
                 if (disposed)
                     return;
                 observeRegistration(result);
