@@ -111,6 +111,19 @@ export function modelAssetPath(item) {
     }
     return `/models/${item.sha256}/${item.filename}`;
 }
+/** A site-root path ("/models/...") resolved against where the app is served, so the build works
+ * at a domain root and under a sub-path (for example a GitHub Pages project site). This module
+ * lives at js/vision/, two folders below the site root. */
+export function siteUrl(path) {
+    if (!path.startsWith("/") || !/^https?:/.test(import.meta.url))
+        return path;
+    try {
+        return new URL(`../..${path}`, import.meta.url).href;
+    }
+    catch {
+        return path;
+    }
+}
 /** Byte-for-byte SHA-256, using the same lowercase hex encoding as hashlib. */
 export async function hashModel(bytes) {
     if (!globalThis.crypto?.subtle)
@@ -123,7 +136,7 @@ export async function hashModel(bytes) {
 export async function fetchVerifiedModel(name, registry, fetcher = fetch, signal) {
     const item = registry.approve(name); // no network before the policy decision
     signal?.throwIfAborted();
-    const response = await fetcher(modelAssetPath(item), {
+    const response = await fetcher(siteUrl(modelAssetPath(item)), {
         method: "GET", mode: "same-origin", credentials: "omit", redirect: "error", cache: "no-store", signal,
     });
     if (response.status === 404)
