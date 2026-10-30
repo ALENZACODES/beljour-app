@@ -133,7 +133,10 @@ export async function fetchVerifiedModel(name, registry, fetcher = fetch, signal
         throw new ModelGateError(`model ${name}: download rejected`);
     }
     const length = response.headers.get("content-length");
-    if (length && Number(length) !== item.bytes)
+    // Hosts such as GitHub Pages gzip the transfer, so the header then counts compressed bytes;
+    // the decoded size and SHA-256 below are still checked exactly.
+    const encoded = (response.headers.get("content-encoding") ?? "identity").toLowerCase() !== "identity";
+    if (length && !encoded && Number(length) !== item.bytes)
         throw new ModelGateError(`model ${name}: length header mismatch`);
     if (!response.body)
         throw new ModelGateError(`model ${name}: no readable response body`);
