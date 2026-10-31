@@ -84,4 +84,3 @@ export class HeadPixelGuard {
         this.disposed = true;
     }
 }
-//# sourceMappingURL=posture-pixel-guard.js.map

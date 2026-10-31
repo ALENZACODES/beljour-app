@@ -199,4 +199,3 @@ export function recolourHair(image, mask, targetLab, options = {}) {
     return { image: out, alpha: weight, gain, source_lab: src.map((v) => v / count), target_lab: [...targetLab],
         checks: geometryChecks(image, result, mask), label: LABEL };
 }
-//# sourceMappingURL=recolour.js.map

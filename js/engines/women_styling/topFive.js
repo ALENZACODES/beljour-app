@@ -138,4 +138,3 @@ export function editTopFive(image, width, height, mask, request) {
             disclosure: 'Local screen simulation; not a salon outcome or skin assessment.',
         } };
 }
-//# sourceMappingURL=topFive.js.map

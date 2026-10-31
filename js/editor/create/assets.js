@@ -99,4 +99,3 @@ export class CreateAssets {
 }
 /** The one registry the Create panel and the Studio's Save share in this tab. */
 export const sharedAssets = new CreateAssets();
-//# sourceMappingURL=assets.js.map

@@ -106,4 +106,3 @@ export function reapply(look, source, options = {}) {
     return { photo: report.photo, applied, plan, face: own ? "this-photo" : borrowed ? "saved-for-this-photo" : "none",
         skipped: [...report.skipped.map((s) => ({ tool: s.tool, reason: reasons.get(s.tool) ?? s.reason })), ...refused] };
 }
-//# sourceMappingURL=reapply.js.map

@@ -1,10 +1,10 @@
 export const JUDGE_STEPS = [
     { id: "source", title: "Choose a starting image", short: "Image", hint: "Use a drawn sample or a photo you select." },
-    { id: "consent", title: "Choose what may run", short: "Consent",
-        hint: "Approve each illustrative action separately." },
+    { id: "consent", title: "What runs where", short: "Consent",
+        hint: "Everything in this walkthrough runs in this browser under your one device consent." },
     { id: "hair", title: "Try a hair colour", short: "Hair", hint: "Apply a local decorative hair overlay." },
     { id: "face", title: "Try a face detail", short: "Face", hint: "Apply an illustrative face-colour overlay." },
-    { id: "tryon", title: "Preview a mock try-on", short: "Mock", hint: "This demonstration never contacts YouCam." },
+    { id: "tryon", title: "Preview a mock try-on", short: "Mock", hint: "A labelled mock: no YouCam call, no upload, no units." },
     { id: "compare", title: "Compare both views", short: "Compare",
         hint: "Slide between the starting and illustrated images." },
     { id: "export", title: "Save a labelled result", short: "Export",
@@ -13,6 +13,13 @@ export const JUDGE_STEPS = [
 ];
 export const SIMULATION_MARK = "SIMULATION — ILLUSTRATIVE DEMO";
 export const MOCK_DISCLOSURE = "Mock YouCam try-on. No provider call or image upload occurs.";
+/** Where the real try-on lives, worded for what this build can actually do. `live` is
+ * providerLive() (ui/provider-claims.ts): a server is configured and on-device mode is off. */
+export function judgeProviderNote(live) {
+    return live
+        ? "The real YouCam try-on is in the Photo lab. It sends the prepared photo to YouCam and uses provider units."
+        : "This copy of BELJOUR runs on your device only, so it has no live YouCam try-on. The Photo lab shows labelled saved examples instead.";
+}
 export const LOCAL_DISCLOSURE = "Illustrative overlays run in this browser. They do not track facial features.";
 export const SOURCE_LIMIT_BYTES = 10 * 1024 * 1024;
 export const SOURCE_MAX_DIMENSION = 12_000;
@@ -52,4 +59,3 @@ export function validateJudgeDimensions(width, height) {
         return "The chosen photo is too large to preview safely.";
     return null;
 }
-//# sourceMappingURL=judge-contract.js.map

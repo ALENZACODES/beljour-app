@@ -55,4 +55,3 @@ export function maintenanceEstimate(service, growthCmMonth = 1.1, userIntervalWe
     return { service, intervalWeeks: interval, lowWeeks: Math.max(1, interval - spread), highWeeks: Math.min(52, interval + spread), userAdjustable: userIntervalWeeks !== undefined, label: "ESTIMATE; adjust to the user's stylist and observed growth" };
 }
 export function annualVisits(value) { return 52 / Math.max(value.intervalWeeks, 1); }
-//# sourceMappingURL=salon_plan.js.map

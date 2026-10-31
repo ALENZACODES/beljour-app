@@ -58,4 +58,3 @@ export function turnPreview(image, mesh, amount, estimated) {
     }
     return { refused: false, image: out.image, label, yaw, effectiveYaw: out.metrics.effective_yaw_degrees };
 }
-//# sourceMappingURL=turn-estimate.js.map

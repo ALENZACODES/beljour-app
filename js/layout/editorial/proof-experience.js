@@ -56,4 +56,3 @@ export function renderProofExperience(doc, input) {
     root.append(footer);
     return root;
 }
-//# sourceMappingURL=proof-experience.js.map

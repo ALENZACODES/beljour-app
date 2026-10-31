@@ -32,4 +32,3 @@ export function renderJudgeFiveEditPanel(doc, host, state, options) {
     panel.append(judgeParagraph(doc, "A count of five is not evidence of face tracking, identity preservation or a live YouCam result.", "lg-judge-small"));
     host.append(panel);
 }
-//# sourceMappingURL=judge-five-edit-panel.js.map

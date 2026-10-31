@@ -199,4 +199,3 @@ export class CpuUpscale {
         return { width: outputWidth, height: outputHeight, channels: frame.channels, pixels: target };
     }
 }
-//# sourceMappingURL=cpu-upscale.js.map

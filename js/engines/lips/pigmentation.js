@@ -61,4 +61,3 @@ export function pigmentationDisclosure(stats) {
         lines.push("An optional liner pairing can improve edge consistency without lightening the base lip.");
     return lines;
 }
-//# sourceMappingURL=pigmentation.js.map

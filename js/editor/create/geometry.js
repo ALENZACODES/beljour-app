@@ -111,4 +111,3 @@ export function pageUnits(pixelWidth, pixelHeight) {
         throw new RangeError("A page needs a size");
     return { width: PAGE_UNITS, height: PAGE_UNITS * pixelHeight / pixelWidth };
 }
-//# sourceMappingURL=geometry.js.map

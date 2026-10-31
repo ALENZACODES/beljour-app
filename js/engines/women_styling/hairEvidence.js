@@ -56,4 +56,3 @@ export function measureHairChange(before, after, mask, width, height, channels, 
         maximum_channel_delta: maxChange, status: 'UNPROVEN',
     };
 }
-//# sourceMappingURL=hairEvidence.js.map

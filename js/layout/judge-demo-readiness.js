@@ -34,4 +34,3 @@ export function judgeReadinessLabel(value) {
         return "Incomplete";
     return "Requires separate verification";
 }
-//# sourceMappingURL=judge-demo-readiness.js.map

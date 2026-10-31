@@ -89,4 +89,3 @@ export class PixelArrayGuard {
             lock_level: level, engine: "pixel_proxy", decision: "original_kept" };
     }
 }
-//# sourceMappingURL=identity.js.map

@@ -27,4 +27,3 @@ window.addEventListener("pageshow", (event) => {
         shellClient = mountClientShell(document, window, { page: "studio" });
     }
 });
-//# sourceMappingURL=entry.js.map

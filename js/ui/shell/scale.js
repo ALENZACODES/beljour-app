@@ -77,4 +77,3 @@ export function scaleSource(source, maxSide) {
         scaled.body = scaleControls(source.body, width, height);
     return scaled;
 }
-//# sourceMappingURL=scale.js.map

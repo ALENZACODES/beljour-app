@@ -36,12 +36,14 @@ export const PROVIDER_FACTS = [
 export function scopeFor(action) {
     if (action === "makeup")
         return "makeup";
+    if (action === "older-youcam")
+        return "age";
     if (STYLING_ACTIONS.includes(action))
         return "hair";
     throw new RangeError("Only makeup and hair styling actions can be sent to the provider");
 }
 export function scopeTitle(scope) {
-    return scope === "makeup" ? "makeup preview" : "hair styling preview";
+    return scope === "makeup" ? "makeup preview" : scope === "age" ? "Older (YouCam aging) preview" : "hair styling preview";
 }
 export function attestationFor(grant, photoId, action) {
     return { version: CONSENT_VERSION, scope: scopeFor(action), photo_id: photoId, given_at: grant.at };
@@ -166,8 +168,8 @@ export class ConsentGate {
             throw new ConsentRequired("visit", "Confirm the visit consent before sending any photo.");
         if (!PHOTO_ID.test(photoId))
             throw new RangeError("Photo consent needs the uploaded photo's ID");
-        if (!scopes.length || !scopes.every((s) => s === "makeup" || s === "hair"))
-            throw new RangeError("Choose makeup, hair styling or both");
+        if (!scopes.length || !scopes.every((s) => s === "makeup" || s === "hair" || s === "age"))
+            throw new RangeError("Choose makeup, hair styling or Older");
         if (othersConfirmed !== true)
             throw new ConsentRequired("photo", "Everyone in the photo must have agreed to it.");
         const at = this.clock();
@@ -249,4 +251,3 @@ if (typeof window !== "undefined" && typeof window.addEventListener === "functio
     window.addEventListener("storage", (event) => { if (event.key === STORAGE_KEY || event.key === null)
         appConsent.reload(); });
 }
-//# sourceMappingURL=consent.js.map

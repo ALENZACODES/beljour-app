@@ -77,4 +77,3 @@ export function bestSelfieScreen(open, deps = {}) {
     input.addEventListener("change", async () => { const files = [...(input.files ?? [])]; input.value = ""; await run(files); });
     return h("section", { class: "best-selfie", "aria-label": "Best selfie" }, h("h2", {}, "Best selfie"), h("p", {}, "Choose 2 to 12 photos of yourself. They are ranked by sharpness, light, framing and eyes open, and each one says why."), h("p", { class: "fine" }, "Photo quality only: it does not judge looks or recognise anyone. Photos stay on this device."), h("label", {}, "Photos ", input), work.button, status, list);
 }
-//# sourceMappingURL=best-selfie.js.map

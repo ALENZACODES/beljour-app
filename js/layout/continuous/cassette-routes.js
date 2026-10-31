@@ -35,4 +35,3 @@ export function safeProviderRoute(card, state, flags, visitorAcknowledged) {
         available: true,
         explanation: "Opens a separate page only. Nothing from this mock tour is carried across." };
 }
-//# sourceMappingURL=cassette-routes.js.map

@@ -142,4 +142,3 @@ export function qualitySeries(command, source, steps, reference = null, scaledSo
     return { command, points, neutralUnchanged, modifiedMonotone: changedMonotone,
         psnrMonotone, ssimMonotone, realfacePass: false };
 }
-//# sourceMappingURL=quality-metrics-r3h.js.map

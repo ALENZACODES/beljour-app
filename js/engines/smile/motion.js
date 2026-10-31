@@ -11,4 +11,3 @@ export function motionMetrics(frames) {
 }
 export function acceptance(metrics) { const boundedStep = metrics.maximumStep <= .08, boundedArea = metrics.areaVariation <= .35, hasTime = metrics.durationMs > 0; return { boundedStep, boundedArea, hasTime, pass: boundedStep && boundedArea && hasTime, automaticTracking: false }; }
 export function report(frames) { const m = motionMetrics(frames); return { metrics: m, gate: acceptance(m), method: "checked frame annotations", modelUsed: false, label: "SIMULATION" }; }
-//# sourceMappingURL=motion.js.map

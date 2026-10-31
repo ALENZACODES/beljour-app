@@ -35,4 +35,3 @@ export function publicShadeSafety(report) {
         real_product_match: false, real_face_gate: "UNPROVEN", release_pass: false,
     };
 }
-//# sourceMappingURL=shade-safety.js.map

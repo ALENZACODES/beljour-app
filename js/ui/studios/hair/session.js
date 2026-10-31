@@ -181,4 +181,3 @@ export class HairSession {
         return recommendedStyles(options).map((s) => s.id);
     }
 }
-//# sourceMappingURL=session.js.map

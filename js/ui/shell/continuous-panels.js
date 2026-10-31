@@ -167,4 +167,3 @@ export function tourFooter(doc, actions) {
     nav.append(tourButton(doc, "Continue", "continue", actions.next));
     return nav;
 }
-//# sourceMappingURL=continuous-panels.js.map

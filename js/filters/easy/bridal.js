@@ -48,4 +48,3 @@ export function flashCheck(image, skin, lips) {
     const flash = Math.max(drift(skinRgb, adjusted(skinRgb, [1.06, 1.06, 1.08])), drift(lipRgb, adjusted(lipRgb, [1.04, 1.03, 1.04])));
     return { daylightDrift: daylight, venueDrift: venue, flashDrift: flash, passed: Math.max(daylight, venue, flash) <= 8 };
 }
-//# sourceMappingURL=bridal.js.map

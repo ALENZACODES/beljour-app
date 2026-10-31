@@ -187,4 +187,3 @@ export function multibandBlend(base, overlay, mask, levels) {
         mixed.data[i] = Math.min(1, Math.max(0, mixed.data[i]));
     return withAlphaOf(encode(mixed), base, (i) => roundHalfEven(base.data[i * 4 + 3] * (1 - mask.data[i]) + overlay.data[i * 4 + 3] * mask.data[i]));
 }
-//# sourceMappingURL=blend.js.map

@@ -188,4 +188,3 @@ export class HairStyleSession {
         return renderStyle(photo, hairMask, landmarks, styleId, level, { ...options, preparedZone: prepared });
     }
 }
-//# sourceMappingURL=short-sides.js.map

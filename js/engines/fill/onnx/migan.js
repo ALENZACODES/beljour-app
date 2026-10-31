@@ -194,4 +194,3 @@ export class MiganFill {
 export function defaultMigan(ort = null) {
     return new MiganFill(new SessionLoader({ modelId: MIGAN_ID, ort }), "pipeline-uint8", () => ort);
 }
-//# sourceMappingURL=migan.js.map

@@ -24,4 +24,3 @@ export function renderStudio(tool, image, person, points, o = {}) {
         return authenticity(image, person, points, amount);
     throw new RangeError(`tool must be one of ${TOOLS.join(", ")}`);
 }
-//# sourceMappingURL=studio.js.map

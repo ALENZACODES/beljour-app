@@ -11,6 +11,8 @@ import { regionMask } from "../../data/regions/index.js";
 import { labToSrgb, srgbToLab, toByte } from "../shade/colourspace.js";
 import { median, xy } from "../skin/common.js";
 import { meshProblems, REASONS } from "../skin/studio.js";
+import { relightEnamelRatio } from "./enamel-ratio.js";
+import { renderClock } from "../skin/texture-law.js";
 export const MODULE = "teeth.natural";
 export const LABEL = "Teeth colour simulation with a natural cap, not dental treatment or a whitening prediction.";
 export const NATURAL_L_CAP = 90.0, MAX_LIFT = 16.0, WARM_B = 6.0, MAX_B_DROP = 12.0;
@@ -167,7 +169,8 @@ export function findEnamel(image, lab, opening) {
     }
     return count >= Math.max(8, Math.ceil(inside.length * 0.018)) ? out : blank;
 }
-export function whitenTeeth(image, points, strength = 30) {
+export function whitenTeeth(image, points, strength = 30, options = {}) {
+    const started = renderClock();
     const { width: w, height: h, channels: ch } = image;
     if (!Number.isInteger(w) || !Number.isInteger(h) || Math.min(w, h) < 8 || (ch !== 3 && ch !== 4) || image.data.length !== w * h * ch) {
         throw new RangeError("teeth whitening needs an RGB or RGBA photo of at least 8 x 8");
@@ -201,37 +204,47 @@ export function whitenTeeth(image, points, strength = 30) {
         return refuse("no_teeth_visible");
     const metrics = { teeth_pixels: teeth.length, gap_ratio: Math.round(gap * 1e4) / 1e4,
         natural_l_cap: NATURAL_L_CAP, warm_b_floor: WARM_B };
-    const out = Uint8Array.from(image.data), weight = new Float64Array(n);
     if (strength === 0)
-        return { image: out, weight, label: LABEL, metrics: { ...metrics, unchanged: true } };
-    const amount = strength / 100, bytes = (v) => labToSrgb(v).map(toByte);
-    let restored = 0, lift = 0, maxL = -Infinity;
-    for (const i of teeth) {
-        const [l, a, b] = lab[i];
-        const target = [l + amount * Math.min(MAX_LIFT, Math.max(0, NATURAL_L_CAP - l)), a, b - amount * Math.min(MAX_B_DROP, Math.max(0, b - WARM_B))];
-        const ceiling = Math.max(l, NATURAL_L_CAP), floor = Math.min(b, WARM_B);
-        let rgb = bytes(target), after = srgbToLab(rgb);
-        for (let pass = 0; pass < ROUNDING_PASSES && (after[0] > ceiling || after[2] < floor); pass++) {
-            if (after[0] > ceiling)
-                target[0] -= ROUNDING_STEP;
-            if (after[2] < floor)
-                target[2] += ROUNDING_STEP;
-            rgb = bytes(target);
-            after = srgbToLab(rgb);
+        return { image: Uint8Array.from(image.data), weight: new Float64Array(n), label: LABEL,
+            metrics: { ...metrics, unchanged: true, render_ms: renderClock() - started } };
+    if (options.flat) {
+        const out = Uint8Array.from(image.data), weight = new Float64Array(n);
+        const amount = strength / 100, bytes = (v) => labToSrgb(v).map(toByte);
+        let restored = 0, lift = 0, maxL = -Infinity;
+        for (const i of teeth) {
+            const [l, a, b] = lab[i];
+            const target = [l + amount * Math.min(MAX_LIFT, Math.max(0, NATURAL_L_CAP - l)), a, b - amount * Math.min(MAX_B_DROP, Math.max(0, b - WARM_B))];
+            const ceiling = Math.max(l, NATURAL_L_CAP), floor = Math.min(b, WARM_B);
+            let rgb = bytes(target), after = srgbToLab(rgb);
+            for (let pass = 0; pass < ROUNDING_PASSES && (after[0] > ceiling || after[2] < floor); pass++) {
+                if (after[0] > ceiling)
+                    target[0] -= ROUNDING_STEP;
+                if (after[2] < floor)
+                    target[2] += ROUNDING_STEP;
+                rgb = bytes(target);
+                after = srgbToLab(rgb);
+            }
+            weight[i] = amount;
+            if (after[0] > ceiling || after[2] < floor) {
+                restored++;
+                maxL = Math.max(maxL, l);
+                continue;
+            }
+            for (let c = 0; c < 3; c++)
+                out[i * ch + c] = rgb[c];
+            lift += after[0] - l;
+            maxL = Math.max(maxL, after[0]);
         }
-        weight[i] = amount;
-        if (after[0] > ceiling || after[2] < floor) {
-            restored++;
-            maxL = Math.max(maxL, l);
-            continue;
-        }
-        for (let c = 0; c < 3; c++)
-            out[i * ch + c] = rgb[c];
-        lift += after[0] - l;
-        maxL = Math.max(maxL, after[0]);
+        Object.assign(metrics, { restored_pixels: restored, mean_lift: Math.round(lift / teeth.length * 1e3) / 1e3,
+            max_l_after: Math.round(maxL * 1e3) / 1e3 });
+        return { image: out, weight, label: LABEL, metrics };
     }
-    Object.assign(metrics, { restored_pixels: restored, mean_lift: Math.round(lift / teeth.length * 1e3) / 1e3,
-        max_l_after: Math.round(maxL * 1e3) / 1e3 });
-    return { image: out, weight, label: LABEL, metrics };
+    // Inner-lip midpoint (13 upper, 14 lower) splits upper and lower arches for the translucency map.
+    const stomion = (pts[13][1] + pts[14][1]) / 2;
+    const result = relightEnamelRatio(image, lab, selected, opening, strength, (v) => labToSrgb([v[0], v[1], v[2]]), (v) => srgbToLab([v[0], v[1], v[2]]), stomion);
+    Object.assign(metrics, { restored_pixels: 0, holes_closed: result.holesClosed, mean_lift: Math.round(result.meanLift * 1000) / 1000,
+        max_l_after: Math.round(result.maxL * 1000) / 1000, shading_range_ratio: Math.round(result.shadingRangeRatio * 1000) / 1000,
+        translucency_kept: Math.round(result.translucencyKept * 1000) / 1000, min_b_after: Math.round(result.minB * 100) / 100,
+        edge_step_l: Math.round(result.edgeStep * 100) / 100, texture_source: "own_photo", render_ms: renderClock() - started });
+    return { image: result.image, weight: result.weight, label: LABEL, metrics };
 }
-//# sourceMappingURL=natural.js.map

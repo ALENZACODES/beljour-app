@@ -77,4 +77,3 @@ export function validFrame(frame) {
         return false;
     return true;
 }
-//# sourceMappingURL=frame-cache-contract.js.map

@@ -63,4 +63,3 @@ register({
     halo: (p, frame) => PASSES * glowRadius(p.radius, frame),
     help: "Highlight glow screened over the photo; never blurs skin",
 });
-//# sourceMappingURL=glow.js.map

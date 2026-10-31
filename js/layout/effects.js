@@ -78,4 +78,3 @@ export function clampStrength(value) {
         throw new RangeError("Strength must be a number");
     return Math.max(0, Math.min(100, Math.round(value)));
 }
-//# sourceMappingURL=effects.js.map

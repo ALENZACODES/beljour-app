@@ -232,4 +232,3 @@ export function safeTargets(points, strength, options = {}) {
     return { points: out, refused: false, reason: "ok", yawDegrees: yaw, rollDegrees: roll, scale,
         maxMoveIod: final / iod, rawMaxMoveIod: rawMax };
 }
-//# sourceMappingURL=symmetry.js.map

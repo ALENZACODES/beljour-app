@@ -26,4 +26,3 @@ export function exportAllocation(effectId, width, height, channels, requestedTil
     return { tile_size: side, budget_bytes: budget, frame_bytes: frames, scratch_bytes: scratch,
         estimated_peak_bytes: frames + scratch, planned_tiles: Math.ceil(w / side) * Math.ceil(h / side), halo: pad };
 }
-//# sourceMappingURL=resources.js.map

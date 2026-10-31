@@ -8,4 +8,3 @@ export { SWATCHES, suggestedPalette, checkedRGB, mixRGB } from './palette.js';
 export { checkedRequest } from './requests.js';
 export { PASS_DEFINITIONS, evaluateFrame } from './definitions.js';
 export { auditFrame, auditChecks } from './pixel_evidence.js';
-//# sourceMappingURL=index.js.map

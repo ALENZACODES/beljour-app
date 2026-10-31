@@ -43,4 +43,3 @@ export function shapePath(p, shape, x, y, w, h, radius) {
     else
         roundedRect(p, x, y, w, h, radius);
 }
-//# sourceMappingURL=shapes.js.map

@@ -72,4 +72,3 @@ export function bandFromPoints(width, height, points, radius) {
     }
     return out;
 }
-//# sourceMappingURL=falloff.js.map

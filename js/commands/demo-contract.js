@@ -87,4 +87,3 @@ export async function runFiveCommandHostDemo(host, options, signal = new AbortCo
         externallyFaceTested: false, releaseQualified: false,
     };
 }
-//# sourceMappingURL=demo-contract.js.map

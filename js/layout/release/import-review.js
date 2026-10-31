@@ -59,4 +59,3 @@ export async function inspectReleaseFile(file, currentRevision, requestedRevisio
         return refusal("unavailable");
     }
 }
-//# sourceMappingURL=import-review.js.map

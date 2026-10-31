@@ -49,4 +49,3 @@ export function renderJudgeProofPanel(doc, host, witness, evidence, runbook, act
         + "This checklist excludes any unobserved or skipped action from the observed count.", "lg-judge-small"));
     host.append(panel);
 }
-//# sourceMappingURL=judge-proof-panel.js.map

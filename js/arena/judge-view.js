@@ -1,6 +1,7 @@
-/** The judging page (arena.html): open a judge bundle folder from this device, judge each
- * pair blind, and save the answers as a file to hand back. Images are read from the chosen
- * folder with object URLs; nothing is uploaded and no request leaves the page.
+/** The judging page (arena.html): judge the built-in set that ships with the app (assets/arena/
+ * builtin/, drawn portraits only, no upload) or open a judge bundle folder from this device, judge
+ * each pair blind, and save the answers as a file to hand back. Images are read from the chosen
+ * folder with object URLs, or fetched from this site for the built-in set; nothing is uploaded.
  * Answers are kept in this browser between reloads when storage works.
  * Author: John Khan.
  */
@@ -8,6 +9,8 @@ import { clear, h } from "../dom.js";
 import { DIMENSION_HELP, DIMENSION_LABELS, JUDGE_DIMENSIONS, REASONS } from "./reasons.js";
 import { BundleError, JudgingSession, readBundle, sideForKey } from "./session.js";
 const DRAFT_PREFIX = "beljour.judging.";
+/** The built-in judging set, relative to arena.html (works under a sub-path such as /beljour-app/). */
+export const BUILTIN_BUNDLE = "assets/arena/builtin/";
 function storage() {
     try {
         return globalThis.localStorage ?? null;
@@ -43,7 +46,27 @@ export class JudgeView {
         }
         if (!manifest)
             throw new BundleError("Choose the bundle folder (it holds manifest.json and an images folder).");
-        const bundle = readBundle(JSON.parse(await manifest.text()));
+        this.start(readBundle(JSON.parse(await manifest.text())), judge, womanJudge);
+    }
+    /** Open the built-in set from this site: the manifest and every picture it names, checked by
+     * the same bundle reader as a folder. No file is chosen and nothing is uploaded. */
+    async openBuiltin(judge, womanJudge, base = BUILTIN_BUNDLE, fetcher = (u) => fetch(u, { credentials: "omit" })) {
+        const get = async (path) => {
+            const res = await fetcher(base + path);
+            if (!res.ok)
+                throw new BundleError(`The built-in set could not be loaded (${path}).`);
+            return res;
+        };
+        const bundle = readBundle(await (await get("manifest.json")).json());
+        const paths = new Set(bundle.assignments.flatMap((a) => [a.ref, a.a, a.b]));
+        this.files.clear();
+        for (const path of paths) {
+            const blob = await (await get(path)).blob();
+            this.files.set(path, new File([blob], path.slice("images/".length), { type: "image/png" }));
+        }
+        this.start(bundle, judge, womanJudge);
+    }
+    start(bundle, judge, womanJudge) {
         this.session = new JudgingSession(bundle, judge, womanJudge);
         const draft = storage()?.getItem(this.draftKey());
         const restored = draft ? this.session.restore(draft) : 0;
@@ -155,10 +178,18 @@ export function mountJudge(doc = document) {
         const folder = doc.getElementById("lg-bundle").files;
         const judge = doc.getElementById("lg-judge-name").value.trim();
         const woman = doc.getElementById("lg-woman-judge").checked;
+        // The submitter says which set: the built-in one (the default button) or a chosen folder.
+        const which = e.submitter?.value ?? "builtin";
         try {
-            if (!folder?.length)
-                throw new BundleError("Choose the bundle folder first.");
-            await view.open(folder, judge, woman);
+            if (which === "folder") {
+                if (!folder?.length)
+                    throw new BundleError("Choose the bundle folder first, or judge the built-in set.");
+                await view.open(folder, judge, woman);
+            }
+            else {
+                status.textContent = "Loading the built-in set…";
+                await view.openBuiltin(judge, woman);
+            }
             form.hidden = true;
         }
         catch (error) {
@@ -168,4 +199,3 @@ export function mountJudge(doc = document) {
     doc.addEventListener("keydown", (e) => view.key(e));
     return view;
 }
-//# sourceMappingURL=judge-view.js.map

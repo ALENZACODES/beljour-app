@@ -4,4 +4,3 @@ export async function openLocal(file, maxSide = 1280) { if (!file.type.startsWit
     throw new Error("Canvas is unavailable."); ctx.drawImage(bitmap, 0, 0, width, height); bitmap.close(); const image = ctx.getImageData(0, 0, width, height), empty = () => new Float32Array(width * height); return { photo: { width, height, channels: 4, data: image.data }, hair: empty(), scalp: empty(), masks: { skin: empty(), cheek: empty(), eye: empty(), lip: empty(), brow: empty(), stubble: empty(), beard: empty(), palette_region: empty() }, geometry: { crown: [.5, .14], left_temple: [.28, .34], right_temple: [.72, .34], chin: [.5, .84] } }; }
 export function downloadPng(canvas, name) { canvas.toBlob(blob => { if (!blob)
     return; const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 0); }, "image/png"); }
-//# sourceMappingURL=files.js.map

@@ -35,4 +35,3 @@ export function runEventTrial(look, photos, options = {}) {
         : `${look.name} is uneven across these photos: ${uneven.join("; ")}. Each photo says why.`;
     return { look: look.name, version: options.version ?? latest(look).version, rows, coverage, even, summary, label: TRIAL_LABEL };
 }
-//# sourceMappingURL=event-trial.js.map

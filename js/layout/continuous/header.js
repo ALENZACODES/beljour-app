@@ -18,4 +18,3 @@ export function renderContinuousHeader(doc, state) {
     header.append(brand, title, progress, judgeParagraph(doc, state.caption));
     return { header, title };
 }
-//# sourceMappingURL=header.js.map

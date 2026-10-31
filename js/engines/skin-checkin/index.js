@@ -269,4 +269,3 @@ export function history(points) {
     return { format: FORMAT, version: VERSION, check_ins: series.length, concerns: rows,
         overall: historyOverall(rows, series.length), note: NOTE };
 }
-//# sourceMappingURL=index.js.map

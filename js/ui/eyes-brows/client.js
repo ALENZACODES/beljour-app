@@ -84,4 +84,3 @@ export class PreviewClient {
     dispose() { this.closed = true; this.cancel(); }
     get running() { return this.pending !== null; }
 }
-//# sourceMappingURL=client.js.map

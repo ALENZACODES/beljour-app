@@ -50,4 +50,3 @@ export function verifyIdentityLock(output, identity, coverage, lockLevel) {
     }
     return { protectedPixels, fullyLockedPixels: fullyLocked, mismatches };
 }
-//# sourceMappingURL=quality-identity.js.map

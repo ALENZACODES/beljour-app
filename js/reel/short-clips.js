@@ -49,4 +49,3 @@ export function drawClipLabel(ctx, width, height, shouldLabel = true) {
     ctx.fillText(label, pad * 2, height - size * 0.65 - pad);
     ctx.restore();
 }
-//# sourceMappingURL=short-clips.js.map

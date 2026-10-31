@@ -25,4 +25,3 @@ export function parseSmileOptions(v) {
     }
     return { feature: v.feature, amount: v.amount ?? .5, annotation: ann, frame_annotations: frames, tooth_shade: v.tooth_shade ?? [232, 225, 207], gum_shade: v.gum_shade ?? [155, 83, 91] };
 }
-//# sourceMappingURL=contracts.js.map

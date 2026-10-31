@@ -59,4 +59,3 @@ export function judgePreview(doc, name) {
     canvas.height = 640;
     return canvas;
 }
-//# sourceMappingURL=judge-elements.js.map

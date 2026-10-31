@@ -86,4 +86,3 @@ export class FaceToneMeter {
             after_lstar: mean / this.mass, max_rise: maxRise };
     }
 }
-//# sourceMappingURL=face-tone.js.map

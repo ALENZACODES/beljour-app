@@ -60,4 +60,3 @@ export function validMotionPlan(value) {
         && row.captionMs === 160 && row.pageMs === 260
         && row.focusMs === 120 && row.translatePixels === 6;
 }
-//# sourceMappingURL=motion.js.map

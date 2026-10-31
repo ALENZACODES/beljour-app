@@ -79,4 +79,3 @@ export function checkedControl(feature, key, value) {
 export function initialControls(feature) {
     return Object.fromEntries((CONTROLS[feature] ?? []).map(control => [control.key, control.initial]));
 }
-//# sourceMappingURL=controls.js.map

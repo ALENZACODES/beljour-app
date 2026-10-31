@@ -303,4 +303,3 @@ export function examplePersonSoftened(image, points, concerns) {
     }
     return out;
 }
-//# sourceMappingURL=skin-moment-demo.js.map

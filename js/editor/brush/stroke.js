@@ -151,4 +151,3 @@ export function thin(points, width, height, spacing) {
     }
     return out.length > MAX_POINTS ? out.filter((_, i) => i % Math.ceil(out.length / MAX_POINTS) === 0) : out;
 }
-//# sourceMappingURL=stroke.js.map

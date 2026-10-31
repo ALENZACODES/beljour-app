@@ -171,4 +171,3 @@ export class TiledRender {
         return { image: { ...this.image, data: this.out }, look: { ...this.image, data: this.styled }, plan: this.plan, notes: this.notes };
     }
 }
-//# sourceMappingURL=tiles.js.map

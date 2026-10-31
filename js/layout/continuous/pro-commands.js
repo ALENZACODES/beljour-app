@@ -82,4 +82,3 @@ export function commandCoverage(rows) {
     }
     return { known, available, full: names.size === 5 && available === 5 };
 }
-//# sourceMappingURL=pro-commands.js.map

@@ -122,4 +122,3 @@ export function exportProofStatus(result) {
         return "UNPROVEN";
     return "PASS";
 }
-//# sourceMappingURL=proof-service.js.map

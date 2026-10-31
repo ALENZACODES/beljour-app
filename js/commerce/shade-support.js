@@ -74,4 +74,3 @@ export function planFibreColour(reading, options = {}) {
         overall.record.level > overall.measured_level && overall.delta_e <= limit ? overall : null;
     return plan(checked, null, matches, lighter, approveLighter);
 }
-//# sourceMappingURL=shade-support.js.map

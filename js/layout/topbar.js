@@ -45,4 +45,3 @@ export function wireSave(root, save) {
     button?.addEventListener("click", save);
     return button;
 }
-//# sourceMappingURL=topbar.js.map

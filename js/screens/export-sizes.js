@@ -32,4 +32,3 @@ export function exportSizesScreen(source, lookName, deps = {}) {
     });
     return h("section", { class: "export-sizes", "aria-label": "Export sizes" }, h("h2", {}, "Export sizes"), h("p", {}, "One tap per size. Your face stays in the frame; if a size would cut it, the app says so instead."), h("p", { class: "fine" }, "No watermark, free or paid. The Simulation label follows your Trust Centre switch. Location and camera details are removed."), h("div", { class: "export-sizes-buttons" }, ...buttons), status);
 }
-//# sourceMappingURL=export-sizes.js.map

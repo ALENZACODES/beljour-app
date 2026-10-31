@@ -17,6 +17,7 @@
 import { GENTLE_DEFAULT } from "../../layout/effects.js";
 import { MODES } from "../../engines/local/enhance.js";
 import { STYLES } from "../../engines/local/beard.js";
+import { measureBaseLevel } from "../../engines/haircolour/balayage.js";
 import { PRODUCTS } from "../../engines/local/strands.js";
 import { fixesFor } from "../../engines/local/posture.js";
 import { readiness, tool } from "./catalogue.js";
@@ -60,8 +61,17 @@ export function defaultParams(kind, source) {
         return { preset: "daylight" };
     if (kind === "recolour")
         return { colour: "#6B3F2A", curl_pattern: "not specified" };
-    if (kind === "balayage")
-        return { target_level: 7, history: "colour_treated", toner: "none", softness: 4 };
+    if (kind === "balayage") {
+        // The same starting target the Balayage panel shows (two levels above her measured base), never a fixed preset.
+        let target = 7;
+        if (source.hair) {
+            try {
+                target = Math.min(10, measureBaseLevel(source.image, source.hair.data) + 2);
+            }
+            catch { /* too little hair marked */ }
+        }
+        return { target_level: target, history: "colour_treated", toner: "none", softness: 4 };
+    }
     if (kind === "filters")
         return defaultFilterParams();
     if (kind === "portrait")
@@ -291,4 +301,3 @@ export function activeOption(tiles, selected) {
     const exact = hits.find((t) => [...varying].every((k) => selected.parameters[k] === t.option.params[k]));
     return (exact ?? hits[0]).option?.id ?? null;
 }
-//# sourceMappingURL=thumbnails.js.map

@@ -7,7 +7,7 @@
 import { appConsent } from "../../shell/consent.js";
 import { strengthLabel, hapticTick } from "../../shell/stops.js";
 import { YOUCAM_PRODUCTS } from "../../provider-labels.js";
-import { HAIR_GROUPS, HAIR_TEXTURES, HAIR_LENGTHS, catalogueSummary, filteredStyles, groupCounts, sourceLabel } from "./model.js";
+import { HAIR_GROUPS, HAIR_STYLES, HAIR_TEXTURES, HAIR_LENGTHS, catalogueSummary, filteredStyles, groupCounts, sourceLabel } from "./model.js";
 import { ONE_TAP_HAIR, HairSession } from "./session.js";
 import { evaluateHairPose, poseMessage, syntheticHairPose } from "./pose.js";
 import { HAIR_REPLAY } from "./replay.js";
@@ -319,7 +319,7 @@ export class HairStudio {
             for (const row of rows)
                 grid.append(this.card(state, row));
         const counts = groupCounts().map((g) => `${g.title}: ${g.count}`).join(" · ");
-        section.append(n("p", "hair-count", `${rows.length} matching cut${rows.length === 1 ? "" : "s"}. ${counts}`), grid);
+        section.append(n("p", "hair-count", `${rows.length} of ${HAIR_STYLES.length} cuts match. ${counts}`), grid);
         return section;
     }
     controls(state) {
@@ -332,7 +332,10 @@ export class HairStudio {
             control.append(slider(entry.title, selection.adjuncts[entry.id], (value) => this.session.setAdjunct(entry.id, value)), n("p", "hair-small", entry.description));
             const apply = b(`Try ${entry.title.toLowerCase()} separately`, () => { void this.apply(false, entry.id); }, "hair-mini-button");
             apply.disabled = selection.adjuncts[entry.id] <= 0 || state.busy || !this.context.onApply || !this.facePose().acceptable || appConsent.localOnly;
-            control.append(apply);
+            // With no live styling on this screen (a photo on this device only) the button could never
+            // enable, so it is left out; the slider still plans the variant.
+            if (this.context.onApply)
+                control.append(apply);
             controls.append(control);
         }
         const keep = labelledCheck("Keep my existing colour (recommended)", selection.keepColour, (value) => this.session.setKeepColour(value));
@@ -367,6 +370,10 @@ export class HairStudio {
             root.append(row);
         }
         const note = n("p", "hair-small", "S2 reference-transfer endpoint and cost remain unverified; results are experimental until tested on released real photos.");
+        if (!this.context.onApply) {
+            root.append(n("p", "hair-small", "Trying a reference cut is a YouCam styling task, offered when the photo is prepared on a connected app server. Nothing is sent from here."));
+            return root;
+        }
         const ready = this.actionReady(state, pose);
         const apply = b(state.busy ? "Waiting for styling…" : "Quote and try reference cut", () => { void this.apply(true); }, "hair-button hair-apply");
         apply.disabled = !ready.ok || state.busy;
@@ -508,4 +515,3 @@ export class HairStudio {
         root.replaceChildren(this.head(state), this.factBar(), summary, this.quickLooks(), this.catalogue(state), this.controls(state), this.reference(state, pose), this.board(state), this.salon(state), this.result(state), this.safety(state, pose));
     }
 }
-//# sourceMappingURL=view.js.map

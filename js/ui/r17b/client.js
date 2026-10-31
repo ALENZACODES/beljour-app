@@ -27,4 +27,3 @@ export class Client {
         return;
     } finish(); resolve(raw.result); }; worker.onerror = () => { finish(); reject(new Error("worker crashed")); }; this.timer = setTimeout(() => { finish(); reject(new Error("local render timed out")); }, this.timeoutMs); worker.postMessage({ job }); }); }
 }
-//# sourceMappingURL=client.js.map

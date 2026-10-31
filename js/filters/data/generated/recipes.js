@@ -6712,4 +6712,3 @@ export const CATALOGUE = {
         }
     ]
 };
-//# sourceMappingURL=recipes.js.map

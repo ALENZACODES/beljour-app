@@ -202,4 +202,3 @@ export class CpuPoseOnly {
         return { ...frame, pixels: result };
     }
 }
-//# sourceMappingURL=pose-only.js.map

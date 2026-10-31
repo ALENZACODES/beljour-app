@@ -188,4 +188,3 @@ export function mirrorMesh(points, width) {
 export const SYMMETRY_NOTE = "This measures how the two sides of the face line up in this photo, after allowing for a tilted head. "
     + `Most faces score between ${TYPICAL_RANGE[0]} and ${TYPICAL_RANGE[1]}; nobody's two sides match exactly. `
     + "It is not a beauty or attractiveness score, it is not medical, and it is never used to compare people.";
-//# sourceMappingURL=symmetry-score.js.map

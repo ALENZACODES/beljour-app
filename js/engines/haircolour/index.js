@@ -6,4 +6,3 @@ export * as Recolour from "./recolour.js";
 export * as Consultation from "./consultation.js";
 export * as ConsultationEvidence from "./consultation-audit.js";
 export * as ConsultationBoard from "./consultation-board.js";
-//# sourceMappingURL=index.js.map

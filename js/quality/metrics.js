@@ -359,4 +359,3 @@ export function q12StraightLines(after, band, { spacing, offset, thickness = 1, 
     }
     return check("Q12", worst <= maximum, { max_deviation: worst, lines_checked: checked, lines_skipped: skipped, samples: total, worst_line: worstLine }, rule, thresholds);
 }
-//# sourceMappingURL=metrics.js.map

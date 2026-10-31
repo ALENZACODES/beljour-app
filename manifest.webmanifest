@@ -1,17 +1,17 @@
 {
-  "id": "/",
+  "id": "./",
   "name": "BELJOUR — FULL BEAUTY STUDIO",
   "short_name": "BELJOUR — FULL BEAUTY STUDIO",
   "description": "Your best day. Still you. Private photo editing with clearly labelled local simulations.",
-  "start_url": "/studio.html",
-  "scope": "/",
+  "start_url": "./studio.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#FBF6EF",
   "theme_color": "#6B3044",
   "lang": "en",
   "icons": [
     {
-      "src": "/icons/beljour.svg",
+      "src": "./icons/beljour.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

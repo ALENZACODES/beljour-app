@@ -51,4 +51,3 @@ export function loadImage(src) {
         img.src = src;
     });
 }
-//# sourceMappingURL=dom.js.map

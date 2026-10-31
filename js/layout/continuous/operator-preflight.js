@@ -54,4 +54,3 @@ export function preflightCaption(report) {
     return `${checks} local/manual checks recorded; ${missing} still missing or unverified. `
         + "This rehearsal never approves live processing, real faces or public release.";
 }
-//# sourceMappingURL=operator-preflight.js.map

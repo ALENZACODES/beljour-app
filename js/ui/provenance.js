@@ -108,4 +108,3 @@ export function withEndpoint(route, body) {
 export function provenanceOf(meta, route) {
     return meta.provenance ?? fromLegacyMeta(meta, route ? ROUTE_ENDPOINTS[route] ?? null : null);
 }
-//# sourceMappingURL=provenance.js.map

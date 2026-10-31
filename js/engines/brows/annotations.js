@@ -108,4 +108,3 @@ export function simplifyMark(points, minimumDistance = 0.001) {
         result.push(last);
     return result;
 }
-//# sourceMappingURL=annotations.js.map

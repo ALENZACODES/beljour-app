@@ -52,4 +52,3 @@ export function eyeColour(image, landmarks, { shade = "hazel", strength = 65 } =
             out.data[i * c + k] = rgb[i * 3 + k];
     return edited(out, alpha, LABEL, report);
 }
-//# sourceMappingURL=eye-colour.js.map

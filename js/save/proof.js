@@ -233,4 +233,3 @@ export function safeProof(raw) {
         pixels: value.pixels,
     };
 }
-//# sourceMappingURL=proof.js.map

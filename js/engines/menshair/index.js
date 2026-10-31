@@ -4,4 +4,3 @@ export { DEFAULT_ANCHORS, SIMULATION_LABEL, VERSION, renderStyle, requireStyle, 
 export { FADE_SHAPES, fadeGradeMap, gradedField, gradeDiagnostics, validateGraded } from "./graded.js";
 export { colourDeltaE76, regionField, renderFibres, requireConcealerDensity, FIBRE_LABEL } from "./concealer-link.js";
 export { RENDER_LABEL, renderStyleForFace } from "./public-render.js";
-//# sourceMappingURL=index.js.map

@@ -162,4 +162,3 @@ export function changedShare(before, after, channels, where) {
     }
     return total ? moved / total : 0;
 }
-//# sourceMappingURL=common.js.map

@@ -154,4 +154,3 @@ export function pacingCaption(report) {
     return `${value.samples} frames: median ${value.medianMs} ms, p95 ${value.p95Ms} ms. `
         + "16.7 ms is the 60fps frame interval reference, not proof of editor performance.";
 }
-//# sourceMappingURL=frame-pacing.js.map

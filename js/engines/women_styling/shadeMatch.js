@@ -73,4 +73,3 @@ export function matchTwoSwatches(target, catalogue, calibration = 'uncalibrated'
         swatches: ranked.slice(0, 2), confidence_percent: quality,
         still_her_score: 100, provider_calls: 0, disclosure };
 }
-//# sourceMappingURL=shadeMatch.js.map

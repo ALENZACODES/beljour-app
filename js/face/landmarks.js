@@ -38,4 +38,3 @@ export async function loadVideoLandmarker() {
         },
     };
 }
-//# sourceMappingURL=landmarks.js.map

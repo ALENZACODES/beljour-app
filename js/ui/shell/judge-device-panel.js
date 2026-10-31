@@ -16,4 +16,3 @@ export function renderJudgeDevicePanel(doc, host, report) {
     section.append(judgeParagraph(doc, "No diagnostic data is uploaded. A supported browser API does not prove a fast or accurate result.", "lg-judge-small"));
     host.append(section);
 }
-//# sourceMappingURL=judge-device-panel.js.map

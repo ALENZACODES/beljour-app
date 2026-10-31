@@ -251,4 +251,3 @@ export function regionAt(map, x, y) {
     const hits = map.regions.filter((r) => r.polygons.some(inside));
     return hits.sort((a, b) => a.polygons.reduce((s, p) => s + area(p), 0) - b.polygons.reduce((s, p) => s + area(p), 0))[0] ?? null;
 }
-//# sourceMappingURL=map.js.map

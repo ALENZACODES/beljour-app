@@ -39,4 +39,3 @@ export function validateLandmarks(p) {
         if (!Number.isFinite(x) || !Number.isFinite(y) || x < -.25 || x > 1.25 || y < -.25 || y > 1.25)
             throw new RangeError("invalid landmark");
 }
-//# sourceMappingURL=contracts.js.map

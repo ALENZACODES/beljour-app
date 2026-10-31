@@ -59,4 +59,3 @@ export class Modal {
         done?.(value);
     }
 }
-//# sourceMappingURL=dialogs.js.map

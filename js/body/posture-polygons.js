@@ -99,4 +99,3 @@ export function requireHeadInsidePerson(head, person) {
         throw new OutlineRefused("head_outside_person");
     return share;
 }
-//# sourceMappingURL=posture-polygons.js.map

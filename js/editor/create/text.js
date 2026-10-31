@@ -109,4 +109,3 @@ export const approxMeasure = (text, font, size) => {
         em += /[il.,'!|:;]/.test(ch) ? 0.28 : /[mwMW@]/.test(ch) ? 0.85 : /[A-Z]/.test(ch) ? 0.66 : ch === " " ? 0.27 : 0.53;
     return em * size;
 };
-//# sourceMappingURL=text.js.map

@@ -12,7 +12,9 @@ export const MAX_LOOKS = 24;
 export const MAX_STEPS = 12;
 const KINDS = ["enhance", "hair-fibre", "beard", "posture", "filters", "portrait", "lighting", "recolour", "balayage", "older", "younger", "gender", "skin", "under-eye", "teeth", "shave", "grey", "studio", "illustration"];
 const NAME = /^[\p{L}\p{N} .,'&()+-]{1,40}$/u;
-const PARAM_KEY = /^[a-z][a-z0-9_-]{0,40}$/;
+const PARAM_KEY = /^[a-z][A-Za-z0-9_-]{0,40}$/;
+/** Only built-in pictures can be named: a drawn sample or the example person. */
+export const LOOK_PHOTO = /^(sample:[a-z-]{1,20}|example:person-1)$/;
 export class LookError extends Error {
 }
 function cleanParams(raw) {
@@ -60,7 +62,8 @@ export function validateLook(raw) {
         return { kind: step.kind, strength: clampStrength(step.strength), params: cleanParams(step.params) };
     });
     const created = typeof look.created === "string" && !Number.isNaN(Date.parse(look.created)) ? look.created : new Date(0).toISOString();
-    return { format: LOOK_FORMAT, id: look.id, name: look.name.trim(), created, steps };
+    const photo = typeof look.photo === "string" && LOOK_PHOTO.test(look.photo) ? { photo: look.photo } : {};
+    return { format: LOOK_FORMAT, id: look.id, name: look.name.trim(), created, steps, ...photo };
 }
 /** A face-free fingerprint of any value, used for look ids and receipts (FNV-1a, 32 bit). */
 export function fingerprint(text) {
@@ -105,12 +108,12 @@ export class LookStore {
     }
     list() { return this.memory.map((l) => ({ ...l, steps: l.steps.map((s) => ({ ...s, params: { ...s.params } })) })); }
     get(id) { return this.list().find((l) => l.id === id) ?? null; }
-    save(name, steps) {
+    save(name, steps, photo) {
         if (this.memory.length >= MAX_LOOKS)
             throw new LookError(`You can keep ${MAX_LOOKS} looks; remove one first`);
         const created = this.clock().toISOString();
         const id = "look-" + fingerprint(name + created + JSON.stringify(steps));
-        const look = validateLook({ format: LOOK_FORMAT, id, name, created, steps });
+        const look = validateLook({ format: LOOK_FORMAT, id, name, created, steps, ...(photo ? { photo } : {}) });
         this.memory = [...this.memory.filter((l) => l.id !== look.id), look];
         this.write();
         return look;
@@ -140,7 +143,7 @@ export class LookStore {
             throw new LookError("That file isn't a saved look");
         }
         const look = validateLook(parsed);
-        return this.save(look.name, look.steps);
+        return this.save(look.name, look.steps, look.photo);
     }
 }
 export function exportText(look) {
@@ -164,4 +167,3 @@ export function describe(look) {
     const names = { older: "Older", younger: "Younger", gender: "Gender appearance", enhance: "Enhance", "hair-fibre": "Hair fibres", beard: "Beard", posture: "Posture", filters: "Filter look", portrait: "Portrait look", lighting: "Lighting", recolour: "Hair recolour", balayage: "Balayage", skin: "Skin", "under-eye": "Under-eye", "teeth": "Teeth whitening", "shave": "Beard removal", "grey": "Grey Transition", studio: "Photo studio", illustration: "Illustration" };
     return look.steps.map((s) => `${names[s.kind]} ${s.strength}`).join(" · ");
 }
-//# sourceMappingURL=my-looks.js.map

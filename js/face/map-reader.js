@@ -175,4 +175,3 @@ export function detectedFaces(map) {
     });
     return out;
 }
-//# sourceMappingURL=map-reader.js.map

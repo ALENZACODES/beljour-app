@@ -95,4 +95,3 @@ export function drawPath(alpha, width, height, points, strokeWidth, opacity, cli
         }
     }
 }
-//# sourceMappingURL=geometry.js.map

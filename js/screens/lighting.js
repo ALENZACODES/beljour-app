@@ -28,4 +28,3 @@ export function lightingScreen(editor, changed) {
     }
     return h("section", { class: "lighting-screen", "aria-label": "Lighting Simulator" }, h("h2", {}, "See this look in"), h("div", { class: "row" }, ...buttons), h("label", {}, "More lights ", options), out, h("p", { class: "fine" }, `Local simulation. ${CAVEAT}`), h("p", { class: "fine" }, "The capture is treated as daylight balanced. A tinted original can change this estimate. Hair and skin are relit together."));
 }
-//# sourceMappingURL=lighting.js.map

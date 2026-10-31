@@ -40,6 +40,43 @@ export function extendWhitening(before, after, width, height, channels, points, 
             out[i * ch + c] = rgb[c];
         isChanged[i] = 1;
     }
+    // The engine puts its translucent tip zone at the bottom of ITS 82% cut, which is mid-tooth on a broad smile:
+    // that left a dull line under the body with fully lifted tips below it (a band at 200%). Where this pass
+    // extended a column downward, the column is re-lit from the body's own gain, with the translucent taper
+    // moved to the real incisal edge (the bottom of the extension).
+    const lin = (v) => { const c = v / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+    const enc = (v) => toByte(255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055));
+    const engine = new Uint8Array(n);
+    for (const i of changed)
+        engine[i] = 1;
+    for (let x = 0; x < width; x++) {
+        let y = 0;
+        while (y < height) {
+            if (!engine[y * width + x]) {
+                y++;
+                continue;
+            }
+            const a = y;
+            while (y < height && engine[y * width + x])
+                y++;
+            const b = y - 1;
+            let e = b;
+            while (e + 1 < height && isChanged[(e + 1) * width + x] && !engine[(e + 1) * width + x])
+                e++;
+            if (e === b || b - a < 4)
+                continue;
+            const r = Math.max(a, b - Math.ceil(0.28 * (b - a + 1)) - 1), ri = (r * width + x) * ch;
+            const g = [0, 1, 2].map((c) => lin(after[ri + c]) / Math.max(1e-4, lin(Number(before[ri + c]))));
+            if (g.some((v) => !(v >= 1 && v < 3)))
+                continue;
+            const zone = Math.max(1.5, 0.28 * (e - a + 1));
+            for (let yy = r + 1; yy <= e; yy++) {
+                const i = yy * width + x, near = 1 - Math.min(1, (e - yy) / zone), t = near * near * (3 - 2 * near);
+                for (let c = 0; c < 3; c++)
+                    out[i * ch + c] = enc(Math.min(1, lin(Number(before[i * ch + c])) * (1 + (g[c] - 1) * (1 - 0.5 * t))));
+            }
+        }
+    }
     // One-pixel softening of the change inside the opening, so the whitened area has no hard edge.
     const soft = Uint8Array.from(out);
     for (let y = 1; y < height - 1; y++)
@@ -65,4 +102,3 @@ export function extendWhitening(before, after, width, height, channels, points, 
         }
     return soft;
 }
-//# sourceMappingURL=teeth-extend.js.map

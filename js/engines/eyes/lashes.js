@@ -243,4 +243,3 @@ export function fitMetrics(frame, paths) {
         outer_overhang_eye_width: overhang, maximum_arc_length_eye_width: Math.max(...lengths), projection_kind: "image_plane",
         physical_fit_verified: false, warnings };
 }
-//# sourceMappingURL=lashes.js.map

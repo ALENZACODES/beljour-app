@@ -193,4 +193,3 @@ export function paintGuidesOnCanvas(target, state, subjects) {
     }
     return result;
 }
-//# sourceMappingURL=guide-painter.js.map

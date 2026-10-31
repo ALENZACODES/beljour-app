@@ -239,4 +239,3 @@ export async function verifyTuesdayLockJson(raw) {
 export function serializeTuesdayPacket(packet) {
     return canonical(packet);
 }
-//# sourceMappingURL=tuesday-lock.js.map

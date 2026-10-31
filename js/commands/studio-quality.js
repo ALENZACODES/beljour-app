@@ -170,4 +170,3 @@ export class CpuStudioQuality {
         return { ...frame, pixels: output };
     }
 }
-//# sourceMappingURL=studio-quality.js.map

@@ -54,4 +54,3 @@ export function ssimLuma(reference, candidate) {
     }
     return total / windows;
 }
-//# sourceMappingURL=quality-metrics.js.map

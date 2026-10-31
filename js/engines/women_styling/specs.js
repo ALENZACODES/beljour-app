@@ -291,4 +291,3 @@ export function specFor(id) {
         throw new Error(`R20c does not offer feature ${id}`);
     return spec;
 }
-//# sourceMappingURL=specs.js.map

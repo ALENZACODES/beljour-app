@@ -127,4 +127,3 @@ export function runReferenceStudy(conditions = CONDITIONS, shades = loadReferenc
         note: "Synthetic exact-reference outcome on drawn patches; not face accuracy.",
         real_face_pass: false, tested_against_real_products: false };
 }
-//# sourceMappingURL=reference-study.js.map

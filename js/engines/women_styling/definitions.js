@@ -68,4 +68,3 @@ export function evaluateFrame(featureId, before, after, width, height, masks, ev
         support_pixels: supportPixels, changed_pixels: changed, outside_changed: outside,
         max_channel_delta: maximum, alpha_changed: alpha, status: 'SYNTHETIC_ONLY' };
 }
-//# sourceMappingURL=definitions.js.map

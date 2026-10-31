@@ -432,4 +432,3 @@ export function releaseSummary(results) {
         note: "Release readiness still depends on the binding frozen-face gate; synthetic tests cannot substitute for it.",
     };
 }
-//# sourceMappingURL=r16b_acceptance.js.map

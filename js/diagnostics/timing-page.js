@@ -132,4 +132,3 @@ export function mountTimingPage(doc, host, browser) {
         },
     };
 }
-//# sourceMappingURL=timing-page.js.map

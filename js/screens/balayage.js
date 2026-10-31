@@ -26,7 +26,10 @@ export function balayageScreen(editor, changed) {
     }
     const target = h("select", { "aria-label": "Target hair level" }, ...LEVELS.levels.filter(row => row.level > base)
         .map(row => h("option", { value: row.level }, `${row.level} · ${row.name}`)));
-    target.value = String(Math.min(10, base + 2));
+    // The panel and the applied layer share one value: an existing layer's target wins, otherwise base + 2.
+    const current = editor.layerFor("balayage")?.parameters.target_level;
+    target.value = typeof current === "number" && current > base && current <= 10 ? String(current) : String(Math.min(10, base + 2));
+    const sync = () => editor.prefer("balayage", { target_level: Number(target.value) }, `level ${target.value}`);
     const history = h("select", { "aria-label": "Hair colour history" }, h("option", { value: "colour_treated" }, "Previously coloured"), h("option", { value: "virgin" }, "Never coloured"), h("option", { value: "box_dye" }, "Box dye"));
     history.value = "colour_treated";
     const toner = h("select", { "aria-label": "Toner estimate" }, ...Object.keys(LEVELS.toners).map(id => h("option", { value: id }, id)));
@@ -41,6 +44,9 @@ export function balayageScreen(editor, changed) {
             status.textContent = error instanceof Error ? error.message : "Choose a valid lightening target.";
         }
     };
+    target.addEventListener("change", () => { sync(); changed(); });
+    if (!editor.layerFor("balayage"))
+        sync();
     target.addEventListener("change", describe);
     history.addEventListener("change", describe);
     describe();
@@ -56,4 +62,3 @@ export function balayageScreen(editor, changed) {
     section.append(h("label", {}, "Target level ", target), h("label", {}, "Colour history ", history), h("label", {}, "Toner ", toner), status, run, h("p", { class: "fine" }, "A strand test and an in-person colour consultation determine suitability. Prices and outcomes need an individual assessment."));
     return section;
 }
-//# sourceMappingURL=balayage.js.map

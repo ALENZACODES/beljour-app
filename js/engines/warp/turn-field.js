@@ -372,4 +372,3 @@ export function relaxLowJacobian(field, iod, target = LOCAL_TARGET_DET, rounds =
     }
     return { field: makeField(mapX, mapY), attenuation: att, regions_scaled: scaled, rounds: done, min_scale: minScale };
 }
-//# sourceMappingURL=turn-field.js.map

@@ -252,4 +252,3 @@ export function photoPicker(options) {
     void refresh();
     return { element, actions, input, strip, pick, refresh, dispose };
 }
-//# sourceMappingURL=picker.js.map

@@ -84,4 +84,3 @@ export function renderJob(job, clock = () => performance.now()) {
     return { pixels: result.image, label: result.label, warnings: [...result.warnings],
         metrics: { ...result.metrics, geometry: result.geometry }, elapsedMs: Math.max(0, clock() - started) };
 }
-//# sourceMappingURL=render.js.map

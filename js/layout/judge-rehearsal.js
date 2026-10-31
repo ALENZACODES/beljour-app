@@ -113,4 +113,3 @@ export function observeRehearsalVisibility(clock, doc) {
         clock.pause();
     return () => doc.removeEventListener("visibilitychange", onVisibility);
 }
-//# sourceMappingURL=judge-rehearsal.js.map

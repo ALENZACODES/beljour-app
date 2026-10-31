@@ -75,4 +75,3 @@ export function applyShade(image, width, height, hairMask, landmarks, shadeId, l
         providerCalls: 0, simulated: true,
         label: "In-house hair-colour simulation; not tested against real products." };
 }
-//# sourceMappingURL=preview.js.map

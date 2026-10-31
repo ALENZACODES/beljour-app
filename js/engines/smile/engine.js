@@ -59,4 +59,3 @@ export function sequenceStability(annotations) {
         max = Math.max(max, Math.hypot(centres[i][0] - centres[i - 1][0], centres[i][1] - centres[i - 1][1]));
     return { frames: annotations.length, max_annotation_jump: max, label: LABEL };
 }
-//# sourceMappingURL=engine.js.map

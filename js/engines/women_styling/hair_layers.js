@@ -418,4 +418,3 @@ export function hairLayersFor(request) {
         throw new Error(`Hair simulation not registered: ${request.featureId}`);
     return plan(request);
 }
-//# sourceMappingURL=hair_layers.js.map

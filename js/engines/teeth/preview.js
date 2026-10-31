@@ -50,4 +50,3 @@ export function preview(photo, opening, state = "unknown", level = DEFAULT_LEVEL
         return refuse(photo, value, "no enamel-like pixels inside the opening");
     return { ...result, status: "preview", refused: false, level: value, caption: LABEL };
 }
-//# sourceMappingURL=preview.js.map

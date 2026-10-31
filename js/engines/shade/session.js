@@ -122,4 +122,3 @@ export class ShadeSession {
         this.frameMemo.clear();
     }
 }
-//# sourceMappingURL=session.js.map

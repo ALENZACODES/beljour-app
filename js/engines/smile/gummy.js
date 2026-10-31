@@ -8,4 +8,3 @@ export function adjustmentAmount(amount) {
 export function targetGumOpacity(amount) { return 1 - adjustmentAmount(amount); }
 export function acceptance(before, after) { const reduced = after.gumArea <= before.gumArea + 1e-8, bounded = after.gumArea >= before.gumArea * .55; return { reduced, bounded, pass: reduced && bounded, diagnostic: false }; }
 export function copy() { return "Simulation of checked gum-show appearance only. It is not a diagnosis or treatment recommendation."; }
-//# sourceMappingURL=gummy.js.map

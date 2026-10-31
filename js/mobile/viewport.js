@@ -57,4 +57,3 @@ export function watchCompact(host, change) {
 export function touchTargetSize(width) {
     return widthClass(width) === "wide" ? 40 : 44;
 }
-//# sourceMappingURL=viewport.js.map

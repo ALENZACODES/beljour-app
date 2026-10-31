@@ -98,4 +98,3 @@ export function softenLines(image, landmarks, { strength = 60, zones = DEFAULT_Z
     report.mean_line_depth_after = remain / count;
     return Z.finish(image, out, weight, skin, LABEL, report);
 }
-//# sourceMappingURL=wrinkles.js.map

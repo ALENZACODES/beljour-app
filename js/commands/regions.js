@@ -109,4 +109,3 @@ export class PhotoRegions {
         this.version++;
     }
 }
-//# sourceMappingURL=regions.js.map

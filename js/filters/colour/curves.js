@@ -78,4 +78,3 @@ export function evaluate(points, values) {
 export function atStrength(points, fraction) {
     return points.map(([x, y]) => [x, x + (y - x) * fraction]);
 }
-//# sourceMappingURL=curves.js.map

@@ -39,4 +39,3 @@ export function summarizeDiary(entries) {
         last_date: validated.at(-1)?.date ?? null, brows: diaryTrend(validated, "brows"),
         lashes: diaryTrend(validated, "lashes"), attribution: false, photos_stored: false };
 }
-//# sourceMappingURL=diary.js.map

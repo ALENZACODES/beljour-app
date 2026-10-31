@@ -10,4 +10,3 @@ export { recolourVisible } from "./visible-iris.js";
 export { DEFAULT_LOCK_LEVEL, SIMULATION_LABEL, IrisTrialEngine, PixelLimitGuard, checkedLevel, legacyStrength, safeTrialReport, } from "./iris-trial.js";
 export { auditIrisTrial, aggregateIrisAudits, safeIrisAuditReport } from "./iris-evidence.js";
 export { irisToneQuality, measuredGateRow, safeIrisToneReport } from "./iris-quality.js";
-//# sourceMappingURL=index.js.map

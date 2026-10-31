@@ -128,4 +128,3 @@ export function localShadeSection(src, points, readPixels = pixelsOf, onResult, 
     });
     return h("section", { class: "local-shade" }, h("h2", {}, "Shade finder on this device"), h("p", { class: "fine" }, "Measured from your cheeks and forehead in the browser. Nothing is uploaded and no units are used."), h("p", { class: "fine" }, "Local estimate. Not tested against real products. We never choose a lighter shade than measured."), run, out);
 }
-//# sourceMappingURL=shade-local.js.map

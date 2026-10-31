@@ -76,4 +76,3 @@ export function admitForDevice(width, height, maximumPeakMb, request = {}) {
         ...request, budgetBytes: Math.min(MAX_BUDGET_BYTES, Math.floor(maximumPeakMb * 1024 * 1024)),
     });
 }
-//# sourceMappingURL=safe-tile-policy.js.map

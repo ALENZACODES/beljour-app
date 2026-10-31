@@ -239,4 +239,3 @@ export function yawSlice(degrees) {
     const yaw = Math.abs(degrees);
     return yaw <= 15 ? "frontal" : yaw < 45 ? "angled" : yaw < 75 ? "side" : "profile";
 }
-//# sourceMappingURL=box-first.js.map

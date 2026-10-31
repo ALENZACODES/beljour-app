@@ -43,4 +43,3 @@ export function observeJudgeConnection(browser, onChange) {
         browser.removeEventListener("offline", emit);
     };
 }
-//# sourceMappingURL=judge-connectivity.js.map

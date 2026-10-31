@@ -45,4 +45,3 @@ export async function exportPostureImage(result, id, settings = {}, encoder = ca
     return { blob, label, mime, name: `Posture_${id}.${mime === "image/png" ? "png" : "jpg"}`,
         width: image.width, height: image.height };
 }
-//# sourceMappingURL=posture-export.js.map

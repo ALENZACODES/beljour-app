@@ -46,4 +46,3 @@ export function offlineImportSummary(status) {
     const displayed = offlineImportReadiness(status).safeToDisplay ? "Local PNG integrity checked" : "No checked PNG";
     return `${displayed}. Live provider and real-face quality remain NOT VERIFIED.`;
 }
-//# sourceMappingURL=offline-import-guide.js.map

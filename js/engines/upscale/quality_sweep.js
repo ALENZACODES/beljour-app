@@ -62,4 +62,3 @@ export function evaluateStructure(name, scale) { const truth = synthetic(name), 
 export function qualitySweep() { const rows = []; for (const scale of [2, 4])
     for (const name of ["diagonal", "checker", "rings", "hairlike", "skinlike"])
         rows.push(evaluateStructure(name, scale)); return rows; }
-//# sourceMappingURL=quality_sweep.js.map

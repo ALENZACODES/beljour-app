@@ -102,4 +102,3 @@ export function renderContinuousFramePanel(doc, summary, selected, actions, repl
         + "Real-face and frozen release evidence: not verified.", "lg-cache-caption"));
     return panel;
 }
-//# sourceMappingURL=continuous-frame-panel.js.map

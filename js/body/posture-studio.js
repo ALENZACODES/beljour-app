@@ -404,4 +404,3 @@ export function mountBodyPostureStudio(container, options = {}) {
     redraw();
     return handle;
 }
-//# sourceMappingURL=posture-studio.js.map

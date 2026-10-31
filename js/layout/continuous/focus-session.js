@@ -94,4 +94,3 @@ export class ContinuousFocusSession {
         this.preferred = null;
     }
 }
-//# sourceMappingURL=focus-session.js.map

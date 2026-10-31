@@ -120,4 +120,3 @@ export function advancedGuide(step, state) {
     }
     return "Local illustrative preview; real results require the production engine and consent.";
 }
-//# sourceMappingURL=preview.js.map

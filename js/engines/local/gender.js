@@ -35,6 +35,9 @@ export function bands(slider) {
 }
 export function validateOptions(options = {}) {
     const scope = options.scope ?? "face_only";
+    const gain = options.gain ?? 1;
+    if (!(Number.isFinite(gain) && gain >= 0.25 && gain <= 2.5))
+        throw new RangeError("gender gain must be 0.25..2.5");
     if (!SCOPES.includes(scope))
         throw new RangeError("invalid gender scope");
     const factors = Object.fromEntries(REGIONS.map((r) => [r, 1]));
@@ -44,7 +47,7 @@ export function validateOptions(options = {}) {
         }
         factors[key] = value;
     }
-    return { factors, scope };
+    return { factors, scope, gain };
 }
 export function genderTargets(face, slider, options = {}) {
     return targets(face, slider, options);
@@ -61,7 +64,7 @@ export function prepareGenderTargets(face, slider) {
 }
 function targets(face, slider, options, preparation) {
     checkFace(face);
-    const f = faceFrame(face), { factors, scope } = validateOptions(options), par = bands(slider);
+    const f = faceFrame(face), { factors, scope, gain } = validateOptions(options), par = bands(slider);
     // E08 controls provide a geometry starter. The precise bands below use the same face frame.
     const controls = {
         chin_width: Math.max(-100, Math.min(100, par.chin_width_pct * 4.5 * factors.chin)),
@@ -130,7 +133,14 @@ function targets(face, slider, options, preparation) {
     }
     for (const idx of [152, 175])
         add(idx, 0, f.length * par.face_length_fh / 100, factors.chin);
-    const limit = f.iod * 0.12;
+    // Gain scales the whole recipe uniformly (shape stays the recipe's shape); the cap scales with it so
+    // Hyper is not silently clipped back to Extra. Identity pins and both regularisers still apply.
+    if (gain !== 1)
+        for (let i = 0; i < dx.length; i++) {
+            dx[i] *= gain;
+            dy[i] *= gain;
+        }
+    const limit = f.iod * 0.12 * Math.max(1, gain);
     let max = 0, capped = 0;
     const requested = face.map(([x, y], i) => {
         const d = Math.hypot(dx[i], dy[i]), scale = d > limit ? limit / d : 1;
@@ -153,6 +163,5 @@ function targets(face, slider, options, preparation) {
             strain: { requested_max: strain.requested_max, applied_max: strain.applied_max, capped_vertices: strain.capped_vertices,
                 max_strain: strain.max_strain, retention: strain.retention },
             direction: slider === 0 ? "original" : slider > 0 ? "masculine" : "feminine",
-            simulation: LABEL, validated_on_released_photos: false } };
+            simulation: LABEL, validated_on_released_photos: false, gain } };
 }
-//# sourceMappingURL=gender.js.map

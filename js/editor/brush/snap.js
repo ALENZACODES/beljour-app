@@ -54,4 +54,3 @@ export function snapPlanes(source, strokes) {
         out.whites = finish(union(subtract(region("eyes"), dilate(region("irises"), 1)), region("mouth_opening")));
     return out;
 }
-//# sourceMappingURL=snap.js.map

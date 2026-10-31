@@ -164,4 +164,3 @@ export function regularizeTargets(before, requested, referenceScale, pinned = []
             requested_max: requestedMax, applied_max: Math.max(...delta.map(([x, y]) => Math.hypot(x, y))),
             max_edge_slope: slope, pinned: pins, raster_q3_required: true } };
 }
-//# sourceMappingURL=regularize.js.map

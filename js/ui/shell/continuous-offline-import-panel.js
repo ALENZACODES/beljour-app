@@ -110,4 +110,3 @@ export function renderOfflineImportPanel(doc, status, imageUrl, actions) {
     section.append(details);
     return section;
 }
-//# sourceMappingURL=continuous-offline-import-panel.js.map

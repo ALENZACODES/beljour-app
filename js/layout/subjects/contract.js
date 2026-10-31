@@ -66,4 +66,3 @@ export const DRAWN_PAIR = checkedSubjectBoxes([
     { id: "drawn-main", x: 0.12, y: 0.22, width: 0.37, height: 0.54, origin: "drawn", primary: true },
     { id: "drawn-guest", x: 0.55, y: 0.25, width: 0.33, height: 0.50, origin: "drawn" },
 ]);
-//# sourceMappingURL=contract.js.map

@@ -192,4 +192,3 @@ export function parseExport(text) {
     }
     return rows.map((row) => validateSnapshot(row)).sort(byTime);
 }
-//# sourceMappingURL=store.js.map

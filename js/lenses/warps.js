@@ -182,4 +182,3 @@ export function mirrorFace(image, f, share) {
     }
     return out;
 }
-//# sourceMappingURL=warps.js.map

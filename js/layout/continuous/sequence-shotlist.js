@@ -110,4 +110,3 @@ export function downloadShotList(doc, report) {
         URL.revokeObjectURL(url);
     }
 }
-//# sourceMappingURL=sequence-shotlist.js.map

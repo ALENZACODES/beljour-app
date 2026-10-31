@@ -70,4 +70,3 @@ export async function runObservedBrowserSweep(session, source, options = {}) {
         source: 'actual_guarded_synthetic_or_local', releaseQualified: false,
         observations: ledger.snapshot() });
 }
-//# sourceMappingURL=observed-sweep.js.map

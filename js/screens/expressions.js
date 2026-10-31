@@ -40,4 +40,3 @@ export function expressionsSection(ctx, dependencies) {
     });
     return h("section", { class: "expressions" }, h("h2", {}, "Expressions"), h("p", {}, "Closed-mouth expression simulations on your photo: neutral, serious, surprise, soft smile and raised brows."), h("p", { class: "fine" }, "Features are moved, nothing new is drawn: no teeth, no closed eyes. The mouth must be closed in the photo."), h("label", { for: "expression-amount" }, "Amount "), amount, h("div", { class: "row" }, ...buttons), output);
 }
-//# sourceMappingURL=expressions.js.map

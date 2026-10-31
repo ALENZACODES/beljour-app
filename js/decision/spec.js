@@ -45,4 +45,3 @@ export function sheetText(sheet) {
         ...sheet.placementLines, "", "Cost and how long it lasts", ...sheet.costLines, "",
         "Photos: none. Settings only.", ...sheet.limitations, sheet.footer].join("\n") + "\n";
 }
-//# sourceMappingURL=spec.js.map

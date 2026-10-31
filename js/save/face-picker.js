@@ -81,4 +81,3 @@ export function pickCounts(selection, verifiedMask, bystandersUnchanged) {
         untouchedFaces: selection.untouchedFaces, processed: selection.index !== null,
         verifiedMask, bystandersUnchanged };
 }
-//# sourceMappingURL=face-picker.js.map

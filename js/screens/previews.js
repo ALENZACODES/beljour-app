@@ -91,4 +91,3 @@ export async function renderPreviews(main, ctx, dependencies = localPreviewDepen
         } }, "Reset to original");
     main.append(controls, h("div", { class: "row" }, apply, undo, reset), output, facePartsSection(ctx, dependencies), expressionsSection(ctx, dependencies), ...moreSimulations(ctx, dependencies));
 }
-//# sourceMappingURL=previews.js.map

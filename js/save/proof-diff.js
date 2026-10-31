@@ -62,4 +62,3 @@ export function describeComparison(result) {
     return `UNPROVEN: aggregate mechanical replay change ${shift} of ${result.total}. ` +
         "Without paired frozen inputs, no per-face no-regression or identity claim is possible.";
 }
-//# sourceMappingURL=proof-diff.js.map

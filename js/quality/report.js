@@ -126,4 +126,3 @@ export function toMarkdown(report) {
     }
     return lines.join("\n") + "\n";
 }
-//# sourceMappingURL=report.js.map

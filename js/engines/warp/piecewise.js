@@ -97,4 +97,3 @@ export function triangleAreas(points, triangles) {
     checkTriangles(triangles, points.length);
     return triangles.map(([a, b, c]) => signedArea(points[a], points[b], points[c]) / 2);
 }
-//# sourceMappingURL=piecewise.js.map

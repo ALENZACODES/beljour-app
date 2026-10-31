@@ -48,4 +48,3 @@ export function preparedPosePixel(field, x, y, dose) {
     const index = y * field.width + x;
     return [(field.dx[index] ?? 0) * dose, (field.dy[index] ?? 0) * dose];
 }
-//# sourceMappingURL=pose-field.js.map

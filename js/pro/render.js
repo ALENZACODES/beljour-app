@@ -134,4 +134,3 @@ export async function exportPhotoPro(source, recipe, fileStem, factory = browser
         overBudget: elapsedMs >= EXPORT_BUDGET_MS,
     };
 }
-//# sourceMappingURL=render.js.map

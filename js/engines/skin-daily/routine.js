@@ -184,4 +184,3 @@ export function timeLine(r, ticks, now, day) {
         : { part, title: "Tonight", line: `${pm.done} of ${stepWord(pm.total)} done.${gapLine}` };
 }
 export { PRODUCT_TYPES };
-//# sourceMappingURL=routine.js.map

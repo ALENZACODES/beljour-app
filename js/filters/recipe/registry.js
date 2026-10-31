@@ -47,4 +47,3 @@ export function catalogue() {
     }
     return shipped;
 }
-//# sourceMappingURL=registry.js.map

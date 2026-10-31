@@ -322,4 +322,3 @@ export function browserDecoder() {
         }
     };
 }
-//# sourceMappingURL=decode.js.map

@@ -33,4 +33,3 @@ export function localJudgeMock() {
         },
     };
 }
-//# sourceMappingURL=judge-provider-mock.js.map

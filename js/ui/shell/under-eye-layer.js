@@ -22,4 +22,3 @@ export function applyUnderEyeLayer(image, source, layer) {
         return { image: result.image, label: result.label, metrics };
     return { image: { ...image, data: Uint8ClampedArray.from(image.data) }, label: `${result.message} ${result.label}`, metrics };
 }
-//# sourceMappingURL=under-eye-layer.js.map

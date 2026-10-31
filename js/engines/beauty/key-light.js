@@ -83,4 +83,3 @@ export function keyLight(image, mesh, strength, side, masks = {}) {
         metrics: { side, amount: Math.round(e * 1000) / 1000, gain_min: Math.round(lo * 1000) / 1000, gain_max: Math.round(hi * 1000) / 1000,
             face_centre: `${Math.round(cx)},${Math.round(cy)}` } };
 }
-//# sourceMappingURL=key-light.js.map

@@ -59,4 +59,3 @@ export const SOURCE_KINDS = new Set([
 /** How much of a source was read when the entry was written (docs/NEWS-SOURCES.md). An entry
  * must rest on at least one source read beyond its title. */
 export const SOURCE_READ = new Set(["full text", "abstract", "summary page", "title only"]);
-//# sourceMappingURL=terms.js.map

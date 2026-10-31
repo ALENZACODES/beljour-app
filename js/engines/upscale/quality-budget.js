@@ -42,4 +42,3 @@ export async function timed(step, clock = () => performance.now()) {
     const value = await step();
     return { value, ms: Math.max(0, clock() - started) };
 }
-//# sourceMappingURL=quality-budget.js.map

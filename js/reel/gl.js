@@ -224,4 +224,3 @@ export class ColourPass {
         }
     }
 }
-//# sourceMappingURL=gl.js.map

@@ -57,4 +57,3 @@ export function renderIdentityControls(doc, options) {
         destroy: () => section.remove(),
     };
 }
-//# sourceMappingURL=identity-controls.js.map

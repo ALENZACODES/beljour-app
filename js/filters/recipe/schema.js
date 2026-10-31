@@ -263,4 +263,3 @@ export function checkCatalogue(data) {
     }
     return problems;
 }
-//# sourceMappingURL=schema.js.map

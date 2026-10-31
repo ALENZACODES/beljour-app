@@ -173,4 +173,3 @@ export function renderMakeup(photo, masks, options) {
     }
     return { data, coverage, report };
 }
-//# sourceMappingURL=engine.js.map

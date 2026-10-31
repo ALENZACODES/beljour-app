@@ -82,4 +82,3 @@ export function frameLayout(width, height, frame, fixed = false) {
     const page = { width: width + l + r, height: height + t + b };
     return { ...page, picture: { x: l, y: t, width, height }, radius, holes: sprockets(frame, page, t, b) };
 }
-//# sourceMappingURL=frames.js.map

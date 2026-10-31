@@ -260,4 +260,3 @@ export function render(image, recipe, settings = {}, masks = NO_MASKS, faceCentr
     const out = finish(img.data, styled, greyLook, p, masks, pixels);
     return { image: { ...img, data: out }, look: { ...img, data: styled }, plan: p, notes };
 }
-//# sourceMappingURL=engine.js.map

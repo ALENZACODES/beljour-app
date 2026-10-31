@@ -35,4 +35,3 @@ export function checkedRequest(value) {
             secondaryRGB: checkedRGB(value.secondaryRGB ?? [150, 110, 112], 'secondaryRGB'),
         } };
 }
-//# sourceMappingURL=requests.js.map

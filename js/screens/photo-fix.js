@@ -134,4 +134,3 @@ export function photoFixSection(ctx, dependencies) {
         return run("object"); });
     return h("section", {}, h("h2", {}, "Local photo fixes"), h("p", {}, "Fixes run on this device from your original photo. Your original stays unchanged."), h("label", { for: strength.id }, "Strength", strength), h("label", { for: shade.id }, "Eye colour shade", shade), h("label", { for: brush.id }, "Object removal brush", brush), clearMarks, marked, h("label", { for: preset.id }, "ID photo size", preset), cropButton, h("div", { class: "row" }, ...Object.values(buttons)), status, preview, h("p", { class: "fine" }, "Eye colour is a simulation: the pupil, catchlights and the detail of your eyes come from your original photo. Removal fills the marked area from the rest of this photo and never covers a face."));
 }
-//# sourceMappingURL=photo-fix.js.map

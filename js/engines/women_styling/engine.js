@@ -107,4 +107,3 @@ export function applyPreview(image, width, height, regionMasks, request, tileCon
             disclosure: 'Screen-colour simulation only; not a product, treatment, or physical result prediction.',
         } };
 }
-//# sourceMappingURL=engine.js.map

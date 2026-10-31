@@ -147,4 +147,3 @@ export function meshWarp(width, height, before, after, { lay, strength = 1, guar
     return { result, flips, strengthUsed: used, reduced, jacobian, guardReason, evaluations,
         refused: reduced && used === 0 };
 }
-//# sourceMappingURL=mesh.js.map

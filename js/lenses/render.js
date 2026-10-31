@@ -182,4 +182,3 @@ export function applyLens(image, points, lens, strength, options = {}) {
     }
     return { image: out, changed: true, drawn, frame };
 }
-//# sourceMappingURL=render.js.map

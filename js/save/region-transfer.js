@@ -151,4 +151,3 @@ export function transferRegion(target, targetPoints, donor, donorPoints, region,
         }
     return { image: { width, height, channels, data }, changed, fit, gains, offsets, weight };
 }
-//# sourceMappingURL=region-transfer.js.map

@@ -5,7 +5,6 @@
  * Author: John Khan.
  */
 import { api, store } from "../api.js";
-import { requirePhoto } from "../ctx.js";
 import { clear, h } from "../dom.js";
 import { rememberPhotoId } from "../layout/trust.js";
 import { HairStudio } from "../ui/studios/hair/view.js";
@@ -14,8 +13,14 @@ import { appConsent } from "../ui/shell/consent.js";
 import { sendConsentBox } from "../ui/send-consent.js";
 import { applyStyling } from "../ui/styling-tasks.js";
 export function renderHair(main, ctx) {
-    if (!requirePhoto(ctx) || !ctx.photo)
+    if (!ctx.photoSrc) {
+        ctx.go("photo");
         return;
+    }
+    if (!ctx.photo) {
+        renderLocalHair(main, ctx);
+        return;
+    }
     clear(main);
     const status = h("p", { class: "hint", role: "status", "aria-live": "polite" }, "Offline sample ready. No units are spent until you request a quoted styling result.");
     const photo = ctx.photo;
@@ -67,4 +72,17 @@ export function renderHair(main, ctx) {
     const head = h("div", { class: "hair-classic-head" }, h("h1", {}, "Hair Studio"), h("p", { class: "lede" }, "Explore cuts with one synthetic sample. Reference transfers require a real photo, permission and a separate provider quote."), link);
     main.append(head, consent, status, studio.element);
 }
-//# sourceMappingURL=hair.js.map
+/** The photo is open on this device only (no app server, or not prepared on it): the whole cut
+ * catalogue, filters, board and salon brief work here; a live styling request needs the photo
+ * prepared on the app server first, so it is offered nowhere on this path and nothing is sent. */
+function renderLocalHair(main, ctx) {
+    clear(main);
+    const studio = new HairStudio({
+        mode: "classic",
+        photoId: null,
+        originalSrc: ctx.photoSrc,
+        image: ctx.size ? { width: ctx.size.w, height: ctx.size.h, landmarks: ctx.face?.points ?? null,
+            synthetic: Boolean(ctx.localPhoto?.synthetic) } : null,
+    });
+    main.append(h("div", { class: "hair-classic-head" }, h("h1", {}, "Hair Studio"), h("p", { class: "lede" }, "Browse cuts for your photo, compare them on your board and make a salon brief. All of it runs on this device."), h("a", { href: "studio.html", class: "btn btn-quiet" }, "Open the original R9 studio shell")), h("p", { class: "hint", role: "status", "aria-live": "polite" }, "Your photo is on this device only, so live YouCam styling is off here and nothing is sent. No units are used."), studio.element);
+}

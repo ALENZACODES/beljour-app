@@ -164,4 +164,3 @@ function renderTargets(photo, face, slider, options, sparse, dependencies) {
         searchMethod: seam ? "sparse-seam-full-confirm" : "full-raster", fullRasterEvaluations,
         seamSamples: seam?.sampleCount ?? photo.width * photo.height, fullResolutionChecked: true, sparseFallback: false };
 }
-//# sourceMappingURL=gender-render.js.map

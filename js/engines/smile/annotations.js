@@ -60,4 +60,3 @@ function fnv(text) {
     return (h >>> 0).toString(16).padStart(8, "0");
 }
 export function sequenceHash(frames) { return fnv(JSON.stringify(frames.map(serialiseAnnotations))); }
-//# sourceMappingURL=annotations.js.map

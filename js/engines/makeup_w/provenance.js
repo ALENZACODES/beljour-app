@@ -48,4 +48,3 @@ export function makeupReplayCompatible(first, second) {
     validateMakeupEvidence(second);
     return JSON.stringify(first) === JSON.stringify(second);
 }
-//# sourceMappingURL=provenance.js.map

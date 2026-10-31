@@ -63,4 +63,3 @@ export async function burnCreate(doc, photo, assets, d = document) {
     }
     return canvas;
 }
-//# sourceMappingURL=export.js.map

@@ -94,4 +94,3 @@ export function compareBrowPhotos(before, beforeFace, after, afterFace, beforeEv
             maximum_side_scale_disagreement: 0.08, minimum_evidence_confidence: 0.5 },
         note: "Observable photo changes only. A matching pair does not prove serum efficacy or biological growth." };
 }
-//# sourceMappingURL=assessment.js.map

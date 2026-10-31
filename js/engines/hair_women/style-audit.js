@@ -147,4 +147,3 @@ export function assertEvidenceSchema(rows) {
     }
     return count;
 }
-//# sourceMappingURL=style-audit.js.map

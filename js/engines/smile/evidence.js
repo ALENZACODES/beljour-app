@@ -24,4 +24,3 @@ export function measureSmileEvidence(feature, before, after, allowed, annotation
     return { feature, tested: true, changedFraction: changed / allowed.length, outsideFraction: outside, alphaPreserved: alpha, annotationValid, passed: !reasons.length, reasons };
 }
 export function aggregateSmileEvidence(rows) { const tested = rows.filter(r => r.tested), passed = tested.filter(r => r.passed).length; return { tested: tested.length, passed, failed: tested.length - passed, notTested: rows.length - tested.length, passRate: tested.length ? passed / tested.length : null, releaseReady: tested.length > 0 && passed === tested.length && tested.length === rows.length }; }
-//# sourceMappingURL=evidence.js.map

@@ -49,4 +49,3 @@ export function mountStudioIdentity(doc, destination) {
         },
     };
 }
-//# sourceMappingURL=studio-identity.js.map

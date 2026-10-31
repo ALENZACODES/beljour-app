@@ -9,4 +9,3 @@ export * from "./pigmentation.js";
 export * from "./assessment.js";
 export * from "./evidence.js";
 export * from "./features/index.js";
-//# sourceMappingURL=index.js.map

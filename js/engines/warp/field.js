@@ -167,4 +167,3 @@ export function moveStats(field, threshold = 0.5) {
 export function jacobian(field) {
     return jacobianDeterminant(field.mapX, field.mapY);
 }
-//# sourceMappingURL=field.js.map

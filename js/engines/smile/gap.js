@@ -13,4 +13,3 @@ export function centralBand(teeth, fraction = .08) {
 }
 export function expectedGapWidth(teeth, plan) { const b = annotationBounds(teeth); return (b.maxX - b.minX) * .08 * (1 - plan.fraction); }
 export function acceptance(beforeWidth, afterWidth, plan) { const expected = beforeWidth * (1 - plan.fraction), error = Math.abs(afterWidth - expected); return { expected, observed: afterWidth, error, tolerance: Math.max(.002, beforeWidth * .08), pass: error <= Math.max(.002, beforeWidth * .08) }; }
-//# sourceMappingURL=gap.js.map

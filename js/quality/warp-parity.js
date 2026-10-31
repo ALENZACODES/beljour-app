@@ -159,4 +159,3 @@ export function checkVectorsR5(doc) {
         }
     });
 }
-//# sourceMappingURL=warp-parity.js.map

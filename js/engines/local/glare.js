@@ -88,4 +88,3 @@ export function removeGlare(image, landmarks, { strength = 100 } = {}) {
     report.filled_pixels = filled;
     return edited(blendBytes(image, outcome.image, weight), weight, LABEL, report);
 }
-//# sourceMappingURL=glare.js.map

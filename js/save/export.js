@@ -206,4 +206,3 @@ export function album(files, part) {
     const name = part === undefined ? "Beljour.zip" : `Beljour part ${part}.zip`;
     return { name, bytes, message: `${n} photo${n === 1 ? "" : "s"} saved to ${ALBUM}${part === undefined ? "" : `, part ${part}`}.` };
 }
-//# sourceMappingURL=export.js.map

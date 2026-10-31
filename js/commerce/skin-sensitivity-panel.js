@@ -122,4 +122,3 @@ export function renderSkinSensitivityPanel(doc, report, commands = {}) {
     section.append(toggle, details);
     return section;
 }
-//# sourceMappingURL=skin-sensitivity-panel.js.map

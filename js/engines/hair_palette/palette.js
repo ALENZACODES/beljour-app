@@ -70,4 +70,3 @@ export function suggest(lab, options = {}) {
         .slice(0, count).map((shade) => ({ shade, delta_e00: ciede2000(sample, shade.lab),
         measured_level: depth, no_auto_lightening: !allowLightening }));
 }
-//# sourceMappingURL=palette.js.map

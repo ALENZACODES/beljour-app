@@ -79,4 +79,3 @@ export function filterControls(layer, options = {}) {
         labelFor: (id) => catalogue().get(id).name,
     };
 }
-//# sourceMappingURL=controls.js.map

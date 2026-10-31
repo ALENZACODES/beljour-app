@@ -120,4 +120,3 @@ export function guardCatalogue() {
     }
     return issues;
 }
-//# sourceMappingURL=model.js.map

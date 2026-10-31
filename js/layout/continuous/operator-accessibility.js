@@ -75,4 +75,3 @@ export function operatorA11yCaption(result) {
     return `${result.links} public links and ${result.buttons} controls inspected; `
         + `${issues} structural issue(s). Physical-device and screen-reader reviews remain required.`;
 }
-//# sourceMappingURL=operator-accessibility.js.map

@@ -179,4 +179,3 @@ export class PostureIntake {
         return snapshot;
     }
 }
-//# sourceMappingURL=posture-intake.js.map

@@ -209,6 +209,15 @@ export class Editor {
         const c = this.choices.get(kind);
         return c ? { params: { ...c.params }, ...(c.strength === undefined ? {} : { strength: c.strength }) } : null;
     }
+    /** A setting chosen in a tool's own panel: the tool's layer takes it now if there is one, and Add
+     * uses it otherwise, so the applied value is always the value the panel shows. */
+    prefer(kind, params, label) {
+        if (this.layerFor(kind)) {
+            this.pick(kind, params, label);
+            return;
+        }
+        this.remember(kind, params);
+    }
     remember(kind, params, strength) {
         const prev = this.choices.get(kind);
         this.choices.set(kind, { params: { ...(prev?.params ?? {}), ...params }, strength: strength ?? prev?.strength });
@@ -410,4 +419,3 @@ export class Editor {
     /** Convenient guarded sample adoption from studio nav. */
     loadRecommendedSample() { this.loadSample(defaultSample(this.document.studio), this.document.studio); }
 }
-//# sourceMappingURL=controller.js.map

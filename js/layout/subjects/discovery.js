@@ -61,4 +61,3 @@ export class SubjectDiscovery {
         this.disposed = true;
     }
 }
-//# sourceMappingURL=discovery.js.map

@@ -214,4 +214,3 @@ export async function pairedModelDiagnostic(family, models, resizer = cpuResizer
 export function classicalPaired(report) {
     return { ...report, processing: CLASSICAL_GENERATOR, models: [] };
 }
-//# sourceMappingURL=quality-model-chain.js.map

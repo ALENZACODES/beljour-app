@@ -60,4 +60,3 @@ export function section(title, ...children) {
 export function hexOf(r, g, b) {
     return "#" + [r, g, b].map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0")).join("").toUpperCase();
 }
-//# sourceMappingURL=kit.js.map

@@ -167,4 +167,3 @@ export function renderTattoo(image, face, artIn, placement, confirmed) {
         throw new TattooRefused("nothing_visible", "That placement lands on no visible skin in this photo. Try another zone or a smaller size.");
     return { image: { width: W, height: H, channels: C, data: out }, inked, hiddenTriangles: hidden, label: LABEL, zone: zoneLabel(p.zone, face) };
 }
-//# sourceMappingURL=tattoo.js.map

@@ -75,4 +75,3 @@ export function publicFinalColour(found) {
     return Object.freeze({ ...found, before_delta_e: round4(found.before_delta_e),
         after_delta_e: round4(found.after_delta_e), shift_delta_e: round4(found.shift_delta_e) });
 }
-//# sourceMappingURL=colour-evidence.js.map

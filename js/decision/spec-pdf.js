@@ -94,4 +94,3 @@ export async function renderSheetPdf(sheet) {
     const info = add(`<< /Title (${printable("Decision spec sheet - " + sheet.name)}) /Author (John Khan) /Creator (BELJOUR) >>`);
     return { pdf: writePdf(objects, catalog, info), pages: 1 };
 }
-//# sourceMappingURL=spec-pdf.js.map

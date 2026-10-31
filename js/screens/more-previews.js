@@ -127,4 +127,3 @@ export function moreSimulations(ctx, dependencies) {
         optIn("sim-grey-add", "Add grey", "Grey added only inside the hair you mark.", "Turn on grey preview", greyAdd(ctx, dependencies)),
     ];
 }
-//# sourceMappingURL=more-previews.js.map

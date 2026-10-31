@@ -64,4 +64,3 @@ export class LandmarkSmoother {
         this.filters.forEach((f) => f.reset());
     }
 }
-//# sourceMappingURL=oneEuro.js.map

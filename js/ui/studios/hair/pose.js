@@ -90,4 +90,3 @@ export function syntheticHairPose() {
     return { acceptable: true, rollDegrees: 0, yawProxy: 0, faceShare: 0.6,
         reasons: [], confidence: "geometric proxy", faceCount: 1 };
 }
-//# sourceMappingURL=pose.js.map

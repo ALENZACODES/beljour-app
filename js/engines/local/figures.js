@@ -152,4 +152,3 @@ export function approximatePerson(c) {
                 out.data[i] = m.data[i];
     return out;
 }
-//# sourceMappingURL=figures.js.map

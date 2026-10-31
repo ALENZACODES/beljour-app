@@ -85,4 +85,3 @@ export class PosturePanelState {
             fixes: postureFixes().map((entry) => this.availability(entry.fix)) };
     }
 }
-//# sourceMappingURL=posture-panel-state.js.map

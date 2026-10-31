@@ -62,4 +62,3 @@ export function renderStyleForFace(image, width, height, mask, landmarks, styleI
         affectedPixels: changed, maskPixels: count, identitySimilarity: decision.similarity,
         identityBlended: decision.blended, providerCalls: 0, simulated: true, label: RENDER_LABEL };
 }
-//# sourceMappingURL=public-render.js.map

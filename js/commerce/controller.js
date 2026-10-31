@@ -341,4 +341,3 @@ export class CommerceController {
     cancel() { this.generation += 1; }
     pendingUploadedPhotos() { return this.uploadedIds.size; }
 }
-//# sourceMappingURL=controller.js.map

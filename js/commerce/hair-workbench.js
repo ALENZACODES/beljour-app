@@ -525,4 +525,3 @@ export async function setupHairWorkbench() {
         workbench.dispose();
     }
 }
-//# sourceMappingURL=hair-workbench.js.map

@@ -59,4 +59,3 @@ export function mountClientShell(doc = document, browser = window, options = {})
         destroy,
     };
 }
-//# sourceMappingURL=client-shell.js.map

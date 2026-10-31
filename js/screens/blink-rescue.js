@@ -60,4 +60,3 @@ export function blinkRescueScreen(source, open, deps = {}) {
     });
     return h("section", { class: "blink-rescue", "aria-label": "Blink rescue" }, h("h2", {}, "Blink rescue"), h("p", {}, "Eyes closed in this photo? Take the open eyes from another photo of yourself, taken at about the same angle."), h("p", { class: "fine" }, "Only the eye areas change; the edges are blended. It does not check who is in the photos."), h("label", {}, same, " Both photos are of me"), h("label", {}, "Other photo ", input), status, view, use);
 }
-//# sourceMappingURL=blink-rescue.js.map

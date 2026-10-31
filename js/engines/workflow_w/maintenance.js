@@ -11,4 +11,3 @@ export function markMaintenanceComplete(rows, index) { if (index < 0 || index >=
     throw new RangeError("maintenance index outside range"); return rows.map(row => ({ ...row, completed: row.completed || row.index === index })); }
 export function upcomingMaintenance(rows, today) { const now = parseDate(today).getTime(), eligible = rows.filter(row => !row.completed && parseDate(row.latest).getTime() >= now).sort((a, b) => parseDate(a.due).getTime() - parseDate(b.due).getTime()); return eligible[0] ?? null; }
 export function maintenanceExport(rows) { return { schema: "beljour.maintenance-calendar.v1", items: rows.map(row => ({ ...row })), network: false, label: "estimated local maintenance calendar" }; }
-//# sourceMappingURL=maintenance.js.map

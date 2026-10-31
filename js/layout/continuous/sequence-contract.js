@@ -79,4 +79,3 @@ export function sequenceReadableStatus(status) {
     }
     return `${observed}. An explicit click and current permissions are required.`;
 }
-//# sourceMappingURL=sequence-contract.js.map

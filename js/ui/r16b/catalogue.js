@@ -36,4 +36,3 @@ export function card(id) {
         throw new RangeError("unknown R16B feature");
     return c;
 }
-//# sourceMappingURL=catalogue.js.map

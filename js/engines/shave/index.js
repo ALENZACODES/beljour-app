@@ -24,4 +24,3 @@ export function renderShave(photo, beard, cheek, amount = 1) { if (beard.length 
     } if (photo.channels === 4)
     for (let i = 0; i < beard.length; i++)
         data[i * 4 + 3] = photo.data[i * 4 + 3]; return { data, report: { label: "clean-shave visual estimate", simulation: true, suitable_scope: "stubble and short beards only" } }; }
-//# sourceMappingURL=index.js.map

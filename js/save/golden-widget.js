@@ -107,4 +107,3 @@ export function createGoldenWidget(options) {
     }
     return { element: root, state: () => ({ ...current }), update, dispose };
 }
-//# sourceMappingURL=golden-widget.js.map

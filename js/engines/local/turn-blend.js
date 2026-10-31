@@ -98,4 +98,3 @@ export function appliedTurnTargets(before, proposed, masks, strength) {
         return [x + (proposed[i][0] - x) * weight, y + (proposed[i][1] - y) * weight];
     });
 }
-//# sourceMappingURL=turn-blend.js.map

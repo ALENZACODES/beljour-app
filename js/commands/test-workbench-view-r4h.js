@@ -172,4 +172,3 @@ export async function testWorkbenchViewR4H() {
         Object.defineProperty(globalThis, 'ImageData', originalImageData);
     return count;
 }
-//# sourceMappingURL=test-workbench-view-r4h.js.map

@@ -342,4 +342,3 @@ export function applyEffect(image, f, kind, share, t = 0, person = null) {
     }
     return out;
 }
-//# sourceMappingURL=effects.js.map

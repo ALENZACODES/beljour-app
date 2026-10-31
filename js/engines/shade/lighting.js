@@ -188,4 +188,3 @@ export function simulateLook(items, pairs = [], presets = DATA.shown_first, scen
         items: outItems, pairs: outPairs, verdict: holds ? "holds in every light shown" : "fails: " + failures.join("; "),
         holds, failures };
 }
-//# sourceMappingURL=lighting.js.map

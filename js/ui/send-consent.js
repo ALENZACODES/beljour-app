@@ -31,4 +31,3 @@ export function sendConsentBox(photoIds, scope, onChange, gate = appConsent, lab
     });
     return h("div", { class: "send-consent" }, h("p", { class: "check" }, box, h("label", { for: id }, ` ${label} for this ${scopeTitle(scope)}.`)), h("details", { id: `${id}-facts` }, h("summary", {}, "What is sent, and what happens to it"), h("ul", { class: "plain-list" }, ...PROVIDER_FACTS.map((fact) => h("li", {}, fact)))), note);
 }
-//# sourceMappingURL=send-consent.js.map

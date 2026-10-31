@@ -138,4 +138,3 @@ export function parseRecipeText(text) {
     }
     return upgradeMyLook(parsed);
 }
-//# sourceMappingURL=validate.js.map

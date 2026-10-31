@@ -26,4 +26,3 @@ export function parseSkinMoreOptions(v) {
         throw new Error("local health-data diary requires explicit consent");
     return { feature: v.feature, amount: bounded(v.amount ?? .5, "amount", 0, 1), style: v.style ?? "", colour: v.colour ?? [173, 112, 89], secondary_colour: v.secondary_colour ?? [99, 73, 63], undertone: v.undertone ?? "neutral", skin_depth: bounded(v.skin_depth ?? .5, "skin_depth", 0, 1), preserve_texture: bounded(v.preserve_texture ?? 1, "preserve_texture", .5, 1), masks, diary_values: (v.diary_values ?? []).map(x => bounded(x, "diary", 0, 1)), consent_local_health_data: v.consent_local_health_data ?? false, seed: bounded(v.seed ?? 17, "seed", 0, 2 ** 32 - 1), metadata: v.metadata ?? {} };
 }
-//# sourceMappingURL=contracts.js.map

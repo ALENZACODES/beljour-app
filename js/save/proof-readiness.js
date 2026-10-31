@@ -83,4 +83,3 @@ export function readinessMessage(row) {
         `and ${state.requiresProvider} provider-required step${state.requiresProvider === 1 ? "" : "s"}. ` +
         "Incomplete steps cannot earn a proof PASS.";
 }
-//# sourceMappingURL=proof-readiness.js.map

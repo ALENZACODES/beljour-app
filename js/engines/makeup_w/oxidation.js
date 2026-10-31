@@ -1,4 +1,3 @@
 /** Oxidation and seasonal estimates. Author: John Khan. */
 export function oxidationCurve(delta, hours = 8) { return Array.from({ length: Math.max(1, Math.min(Math.trunc(hours), 12)) + 1 }, (_, hour) => ({ hour, delta_l_estimate: delta * (hour ? 1 - 2 ** (-hour / 1.8) : 0), label: "estimate from user-entered formula behaviour" })); }
 export function seasonalMix(shift) { const v = Math.max(-1, Math.min(shift, 1)); const deep = v >= 0 ? .5 + .5 * v : .5 - .5 * (-v), light = 1 - deep; return { lighter_ratio: light, deeper_ratio: deep, season_shift: v, label: "mixing estimate; verify on skin" }; }
-//# sourceMappingURL=oxidation.js.map

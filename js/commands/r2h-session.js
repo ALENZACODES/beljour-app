@@ -119,4 +119,3 @@ export class R2HBrowserSession {
         return this.upscale?.lastMetrics ?? null;
     }
 }
-//# sourceMappingURL=r2h-session.js.map

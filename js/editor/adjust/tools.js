@@ -18,11 +18,12 @@ export function editorScreen(kind, host) {
         return selectiveScreen(host);
     return cropScreen(host);
 }
-/** The largest photo the full-size save renders (12 megapixels, as the pro export does). */
-export const FULL_SIZE_PIXELS = 12_000_000;
+/** The largest photo the full-size save renders: 12.6 megapixels, so a standard 12 MP phone photo
+ * (4032 x 3024 on iPhone, 4080 x 3072 on Pixel, 4000 x 3000 on most others) saves at its own full
+ * size; larger photos (48 or 50 MP modes) are scaled to fit, to stay inside phone memory. ASSUMED. */
+export const FULL_SIZE_PIXELS = 12_600_000;
 /** Scale a width x height photo down to fit the full-size budget (never up). */
 export function fullSizeFor(width, height) {
     const k = Math.min(1, Math.sqrt(FULL_SIZE_PIXELS / (width * height)));
     return { width: Math.max(1, Math.floor(width * k)), height: Math.max(1, Math.floor(height * k)) };
 }
-//# sourceMappingURL=tools.js.map

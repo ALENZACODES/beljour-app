@@ -124,4 +124,3 @@ export function requestJudgeReportDownload(doc, report, urls = URL, defer = (tas
         defer(() => urls.revokeObjectURL(url));
     }
 }
-//# sourceMappingURL=judge-proof-report.js.map

@@ -81,4 +81,3 @@ export function evidenceSummary(evidence, region) {
         observed_coverage_px: covered, observed_coverage_fraction: total ? covered / total : 0,
         grey_coverage_px: evidence.grey.reduce((a, b) => a + b, 0), biological_hair_count: null, added_hairs: 0 };
 }
-//# sourceMappingURL=evidence.js.map

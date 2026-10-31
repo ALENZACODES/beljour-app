@@ -223,4 +223,3 @@ export function patchMatch(img, mask, { patchRadius = 3, iterations = 5, seed = 
             copy.data[i * channels + c] = work[i * 3 + c];
     return { image: copy, targets, matches, meanDistance };
 }
-//# sourceMappingURL=patchmatch.js.map

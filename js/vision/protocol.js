@@ -27,4 +27,3 @@ export function transferResponse(out) {
     return [...seg.channels.map((c) => c.buffer),
         ...(seg.categoryMask ? [seg.categoryMask.buffer] : [])];
 }
-//# sourceMappingURL=protocol.js.map

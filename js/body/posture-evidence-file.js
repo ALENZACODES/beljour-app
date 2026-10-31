@@ -69,4 +69,3 @@ export class EvidenceFileReader {
         this.disposed = true;
     }
 }
-//# sourceMappingURL=posture-evidence-file.js.map

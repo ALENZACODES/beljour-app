@@ -53,4 +53,3 @@ export function differenceMask(before, after, tolerance = 0) {
     }
     return out;
 }
-//# sourceMappingURL=composite.js.map

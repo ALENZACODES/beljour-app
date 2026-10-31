@@ -93,4 +93,3 @@ export function meadowCrown(image, mesh, hairMask, params) {
     const src = photo(image);
     return renderCrownFrame(src, landmarks(mesh, src.width, src.height), hairMask, params);
 }
-//# sourceMappingURL=crown.js.map

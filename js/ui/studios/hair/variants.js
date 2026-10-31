@@ -110,4 +110,3 @@ export function taskPlan(selected, verified = new Set()) {
 export function canApplyReference(selection, poseOkay, consentOkay) {
     return Boolean(selection.reference && selection.referenceRights && poseOkay && consentOkay);
 }
-//# sourceMappingURL=variants.js.map

@@ -48,4 +48,3 @@ export { QUALITY_TIER_VERSION, TIER_LONG_EDGES, checkedTier, createTierRecipe, p
 export { TIER_MATRIX_VERSION, buildTierMatrix, verifyTierMatrix, tierMatrixCsv, serializeTierMatrix, observationFromTierRuns, tierFindings, } from './quality-tier-matrix.js';
 // Pixel-exact neutral upscale claims use final bytes and post-cleanup provenance.
 export { NEUTRAL_CLAIM_COPY, NEUTRAL_CLAIM_VERSION, compareNeutralOutput, evaluateNeutralUpscaleClaim, } from './upscale-claims.js';
-//# sourceMappingURL=index.js.map

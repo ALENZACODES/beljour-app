@@ -143,4 +143,3 @@ export function presetParams(id) {
     out.preset = id;
     return out;
 }
-//# sourceMappingURL=curves.js.map

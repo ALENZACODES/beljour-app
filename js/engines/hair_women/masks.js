@@ -76,4 +76,3 @@ export function foilPattern(mask, w, count, phase = 0) { const out = new Float32
     const stripe = .5 + .5 * Math.cos((x + phase) * Math.PI * Math.max(count, 1));
     out[i] = stripe > .55 ? mask[i] : 0;
 } return out; }
-//# sourceMappingURL=masks.js.map

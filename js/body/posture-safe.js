@@ -80,4 +80,3 @@ export function renderProtectedPosture(source, person, head, controls, fix, leve
     return { image: output, guarded, plan: postureLevelPlan(controls, fix, value), fix, level: value,
         lockLevel: guarded.lockLevel, headPixels: count, headPixelsRestored: restored, label: SIMULATION_LABEL };
 }
-//# sourceMappingURL=posture-safe.js.map

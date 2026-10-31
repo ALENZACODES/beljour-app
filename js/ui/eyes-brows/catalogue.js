@@ -116,4 +116,3 @@ export function unavailableReasons(id, evidence) {
         reasons.push("Trace at least one visible lash; missing lashes are never invented.");
     return reasons;
 }
-//# sourceMappingURL=catalogue.js.map

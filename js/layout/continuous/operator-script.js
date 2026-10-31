@@ -76,4 +76,3 @@ export function operatorGaps(snapshot) {
         advice: Object.freeze(advice),
     });
 }
-//# sourceMappingURL=operator-script.js.map

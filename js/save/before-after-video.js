@@ -91,4 +91,3 @@ export async function recordBeforeAfter(before, after, deps, options) {
         throw error;
     }
 }
-//# sourceMappingURL=before-after-video.js.map

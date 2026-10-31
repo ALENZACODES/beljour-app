@@ -9,4 +9,3 @@ export const RENDER_KINDS = [...LOCAL_KINDS, "filters", ...ADJUST_KINDS];
 export function isSimulationKind(kind) {
     return kind !== "enhance" && kind !== "filters" && !ADJUST_KINDS.includes(kind);
 }
-//# sourceMappingURL=types.js.map

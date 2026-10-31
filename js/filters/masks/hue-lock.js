@@ -54,4 +54,3 @@ export function clampHue(before, styled, mask, target) {
     }
     return out;
 }
-//# sourceMappingURL=hue-lock.js.map

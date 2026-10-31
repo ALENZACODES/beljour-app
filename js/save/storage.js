@@ -201,4 +201,3 @@ export function browserLookStorage() {
     catch { /* storage blocked */ }
     return new MemoryLookStorage();
 }
-//# sourceMappingURL=storage.js.map

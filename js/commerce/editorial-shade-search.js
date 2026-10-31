@@ -86,4 +86,3 @@ export function searchShades(index, query = {}) {
         }),
     });
 }
-//# sourceMappingURL=editorial-shade-search.js.map

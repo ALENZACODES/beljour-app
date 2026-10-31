@@ -12,4 +12,3 @@ export function extractPalette(photo, mask, count = 6) { const rows = []; for (l
         out.push(rgb);
 } return out; }
 export function recommend(colours, undertone) { return colours.map(rgb => ({ rgb, role: "recommended", undertone_score: compatibility(rgb, undertone), source: "local-colour-math" })).sort((a, b) => b.undertone_score - a.undertone_score); }
-//# sourceMappingURL=palette.js.map

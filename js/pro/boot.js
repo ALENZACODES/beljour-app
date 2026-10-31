@@ -5,4 +5,3 @@ if (host) {
     const editor = mountProPanel(host);
     window.addEventListener("pagehide", () => editor.dispose(), { once: true });
 }
-//# sourceMappingURL=boot.js.map

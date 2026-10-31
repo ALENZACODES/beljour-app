@@ -4,4 +4,3 @@ export { ClipJob, ClipJobError, createClipJob } from "./clip-jobs.js";
 export { ReelJobScope, ReelScopeError, withReelJobScope } from "./session.js";
 export { ColourPass, ReelGpuError } from "./gl.js";
 export { exportReelFrame, prepareEditedReelFrame } from "./frame-export.js";
-//# sourceMappingURL=index.js.map

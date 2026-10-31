@@ -131,4 +131,3 @@ export class SavedFaceSessions {
         });
     }
 }
-//# sourceMappingURL=saved-face.js.map

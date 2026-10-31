@@ -111,4 +111,3 @@ export function glassSprite(sprite, seeds, opacity = GLASS_OPACITY) {
             data[i * 4 + 3] = Math.round(data[i * 4 + 3] * opacity);
     return { sprite: { side: n, data }, lenses };
 }
-//# sourceMappingURL=glass.js.map

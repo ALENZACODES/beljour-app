@@ -86,4 +86,3 @@ export function placementField(x, y, width, height, place, context) {
         default: throw new Error(`Unknown position field ${place}`);
     }
 }
-//# sourceMappingURL=geometry.js.map

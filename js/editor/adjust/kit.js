@@ -127,4 +127,3 @@ export function workingImage(editor) {
     const shot = editor.rendered();
     return shot.beforeGeometry ?? shot.image;
 }
-//# sourceMappingURL=kit.js.map

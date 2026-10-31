@@ -136,4 +136,3 @@ export class DrawnFrameController {
         this.phase = "disposed";
     }
 }
-//# sourceMappingURL=frame-controller.js.map

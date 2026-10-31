@@ -111,4 +111,3 @@ export function keyboardEvidenceText(result) {
     return `${result.tabRequests} Tab requests, ${result.recordedFocus} focus events, `
         + `${result.unnamedControls} potentially unnamed controls. Focus ring visibility needs human review.`;
 }
-//# sourceMappingURL=keyboard-rehearsal.js.map

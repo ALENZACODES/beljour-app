@@ -210,4 +210,3 @@ export function diagramDistance(a, b) {
         "curlCount", "fade", "fringe", "taper", "braidCount", "updo"];
     return keys.reduce((sum, key) => sum + Math.abs(left[key] - right[key]), 0);
 }
-//# sourceMappingURL=diagram.js.map

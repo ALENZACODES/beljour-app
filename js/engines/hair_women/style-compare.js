@@ -66,4 +66,3 @@ export function safeRecipe(board, choices) {
         choices: selected.map(item => ({ style: item.style, level: checkedLevel(item.level), texture: item.texture })),
     };
 }
-//# sourceMappingURL=style-compare.js.map

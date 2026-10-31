@@ -83,4 +83,3 @@ export function illustrationScreen(editor, changed) {
         } }, row.name));
     return h("section", { class: "illustration-screen", "aria-label": "Illustration" }, h("h2", {}, "Illustration"), h("div", { class: "row" }, ...buttons), out, h("p", { class: "fine" }, "Illustration filter on your own photo. Your face shape is unchanged; no costume or face is generated."));
 }
-//# sourceMappingURL=photo-studio.js.map

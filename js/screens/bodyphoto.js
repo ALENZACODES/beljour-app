@@ -49,4 +49,3 @@ export function bodyPhotoPicker(ctx, onReady, upload = true) {
         : null;
     return h("div", { class: "body-photo" }, current, h("p", { class: "fine" }, "Stand facing the camera in fitted clothes, arms a little away from your sides, whole body in the frame. For tops, waist up is enough."), upload ? null : h("p", { class: "fine" }, "This photo stays in your browser."), h("div", { class: "row" }, filePicker(ctx.body ? "Use a different photo" : "Add a full length photo", "image/jpeg,image/png", (f) => void adopt(URL.createObjectURL(f), f), !!ctx.body), ctx.photo && !ctx.body ? h("button", { class: "btn btn-quiet", onclick: () => void adopt(ctx.photoSrc, null, ctx.photo) }, "Use my face photo") : null), status);
 }
-//# sourceMappingURL=bodyphoto.js.map

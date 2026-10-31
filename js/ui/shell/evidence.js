@@ -39,4 +39,3 @@ export function documentEvidence(source, stack) {
         flow: providerCount ? "provider work requires a separate consented task" : "stays on this device",
         warnings, badges, layers };
 }
-//# sourceMappingURL=evidence.js.map

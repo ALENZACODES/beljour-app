@@ -60,4 +60,3 @@ export function summarizeAccuracy(records, options = {}) {
         real_face_pass: meetsTarget && kinds.synthetic === 0, product_validation: false,
     };
 }
-//# sourceMappingURL=skin-evidence.js.map

@@ -39,4 +39,3 @@ export function readExpression(b) {
     const smileType = smile < 0.25 ? "none" : cheek + squint * 0.5 > 0.35 ? "full (eyes and mouth)" : "mouth only";
     return { cues, impressions, smileType };
 }
-//# sourceMappingURL=expression.js.map

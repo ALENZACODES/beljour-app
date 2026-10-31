@@ -1,0 +1,91 @@
+{
+ "format": "beljour-judge-bundle/1",
+ "run": "builtin-1",
+ "bundle": "demo",
+ "question": "Which result looks better on her, and still looks like the same drawn person?",
+ "reasons": [
+  "Lost Identity",
+  "Not Her / Erased Marks",
+  "Plastic Skin",
+  "Warped Glasses/Ears/Background",
+  "Fake Hair",
+  "Fake Teeth",
+  "Too Strong",
+  "Too Weak",
+  "Uncanny/Scary"
+ ],
+ "assignments": [
+  {
+   "id": "d9648ff67009",
+   "filter": "C15",
+   "label": "Nice · medium skin (drawn portrait)",
+   "ref": "images/ca2e21fc739d8ab4.png",
+   "a": "images/220ce215beabb3aa.png",
+   "b": "images/0686d3663a3efebe.png",
+   "still_her": false
+  },
+  {
+   "id": "c5d6997e48c8",
+   "filter": "C01",
+   "label": "Deauville · medium skin (drawn portrait)",
+   "ref": "images/ca2e21fc739d8ab4.png",
+   "a": "images/3db4042887392373.png",
+   "b": "images/187104f62c34e001.png",
+   "still_her": false
+  },
+  {
+   "id": "b0b6f6450841",
+   "filter": "C01",
+   "label": "Deauville · light skin (drawn portrait)",
+   "ref": "images/a4897e68566ff305.png",
+   "a": "images/2650a28071612412.png",
+   "b": "images/ec3111781b65fd2a.png",
+   "still_her": false
+  },
+  {
+   "id": "05383070c15f",
+   "filter": "C01",
+   "label": "Deauville · very dark skin (drawn portrait)",
+   "ref": "images/e2f12a1a78566c3c.png",
+   "a": "images/5be0d90a8aa514a6.png",
+   "b": "images/fae1fa3406b94625.png",
+   "still_her": false
+  },
+  {
+   "id": "813c295248dd",
+   "filter": "C15",
+   "label": "Nice · light skin (drawn portrait)",
+   "ref": "images/a4897e68566ff305.png",
+   "a": "images/be8501439f9d2ef0.png",
+   "b": "images/42d8294d39e8eb07.png",
+   "still_her": false
+  },
+  {
+   "id": "494fc1895671",
+   "filter": "C01",
+   "label": "Deauville · dark skin (drawn portrait)",
+   "ref": "images/f16ec256e6a9504d.png",
+   "a": "images/a5c11aeac183b1d7.png",
+   "b": "images/83efdab857d67857.png",
+   "still_her": false
+  },
+  {
+   "id": "c2435834d445",
+   "filter": "C15",
+   "label": "Nice · very dark skin (drawn portrait)",
+   "ref": "images/e2f12a1a78566c3c.png",
+   "a": "images/df4d27b6ccddda66.png",
+   "b": "images/9340b3d17bd1ba07.png",
+   "still_her": false
+  },
+  {
+   "id": "6a44c02ffb2f",
+   "filter": "C15",
+   "label": "Nice · dark skin (drawn portrait)",
+   "ref": "images/f16ec256e6a9504d.png",
+   "a": "images/c697127fe52ace98.png",
+   "b": "images/6f1653b64e7b625c.png",
+   "still_her": false
+  }
+ ]
+}

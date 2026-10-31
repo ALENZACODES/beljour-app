@@ -49,4 +49,3 @@ export async function capture(image, lens, index, encoder, simulationLabel = tru
     const rgba = { width: image.width, height: image.height, data: toRGBA(image) };
     return exportPhoto(rgba, encoder, { lookName: lens.title, index, simulationLabel, isSimulation: true });
 }
-//# sourceMappingURL=lenses-model.js.map

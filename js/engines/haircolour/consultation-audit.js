@@ -154,4 +154,3 @@ export function mergeGroupCounts(rows) {
         .sort((a, b) => a.group.localeCompare(b.group) || a.label.localeCompare(b.label))
         .map((row) => ({ ...row, qualityStatus: STATUS_NOT_TESTED }));
 }
-//# sourceMappingURL=consultation-audit.js.map

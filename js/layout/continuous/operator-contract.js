@@ -60,4 +60,3 @@ export function operatorRefusalText(reason) {
     };
     return descriptions[reason];
 }
-//# sourceMappingURL=operator-contract.js.map

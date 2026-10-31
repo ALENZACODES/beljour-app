@@ -136,4 +136,3 @@ export function nativePlacement(frame, anatomy) {
     return { side: frame.side, anatomy, technique, why, warnings, eye_width_px: frame.width, aperture_ratio: frame.aperture,
         canvas: visibleCanvas(frame, anatomy).map(p => [...p]), geometry_changed: false, expert_validation: "Not tested with artists or real models" };
 }
-//# sourceMappingURL=geometry.js.map

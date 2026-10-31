@@ -170,4 +170,3 @@ export function drawJudgeComparison(original, edited, target, percent) {
     ctx.fillStyle = token("plum");
     ctx.fillRect(Math.max(0, split - 2), 0, 4, DRAW_HEIGHT);
 }
-//# sourceMappingURL=judge-canvas.js.map

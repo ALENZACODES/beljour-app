@@ -210,7 +210,7 @@ export function mountJudgeMode(doc, host, onExit) {
                 showApply: true,
                 applyAll: () => {
                     if (!image.canIllustrate || !session.applyFiveIllustrations()) {
-                        message = "Five edits require a checked target and local, hair and face consent.";
+                        message = "Five edits need a chosen image with a selected person.";
                     }
                     else {
                         evidence.changedEdit();
@@ -496,4 +496,3 @@ export function mountJudgeMode(doc, host, onExit) {
     render();
     return { session, image, render, dispose };
 }
-//# sourceMappingURL=judge-mode.js.map

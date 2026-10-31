@@ -90,4 +90,3 @@ export function decisionSection(build, options) {
     });
     return h("section", { class: "decision-sheet", "aria-label": "Decision spec sheet" }, h("h3", {}, "Decision spec sheet"), h("p", {}, "The exact shade, where it goes, an estimated cost in Canadian dollars and how long it lasts, as settings you can hand to a professional."), h("p", { class: "fine" }, "Prices and durations are ASSUMED estimates, not quotes. Leave a field blank to keep the estimate, or enter your own figures."), h("label", {}, "Service ", choice), price.row, lasts.row, upkeep.row, h("p", { class: "fine" }, "This sheet never includes a photo."), h("div", { class: "row" }, preview, savePdf, saveText), status, out);
 }
-//# sourceMappingURL=decision-sheet.js.map

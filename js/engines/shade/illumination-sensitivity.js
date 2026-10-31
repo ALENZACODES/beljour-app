@@ -81,4 +81,3 @@ export function publicSensitivity(found) {
         note: "Lighting comparison on one sample; not a new shade choice or a product match.",
     };
 }
-//# sourceMappingURL=illumination-sensitivity.js.map

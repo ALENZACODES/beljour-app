@@ -71,4 +71,3 @@ export function renderJudgeGuide(doc, host, state, actions) {
     area.append(contents);
     host.replaceChildren(area);
 }
-//# sourceMappingURL=judge-guide.js.map

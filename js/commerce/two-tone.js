@@ -58,4 +58,3 @@ export function renderTwoTone(session, image, hairRegion, scalpShow, plan, optio
         throw new RangeError("A refused two-tone plan cannot be rendered");
     return session.render(image, hairRegion, scalpShow, { ...options, paletteRgb: plan.best.rgb });
 }
-//# sourceMappingURL=two-tone.js.map

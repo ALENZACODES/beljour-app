@@ -18,6 +18,7 @@ import { renderCompare } from "./compare-render.js";
 import { CompareSession, LOUPE_ZOOMS } from "./compare-session.js";
 import { roving } from "./focus.js";
 import { stopsFor } from "./stops.js";
+import { capturePointer } from "./pointer-capture.js";
 import { PALETTE } from "../palette.js";
 function el(tag, className = "", text) {
     const n = document.createElement(tag);
@@ -347,20 +348,20 @@ export class CompareController {
             const [ux, uy] = this.unitPoint(event);
             if (mode === "hold") {
                 this.session.hold(true);
-                canvas.setPointerCapture(event.pointerId);
+                capturePointer(canvas, event.pointerId);
                 event.preventDefault();
                 return;
             }
             if (split) {
                 this.session.setPosition(split === "vertical" ? ux : split === "horizontal" ? uy : (ux + uy) / 2);
                 this.drag = { id: event.pointerId, x: event.clientX, y: event.clientY, loupe: this.session.state.loupe };
-                canvas.setPointerCapture(event.pointerId);
+                capturePointer(canvas, event.pointerId);
                 event.preventDefault();
                 return;
             }
             if (mode === "loupe") {
                 this.drag = { id: event.pointerId, x: event.clientX, y: event.clientY, loupe: { ...this.session.state.loupe } };
-                canvas.setPointerCapture(event.pointerId);
+                capturePointer(canvas, event.pointerId);
                 event.preventDefault();
                 return;
             }
@@ -479,4 +480,3 @@ export class CompareController {
         this.hooks.status("Board saved on this device.");
     }
 }
-//# sourceMappingURL=compare-view.js.map

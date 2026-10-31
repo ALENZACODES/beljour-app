@@ -91,4 +91,3 @@ export function beautyLook(image, points, f, steps, share, heavy = true, precise
     }
     return out === image ? copy(image) : out;
 }
-//# sourceMappingURL=beauty.js.map

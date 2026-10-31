@@ -323,4 +323,3 @@ export function renderFibres(img, zone, scalp, shade, options = {}) {
             fibre_delta_e: ciede2000(labMean, shade), feather_px: featherPx, core_px: zonePx, scale, seconds: (now() - started) / 1000, version: VERSION
         } };
 }
-//# sourceMappingURL=strands.js.map

@@ -146,4 +146,3 @@ export function safetyReport(result) {
         limits: { mean_abs_change: MAX_MEAN_CHANGE, clip_increase: MAX_CLIP_INCREASE, exposure_gain: MAX_EXPOSURE_GAIN },
         ...(result.face_tone ? { face_tone: faceToneReport(result.face_tone) } : {}) };
 }
-//# sourceMappingURL=enhance-safety.js.map

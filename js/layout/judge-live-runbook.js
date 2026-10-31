@@ -86,4 +86,3 @@ export function realDemoCueHeadline(timeline) {
         + `${unavailable} stages have reported blockers or mixed observations. `
         + "Provider wait time and real-phone conditions are not measured.";
 }
-//# sourceMappingURL=judge-live-runbook.js.map

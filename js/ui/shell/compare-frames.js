@@ -118,4 +118,3 @@ export class FrameCache {
     }
     clear() { this.items.clear(); }
 }
-//# sourceMappingURL=compare-frames.js.map

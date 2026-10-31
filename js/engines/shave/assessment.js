@@ -10,4 +10,3 @@ export function shaveAmountCap(scope, skinDeltaBudget = 4) { finite(skinDeltaBud
     throw new RangeError("skinDeltaBudget must be positive"); if (scope !== "stubble" && scope !== "short_beard")
     return 0; const base = scope === "stubble" ? .9 : .72; return Math.min(base, Math.max(.15, skinDeltaBudget / 4 * base)); }
 export function shaveDisclosure(value) { return { accepted: value.accepted, scope: value.scope, confidence: value.confidence, reason: value.reason, label: value.label, simulation: true, medical_advice: false, identity_geometry_changed: false }; }
-//# sourceMappingURL=assessment.js.map

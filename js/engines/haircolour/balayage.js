@@ -8,6 +8,8 @@
 import { LEVELS } from "./generated/levels.js";
 import { boxBlur, recolourHair } from "./recolour.js";
 import { srgbToLab } from "../shade/colourspace.js";
+import { planRibbons, ratioLift } from "./ribbons.js";
+import { renderClock } from "../skin/texture-law.js";
 export const LABEL = "Balayage simulation of session 1. Lightening limits are estimates; a strand test and a colourist decide the real result.";
 export const VERSION = "balayage-w28/1";
 export function levelRow(level) {
@@ -101,4 +103,28 @@ export function paint(image, mask, strokes, options) {
     const rendered = recolourHair(image, mask, colour, { alpha });
     return { image: rendered.image, lift, plan, colour_lab: colour, checks: rendered.checks, toner, label: LABEL };
 }
-//# sourceMappingURL=balayage.js.map
+/**
+ * Balayage as a colourist paints it, on her own strands. The root-to-end coordinate is geodesic through
+ * the hair mask from the hairline (not each image column's top hair pixel, which beside the face is the
+ * top of the shoulder-length hair, so lengths were treated as roots). Ribbons follow the hair's own flow
+ * away from the root, widen toward the ends and grade along the length, with a money piece near the
+ * face; the lift is a per-channel ratio with a highlight shoulder, so every strand keeps its own
+ * light and dark (Texture Law). Her strokes are paint intent only. The flat `paint` above stays as the
+ * Python parity reference.
+ */
+export function paintRibbons(image, mask, strokes, options) {
+    const started = renderClock();
+    const base = options.baseLevel ?? measureBaseLevel(image, mask);
+    const plan = sessionPlan(base, options.targetLevel, options.history ?? "virgin");
+    const toner = options.toner ?? "none";
+    const colour = levelLab(plan.session_1_level, toner);
+    const intent = liftMap(mask, strokes, image.width, image.height, options.softness ?? 4, options.faceFrame);
+    const ribbons = planRibbons(image, mask, { scalpTopY: options.scalpTopY, intent, frame: options.faceFrame, seed: options.seed ?? 173 });
+    if (ribbons.ribbons === 0)
+        throw new RangeError("no coherent hair ribbons could be painted");
+    const lifted = ratioLift(image, mask, ribbons, colour, Math.min(1, Math.max(0, (options.strength ?? 100) / 100)));
+    const checks = options.skipGeometryChecks ? null : recolourHair(image, mask, colour, { alpha: ribbons.lift }).checks;
+    return { image: lifted.data, lift: ribbons.lift, plan, colour_lab: colour, checks, toner, label: LABEL,
+        metrics: { render_ms: Math.round(renderClock() - started), ribbons: ribbons.ribbons, painted_share: lifted.paintedShare, root_max: lifted.rootMax,
+            width_growth: ribbons.widthGrowth, ribbon_lift_sd: ribbons.ribbonLiftSd, log_contrast_kept: lifted.logContrastKept, texture_source: "own_photo" } };
+}

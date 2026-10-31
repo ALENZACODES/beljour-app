@@ -96,8 +96,9 @@ export function photoScreen(ctx, deps = {}) {
     const prepareNote = h("p", { class: "fine" });
     const video = h("video", { playsinline: true, muted: true, class: "cam", "aria-label": "Camera preview" });
     const start = h("button", { type: "button", class: "btn btn-quiet" }, "Use my camera");
-    const take = h("button", { type: "button", class: "btn", disabled: true }, "Take photo");
-    const stop = h("button", { type: "button", class: "btn btn-quiet", disabled: true }, "Stop camera");
+    // Take photo and Stop camera appear once the camera is on, so no control sits disabled on entry.
+    const take = h("button", { type: "button", class: "btn", disabled: true, hidden: true }, "Take photo");
+    const stop = h("button", { type: "button", class: "btn btn-quiet", disabled: true, hidden: true }, "Stop camera");
     const say = (message) => { status.replaceChildren(h("p", {}, message)); };
     /** True when the single consent is still needed: shows it once and runs the open afterwards. */
     const needConsent = (run) => {
@@ -116,6 +117,7 @@ export function photoScreen(ctx, deps = {}) {
         video.srcObject = null;
         video.pause?.();
         take.disabled = stop.disabled = true;
+        take.hidden = stop.hidden = true;
         start.disabled = false;
     };
     const releasePending = () => { for (const url of urls)
@@ -158,8 +160,11 @@ export function photoScreen(ctx, deps = {}) {
     const syncPrepare = () => {
         const local = ctx.localPhoto;
         prepare.disabled = disposed || !!activeUpload || !local || !gate.hasVisit || gate.localOnly || !base() || !!ctx.photo;
-        prepareNote.textContent = gate.localOnly ? "On-device only is on. This photo stays on this device; app-server preparation is unavailable."
-            : !base() ? "No app server is configured. Local tools remain available."
+        // A build with no app server has nothing to prepare a photo on: the button and its note are
+        // left out rather than shown disabled for good, and every step here works on the device.
+        prepare.hidden = prepareNote.hidden = !base();
+        prepareNote.textContent = !base() ? ""
+            : gate.localOnly ? "On-device only is on. This photo stays on this device; app-server preparation is unavailable."
                 : ctx.photo ? "This photo is prepared on the app server. Each YouCam action still asks for its own consent."
                     : "Optional: this button uploads a metadata-free JPEG to the BELJOUR server. YouCam receives it only after separate consent for makeup, hair styling or approved Skin AI product matching. App-server uploads are deleted within an hour.";
     };
@@ -168,8 +173,8 @@ export function photoScreen(ctx, deps = {}) {
         if (ctx.photoSrc) {
             const example = ctx.localPhoto?.example;
             ready.append(h("p", { class: "source" }, example ? `${example.label} ready. AI-generated, not a real person; every after is made by this app on your device.${example.estimated ? " Face points are estimated from the picture's framing, not read from the face." : ""}` : ctx.localPhoto?.synthetic ? "Drawn sample ready. This is not a real person's photo." : ctx.photo ? "Photo ready on this device and the app server." : "Photo ready on this device. Nothing was uploaded."), h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => ctx.go("shade") }, "Find my shade on this device"), h("button", { type: "button", class: "btn btn-quiet", onclick: () => ctx.go("palettes") }, "Open my colour palettes")));
-            if (ctx.photo)
-                ready.append(h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => ctx.go("hair") }, "Open Hair Studio"), h("button", { type: "button", class: "btn btn-quiet", onclick: () => ctx.go("skin") }, "Continue to skin")));
+            // Hair opens on the photo on this device too (it says there what needs the app server).
+            ready.append(h("div", { class: "row" }, h("button", { type: "button", class: "btn", onclick: () => ctx.go("hair") }, "Open Hair Studio"), h("button", { type: "button", class: "btn btn-quiet", onclick: () => ctx.go("skin") }, "Continue to skin")));
         }
         syncPrepare();
     };
@@ -311,6 +316,7 @@ export function photoScreen(ctx, deps = {}) {
         const version = cameraGeneration;
         start.disabled = true;
         stop.disabled = false;
+        take.hidden = stop.hidden = false;
         try {
             const acquired = await (deps.getCamera ?? (() => navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1600 } } })))();
             if (disposed || version !== cameraGeneration || !gate.hasVisit) {
@@ -476,4 +482,3 @@ export function renderPhoto(main, ctx, deps = {}) {
     main.replaceChildren(screen.element);
     return () => screen.dispose();
 }
-//# sourceMappingURL=photo.js.map

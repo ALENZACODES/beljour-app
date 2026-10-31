@@ -159,4 +159,3 @@ export function migrateOldTrials(store, storage) {
     }
     return moved;
 }
-//# sourceMappingURL=trial.js.map

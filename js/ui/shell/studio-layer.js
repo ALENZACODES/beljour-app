@@ -40,8 +40,14 @@ export function applyStudioLayer(image, source, layer) {
         const look = text(layer, "look", ILLUSTRATION_DEFAULTS);
         if (!Object.hasOwn(LOOKS, look))
             throw new RangeError("Unknown illustration look");
-        const result = illustrate(look, image, { amount: Math.min(1, Math.max(0, layer.strength / 100)) });
-        return { image: { ...image, data: Uint8Array.from(result.image) }, label: result.label, metrics: { look, geometry_displacement: 0 } };
+        // The face box from this photo's face points, so line weight and abstraction follow the face's scale.
+        const pts = source.face, faces = pts && pts.length >= 468 ? (() => {
+            const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]), x0 = Math.min(...xs), y0 = Math.min(...ys);
+            return [{ x: x0, y: y0, w: Math.max(...xs) - x0, h: Math.max(...ys) - y0, iod: Math.hypot(pts[263][0] - pts[33][0], pts[263][1] - pts[33][1]) }];
+        })() : [];
+        const result = illustrate(look, image, { amount: Math.min(1, Math.max(0, layer.strength / 100)), faces });
+        return { image: { ...image, data: Uint8Array.from(result.image) }, label: result.label, metrics: { look, geometry_displacement: 0,
+                ...Object.fromEntries(["tone_gate", "tone_dl_ratio", "tone_drift_share", "blotches"].filter((k) => typeof result.metrics[k] === "number").map((k) => [k, result.metrics[k]])) } };
     }
     if (layer.kind !== "studio")
         return null;
@@ -67,4 +73,3 @@ export function applyStudioLayer(image, source, layer) {
         throw error;
     }
 }
-//# sourceMappingURL=studio-layer.js.map

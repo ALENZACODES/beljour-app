@@ -317,4 +317,3 @@ export function evaluationReport(rows) {
         note: "Browser metrics are diagnostic only; frozen real-face evaluation remains a separate release gate.",
     };
 }
-//# sourceMappingURL=r16b_evaluation.js.map

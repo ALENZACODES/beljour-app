@@ -426,4 +426,3 @@ export class BrushPainter {
         this.host.canvas.getContext("2d")?.drawImage(off, 0, 0, this.host.canvas.width, this.host.canvas.height);
     }
 }
-//# sourceMappingURL=painter.js.map

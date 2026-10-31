@@ -2,7 +2,7 @@ import { hexToRgb } from "../../engines/core/colour.js";
 import { srgbToLab } from "../../engines/shade/colourspace.js";
 import { LABEL as LIGHT_LABEL, relightImage, simulateLook } from "../../engines/shade/lighting.js";
 import { recolourHair } from "../../engines/haircolour/recolour.js";
-import { paint, measureBaseLevel } from "../../engines/haircolour/balayage.js";
+import { paintRibbons, measureBaseLevel } from "../../engines/haircolour/balayage.js";
 import { easeStrength } from "./strength-curve.js";
 export function parameter(layer, key, fallback) {
     const value = layer.parameters[key];
@@ -76,24 +76,24 @@ export function applyBeautyLayer(image, source, layer, lightingRenderer) {
         if (!source.hair || !source.hairPaint)
             throw new RangeError("Mark hair and paint the placement first.");
         const base = measureBaseLevel(image, source.hair.data);
-        const result = paint(image, source.hair.data, source.hairPaint.data, {
+        // Ribbons on her own strands (paintRibbons): root-to-end runs from the hairline through the hair,
+        // so lengths beside the face are never treated as roots; strength scales the ratio lift.
+        const result = paintRibbons(image, source.hair.data, source.hairPaint.data, {
             targetLevel: numeric(layer, "target_level", Math.min(10, base + 2)),
             history: parameter(layer, "history", "colour_treated"),
             toner: parameter(layer, "toner", "none"),
             softness: numeric(layer, "softness", 4),
+            scalpTopY: source.face && source.face.length > 10 ? source.face[10][1] : undefined,
+            // A gentler ease (k = 2: 0.75 at the default 50) than the other colour tools (0.88), so the maximum reads
+            // clearly stronger than the default; 30 and 50 still show the placement.
+            strength: 100 * easeStrength(layer.strength, 2),
         });
-        // Strength blends the requested lift in Lab in the W39 engine, preserving structure.
-        let peak = 0;
-        for (const value of result.lift)
-            peak = Math.max(peak, value);
-        const recoloured = recolourHair(image, source.hair.data, result.colour_lab, 
-        // Eased like the other colour tools, so 30 and 50 already show the placement; 100 is the full lift.
-        { strength: easeStrength(layer.strength), alpha: result.lift.map(v => v / Math.max(peak, 1e-9)) });
-        return { image: { ...image, data: Uint8Array.from(recoloured.image) }, label: `Local simulation. ${result.label}`,
+        return { image: { ...image, data: Uint8Array.from(result.image) }, label: `Local simulation. ${result.label}`,
             metrics: { base_level: base, target_level: result.plan.target_level, sessions: result.plan.sessions,
                 session_1_level: result.plan.session_1_level, assumed: true, note: result.plan.note,
-                geometry_lock: recoloured.checks.geometry_lock, outside_unchanged: recoloured.checks.outside_unchanged } };
+                geometry_lock: result.checks?.geometry_lock ?? false, outside_unchanged: result.checks?.outside_unchanged ?? false,
+                ribbons: result.metrics.ribbons, painted_share: result.metrics.painted_share, root_max: result.metrics.root_max,
+                width_growth: result.metrics.width_growth, log_contrast_kept: result.metrics.log_contrast_kept, texture_source: "own_photo" } };
     }
     return null;
 }
-//# sourceMappingURL=beauty-layer.js.map

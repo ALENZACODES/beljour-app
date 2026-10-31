@@ -125,4 +125,3 @@ export function importRecipe(text, styleIds) {
     return makeRecipe({ kind, level: record.level, lock_level: record.lock_level, zone: record.zone ?? undefined,
         shade_id: record.shade_id, style_id: record.style_id, allow_lightening: record.allow_lightening }, styleIds);
 }
-//# sourceMappingURL=local-hair-recipe.js.map

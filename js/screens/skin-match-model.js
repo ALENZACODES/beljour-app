@@ -114,4 +114,3 @@ export function view(state) {
         }
     }
 }
-//# sourceMappingURL=skin-match-model.js.map

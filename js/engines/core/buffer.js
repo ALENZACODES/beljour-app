@@ -286,4 +286,3 @@ export function resizeBilinear(img, width, height) {
 export function resize(img, width, height) {
     return width <= img.width && height <= img.height ? resizeArea(img, width, height) : resizeBilinear(img, width, height);
 }
-//# sourceMappingURL=buffer.js.map

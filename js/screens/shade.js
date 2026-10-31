@@ -44,4 +44,3 @@ export function renderShade(main, ctx) {
     if (ctx.shade)
         render(out, ctx, ctx.shade);
 }
-//# sourceMappingURL=shade.js.map

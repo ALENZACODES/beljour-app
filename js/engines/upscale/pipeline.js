@@ -141,4 +141,3 @@ export function runUpscale(photo, scale, detail = 0.55, tiledThresholdPixels = 1
         },
     };
 }
-//# sourceMappingURL=pipeline.js.map

@@ -15,4 +15,3 @@ export * from "./w89_occasion.js";
 export * from "./w90_freckles.js";
 export * from "./w91_continuity.js";
 export * from "./w92_texture.js";
-//# sourceMappingURL=index.js.map

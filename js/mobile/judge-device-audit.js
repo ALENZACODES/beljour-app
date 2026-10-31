@@ -94,4 +94,3 @@ export function judgeDeviceSummaryText(summary) {
         : summary.reducedMotion ? "Reduced motion requested" : "No reduced-motion request detected";
     return `${available} available, ${unavailable} unavailable, ${unknown} unknown. ${motion}. ${summary.disclaimer}`;
 }
-//# sourceMappingURL=judge-device-audit.js.map

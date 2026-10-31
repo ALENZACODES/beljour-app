@@ -39,4 +39,3 @@ export { diaryDocument, parseDiary, exportDiary, summarizeDiary } from "./diary.
 export { BrowTrialSession, PixelGuard, SIMULATION_LABEL, checkedLevel as checkedBrowLevel, safeReport as safeBrowTrialReport, } from "./brow-trial.js";
 export { compareBrowStyles, parseBrowRecipe, safeBrowRecipe, } from "./brow-board.js";
 export { aggregateBrowEvidence, auditBrowTrial, browSideEvidence, safeBrowEvidence, } from "./brow-evidence.js";
-//# sourceMappingURL=index.js.map

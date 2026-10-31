@@ -172,4 +172,3 @@ export function renderFibres(image, width, height, hairMask, scalpMask, densityM
     return { before, after, density_before: densityBefore, density_after: densityAfter,
         metrics, label: FIBRE_LABEL };
 }
-//# sourceMappingURL=concealer-link.js.map

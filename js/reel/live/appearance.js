@@ -61,4 +61,3 @@ export class VideoAppearance {
     }
     reset() { this.points.reset(); this.lastPoints = null; }
 }
-//# sourceMappingURL=appearance.js.map

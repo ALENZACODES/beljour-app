@@ -181,4 +181,3 @@ export function renderReleaseView(doc, host, snapshot, readiness, commands, envi
     content.append(header, preflight, pro, main, footer);
     host.replaceChildren(content);
 }
-//# sourceMappingURL=view.js.map

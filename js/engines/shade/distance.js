@@ -73,4 +73,3 @@ export function rankShades(lab, shades = "reference", options = {}) {
 export function nearestShade(lab, shades = "reference", options = {}) {
     return rankShades(lab, shades, { ...options, limit: 1 })[0] ?? null;
 }
-//# sourceMappingURL=distance.js.map

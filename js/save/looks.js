@@ -101,4 +101,3 @@ export class SaveOffer {
         catch { /* the offer may show again next visit */ }
     }
 }
-//# sourceMappingURL=looks.js.map

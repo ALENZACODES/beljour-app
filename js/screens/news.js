@@ -129,4 +129,3 @@ if (root) {
     document.getElementById("nw-not-medical")?.replaceChildren(NOT_MEDICAL);
     void mountNews(root);
 }
-//# sourceMappingURL=news.js.map

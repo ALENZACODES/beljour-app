@@ -56,4 +56,3 @@ export function runChecks(points, width, height, light, forSkin = true) {
     }
     return checks;
 }
-//# sourceMappingURL=quality.js.map

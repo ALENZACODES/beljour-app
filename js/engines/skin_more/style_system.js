@@ -42,4 +42,3 @@ export function releaseRequirements(feature) {
 export function safetyCopy(feature) { return recipe(feature).warnings.join(" "); }
 export function catalogue() { return Object.keys(recipes).sort().map(recipe); }
 export function audit() { const rows = catalogue().map(r => ({ feature: r.feature, controls: r.controls.length, checkedRegion: !!r.requiresCheckedRegion, healthConsent: !!r.requiresHealthConsent, culturalReview: !!r.culturalReviewRequired, warnings: [...r.warnings] })); return { count: rows.length, rows, allEditable: catalogue().every(r => r.controls.every(c => c.editable)) }; }
-//# sourceMappingURL=style_system.js.map

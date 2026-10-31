@@ -1,3 +1,5 @@
+import { naturalHairHex, requestProviderHair } from "../../engines/haircolour/provider-hair.js";
+import { OLDER_HAIR_HEX, OLDER_UNITS, requestProviderOlder } from "../../engines/older-youcam/provider-older.js";
 import { engineToVisible, visibleToEngine, setStrengthRange, PreviewDebouncer } from "../../layout/strength-scale.js";
 /** Working studio UI (R8 shell, extended in R9). Native buttons and inputs; no framework, CDN or
  * third-party art. The editor page never calls fetch and never sends a user photo anywhere.
@@ -13,7 +15,8 @@ import { readLocalImage, SAMPLE_IDS, SAMPLE_NAMES, uploadedSource } from "./demo
 import { EXAMPLE_LABEL, examplePeople, framingPoints } from "../../screens/shape-art.js";
 import { faceMapFor } from "../../face/map-reader.js";
 import { studioMapKey } from "../../screens/face-map.js";
-import { paint, downloadCanvas, label as burnLabel, SIMULATION_TAG } from "./canvas.js";
+import { paint, label as burnLabel, SIMULATION_TAG } from "./canvas.js";
+import { savePhoto } from "../../editor/save/device-save.js";
 import { isEmpty as createIsEmpty } from "../../editor/create/doc.js";
 import { burnCreate, releaseCanvas, showsEditedPhoto } from "../../editor/create/export.js";
 import { sharedAssets } from "../../editor/create/assets.js";
@@ -805,7 +808,7 @@ export class ShellView {
         }
         catch { /* The committed render shows on release; a live preview failure changes nothing. */ }
     }
-    /** Decode the opened file at full size (up to 12 megapixels), on this device. */
+    /** Decode the opened file at full size (up to 12.6 megapixels, editor/adjust/tools.ts), upright, on this device. */
     async fullImage(file) {
         const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
         let canvas = null;
@@ -871,13 +874,22 @@ export class ShellView {
                 copy = node("canvas");
                 paint(copy, preview.image, { label: SIMULATION_TAG, simulate: simulated, zoom: 1 });
             }
+            // Saved the phone's way (editor/save): a camera-named JPEG with her original's own EXIF, through
+            // the share sheet on iPhone and Android (Save Image / Photos / Gallery), else a download.
+            const own = this.master && this.master.id === this.editor.source.id ? this.master.file : null;
+            let saved;
             try {
-                await downloadCanvas(copy);
+                saved = await savePhoto(copy, own);
             }
             finally {
                 releaseCanvas(copy);
             }
-            this.inform(`${line || `Image saved from this device (${preview.image.width} × ${preview.image.height}).`} A simulation label is included when the export switch is on.`);
+            if (saved.route === "cancelled") {
+                this.inform("Not saved: the share sheet was closed.");
+                return;
+            }
+            const where = saved.route === "share" ? (saved.platform === "ios" ? "Choose Save Image to put it in Photos." : "Choose Photos or Gallery to keep it.") : "Downloaded.";
+            this.inform(`${line || `Image saved from this device (${saved.width} × ${saved.height}).`} ${saved.name}, JPEG${saved.exif ? " with your photo's own camera details" : ""}. ${where} A simulation label is included when the export switch is on.`);
         }
         catch (error) {
             this.inform(error instanceof Error ? error.message : String(error));
@@ -1128,6 +1140,62 @@ export class ShellView {
         }
         if (layer.kind === "older" || layer.kind === "younger") {
             settings.append(percent("Appearance stop", getNumber(layer, "stop", layer.kind === "older" ? 3 : 2), 1, layer.kind === "older" ? 5 : 3, 1, n => param("stop", n), ""));
+            if (layer.kind === "younger") {
+                settings.append(check("Hair colour", layer.parameters.hair_colour === true, (v) => param("hair_colour", v)), node("p", "shell-hint", "Off by default: Younger leaves the hair exactly as it is."));
+                if (layer.parameters.hair_colour === true && !serverConfigured()) {
+                    settings.append(node("p", "shell-hint", "Hair colour is made on this device in this preview."));
+                }
+                else if (layer.parameters.hair_colour === true) {
+                    const src = this.editor.source;
+                    const status = node("p", "shell-hint", src.providerHair ? "YouCam natural colour ready." : "Local colour. YouCam gives a more natural colour: it sends this photo to YouCam and uses 1 unit.");
+                    settings.append(button(src.providerHair ? "Use YouCam colour" : "Natural colour from YouCam (1 unit)", () => {
+                        void (async () => {
+                            if (!src.providerHair) {
+                                if (!src.face || !src.hair)
+                                    throw new Error("Mark the hair and find the face first.");
+                                src.providerHair = await requestProviderHair(src.image, naturalHairHex(src.image, src.face), (m) => { status.textContent = m; });
+                            }
+                            param("hair_source", "youcam");
+                        })().catch((e) => { status.textContent = e instanceof Error ? e.message : String(e); });
+                    }), button("Use local colour", () => param("hair_source", "local")), status);
+                }
+            }
+            if (layer.kind === "older" && !serverConfigured()) {
+                // Static on-device build: no styling server, so the YouCam path is not offered (no dead button, no error).
+                settings.append(node("p", "shell-hint", "Older is made on this device in this preview. Nothing is sent."));
+            }
+            else if (layer.kind === "older") {
+                // Older (YouCam, 2 units): removable adapter with its own consent tick and unit quote (John, Oct 30, 2026).
+                const src = this.editor.source, grey = layer.parameters.older_grey !== false;
+                const units = OLDER_UNITS + (grey && !src.providerGrey ? 1 : 0) - (src.providerOlder ? OLDER_UNITS : 0);
+                const status = node("p", "shell-hint", src.providerOlder
+                    ? `YouCam aging ready${src.providerOlder.ages ? ` (measured from age ${Math.round(src.providerOlder.ages.neutral_age)} to ${Math.round(src.providerOlder.ages.aged_age)})` : ""}. Only the change is used; your skin texture stays your own.`
+                    : "Local Older. YouCam Aging is more convincing: it sends this photo to YouCam once and uses the units shown.");
+                const tick = node("input");
+                tick.type = "checkbox";
+                tick.id = `older-consent-${layer.id}`;
+                const tickLabel = node("label", "shell-hint", `I agree to send this photo to YouCam for an aging preview${grey ? " and a grey hair colour" : ""}. The provider copy is deleted after the result.`);
+                tickLabel.htmlFor = tick.id;
+                const run = button(units > 0 ? `Older from YouCam (${units} unit${units === 1 ? "" : "s"})` : "Use Older from YouCam", () => {
+                    void (async () => {
+                        if (units > 0 && !tick.checked) {
+                            status.textContent = "Tick the box to send this photo to YouCam. Nothing was sent.";
+                            return;
+                        }
+                        if (!src.face)
+                            throw new Error("Find the face first.");
+                        if (!src.providerOlder)
+                            src.providerOlder = await requestProviderOlder(src.image, (m) => { status.textContent = m; });
+                        if (grey && src.hair && !src.providerGrey)
+                            src.providerGrey = await requestProviderHair(src.image, OLDER_HAIR_HEX, (m) => { status.textContent = m; }, { intensity: 90, shine: 30 });
+                        param("older_source", "youcam");
+                    })().catch((e) => { status.textContent = e instanceof Error ? e.message : String(e); });
+                });
+                settings.append(check("Grey hair from YouCam (+1 unit, colour only on your own strands)", grey, (v) => param("older_grey", v)));
+                if (units > 0)
+                    settings.append(tick, tickLabel);
+                settings.append(run, button("Use local Older", () => param("older_source", "local")), status);
+            }
         }
         if (layer.kind === "gender") {
             // Named levels (the same seven as the preview strip); the level carries the intensity.
@@ -1370,4 +1438,3 @@ function serverConfigured() {
     const raw = scope.BELJOUR_API ?? scope.PLUMB_API;
     return typeof raw === "string" && /^https?:\/\/[^\s/?#]+$/i.test(raw.trim().replace(/\/+$/, ""));
 }
-//# sourceMappingURL=view.js.map

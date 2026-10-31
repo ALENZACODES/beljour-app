@@ -98,4 +98,3 @@ export function touchUpSection(ctx, dependencies) {
         return run("spots"); });
     return h("section", {}, h("h2", {}, "Local skin touch-ups"), h("p", {}, "Moles, freckles and other natural marks are kept unless you mark them. Fine lines are softened, not erased."), h("label", { for: strength.id }, "Strength", strength), h("div", { class: "row" }, buttons.spots, buttons.lines, buttons.under_eye), h("label", { for: mode.id }, "On the spot-healing preview", mode), clearMarks, marked, status, preview, h("p", { class: "fine" }, "Local simulation of how a touch-up could look. General cosmetic information, not medical advice."));
 }
-//# sourceMappingURL=skin-touch-up.js.map

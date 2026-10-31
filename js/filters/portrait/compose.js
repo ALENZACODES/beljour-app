@@ -172,4 +172,3 @@ export function renderPortrait(image, points, lookId, strength = 30, boost = NO_
     return { ...base, image: { width, height, channels: image.channels, data }, status: "applied", code: "",
         identity: check, glints: result.glints, notes };
 }
-//# sourceMappingURL=compose.js.map

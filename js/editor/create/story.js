@@ -67,4 +67,3 @@ export function storyTexts(templateId, firstId) {
         text: w.text, font: w.font, size: w.size, style: w.style, align: w.align, colour: w.colour, accent: w.accent, boxWidth: w.boxWidth,
         transform: identity(w.x, w.y) }));
 }
-//# sourceMappingURL=story.js.map

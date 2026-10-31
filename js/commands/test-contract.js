@@ -153,4 +153,3 @@ void runContractTests().then((count) => {
     // This module runs only when explicitly executed by the offline test command.
     console.log(`Workstream H browser contracts: ${count} passed`);
 });
-//# sourceMappingURL=test-contract.js.map

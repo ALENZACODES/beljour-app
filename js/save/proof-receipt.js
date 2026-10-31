@@ -125,4 +125,3 @@ export function receiptDescription(summary) {
         `Export ${exported}/${declared} checked, ${exportFailed} failed, ${exportMissing} missing. ` +
         "Not a real-face, identity, fairness, or appearance-quality result.";
 }
-//# sourceMappingURL=proof-receipt.js.map

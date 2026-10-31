@@ -65,4 +65,3 @@ export function describeJudgeDeviceCheck(report) {
         + `${report.smallTargets} below 44px and ${report.smallText} text items below 12px. `
         + "Review manually at 320px, 390px, landscape, 200% zoom and with a screen reader.";
 }
-//# sourceMappingURL=judge-device-selfcheck.js.map

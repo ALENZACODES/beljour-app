@@ -49,4 +49,3 @@ export function renderFullness(image, mesh, direction, amount, options = {}) {
     const out = renderShape(image, mesh, values);
     return { image: out.image, label: LABELS[direction], guardScale: out.metrics.guard_scale, values };
 }
-//# sourceMappingURL=fullness.js.map

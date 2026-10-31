@@ -86,4 +86,3 @@ export function mountOfflineTools(hasEdits, doc = document) {
     host.append(panel);
     return () => panel.remove();
 }
-//# sourceMappingURL=install.js.map

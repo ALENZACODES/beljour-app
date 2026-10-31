@@ -44,4 +44,3 @@ export function tolerance(caps, passes) {
     const perPass = caps.targetFormat === "rgba16f" ? 1 / 1024 : 1 / 255;
     return Math.max(1, passes) * perPass + 1 / 255;
 }
-//# sourceMappingURL=capabilities.js.map

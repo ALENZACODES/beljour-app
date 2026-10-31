@@ -211,4 +211,3 @@ export function salonBoardSvg(brief, grid, background = "light") {
     rows.push(`<text x="${pad}" y="${height - 24}" font-family="system-ui,sans-serif" font-size="10" fill="${PALETTE.muted}">${xml(brief.disclosure)}</text>`);
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" aria-label="Haircut consultation board; unrendered diagrams only">${rows.join("")}</svg>`;
 }
-//# sourceMappingURL=brief.js.map

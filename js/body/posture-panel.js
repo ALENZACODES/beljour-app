@@ -127,4 +127,3 @@ export function mountPosturePanel(parent, options = {}) {
         },
     };
 }
-//# sourceMappingURL=posture-panel.js.map

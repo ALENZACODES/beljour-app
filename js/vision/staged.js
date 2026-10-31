@@ -16,4 +16,3 @@ export function stagedModels(fetcher = fetch) {
 export async function faceReaderReady(vision = defaultVisionClient()) {
     return vision.ready("face-landmarks") && (await stagedModels()).has("face-landmarker-478");
 }
-//# sourceMappingURL=staged.js.map

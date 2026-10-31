@@ -83,4 +83,3 @@ export async function checkC18Shades(snapshot) {
         problems: Object.freeze(problems), digest: snapshot.digest, expected_digest: current.digest,
         release_pass: false });
 }
-//# sourceMappingURL=c18.js.map

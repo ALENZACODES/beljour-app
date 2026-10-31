@@ -40,4 +40,3 @@ export function measureLipEvidence(feature, before, after, w, h, mask, zero) {
     return { feature, changedFraction: changed / mask.length, outsideFraction: outside, alphaPreserved: alpha, edgeEnergyRatio: ratio, identityAtZero: identity, passed: !reasons.length, reasons };
 }
 export function aggregateLipEvidence(rows) { const passed = rows.filter(r => r.passed).length; return { tested: rows.length, passed, failed: rows.length - passed, passRate: rows.length ? passed / rows.length : null, releaseReady: rows.length > 0 && passed === rows.length }; }
-//# sourceMappingURL=evidence.js.map

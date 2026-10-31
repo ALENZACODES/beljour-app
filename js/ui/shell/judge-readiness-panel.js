@@ -21,4 +21,3 @@ export function renderJudgeReadinessPanel(doc, host, report) {
         + "real-face quality, device or licensing gates."));
     host.append(details);
 }
-//# sourceMappingURL=judge-readiness-panel.js.map

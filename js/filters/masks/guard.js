@@ -123,4 +123,3 @@ export function guard(before, look, skin, rise, mode = "full", stats = null) {
     }
     return out;
 }
-//# sourceMappingURL=guard.js.map

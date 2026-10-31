@@ -96,4 +96,3 @@ export class HairColourConsultation {
         return result(null, reading, measuredLevel(reading.lab), rows, allow, cached);
     }
 }
-//# sourceMappingURL=consultation.js.map

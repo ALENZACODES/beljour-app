@@ -83,4 +83,3 @@ export function inspectResponsiveLayout(root, options = {}) {
         warnings,
     };
 }
-//# sourceMappingURL=responsive-audit.js.map

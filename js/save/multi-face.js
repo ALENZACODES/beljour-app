@@ -138,4 +138,3 @@ export class MultiFaceEdit {
             untouchedFaces: this.faces.length - editedFaces };
     }
 }
-//# sourceMappingURL=multi-face.js.map

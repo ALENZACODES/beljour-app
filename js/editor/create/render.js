@@ -321,4 +321,3 @@ function drawInk(env, strokes, opacity, g, scale) {
     ctx.drawImage(sheet.source, 0, 0);
     ctx.restore();
 }
-//# sourceMappingURL=render.js.map

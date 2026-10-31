@@ -56,4 +56,3 @@ export function applyStyling(body, onUpdate) {
         forget: (key) => { removePending(store, key); },
     });
 }
-//# sourceMappingURL=styling-tasks.js.map

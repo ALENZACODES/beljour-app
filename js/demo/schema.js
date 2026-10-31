@@ -24,7 +24,7 @@ import { BACKDROPS } from "../engines/studio/backdrops.js";
 import { INDUSTRIES } from "../engines/studio/headshot.js";
 import { SIDES } from "../engines/studio/relight.js";
 import { STUDIO_LAYER_TOOLS } from "../ui/shell/studio-layer.js";
-import { SAMPLE_IDS } from "../ui/shell/demo.js";
+import { FACE_SAMPLE_IDS, SAMPLE_IDS } from "../ui/shell/demo.js";
 import { normaliseCompareState } from "../ui/shell/compare-session.js";
 import { LOCAL_KINDS } from "../ui/shell/types.js";
 export const DEMO_SCHEMA = "beljour-demo-scene/1";
@@ -33,9 +33,9 @@ export class SceneError extends Error {
 }
 const SAMPLE_VIEW = { "body-front": "front", "body-side": "side" };
 const NEEDS = {
-    older: ["portrait"], younger: ["portrait"], gender: ["portrait"], enhance: SAMPLE_IDS, lighting: SAMPLE_IDS, recolour: ["crown"], balayage: [], beard: ["portrait"], "hair-fibre": ["crown"], posture: ["body-front", "body-side"], "face-makeup": ["portrait"], skin: ["portrait"],
-    portrait: ["portrait"], "under-eye": ["portrait"], "teeth": ["portrait"], "shave": ["portrait"], "grey": ["crown"],
-    studio: ["portrait"], illustration: SAMPLE_IDS, retouch: [],
+    older: FACE_SAMPLE_IDS, younger: FACE_SAMPLE_IDS, gender: FACE_SAMPLE_IDS, enhance: SAMPLE_IDS, lighting: SAMPLE_IDS, recolour: ["crown", "coily"], balayage: [], beard: FACE_SAMPLE_IDS, "hair-fibre": ["crown"], posture: ["body-front", "body-side"], "face-makeup": FACE_SAMPLE_IDS, skin: FACE_SAMPLE_IDS,
+    portrait: FACE_SAMPLE_IDS, "under-eye": FACE_SAMPLE_IDS, "teeth": FACE_SAMPLE_IDS, "shave": FACE_SAMPLE_IDS, "grey": ["crown", "coily"],
+    studio: FACE_SAMPLE_IDS, illustration: SAMPLE_IDS, retouch: [],
 };
 function only(record, keys, where) {
     for (const key of Object.keys(record))
@@ -149,4 +149,3 @@ export function validateScene(raw) {
     return { schema: DEMO_SCHEMA, id, title: text(value.title, "Scene title", 60), line: text(value.line, "Scene line", 160),
         sample: sample, layers, select, compare };
 }
-//# sourceMappingURL=schema.js.map

@@ -88,4 +88,3 @@ export function fitReport(feature, mask, w, h, referenceWidth, outsideFraction =
     return { feature, regionFraction: s.fraction, symmetry, scaleRatio, outsideFraction, warning };
 }
 export function displayScale(value, calibrated) { return calibrated ? `${value.toFixed(1)}  mm` : `${value.toFixed(2)} × image-relative scale`; }
-//# sourceMappingURL=accessory_fit.js.map

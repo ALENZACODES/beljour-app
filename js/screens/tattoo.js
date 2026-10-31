@@ -98,4 +98,3 @@ export function tattooScreen(editor, lookName, deps = {}) {
     });
     return h("section", { class: "tattoo", "aria-label": "Tattoo try-on" }, h("h2", {}, "Tattoo try-on"), h("p", {}, "Your own design on your face skin. It follows the shape and turn of your face and never covers your eyes, brows or lips."), h("p", { class: "fine" }, "The app has no designs of its own. Face placement only for now; arms and body need a body outline that isn't built yet."), h("label", {}, mine, " This design is mine, or I have the right to use it"), h("label", {}, "Design ", file), h("label", {}, "Where ", zone), h("label", {}, "Size ", size), h("label", {}, "Turn ", turn), h("label", {}, "Ink ", opacity), preview, save, status);
 }
-//# sourceMappingURL=tattoo.js.map

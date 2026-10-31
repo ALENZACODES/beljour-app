@@ -28,4 +28,3 @@ export function materialResponse(style, light) {
     return Math.min(.35, base * (.4 + .6 * light));
 }
 export function acceptance(changedOutside, alphaPreserved) { return { local: changedOutside <= .001, alphaPreserved, pass: changedOutside <= .001 && alphaPreserved, modelUsed: false, checkedAnnotation: true }; }
-//# sourceMappingURL=veneers.js.map

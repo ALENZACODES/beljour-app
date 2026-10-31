@@ -151,4 +151,3 @@ export function isSafeJudgeSnapshot(snapshot) {
     }
     return snapshot.requestMade === keys.has("download-requested");
 }
-//# sourceMappingURL=judge-evidence-ledger.js.map

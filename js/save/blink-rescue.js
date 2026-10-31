@@ -79,4 +79,3 @@ export function rescueBlink(target, targetPoints, donor, donorPoints, { samePers
     }
     return { image, eyes: chosen, points, changed, fit, labels: [LABEL] };
 }
-//# sourceMappingURL=blink-rescue.js.map

@@ -107,4 +107,3 @@ export function highFrequency(img) {
         return floatImage(img.width, img.height, img.channels, true);
     return combine(img, up(down(img), img.width, img.height), -1);
 }
-//# sourceMappingURL=pyramid.js.map

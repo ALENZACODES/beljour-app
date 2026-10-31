@@ -77,4 +77,3 @@ export function shadowFields(image, frame, request) {
     report.motion_parameter = request.feature === "W67" ? "angle" : null;
     return { mask, pigment, report };
 }
-//# sourceMappingURL=shadow.js.map

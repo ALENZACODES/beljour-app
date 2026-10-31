@@ -150,4 +150,3 @@ export function renderProofWall(doc, value) {
     section.append(node(doc, "p", "lg-editorial-proof-endnote", "No simulated result, manual check or cached illustration is release certification."));
     return section;
 }
-//# sourceMappingURL=proof.js.map

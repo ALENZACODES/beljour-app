@@ -58,4 +58,3 @@ export class ContinuousEvidence {
         this.disposed = true;
     }
 }
-//# sourceMappingURL=evidence.js.map

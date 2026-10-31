@@ -105,4 +105,3 @@ export function mountHomeFilters(doc = document) {
     }, { rootMargin: "200px" });
     strips.forEach((s) => seen.observe(s));
 }
-//# sourceMappingURL=home-filters.js.map

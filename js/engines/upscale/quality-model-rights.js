@@ -86,4 +86,3 @@ export async function verifyModelBytes(record, bytes) {
         copy?.fill(0);
     }
 }
-//# sourceMappingURL=quality-model-rights.js.map

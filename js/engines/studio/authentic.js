@@ -79,4 +79,3 @@ export function authenticity(image, coarse, points, amount = 60) {
     return { image: out.data, channels: out.channels, label: LABEL, crops: crops(faceRect, w, h).filter((c) => c[0] === "portrait-4x5"),
         metrics: { tool: "authentic", ...check, gain_before_balance: lit.raw } };
 }
-//# sourceMappingURL=authentic.js.map

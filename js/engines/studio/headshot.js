@@ -56,4 +56,3 @@ export function headshot(image, coarse, points, industry = "technology") {
     return { image: out.data, channels: out.channels, label: LABEL, crops: crops(box, p.width, p.height),
         metrics: { ...metrics, ...matte, gain_before_balance: lit.raw } };
 }
-//# sourceMappingURL=headshot.js.map

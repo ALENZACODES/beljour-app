@@ -67,4 +67,3 @@ function open(section, ctx, dependencies) {
     });
     section.append(h("p", { class: "notice" }, "These change photo geometry on your device only. They do not predict the result of any treatment."), h("div", { class: "proc-grid" }, ...groups), h("div", { class: "row" }, show, reset), output);
 }
-//# sourceMappingURL=face-parts.js.map

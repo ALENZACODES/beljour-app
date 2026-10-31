@@ -1,6 +1,22 @@
+/** Gender appearance and age stacked on one photo: a fixed layer order and a joint check.
+ *
+ * Order: the age texture (creases, tone, spots, jaw contour) is painted first, at the face
+ * points the photo was measured with; the gender appearance warp runs after it, starting from
+ * the points as the age reshape left them (the pipeline hands them on), so the creases move with
+ * the face they belong to. Run the other way round, the age texture would
+ * land where the features were before the warp. The editor keeps the person's own stack
+ * order for everything else and only moves age layers ahead of the gender layer.
+ * Refused, with codes: Older and Younger at once, or two layers of the same appearance.
+ * The joint check reads the actual pixels: every change sits inside the age edit area or the
+ * warped face area, the warp guard held, and the Still you marks and skin-lightness checks
+ * ran on the stacked result. A stylized simulation, not a claim about sex, gender or age.
+ * Author: John Khan.
+ */
+import { compositeProviderHair } from "../../engines/haircolour/provider-hair.js";
+import { olderYoucamFraction, renderProviderOlder } from "../../engines/older-youcam/provider-older.js";
 import { renderAge } from "../../engines/local/age.js";
+import { closedLoop } from "../../engines/local/gender-levels.js";
 import { easeStrength } from "./strength-curve.js";
-import { genderAmount } from "./hero-layer.js";
 import { genderTargets } from "../../engines/local/gender.js";
 import { meshWarp } from "../../engines/warp/mesh.js";
 import { moveMagnitude } from "../../engines/warp/field.js";
@@ -48,17 +64,33 @@ export function appearanceStackReport(source, layers, after) {
         let face = points;
         if (age) {
             const stop = Number(age.parameters.stop ?? (age.kind === "older" ? 3 : 2));
-            const result = renderAge(before, points, { stop: age.kind === "older" ? stop : -stop, strength: easeStrength(age.strength), seed: 1024,
-                hairMask: source.hair, layers: { hair: source.hair ? 1 : 0 } });
-            ageStrength = result.metrics.strength_used;
-            face = nextFace(points, result.face, age.opacity) ?? points;
-            result.editMask.data.forEach((v, i) => { if (v > 0)
-                allowed[i] = 1; });
+            const olderYoucam = age.kind === "older" && age.parameters.older_source === "youcam" && !!source.providerOlder;
+            const useProvider = age.kind === "younger" && age.parameters.hair_colour === true && age.parameters.hair_source === "youcam" && !!source.providerHair && !!source.hair;
+            if (olderYoucam && source.providerOlder) {
+                const fraction = olderYoucamFraction(stop) * easeStrength(age.strength);
+                const r = renderProviderOlder(before, points, source.hair, source.providerOlder, source.providerGrey, fraction);
+                ageStrength = fraction;
+                r.editMask.data.forEach((v, i) => { if (v > 0)
+                    allowed[i] = 1; });
+            }
+            else {
+                const result = renderAge(before, points, { stop: age.kind === "older" ? stop : -stop, strength: easeStrength(age.strength), seed: 1024,
+                    hairMask: source.hair, layers: { hair: source.hair && (age.kind === "older" || (age.parameters.hair_colour === true && !useProvider)) ? 1 : 0 },
+                    keepHair: age.kind === "younger" && (age.parameters.hair_colour !== true || useProvider) });
+                if (useProvider && source.providerHair && source.hair)
+                    result.image = compositeProviderHair(result.image, source.providerHair, source.hair);
+                ageStrength = result.metrics.strength_used;
+                face = nextFace(points, result.face, age.opacity) ?? points;
+                result.editMask.data.forEach((v, i) => { if (v > 0)
+                    allowed[i] = 1; });
+            }
         }
         if (gender) {
-            const requested = genderAmount(Number(gender.parameters.slider ?? -33), gender.strength);
+            // Same geometry as the gender layer: the closed loop toward the level's SD target.
+            const slider = Number(gender.parameters.slider ?? -33);
             const start = face.map(([x, y]) => [x, y]);
-            const warp = meshWarp(width, height, start, genderTargets(start, requested, { scope: "face_only" }).points, { guard: true });
+            const loop = closedLoop(start, slider, Number(gender.strength), (sl, gain) => genderTargets(start, sl, { scope: "face_only", gain }).points);
+            const warp = meshWarp(width, height, start, loop.points, { guard: true });
             guardScale = warp.strengthUsed;
             moveMagnitude(warp.result.field).data.forEach((v, i) => { if (v > 1e-9)
                 allowed[i] = 1; });
@@ -86,4 +118,3 @@ export function appearanceStackReport(source, layers, after) {
     return { stacked, reordered, note: stacked ? STACK_NOTE : null, changedPixels: changed, changedOutside: outside, guardScale,
         ageStrengthUsed: ageStrength, marksFound: still.marksFound, marksKept: still.marksKept, lightened: still.lightened, passed, text };
 }
-//# sourceMappingURL=appearance-stack.js.map

@@ -76,4 +76,3 @@ export function applyPreviewTiled(image, width, height, suppliedMasks, request, 
     };
     return { pixels: result, evidence };
 }
-//# sourceMappingURL=tiled.js.map

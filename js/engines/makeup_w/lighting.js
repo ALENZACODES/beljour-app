@@ -24,4 +24,3 @@ export function compareLighting(photo, mask, condition) { const before = activeM
 export function lightingSweep(photo, mask) { return Object.values(LIGHTING_CONDITIONS).map(condition => compareLighting(photo, mask, condition)); }
 export function lightingRobustness(rows, maxHueShift = 35) { if (!rows.length)
     throw new RangeError("at least one lighting result required"); const maxHue = Math.max(...rows.map(row => row.hueShift)); return { conditions: rows.length, max_hue_shift: maxHue, max_lightness_delta: Math.max(...rows.map(row => Math.abs(row.deltaLightness))), max_chroma_delta: Math.max(...rows.map(row => Math.abs(row.deltaChroma))), passed: maxHue <= maxHueShift, label: "generic local lighting robustness simulation; not calibrated product photography" }; }
-//# sourceMappingURL=lighting.js.map

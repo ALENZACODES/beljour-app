@@ -88,4 +88,3 @@ export function guardedEdit(frame, mask, render, level = DEFAULT_LEVEL, lockLeve
         disclosure: 'Screen simulation, identity guard applied; not identity verification.',
     };
 }
-//# sourceMappingURL=identity.js.map

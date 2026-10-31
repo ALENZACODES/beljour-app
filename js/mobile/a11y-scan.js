@@ -164,4 +164,3 @@ export function inspectAccessibility(root, options = {}) {
         disclaimer: "DOM checks are hints only. Keyboard, screen reader, touch, zoom and WCAG need manual verification.",
     };
 }
-//# sourceMappingURL=a11y-scan.js.map

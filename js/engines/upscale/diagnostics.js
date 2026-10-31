@@ -32,4 +32,3 @@ export function baselineDelta(ours, baseline) {
         improvesMeanError: ours.meanAbsoluteError < baseline.meanAbsoluteError,
     };
 }
-//# sourceMappingURL=diagnostics.js.map

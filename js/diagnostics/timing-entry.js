@@ -43,4 +43,3 @@ export function mountTimingEntry(doc = document, browser = window) {
         },
     };
 }
-//# sourceMappingURL=timing-entry.js.map

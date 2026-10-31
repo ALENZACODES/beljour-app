@@ -24,4 +24,3 @@ export function rootStrength(strength, power) {
         throw new RangeError("root power must be above 0 and at most 1");
     return (strength / 100) ** power;
 }
-//# sourceMappingURL=strength-curve.js.map

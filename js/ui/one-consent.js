@@ -59,4 +59,3 @@ export function ensureConsent(doc = document) {
     });
     return pending;
 }
-//# sourceMappingURL=one-consent.js.map

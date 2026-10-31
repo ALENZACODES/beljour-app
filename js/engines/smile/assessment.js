@@ -18,4 +18,3 @@ export function smileNotTested(feature, reason) {
 }
 export function smileGroup(feature, cases, required = 1) { const rows = cases.filter(c => c.feature === feature), tested = rows.filter(c => c.tested), passed = tested.filter(c => c.passed).length, failed = tested.length - passed, notTested = rows.length - tested.length; return { feature, tested: tested.length, passed, failed, notTested, passRate: tested.length ? passed / tested.length : null, releaseReady: tested.length >= required && failed === 0 && notTested === 0, definition: definitions[feature] }; }
 export function smileReleaseSummary(groups) { const blocked = groups.filter(g => !g.releaseReady).map(g => g.feature); return { allReady: blocked.length === 0, blocked, simulationLabels: true, realFaceGate: "required before public release" }; }
-//# sourceMappingURL=assessment.js.map

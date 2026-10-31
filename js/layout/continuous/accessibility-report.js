@@ -101,4 +101,3 @@ export function downloadAuditReport(doc, report) {
         URL.revokeObjectURL(url);
     }
 }
-//# sourceMappingURL=accessibility-report.js.map

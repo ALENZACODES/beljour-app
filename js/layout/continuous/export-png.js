@@ -135,4 +135,3 @@ export async function inspectExportedPng(blob, expectedWidth, expectedHeight) {
         throw new Error("PNG bytes changed during validation");
     return verifyPngBytes(data, expectedWidth, expectedHeight);
 }
-//# sourceMappingURL=export-png.js.map

@@ -74,4 +74,3 @@ export function skinToolsScreen(editor, changed) {
     }
     return h("section", { class: "skin-tools-screen", "aria-label": "Skin tools" }, h("h2", {}, "Skin"), h("div", { class: "row" }, ...buttons), h("label", {}, "Glow look ", glows), remove, out, h("p", { class: "fine" }, "Local simulation, not medical advice. Your original stays unchanged."));
 }
-//# sourceMappingURL=skin-tools.js.map

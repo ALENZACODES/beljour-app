@@ -258,4 +258,3 @@ export class BrowTrialSession {
             similarityProxy: decision.similarity, label: SIMULATION_LABEL };
     }
 }
-//# sourceMappingURL=brow-trial.js.map

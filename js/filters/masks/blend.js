@@ -98,4 +98,3 @@ export function maskCentre(mask) {
         }
     return w > 0 ? [sx / w + 0.5, sy / w + 0.5] : null;
 }
-//# sourceMappingURL=blend.js.map

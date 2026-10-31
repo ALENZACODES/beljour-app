@@ -73,4 +73,3 @@ export function previewOf(plan, maxEdge = 640) {
         workingBytes: workingBytes(plan.sourceWidth, plan.sourceHeight, width, height),
     });
 }
-//# sourceMappingURL=quality-aspect.js.map

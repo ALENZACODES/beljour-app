@@ -52,4 +52,3 @@ export function applyPortraitLayer(img, source, layer) {
             marks_found: i?.marksFound ?? 0, marks_kept: i?.marksKept ?? 0, skin_lift: i?.skinLift ?? 0,
             polish_used: i?.polishUsed ?? 0, label: result.label, notes: result.notes.join(" ") } };
 }
-//# sourceMappingURL=layer.js.map

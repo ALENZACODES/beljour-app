@@ -39,4 +39,3 @@ export function finitePhotograph(image) {
         }
     }
 }
-//# sourceMappingURL=effect-core.js.map

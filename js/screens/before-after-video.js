@@ -42,4 +42,3 @@ export function beforeAfterScreen(editor, lookName, deps = {}) {
     });
     return h("section", { class: "before-after-video", "aria-label": "Before and after video" }, h("h2", {}, "Before / after video"), h("p", { class: "fine" }, "Made and saved on this device; nothing is uploaded. The Simulation label follows your Trust Centre switch."), record, work.button, status);
 }
-//# sourceMappingURL=before-after-video.js.map

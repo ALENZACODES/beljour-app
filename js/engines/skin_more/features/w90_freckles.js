@@ -9,4 +9,3 @@ export function previewW90(pixels, w, h, mask, style = "preserve", amount = .4, 
     return { ...r, faux: true, deterministic, markCount: r.metrics.markCount, passed: deterministic };
 }
 export const passDefinitionW90 = "preserve mode exact identity; faux mode deterministic for same seed and labelled simulation";
-//# sourceMappingURL=w90_freckles.js.map

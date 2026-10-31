@@ -74,4 +74,3 @@ export function colourfulness(pixels, width, height, mask) {
     const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length, variance = (a) => { const m = mean(a); return mean(a.map(v => (v - m) ** 2)); };
     return Math.sqrt(variance(rg) + variance(yb)) + .3 * Math.hypot(mean(rg), mean(yb));
 }
-//# sourceMappingURL=colorimetry.js.map

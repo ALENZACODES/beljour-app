@@ -26,4 +26,3 @@ export function tryStep(value) {
         return null;
     return { step: { kind: "filters", strength: recipe.defaults.strength, params: defaultFilterParams(recipe.id) }, name: recipe.name };
 }
-//# sourceMappingURL=try-look.js.map

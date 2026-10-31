@@ -25,4 +25,3 @@ export function renderJudgePreflightPanel(doc, host, report) {
         + "commercial model rights or real-face accuracy."));
     host.append(details);
 }
-//# sourceMappingURL=judge-preflight-panel.js.map

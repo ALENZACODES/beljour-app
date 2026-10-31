@@ -142,4 +142,3 @@ export function posture(lm, w, h) {
     });
     return [describe("Shoulders", tilt(12, 11)), describe("Hips", tilt(24, 23)), describe("Head", tilt(8, 7))];
 }
-//# sourceMappingURL=measure.js.map

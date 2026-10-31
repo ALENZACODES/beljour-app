@@ -384,3 +384,6 @@ main:focus-visible { outline: none; }  /* focused by the router after each scree
 .sim-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0.75rem; align-items: start; }
 .sim-pair figure { margin: 0; }
 .sim-pair img, .sim-pair canvas { width: 100%; height: auto; display: block; }
+
+/* A control left out of this build (no app server, camera off) stays out: .btn sets its own display. */
+.btn[hidden], .fine[hidden] { display: none; }

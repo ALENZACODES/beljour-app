@@ -1,6 +1,5 @@
 /** Try on: makeup-vto with the matched shades, before/after slider and honesty meter. */
 import { applyStyling } from "../ui/styling-tasks.js";
-import { requirePhoto } from "../ctx.js";
 import { announce, clear, h } from "../dom.js";
 import { compare, costButton, errorBox, sourceNote, swatch } from "../ui/widgets.js";
 import { sendConsentBox } from "../ui/send-consent.js";
@@ -21,8 +20,14 @@ function group(ctx, legend, key, items, onChange) {
 }
 export function renderTryon(main, ctx) {
     clear(main);
-    if (!requirePhoto(ctx))
+    if (!ctx.photoSrc) {
+        ctx.go("photo");
         return;
+    }
+    if (!ctx.photo) {
+        renderLocalTryon(main);
+        return;
+    }
     main.append(h("h1", {}, "Try it on"), h("p", { class: "fine" }, YOUCAM_PRODUCTS.makeup), h("p", { class: "fine" }, YOUCAM_NOTICE));
     if (!ctx.shade) {
         main.append(h("p", { class: "lede" }, "First measure your colours, so the try on starts from shades that match you."), h("button", { class: "btn", onclick: () => ctx.go("shade") }, "Measure my colours"));
@@ -60,4 +65,9 @@ export function renderTryon(main, ctx) {
     main.append(h("p", { class: "lede" }, "Your closest matches are listed first. The quote shows units before you apply. Saved repeats use zero units."), group(ctx, "Foundation", "foundation_id", ctx.shade.foundation, refresh), group(ctx, "Lips", "lip_id", ctx.shade.lip, refresh), group(ctx, "Blush", "blush_id", BLUSH, refresh), action, out);
     refresh();
 }
-//# sourceMappingURL=tryon.js.map
+/** The photo is open on this device only (no app server, or not prepared on it). Makeup try-on is
+ * a YouCam result, so it is not offered here and nothing is sent; the Studio's on-device makeup
+ * looks and the Shade step work on this same photo. */
+function renderLocalTryon(main) {
+    main.append(h("h1", {}, "Try it on"), h("p", { class: "fine" }, YOUCAM_PRODUCTS.makeup), h("p", { class: "hint", role: "status", "aria-live": "polite" }, "Your photo is open on this device only, so the YouCam makeup try-on is off here and nothing is sent. No units are used."), h("p", { class: "lede" }, "Makeup looks made on your device are in the Studio, and the Shade step measures your colours on this photo."), h("div", { class: "row" }, h("a", { href: "studio.html#studio=makeup", class: "btn" }, "Open makeup looks in the Studio"), h("a", { href: "#/shade", class: "btn btn-quiet" }, "Measure my colours")));
+}

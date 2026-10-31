@@ -185,4 +185,3 @@ export class EditorialShadeBook {
         this.root.remove();
     }
 }
-//# sourceMappingURL=editorial-shade-book.js.map

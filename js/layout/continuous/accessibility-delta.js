@@ -34,4 +34,3 @@ export function continuousAuditDeltaCaption(delta) {
         + `${counts[1]} resolved, ${counts[2]} still observed. `
         + "This is not real-device or screen-reader certification.";
 }
-//# sourceMappingURL=accessibility-delta.js.map

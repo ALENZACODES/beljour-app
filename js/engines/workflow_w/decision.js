@@ -218,4 +218,3 @@ export function placementLines(place) {
     return [`Placement: ${percent(place.coverage)}% of your marked hair is painted.`,
         `By height: ${ZONES.map((z) => `${ZONE_WORDS[z]} ${percent(place.zones[z])}%`).join(", ")}.`, place.note];
 }
-//# sourceMappingURL=decision.js.map

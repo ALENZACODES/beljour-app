@@ -65,4 +65,3 @@ export function demoCapabilitySummary(report) {
     return `${counts.supported} available, ${counts.unavailable} unavailable, `
         + `${counts["not-tested"]} not tested. Provider connectivity is not checked.`;
 }
-//# sourceMappingURL=judge-demo-preflight.js.map

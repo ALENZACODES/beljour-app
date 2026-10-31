@@ -211,4 +211,3 @@ export function loadsReceipt(text) {
     rejectDuplicateKeys(text);
     return validateReceipt(value);
 }
-//# sourceMappingURL=board-receipt.js.map

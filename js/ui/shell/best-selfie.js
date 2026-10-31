@@ -85,4 +85,3 @@ export function rankSelfies(inputs) {
     return { version: SELFIE_VERSION, rows, best: best?.id ?? null, notes,
         summary: best ? `${best.label} is the best of ${rows.length} photos.` : "None of these photos can be used. See each photo's reason." };
 }
-//# sourceMappingURL=best-selfie.js.map

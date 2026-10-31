@@ -132,4 +132,3 @@ export function mlsField(width, height, movedFrom, movedTo, { mode = "similarity
     const back = deformer([...movedTo, ...fixed], [...movedFrom, ...fixed], mode, alpha);
     return fromFunction(width, height, back, step);
 }
-//# sourceMappingURL=mls.js.map

@@ -60,4 +60,3 @@ export function place(frame, anchor, offset, scale, turn = 0, depth = 0) {
     const half = scale * w / 2;
     return { centre: [x, y], angle: frame.roll + turn * Math.PI / 180, halfW: half * narrow, halfH: half };
 }
-//# sourceMappingURL=anchors.js.map

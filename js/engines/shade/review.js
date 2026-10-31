@@ -43,4 +43,3 @@ export function reviewDiagnoses(diagnoses) {
     return { format: "beljour-shade-review/1", total: diagnoses.length, categories, thresholds_changed: false,
         last_reported_real_face: LAST_REPORTED_REAL_FACE, new_real_face_score: null, kind: "diagnostic_counts_not_accuracy" };
 }
-//# sourceMappingURL=review.js.map

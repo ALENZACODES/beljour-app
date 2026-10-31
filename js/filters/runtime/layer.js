@@ -253,4 +253,3 @@ export function renderFilterBatch(small, options, page = 0, size = 12, cache = T
     const stamp = thumbSourceStamp(small);
     return visible.map((option) => renderStampedTile(small, option, stamp, cache, true));
 }
-//# sourceMappingURL=layer.js.map

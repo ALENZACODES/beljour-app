@@ -43,7 +43,7 @@ export function renderReel(main, ctx) {
     main.append(h("h1", {}, "Make a reel"), h("p", { class: "lede" }, "Add a vertical clip up to 60 seconds. BELJOUR sends only a few frames to YouCam's Makeup Try On, then carries the look through the whole clip on your device."));
     const look = ctx.tryon.foundation_id || ctx.tryon.lip_id || ctx.tryon.blush_id ? ctx.tryon : null;
     if (!look) {
-        main.append(h("p", { class: "notice" }, "First choose a look on the Makeup step, then come back here."), h("button", { class: "btn", onclick: () => ctx.go(ctx.photo ? "tryon" : "photo") }, "Choose a look"));
+        main.append(h("p", { class: "notice" }, "First choose a look on the Makeup step, then come back here."), h("button", { class: "btn", onclick: () => ctx.go(ctx.photoSrc ? "tryon" : "photo") }, "Choose a look"));
         return;
     }
     if (!("MediaRecorder" in window) || !document.createElement("canvas").getContext("webgl2")) {
@@ -251,4 +251,3 @@ async function make(video, look, maxKeys, withTag, say, result) {
     result.append(h("video", { src: url, controls: true, playsinline: true, class: "reel-out" }), h("p", {}, h("a", { href: url, download: `beljour-reel.${ext}`, class: "btn" }, `Download (${ext.toUpperCase()})`)), ext === "webm" ? h("p", { class: "fine" }, "This browser saves WebM. Most apps accept it; to get an MP4, convert it or use a recent Chrome.") : "");
     announce("Your reel is ready.");
 }
-//# sourceMappingURL=reel.js.map

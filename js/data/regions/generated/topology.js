@@ -5,4 +5,3 @@ export const CONTOURS = { "face_oval": [10, 338, 297, 332, 284, 251, 389, 356, 4
 export const IRISES = { "right_iris": [468, [469, 470, 471, 472]], "left_iris": [473, [474, 475, 476, 477]] };
 export const REGIONS = ["face_oval", "lips", "mouth_opening", "right_eye", "left_eye", "eyes", "right_brow", "left_brow", "brows", "right_iris", "left_iris", "irises", "skin"];
 export const IRIS_SEGMENTS = 32;
-//# sourceMappingURL=topology.js.map

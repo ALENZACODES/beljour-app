@@ -576,4 +576,3 @@ async function start() {
 void start().catch(displayError);
 void setupHairDemo();
 void setupHairWorkbench();
-//# sourceMappingURL=page.js.map

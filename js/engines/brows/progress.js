@@ -76,4 +76,3 @@ export function compareMeasurement(a, b, relativeTolerance = 0.05) {
     const tolerance = number(relativeTolerance, "relativeTolerance", 0, 1);
     return Math.abs(first - second) <= Math.max(tolerance * Math.max(first, second), 1e-12);
 }
-//# sourceMappingURL=progress.js.map

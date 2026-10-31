@@ -82,4 +82,3 @@ export async function pairedDiagnostic(family = "hd1080", resizer = cpuResizer, 
 function round(value, places) {
     return Number(value.toFixed(places));
 }
-//# sourceMappingURL=quality-paired.js.map

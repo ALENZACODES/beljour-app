@@ -77,4 +77,3 @@ export function downloadPreparedManifest(doc, json) {
         URL.revokeObjectURL(url);
     }
 }
-//# sourceMappingURL=offline-import-preparation.js.map

@@ -54,4 +54,3 @@ export function greyTimeline(observed, months = 18, growth = 1.1) {
     return Array.from({ length: count + 1 }, (_, month) => { const progress = month / count, eased = 1 - (1 - progress) ** 1.35, natural = start + (1 - start) * eased, stage = progress < .25 ? "early contrast" : progress < .65 ? "blended transition" : "mostly natural"; return { month, naturalFraction: natural, colouredFraction: 1 - natural, regrowthCm: month * growth, transitionStage: stage }; });
 }
 export function greyMonotone(rows) { return rows.every((row, i) => i === 0 || row.naturalFraction + 1e-12 >= rows[i - 1].naturalFraction); }
-//# sourceMappingURL=plans.js.map

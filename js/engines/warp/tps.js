@@ -223,4 +223,3 @@ export function tpsField(width, height, movedFrom, movedTo, { pins = [], step = 
     const back = ThinPlateSpline.fit([...movedTo, ...fixed], [...movedFrom, ...fixed], smooth);
     return fromFunction(width, height, (x, y) => back.map(x, y), step);
 }
-//# sourceMappingURL=tps.js.map

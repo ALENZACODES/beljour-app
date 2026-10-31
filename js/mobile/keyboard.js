@@ -32,4 +32,3 @@ export function moveNavFocus(event, items) {
     items[next].focus();
     return true;
 }
-//# sourceMappingURL=keyboard.js.map

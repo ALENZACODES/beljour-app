@@ -38,4 +38,3 @@ export function publicCalibrated(found) {
         note: found.note, provider_calls: 0, tested_against_real_products: false,
     };
 }
-//# sourceMappingURL=calibrated-photo.js.map

@@ -237,4 +237,3 @@ export function toBytes(img) {
     }
     return out;
 }
-//# sourceMappingURL=ops.js.map

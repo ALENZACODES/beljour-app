@@ -114,4 +114,3 @@ export function finish(image, output, support, metrics, warnings = [], status = 
             outside_unchanged: true, alpha_unchanged: true, finite_output: true, geometry_changed: false },
         warnings: [...warnings], label: LABEL, status, details };
 }
-//# sourceMappingURL=contracts.js.map

@@ -181,4 +181,3 @@ export function finishStage(img, layer) {
     return { image: { width: img.width, height: img.height, channels: 3, data: toBytes(rgb) }, labels: ["Adjust: finish"],
         metrics: [{ stage: "finish", vignette: v.vignette, grain: v.grain, fade: v.fade }] };
 }
-//# sourceMappingURL=stack.js.map

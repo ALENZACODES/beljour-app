@@ -37,4 +37,3 @@ export function replayChecklist() {
     return { providerCalls: 0, externalUrls: 0, dataFlow: "local static asset", score: null,
         resultCount: 1, replayLabel: HAIR_REPLAY.caption };
 }
-//# sourceMappingURL=replay.js.map

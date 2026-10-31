@@ -67,4 +67,3 @@ export function symmetry(points, width, height) {
     const tilt = (Math.atan2(line.dx, line.dy) * 180) / Math.PI;
     return { score: offsetToScore(mean), regions, midline: line, tiltDegrees: Math.round(tilt * 10) / 10 };
 }
-//# sourceMappingURL=symmetry.js.map

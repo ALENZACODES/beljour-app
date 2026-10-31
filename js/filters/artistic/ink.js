@@ -66,4 +66,3 @@ export function inkStudy(image, hairMask, eyeMask, params) {
     return result("ink-study", src, out, support, LABEL, { hair_max_error: hairError, eye_max_error: eyeError, geometry_displacement: 0,
         ink_coverage: edgeSum / n, protection_pixels: protectionPixels, quantization_levels: levels }, ["Procedural illustration; this does not generate a new face or hairstyle."]);
 }
-//# sourceMappingURL=ink.js.map

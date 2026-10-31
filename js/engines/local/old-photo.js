@@ -146,4 +146,3 @@ export function restoreOldPhoto(image, landmarks = null, { strength = 100 } = {}
         return unchanged(image, "not_applicable", "no_scratches", LABEL, report);
     return edited({ ...out, data: Uint8ClampedArray.from(out.data) }, alpha, LABEL, report);
 }
-//# sourceMappingURL=old-photo.js.map

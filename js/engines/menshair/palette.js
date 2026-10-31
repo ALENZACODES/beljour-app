@@ -188,4 +188,3 @@ export function renderPaletteFibres(image, width, height, hair, scalp, density, 
         density_gain: input.density_gain ?? 80, seed: input.seed ?? 37,
     });
 }
-//# sourceMappingURL=palette.js.map

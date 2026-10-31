@@ -86,4 +86,3 @@ export async function renderTuesdayLockSheet(json) {
     lines.push('', '## External release prerequisites', '', '- Commercial identity model with verified training rights and real-person validation.', '- Preregistered real-face definitions, identical build and external frozen input hashes.', '- Independent 100,000-face evaluation including demographic slices and no-regression checks.', '- Physical-device preview/export budgets and separate human quality reviews.', '- Judge-ready application and end-to-end demonstration.', '', 'The full JSON packet contains all 205 rows and an integrity checksum.', 'The checksum does not attest authenticity, consent, training rights or release readiness.');
     return lines.join('\n') + '\n';
 }
-//# sourceMappingURL=tuesday-sheet.js.map

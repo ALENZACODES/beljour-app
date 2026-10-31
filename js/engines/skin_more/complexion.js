@@ -31,4 +31,3 @@ export function passDefinition(feature) {
         throw new Error("unknown feature");
     return d[feature];
 }
-//# sourceMappingURL=complexion.js.map

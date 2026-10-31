@@ -180,4 +180,3 @@ export function autoFix(image, mesh, strength, steps = {}) {
             noise_sigma: r2(sigma), denoised, gamma: r2(gamma), face_metering: skin ? "face points" : "unmeasured",
             ...(skin ? { face_l_before: r2(faceBefore), face_l_rise: r2(Math.max(0, Math.min(faceRise, allowed))), face_l_allowed_rise: r2(allowed) } : {}) } };
 }
-//# sourceMappingURL=auto-fix.js.map

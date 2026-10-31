@@ -121,4 +121,3 @@ export function browserSpeech() {
         return null;
     return (text) => { synth.cancel(); synth.speak(new Utterance(text)); };
 }
-//# sourceMappingURL=framing-voice.js.map

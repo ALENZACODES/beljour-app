@@ -85,4 +85,3 @@ export class LiveArFilter {
     }
     reset() { this.points.reset(); this.lastPoints = null; }
 }
-//# sourceMappingURL=ar-filters.js.map

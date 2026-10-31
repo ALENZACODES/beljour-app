@@ -79,4 +79,3 @@ export function safeEvidenceNote(state) {
     }
     return "Progress describes only this local illustration, not live provider validation.";
 }
-//# sourceMappingURL=judge-readiness.js.map

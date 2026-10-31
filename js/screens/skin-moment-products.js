@@ -124,4 +124,3 @@ export function productForLine(text) {
     }
     return best?.id ?? null;
 }
-//# sourceMappingURL=skin-moment-products.js.map

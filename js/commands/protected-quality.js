@@ -115,4 +115,3 @@ export function measureProtectedRegions(original, edited, masks, required = []) 
         readings, missingCategories: missing, realfacePass: false,
     };
 }
-//# sourceMappingURL=protected-quality.js.map

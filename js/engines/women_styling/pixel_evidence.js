@@ -121,4 +121,3 @@ export function auditChecks(audit, spec) {
         errors.push('REAL_FACE_CONSENT_REQUIRED');
     return errors;
 }
-//# sourceMappingURL=pixel_evidence.js.map

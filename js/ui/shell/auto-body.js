@@ -23,4 +23,3 @@ export function bodyFromPose(landmarks, width, height) {
         return null;
     }
 }
-//# sourceMappingURL=auto-body.js.map

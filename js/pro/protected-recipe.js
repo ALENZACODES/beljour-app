@@ -28,4 +28,3 @@ export async function restoreProtectedRecipe(encrypted, sourceSha256, sessionSal
         plaintext.fill(0);
     }
 }
-//# sourceMappingURL=protected-recipe.js.map

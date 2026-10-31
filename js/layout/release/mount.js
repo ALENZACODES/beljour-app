@@ -136,4 +136,3 @@ export function mountReleaseWorkspace(doc, host, onExit, options = {}) {
     render();
     return { state, commands, active: () => !disposed, render, dispose };
 }
-//# sourceMappingURL=mount.js.map

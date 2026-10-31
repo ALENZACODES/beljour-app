@@ -64,4 +64,3 @@ export class StrengthMemory {
         this.selected.clear();
     }
 }
-//# sourceMappingURL=strength.js.map

@@ -11,6 +11,7 @@ import { candidate, canvasPoint, choiceRow, commit, frameScheduler, paintPicture
 import { SELECTIVE_SLIDERS, addStroke, areaMask, encodeDabs, readArea, readSelective, DAB_KEYS } from "./selective.js";
 import { orderNote } from "./panel.js";
 import { SELECTIVE_START } from "./options.js";
+import { capturePointer } from "../../ui/shell/pointer-capture.js";
 const PAD = 360;
 const state = { showMask: true };
 function areas(host) { return host.editor.document.layers.filter((l) => l.kind === "selective"); }
@@ -101,7 +102,7 @@ export function selectiveScreen(host) {
         }
         painting = true;
         stroke = [at(event)];
-        pad.setPointerCapture?.(event.pointerId);
+        capturePointer(pad, event.pointerId);
         dabs = addStroke(area.dabs, stroke, area.brush, base ? base.width / base.height : 1);
         redraw();
     });
@@ -177,9 +178,8 @@ export function selectiveScreen(host) {
     const show = h("input", { type: "checkbox", id: "ed-show-mask", "data-focus-key": "selective:mask" });
     show.checked = state.showMask;
     show.addEventListener("change", () => { state.showMask = show.checked; redraw(); });
-    const panel = h("section", { class: "ed-panel", "aria-label": "Selective adjust" }, picker, mode, h("div", { class: "ed-pad-wrap" }, pad), h("p", { class: "shell-check-row" }, show, h("label", { for: "ed-show-mask" }, "Show the area")), h("p", { class: "shell-hint" }, layer ? (area.mode === "point" ? "Tap the photo to move the point." : `${area.dabs.length} brush dab${area.dabs.length === 1 ? "" : "s"}. Drag to paint more.`)
-        : "Tap the photo where you want to change something, then move a slider."), ...sizeSliders, ...adjust, h("div", { class: "ed-actions" }, addArea, clearPaint, removeArea), orderNote());
+    const panel = h("section", { class: "ed-panel", "aria-label": "Selective adjust" }, picker, mode, h("div", { class: "ed-pad-wrap" }, pad), h("p", { class: "shell-check-row" }, show, h("label", { for: "ed-show-mask" }, "Show the area")), h("p", { class: "shell-hint" }, layer ? (area.mode === "point" ? "Tap the picture in this panel to move the point." : `${area.dabs.length} brush dab${area.dabs.length === 1 ? "" : "s"}. Drag to paint more.`)
+        : "Tap the picture in this panel where you want to change something, then move a slider."), ...sizeSliders, ...adjust, h("div", { class: "ed-actions" }, addArea, clearPaint, removeArea), orderNote());
     rememberFocus(panel, "selective");
     return panel;
 }
-//# sourceMappingURL=selective-panel.js.map

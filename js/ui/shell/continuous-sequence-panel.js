@@ -54,4 +54,3 @@ export function renderLocalSequencePanel(doc, snapshot, actions) {
     panel.append(heading, intro, status, progress, count, timeline, controls, disclosure, external, elapsed);
     return panel;
 }
-//# sourceMappingURL=continuous-sequence-panel.js.map

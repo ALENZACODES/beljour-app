@@ -24,4 +24,3 @@ export function motionFixture(frames = 5) {
     }
     return out;
 }
-//# sourceMappingURL=synthetic.js.map

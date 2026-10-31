@@ -281,4 +281,3 @@ export function blendMaskedPixels(pixels, red, green, blue, coverageBytes) {
         pixels[offset + 2] = b + Math.round((blue[b] - b) * alpha / 255);
     }
 }
-//# sourceMappingURL=masks.js.map

@@ -179,4 +179,3 @@ export function renderTurn(image, mesh, options = {}) {
             q4_occluder_evidence_pass: occluderMeasured && q4Object.passed,
             effect_pass: effectPass, triangle_guard_pass: trianglePass } };
 }
-//# sourceMappingURL=turn.js.map

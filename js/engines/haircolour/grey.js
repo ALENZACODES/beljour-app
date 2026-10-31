@@ -129,4 +129,3 @@ export function greyPreview(image, mask, options = {}) {
     Object.assign(metrics, { target_l: Math.round(target[0] * 1e3) / 1e3, moved_pixels: moved });
     return { image: out, weight, label, metrics };
 }
-//# sourceMappingURL=grey.js.map

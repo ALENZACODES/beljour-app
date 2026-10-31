@@ -77,4 +77,3 @@ export function eventTrialScreen(looks, deps = {}) {
     input.addEventListener("change", async () => { const files = [...(input.files ?? [])]; input.value = ""; await run(files); });
     return h("section", { class: "event-trial", "aria-label": "Event trial" }, h("h2", {}, "Event trial"), h("p", {}, "Try one saved look on several photos of the same day and see it on all of them at once."), h("p", { class: "fine" }, "Each photo uses its own face points. Makeup and hair styling from the styling screen are not sent from here. Photos stay on this device."), h("label", {}, "Look ", pick), h("label", {}, "Photos ", input), work.button, status, coverage, board);
 }
-//# sourceMappingURL=event-trial.js.map

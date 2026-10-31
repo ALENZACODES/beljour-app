@@ -146,4 +146,3 @@ export function validateVerifiedSave(raw) {
     }
     return result(status, obj.version, expectedReason[status]);
 }
-//# sourceMappingURL=proof-library.js.map

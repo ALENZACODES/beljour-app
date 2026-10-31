@@ -149,4 +149,3 @@ export function renderSeasonBook(doc, root, state, actions) {
         next?.focus();
     }
 }
-//# sourceMappingURL=view.js.map

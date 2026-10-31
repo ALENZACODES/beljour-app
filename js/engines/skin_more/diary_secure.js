@@ -89,4 +89,3 @@ export function diaryTrend(entries, field) {
     const slope = den ? rows.reduce((s, r) => s + (r[0] - xm) * (r[1] - ym), 0) / den : 0;
     return { points: rows.length, slope, predictive: false };
 }
-//# sourceMappingURL=diary_secure.js.map

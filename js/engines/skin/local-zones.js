@@ -372,4 +372,3 @@ export function dilateBits(bits, width, height, radius) {
         out[i] = grown.data[i] >= 0.5 ? 1 : 0;
     return out;
 }
-//# sourceMappingURL=local-zones.js.map

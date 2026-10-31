@@ -156,4 +156,3 @@ export function offlineImportEvidence(value) {
     };
     return JSON.stringify(report);
 }
-//# sourceMappingURL=offline-import-contract.js.map

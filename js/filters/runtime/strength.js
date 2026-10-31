@@ -37,4 +37,3 @@ export function fromPercent(percent) {
 export function levelValues() {
     return LEVEL_TICKS.map((level) => Number(level));
 }
-//# sourceMappingURL=strength.js.map

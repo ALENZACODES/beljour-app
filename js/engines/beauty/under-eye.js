@@ -98,4 +98,3 @@ export function correctUnderEyes(image, mesh, { strength = 60, includeBags = tru
             alpha[(rect.y0 + y) * image.width + rect.x0 + x] = weight[y * rect.w + x];
     return { image: { ...image, data: out }, alpha, status: "edited", reasonCode: "edited", message: MESSAGES.edited, label: LABEL, report };
 }
-//# sourceMappingURL=under-eye.js.map

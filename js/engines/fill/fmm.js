@@ -169,4 +169,3 @@ export function fastMarching(values, mask, { radius = 5, gradient = true } = {})
     arrival.data.set(t);
     return { image, arrival, order };
 }
-//# sourceMappingURL=fmm.js.map

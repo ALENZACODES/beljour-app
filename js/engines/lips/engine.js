@@ -104,4 +104,3 @@ export function renderLip(photo, landmarks, raw) {
     }
     return { data, coverage, report: { feature: req.feature, style: req.style, label: LABEL, version: VERSION, notes, changed_fraction: changed / coverage.length, texture_preserved: true } };
 }
-//# sourceMappingURL=engine.js.map

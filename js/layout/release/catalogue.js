@@ -136,4 +136,3 @@ export function releaseLink(id) {
         throw new Error("Unsafe release destination");
     return href;
 }
-//# sourceMappingURL=catalogue.js.map

@@ -323,4 +323,3 @@ export function contrastFailures(rows) {
     return rows.filter((r) => r.ratio + 1e-9 < r.needed);
 }
 export { readTokens };
-//# sourceMappingURL=a11y.js.map

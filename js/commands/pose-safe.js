@@ -154,4 +154,3 @@ export function chooseSafePoseDose(pose, requested, options = DEFAULT_POSE_SAFE_
         sampleCount: measurements.cells, backoffCount: checked,
         retention: used / requested, realfaceVerified: false };
 }
-//# sourceMappingURL=pose-safe.js.map

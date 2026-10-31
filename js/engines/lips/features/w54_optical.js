@@ -17,4 +17,3 @@ export function previewW54(pixels, width, height, points, toothMask, style = "bl
     return { pixels: result.data, toothPixelsChanged, opticalOnly: true, passed: toothPixelsChanged === 0, note: "Teeth are unchanged; only adjacent lip colour can alter perceived contrast." };
 }
 export const passDefinitionW54 = "teeth pixels unchanged; effect is explicitly optical contrast from lip colour";
-//# sourceMappingURL=w54_optical.js.map

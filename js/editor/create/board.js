@@ -67,4 +67,3 @@ export function panBy(cell, iw, ih, cw, ch, dx, dy) {
     const clamp = (v) => Math.max(-1, Math.min(1, v));
     return { ...cell, panX: spareX > 0 ? clamp(cell.panX - dx * perPixel / spareX) : 0, panY: spareY > 0 ? clamp(cell.panY - dy * perPixel / spareY) : 0 };
 }
-//# sourceMappingURL=board.js.map

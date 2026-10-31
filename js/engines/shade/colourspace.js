@@ -84,4 +84,3 @@ export function labToSrgb(lab) {
 export function luminance(lin) {
     return RGB_TO_XYZ[1][0] * lin[0] + RGB_TO_XYZ[1][1] * lin[1] + RGB_TO_XYZ[1][2] * lin[2];
 }
-//# sourceMappingURL=colourspace.js.map

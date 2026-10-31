@@ -12,4 +12,3 @@ export const GL = Object.freeze({
     UNPACK_PREMULTIPLY_ALPHA_WEBGL: 0x9241, UNPACK_FLIP_Y_WEBGL: 0x9240, PACK_ALIGNMENT: 0x0d05,
     UNPACK_ALIGNMENT: 0x0cf5, NO_ERROR: 0,
 });
-//# sourceMappingURL=gl.js.map

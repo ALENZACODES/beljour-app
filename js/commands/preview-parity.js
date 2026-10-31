@@ -93,4 +93,3 @@ export function measurePreviewParity(preview, exported, reviewMeanDelta = 3, rev
         alphaMismatchPixels: alphaMismatch, reasonCodes: reasons, realfacePass: false,
     };
 }
-//# sourceMappingURL=preview-parity.js.map

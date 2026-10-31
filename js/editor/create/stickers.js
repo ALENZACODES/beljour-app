@@ -275,4 +275,3 @@ export function humanName(name) {
 /** The ink colour of the white outline drawn round her own cut-out comes from save/sticker.ts;
  * this is the colour a missing picture shows as, so a gap is visible rather than silent. */
 export const MISSING_FILL = ink;
-//# sourceMappingURL=stickers.js.map

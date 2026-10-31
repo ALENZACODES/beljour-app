@@ -1,17 +1,20 @@
+/** "What runs where": local demo edits versus real provider use, worded for this build. */
+import { judgeProviderNote } from "../../layout/judge-contract.js";
+import { providerLive } from "../provider-claims.js";
 import { judgeHeading, judgeNode, judgeNotice, judgeParagraph, judgeTick } from "./judge-elements.js";
 export const JUDGE_CONSENT_FACTS = [
     "This walkthrough never uploads a photo or calls YouCam. A selected file stays in browser memory until you exit.",
     "The hair, face and mock try-on actions are decorative demonstrations, not measured provider results.",
-    "In the live styling flow, YouCam may receive a prepared photo only after you approve that exact action.",
-    "The live flow requests separate consent. These boxes do not grant consent to that flow.",
-    "You can skip, withdraw any consent here, or exit. This demonstration keeps no history or payment information.",
+    "Your one device consent covers this walkthrough.",
+    "You can skip any step or exit. This demonstration keeps no history or payment information.",
 ];
-export function renderJudgeConsent(doc, host, state, onConsent) {
+export function renderJudgeConsent(doc, host, state, onConsent, live = providerLive()) {
     const container = judgeNode(doc, "section", "lg-judge-consent");
     container.append(judgeHeading(doc, "Your choices for this walkthrough"));
     const facts = judgeNode(doc, "ul", "lg-judge-facts");
     for (const fact of JUDGE_CONSENT_FACTS)
         facts.append(judgeNode(doc, "li", "", fact));
+    facts.append(judgeNode(doc, "li", "", judgeProviderNote(live)));
     container.append(facts);
     container.append(judgeNotice(doc, "Provider notice", "Live makeup, hair styling and Skin AI product matching are separate features. "
         + "This walkthrough is a mock and does not use provider units."));
@@ -32,4 +35,3 @@ export function renderJudgeConsent(doc, host, state, onConsent) {
     container.append(judgeParagraph(doc, "All four choices start unchecked. Turning off local illustration also withdraws the other three permissions.", "lg-judge-small"));
     host.replaceChildren(container);
 }
-//# sourceMappingURL=judge-consent.js.map

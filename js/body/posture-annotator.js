@@ -18,6 +18,7 @@ const POINT_LABELS = {
     right_shoulder: "Right shoulder", left_shoulder: "Left shoulder", right_hip: "Right hip", left_hip: "Left hip",
     mid_chest: "Mid chest", navel: "Navel", ear: "Ear", neck_base: "Base of neck", shoulder: "Shoulder",
     mid_back: "Mid back", hip: "Hip", knee: "Knee", ankle: "Ankle (optional)",
+    elbow: "Elbow (optional)", wrist: "Wrist (optional)", hand: "Hand (optional)",
 };
 function button(text, onClick) {
     const element = document.createElement("button");
@@ -162,4 +163,3 @@ export function mountPostureAnnotator(parent, intake, onError = () => { }) {
         },
     };
 }
-//# sourceMappingURL=posture-annotator.js.map

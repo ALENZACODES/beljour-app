@@ -108,4 +108,3 @@ export function foundationFromMatch(image, points, match, strength = 60, choice 
     }
     return applyFoundation(image, points, picked.lab, match.measured_lab, strength);
 }
-//# sourceMappingURL=foundation.js.map

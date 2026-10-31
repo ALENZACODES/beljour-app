@@ -58,4 +58,3 @@ export function fromDetection(result, width, height, minConfidence = 0.7) {
             untouchedFaces: picker.primary.untouchedFaces }),
     };
 }
-//# sourceMappingURL=detected-faces.js.map

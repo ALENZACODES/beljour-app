@@ -92,4 +92,3 @@ export function auditPaletteTargets(level = 5) {
     const evidence = catalogue().map((s) => targetEvidence(image, CONTROL_SIZE, CONTROL_SIZE, mask, CONTROL_ANCHORS, s.id, level, { allowLightening: true }));
     return { meets_target: evidence.filter((e) => e.status === "meets_target").length, swatches: evidence.length, evidence };
 }
-//# sourceMappingURL=evidence.js.map

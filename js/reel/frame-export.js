@@ -48,4 +48,3 @@ export async function prepareEditedReelFrame(before, after, faceMask, guard, loc
     const result = await guardFacePixels(before.data, after.data, before.width, before.height, faceMask, guard, lockLevel);
     return { width: before.width, height: before.height, data: result.pixels };
 }
-//# sourceMappingURL=frame-export.js.map

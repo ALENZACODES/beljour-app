@@ -144,4 +144,3 @@ export class ThumbCache {
         return { hits: this.hitCount, misses: this.missCount, evictions: this.evicted, bytes: this.used, size: this.items.size };
     }
 }
-//# sourceMappingURL=cache.js.map

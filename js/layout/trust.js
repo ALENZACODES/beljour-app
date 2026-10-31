@@ -175,4 +175,3 @@ export async function deleteFaceData(deps) {
 export function receiptText(receipt) {
     return [`Deletion receipt ${receipt.id}`, receipt.at, ...receipt.lines.map((l) => `${l.what}: ${l.result}. ${l.detail}`)].join("\n");
 }
-//# sourceMappingURL=trust.js.map

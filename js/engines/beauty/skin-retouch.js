@@ -112,7 +112,13 @@ export function applyFoundation(image, mesh, strength, options = {}) {
     const map = prepare(image, mesh, options);
     if ("refused" in map)
         return map;
-    const { rect, lab, frame, stats } = map, n = rect.w * rect.h, { base, mid, fine } = bands(map);
+    const { rect, lab, frame, stats } = map, n = rect.w * rect.h, bandsNow = bands(map), { fine } = bandsNow;
+    // The edge-keeping base can keep pore-scale detail on deep or high-contrast skin; then "mid" holds that detail
+    // with its sign flipped and evening it SHARPENED the pores (texture 1.17 on the deep-skin sample, makeup workstream,
+    // Oct 30). The base is softened a little so the mid band only ever holds blotches, never pores.
+    const base = blur(bandsNow.base, rect.w, rect.h, 0.012 * frame.iod), mid = new Float32Array(n);
+    for (let i = 0; i < n; i++)
+        mid[i] = bandsNow.base[i] + bandsNow.mid[i] - base[i];
     const neck = options.shade ? null : neckColour(image, mesh, map);
     // Default shade: her own skin without its redness, half way to her neck when the neck shows.
     const shade = options.shade ?? (neck ? [stats.L, (stats.baseA + neck[1]) / 2, (stats.b + neck[2]) / 2] : [stats.L, stats.baseA, stats.b]);
@@ -128,7 +134,7 @@ export function applyFoundation(image, mesh, strength, options = {}) {
         // Patchy lightness (darker patches, shine) evened; broad light and shadow kept. Shine goes more.
         const patch = near[i] - broad[i];
         const even = patch > 0 ? 0.75 : 0.55;
-        L[i] = base[i] + mid[i] * (1 - 0.7 * c) + fine[i] * (1 - 0.12 * c) - c * even * patch;
+        L[i] = base[i] + mid[i] * (1 - 0.7 * c) + fine[i] * (1 - 0.04 * c) - c * even * patch;
         // A shade other than her own moves the whole tone by its difference, at coverage.
         L[i] += c * 0.8 * (targetL - stats.L);
         a[i] = lab.a[i] + c * 0.65 * (shade[1] - la[i]);
@@ -140,4 +146,3 @@ export function applyFoundation(image, mesh, strength, options = {}) {
             shade_l: Math.round(targetL * 10) / 10, shade_a: Math.round(shade[1] * 10) / 10, shade_b: Math.round(shade[2] * 10) / 10,
             measured_l: Math.round(stats.L * 10) / 10, neck_matched: neck !== null, average_rise_removed: Math.round(taken * 1000) / 1000, lighter_chosen: lighter } };
 }
-//# sourceMappingURL=skin-retouch.js.map

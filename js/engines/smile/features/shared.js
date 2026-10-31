@@ -8,4 +8,3 @@ export function requireRegions(annotation, ...names) {
     }
 }
 export function renderFeature(pixels, width, height, feature, annotation, amount) { return renderSmile({ width, height, channels: 4, data: pixels }, { feature: feature, amount, annotation }).data; }
-//# sourceMappingURL=shared.js.map

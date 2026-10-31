@@ -14,16 +14,19 @@
  *    under the hair. Past it is her neck (its width measured under the beard, darker at its sides)
  *    or the backdrop (filled from the backdrop around the beard); the shadow under the jaw comes in
  *    across a soft jaw edge and fades down the neck.
- * 4. Skin texture: isotropic noise in octave bands, each scaled to the same band of her clean
- *    cheek, so the grain matches her photo with no streaks; a little colour mottling too.
- * 5. Finish (separate from coverage): light stubble at 0.3 (a shadow and single darker dots where
- *    the beard grew, fading out past its edge), a very faint shadow at 0.5, a clean shave at 1.
+ * 4. Skin texture: her own (Texture Law). Min-cut quilting copies pores, fine lines and colour grain
+ *    from her clean cheek and neck, one donor pixel per output pixel, preferring the same height and
+ *    side; donor blocks never contain a mole. No generated noise. Refuses when no clean skin is seen.
+ *    The lower-face form is lit by first-order light fitted to her own skin on the face-mesh normals.
+ * 5. Finish (separate from coverage): light stubble at 0.3 (short hairs on blue-noise follicles in
+ *    her own beard's local colour, so grey stays grey), a very faint shadow at 0.5, a clean shave at 1,
+ *    where the jaw outline also comes in by the beard's estimated thickness (inward only).
  *    Stray stubble past the beard's edge, moustache tips over the lip, and hair tips on the nose's
  *    lower rim are lifted to the skin (or lip) around them.
  * 6. Mixed in full over the beard and faded over a wide band past it (about a sixth of the face
  *    width): her own skin there keeps its pores and lines and only its broad tone moves, and hairs
  *    the search missed close to the beard fade out with it, so there is no line at the old edge.
- * Never lighter than her cheek (or, past the jaw, the backdrop). Shares and radii are ASSUMED,
+ * Shares and radii are ASSUMED,
  * tuned by eye on the synthetic sample. A rough visual estimate, not a grooming or medical
  * prediction. Runs in a window around the lower face and neck. Browser only; the stubble and
  * short-beard path stays byte-matched to the Python twin.
@@ -33,6 +36,13 @@ import { dilate, erode, feather, polygon, subtract, union } from "../core/mask.j
 import { CONTOURS } from "../../data/regions/index.js";
 import { LANDMARKS } from "../../data/face/generated/anatomy.js";
 import { beardArea } from "../local/beard.js";
+import { quiltOwnSkin } from "./quilt.js";
+import { renderStubble } from "./stubble.js";
+import { detectMarks } from "../core/pigment.js";
+import { jawTuck } from "./jaw-tuck.js";
+import { fitLight, landmarkNormals, normalImage, shadeAt as lightAt, toP3 } from "../core/light-model.js";
+import { lstarOf, maskedGaussian } from "../core/bands.js";
+import { renderClock } from "../skin/texture-law.js";
 import { encode, frame, labPlanes, maskedLowpass, median, skinMask, xy } from "../skin/common.js";
 import { meshProblems, REASONS } from "../skin/studio.js";
 import { KEEP_RADIUS, MESSAGES, MIN_REF_PIXELS, MODULE, REF_BELOW, REF_MARGIN } from "./remove.js";
@@ -51,6 +61,13 @@ export const BAND_SIGMAS = [1, 2, 4], BAND_GAINS = [1.0, 1.0, 0.6], STRAY_RADIUS
 /** Missed hairs past the beard are faded only below this line (inter-pupil distances under the eyes). ASSUMED. */
 export const HAIR_RIM_V = 0.3, HAIR_RIM_DROP_L = 16, SKIN_LOW = 0.05;
 export const RIM_DEPTH = 0.065, RIM_CHROMA = 0.8, RIM_CREASE_L = 6;
+/** Soft ceiling: unchanged up to cap - 2 L*, then eased so it never passes cap. */
+function knee(v, cap) {
+    const k = cap - 2;
+    return v <= k ? v : k + 2 * Math.tanh((v - k) / 2);
+}
+/** Eye distance (px) below which a pore is sub-pixel and there is no skin texture to copy. */
+export const SUBPIXEL_IOD = 48;
 export const TEXTURE_GAIN = 1.0, STUBBLE_L = 6, STUBBLE_B = 3;
 export const EDGE_FEATHER = 0.14, FULL_CAP = 1.0, REF_KEEP_SHARE = 0.75;
 /** Working window around the face outline (shares of the inter-pupil distance). */
@@ -139,6 +156,7 @@ const refuse = (code) => ({ refused: true, module: MODULE, code, message: MESSAG
 /** `strength` sets how much of the beard is covered; `finish` (0..1, default strength / 100) sets
  * how clean the shave is: 0.3 leaves light stubble, 0.5 a very faint shadow, 1 a clean shave. */
 export function estimateFullBeard(image, points, strength = 30, keep = [], finish) {
+    const started = renderClock();
     const { width: W, height: H, channels: ch } = image;
     if (!Number.isInteger(W) || !Number.isInteger(H) || Math.min(W, H) < 8 || (ch !== 3 && ch !== 4) || image.data.length !== W * H * ch) {
         throw new RangeError("beard removal needs an RGB or RGBA photo of at least 8 x 8");
@@ -164,7 +182,8 @@ export function estimateFullBeard(image, points, strength = 30, keep = [], finis
     for (let y = 0; y < h; y++)
         for (let k = 0, o = ((y + y0) * W + x0) * ch, q = y * w * ch; k < w * ch; k++)
             sub[q + k] = image.data[o + k];
-    const r = estimateWindow({ width: w, height: h, channels: ch, data: sub }, all.map(([x, y]) => [x - x0, y - y0]), strength, keep.map(([kx, ky]) => [kx - x0, ky - y0]), clean);
+    const zs = points.map((p) => toP3(p)[2]);
+    const r = estimateWindow({ width: w, height: h, channels: ch, data: sub }, all.map(([x, y]) => [x - x0, y - y0]), strength, keep.map(([kx, ky]) => [kx - x0, ky - y0]), clean, zs);
     if ("refused" in r)
         return r;
     const out = new Uint8Array(image.data), weight = new Float64Array(W * H), backdrop = new Float64Array(W * H);
@@ -175,9 +194,40 @@ export function estimateFullBeard(image, points, strength = 30, keep = [], finis
         if (r.backdrop)
             backdrop.set(r.backdrop.subarray(y * w, (y + 1) * w), (y + y0) * W + x0);
     }
-    return { ...r, image: out, weight, backdrop, metrics: { ...r.metrics, window: `${w}x${h}` } };
+    // Clean shave: the beard's thickness comes off the jaw outline (inward only; checked by beardJawCheck).
+    let tuck = { maxShiftPx: 0, meanShiftPx: 0, minJacobian: 1 };
+    if (clean >= 0.7) {
+        const near = (x, y) => {
+            let s = 0, c = 0;
+            for (let dy = -3; dy <= 3; dy++)
+                for (let dx = -3; dx <= 3; dx++) {
+                    const xx = Math.round(x) + dx, yy = Math.round(y) + dy;
+                    if (xx >= 0 && yy >= 0 && xx < W && yy < H) {
+                        s += weight[yy * W + xx];
+                        c++;
+                    }
+                }
+            return c ? s / c : 0;
+        };
+        const t = jawTuck({ width: W, height: H, channels: ch, data: out }, all, f.iod, near, (clean - 0.7) / 0.3);
+        // Pixels the tuck moved outside the beard weight are backdrop pulled in over the old jaw edge: report them.
+        for (let i = 0; i < W * H; i++) {
+            if (weight[i] > 0)
+                continue;
+            for (let c = 0; c < Math.min(ch, 3); c++)
+                if (t.data[i * ch + c] !== out[i * ch + c]) {
+                    weight[i] = 1e-3;
+                    backdrop[i] = 1;
+                    break;
+                }
+        }
+        out.set(t.data);
+        tuck = t;
+    }
+    return { ...r, image: out, weight, backdrop, metrics: { ...r.metrics, window: `${w}x${h}`, render_ms: Math.round(renderClock() - started),
+            jaw_tuck_px: Math.round(tuck.meanShiftPx * 100) / 100, jaw_tuck_min_jacobian: Math.round(tuck.minJacobian * 1000) / 1000 } };
 }
-function estimateWindow(image, pts, strength, keep, finish) {
+function estimateWindow(image, pts, strength, keep, finish, zs = []) {
     const { width: w, height: h } = image;
     let full, lip;
     try {
@@ -214,6 +264,7 @@ function estimateWindow(image, pts, strength, keep, finish) {
     const area = subtract(subtract(union(dilate(hard, AREA_GROW * iod), maskOf(w, h, corners)), noseMask), lipMask).data;
     // Her cheek above the beard: the reference colour, the light on each side, and the grain source.
     const grown = dilate(hard, REF_MARGIN * iod).data, lab = labPlanes(image);
+    const original = [Float64Array.from(lab.L), Float64Array.from(lab.a), Float64Array.from(lab.b)];
     const refIdx = [];
     for (let y = 0; y < h; y++)
         for (let x = 0; x < w; x++) {
@@ -232,7 +283,7 @@ function estimateWindow(image, pts, strength, keep, finish) {
     const across = (i) => U[i];
     const sideL = [lighter.filter((i) => across(i) < 0), lighter.filter((i) => across(i) >= 0)]
         .map((side) => side.length >= MIN_REF_PIXELS / 2 ? median(side.map((i) => lab.L[i])) : ref[0]);
-    const top = Math.max(...sideL), refChroma = Math.hypot(ref[1], ref[2]);
+    const refChroma = Math.hypot(ref[1], ref[2]), topL = Math.max(...sideL);
     // Classify on a lightly blurred copy, so pores and single hairs do not speckle the result.
     const ones = new Float64Array(n).fill(1), br = Math.max(1, Math.round(0.012 * iod));
     const sL = maskedLowpass(lab.L, ones, w, h, br), sa = maskedLowpass(lab.a, ones, w, h, br), sb = maskedLowpass(lab.b, ones, w, h, br);
@@ -481,13 +532,24 @@ function estimateWindow(image, pts, strength, keep, finish) {
     // The face under the beard: the cheek tone at the nose base, running CHIN_NECK of the way to the
     // neck tone at the chin, with the side-to-side light fitted from her cheeks, and a share of the
     // photo's own broad light and shadow there (blurred well past single hairs, centred on zero).
-    const shadeR = Math.max(2, Math.round(SHADE_RADIUS * iod)), coreW = Float64Array.from(coreArea);
-    const lowL = maskedLowpass(maskedLowpass(lab.L, coreW, w, h, shadeR), coreW, w, h, shadeR);
-    let lowMean = 0;
-    for (const i of inner)
-        lowMean += lowL[i];
-    lowMean = inner.length ? lowMean / inner.length : 0;
-    const shadeAt = (i) => (coreArea[i] >= 0.5 ? Math.max(-SHADE_MAX, Math.min(SHADE_MAX, SHADE_GAIN * (lowL[i] - lowMean))) : 0);
+    // Lower-face form from THIS photo's light: mesh normals (MediaPipe z) lit by first-order SH fitted to the
+    // person's clean skin. Replaces fixed chin-ball/sub-lip/dimple Gaussians (same on every face, any light).
+    const p3 = pts.map(([x, y], k) => [x, y, zs[k] ?? NaN]);
+    const N = normalImage(w, h, p3, landmarkNormals(p3), iod, { x0: bx0, y0: Math.max(0, by0 - Math.round(0.6 * iod)), x1: bx1, y1: by1 });
+    const lowY = maskedGaussian(Float64Array.from(lab.L, (v) => ((v + 16) / 116) ** 3), new Float64Array(n).fill(1), w, h, Math.max(1, 0.04 * iod));
+    const lightIdx = refIdx.filter((i) => skinLike(i) && i % w >= N.x0 && i % w <= N.x1 && Math.floor(i / w) >= N.y0 && Math.floor(i / w) <= N.y1);
+    const light = fitLight(lowY, N, lightIdx.length > 6000 ? lightIdx.filter((_, k) => k % Math.ceil(lightIdx.length / 6000) === 0) : lightIdx);
+    let shadeRef = 0;
+    for (const i of lightIdx)
+        shadeRef += lightAt(light, N.nx[i], N.ny[i], N.nz[i]);
+    shadeRef = lightIdx.length ? shadeRef / lightIdx.length : 1;
+    const yCheek = ((toneCheek[0] + 16) / 116) ** 3;
+    const shadeAt = (i) => {
+        const ratio = Math.max(0.2, lightAt(light, N.nx[i], N.ny[i], N.nz[i])) / Math.max(1e-4, shadeRef);
+        const dl = lstarOf(yCheek * ratio) - toneCheek[0];
+        return Math.max(light.reliable ? -9 : -3, Math.min(light.reliable ? 6 : 2, dl));
+    };
+    const formL = light.reliable ? 0.35 * FORM_L : FORM_L; // the fitted normals already darken the jaw underside
     // How far in from the beard's edge the estimate takes over from the fill around it.
     const blendIn = feather(region, Math.max(1, BLEND_DEPTH * iod), "inside").data;
     const formIn = feather(maskOf(w, h, oval), Math.max(1, FORM_REACH * iod), "inside").data;
@@ -540,105 +602,41 @@ function estimateWindow(image, pts, strength, keep, finish) {
             bgMaxL = Math.max(bgMaxL, bgGrid[0][g]);
     // Full cover over the hair where the backdrop or neck shows through (the fill matches what is around it).
     const cover = feather(dilate(region, COVER_GROW * iod), Math.max(1, COVER_GROW * iod), "outside").data;
-    // 4. Skin texture: isotropic noise split into octave bands (1, 2, 4, 8 px), each band scaled to the
-    // same band of her clean cheek, so pores and mottling match her photo's scale with no streaks.
+    // 4. Skin texture from her own clean skin (Texture Law): min-cut quilting copies each pixel's pores,
+    // fine lines and colour grain from exactly one donor pixel of her cheek and neck (no averaging, no
+    // generated noise). The broad Lab surface still comes from the membrane model above.
     const refMask = new Float64Array(n);
     for (const i of refIdx)
         if (skinLike(i))
             refMask[i] = 1;
-    // Worked in a window around the beard and the cheek patches only.
-    let wx0 = bx0, wy0 = by0, wx1 = bx1, wy1 = by1;
-    for (const k of refIdx) {
-        const x = k % w, y = (k - x) / w;
-        wx0 = Math.min(wx0, x);
-        wx1 = Math.max(wx1, x);
-        wy0 = Math.min(wy0, y);
-        wy1 = Math.max(wy1, y);
+    const poreDonors = erode(maskOf(w, h, refMask), Math.max(2, Math.round(0.027 * iod))).data;
+    // Mole guard: her moles and deep marks are identity features; donor blocks never contain one, so no
+    // copied mole appears on the shaved skin.
+    const marks = detectMarks(lab.L, lab.a, lab.b, refMask, w, h, iod).filter((m) => m.isMole || m.depthL >= 8);
+    for (const m of marks) {
+        const r = Math.ceil(m.radius * 2.5 + 0.02 * iod);
+        for (let y = Math.max(0, m.y - r); y <= Math.min(h - 1, m.y + r); y++)
+            for (let x = Math.max(0, m.x - r); x <= Math.min(w - 1, m.x + r); x++)
+                if ((x - m.x) ** 2 + (y - m.y) ** 2 <= r * r)
+                    poreDonors[y * w + x] = 0;
     }
-    const pad = 3 * BAND_SIGMAS[BAND_SIGMAS.length - 1];
-    wx0 = Math.max(0, wx0 - pad);
-    wy0 = Math.max(0, wy0 - pad);
-    wx1 = Math.min(w - 1, wx1 + pad);
-    wy1 = Math.min(h - 1, wy1 + pad);
-    const cw = wx1 - wx0 + 1, chh = wy1 - wy0 + 1, cn = cw * chh;
-    const crop = (plane) => { const out = new Float64Array(cn); for (let y = 0; y < chh; y++)
-        for (let x = 0; x < cw; x++)
-            out[y * cw + x] = plane[(y + wy0) * w + x + wx0]; return out; };
-    // Two box passes per blur (close enough to a Gaussian for grain).
-    const gauss = (plane, mask, sigma) => {
-        const r = Math.max(1, Math.round(sigma * 1.2));
-        return maskedLowpass(maskedLowpass(plane, mask, cw, chh, r), mask, cw, chh, r);
-    };
-    // Octave bands from `first` up: band k is blur(sigma k-1) - blur(sigma k), band 0 starts at the plane.
-    const bands = (plane, mask, first) => {
-        const out = [];
-        let prev = first === 0 ? plane : gauss(plane, mask, BAND_SIGMAS[first - 1]);
-        for (let k = 0; k < BAND_SIGMAS.length; k++) {
-            if (k < first) {
-                out.push(null);
-                continue;
-            }
-            const next = gauss(plane, mask, BAND_SIGMAS[k]), band = new Float64Array(cn);
-            for (let q = 0; q < cn; q++)
-                band[q] = prev[q] - next[q];
-            out.push(band);
-            prev = next;
-        }
-        return out;
-    };
-    const cheekMask = crop(refMask), cropOnes = new Float64Array(cn).fill(1);
-    const calmMask = erode(maskOf(cw, chh, cheekMask), Math.max(2, 2 * BAND_SIGMAS[BAND_SIGMAS.length - 1])).data;
-    const calmIdx = [];
-    for (let q = 0; q < cn; q++)
-        if (calmMask[q] >= 0.5)
-            calmIdx.push(q);
-    // A robust spread (1.4826 x median absolute deviation) on at most ~4000 evenly spread samples.
-    const thin = (idx) => { const step = Math.max(1, Math.floor(idx.length / 4000)); return step === 1 ? idx : idx.filter((_, k) => k % step === 0); };
-    const robustSd = (plane, idx) => { if (idx.length < 16)
-        return 0; const t = thin(idx); const m = median(t.map((q) => plane[q])); return 1.4826 * median(t.map((q) => Math.abs(plane[q] - m))); };
-    const noiseIdx = [];
-    for (let y = by0; y <= by1; y += 3)
-        for (let x = bx0; x <= bx1; x += 3)
-            noiseIdx.push((y - wy0) * cw + x - wx0);
-    const texture = [new Float64Array(n), new Float64Array(n), new Float64Array(n)];
-    const grainSd = [];
-    [lab.L, lab.a, lab.b].forEach((plane, c) => {
-        const first = c === 0 ? 0 : BAND_SIGMAS.length - 1; // colour mottling only at the coarsest scale
-        const cheekBands = bands(crop(plane), cheekMask, first);
-        const white = new Float64Array(cn);
-        for (let y = 0; y < chh; y++)
-            for (let x = 0; x < cw; x++)
-                white[y * cw + x] = grain(x + wx0, y + wy0, 21 + c) + grain(x + wx0, y + wy0, 31 + c) + grain(x + wx0, y + wy0, 41 + c) - 1.5;
-        const noiseBands = bands(white, cropOnes, first);
-        noiseBands.forEach((band, k) => {
-            if (!band)
-                return;
-            const want = robustSd(cheekBands[k], calmIdx), have = robustSd(band, noiseIdx);
-            if (c === 0)
-                grainSd.push(want);
-            if (!(want > 0) || !(have > 0))
-                return;
-            const gain = (c === 0 ? BAND_GAINS[k] : MOTTLE_GAIN) * want / have, tex = texture[c];
-            for (let y = by0; y <= by1; y++)
-                for (let x = bx0; x <= bx1; x++)
-                    tex[y * w + x] += gain * band[(y - wy0) * cw + x - wx0];
-        });
+    const poreTone = new Float64Array(n);
+    for (let y = by0; y <= by1; y++)
+        for (let x = bx0; x <= bx1; x++)
+            poreTone[y * w + x] = sample(fillGrid[0], x, y);
+    // Donors at a similar height on the same side of the face are preferred.
+    const quilt = quiltOwnSkin([lab.L, lab.a, lab.b], poreDonors, coreArea, poreTone, w, h, iod, {
+        seed: 37, prior: (d, t) => 0.8 * Math.abs(V[d] - V[t]) + (Math.sign(U[d]) !== Math.sign(U[t]) && Math.abs(U[t]) > 0.25 ? 0.15 : 0)
     });
-    // Variance match: the estimate's grain over the beard is scaled to the cheek band's own fine detail.
-    let texGain = TEXTURE_GAIN, cheekGrain = 0, estGrain = 0;
-    if (cheekBand.length >= MIN_REF_PIXELS && inner.length >= MIN_REF_PIXELS) {
-        const lowL = maskedLowpass(lab.L, refMask, w, h, Math.max(1, BAND_SIGMAS[BAND_SIGMAS.length - 1]));
-        const calmFull = [];
-        for (const q of calmIdx)
-            calmFull.push((Math.floor(q / cw) + wy0) * w + (q % cw) + wx0);
-        const hpBand = new Float64Array(n);
-        for (const i of calmFull)
-            hpBand[i] = lab.L[i] - lowL[i];
-        cheekGrain = robustSd(hpBand, calmFull);
-        estGrain = robustSd(texture[0], inner);
-        if (cheekGrain > 0 && estGrain > 0)
-            texGain = Math.min(1.5, Math.max(0.5, cheekGrain / estGrain));
-    }
+    // No clean skin of her own to copy from: refuse, never invent. Below SUBPIXEL_IOD a pore is under a pixel, so
+    // the photo has no resolvable skin texture to copy; the smooth fill alone is then the honest answer.
+    if (!quilt && iod >= SUBPIXEL_IOD)
+        return refuse("zone_not_visible");
+    const quiltOr = quilt ?? { bands: [new Float64Array(n), new Float64Array(n), new Float64Array(n)], sdRatio: 0, kurtRatio: 0, blocks: 0, ms: 0 };
+    const texture = quiltOr.bands, texGain = TEXTURE_GAIN;
+    const cheekGrain = quiltOr.sdRatio;
+    const grainSd = [quiltOr.sdRatio, quiltOr.kurtRatio, quiltOr.blocks];
+    const stubbleVis = new Float64Array(n);
     // 5. Shaving shadow: where the beard was, softened.
     // (two passes over DENSITY_SOFT, so the shadow fades out at the beard's edge instead of stopping)
     const densityR = Math.max(1, Math.round(DENSITY_SOFT * iod));
@@ -668,7 +666,7 @@ function estimateWindow(image, pts, strength, keep, finish) {
         const fs = faceShare[i] + neckShare[i] > 1e-6 ? faceShare[i] / (faceShare[i] + neckShare[i]) : 1;
         const ramp = CHIN_NECK * chinRamp(V[i]), b = blendIn[i];
         return [0, 1, 2].map((c) => {
-            const model = toneCheek[c] + ramp * (toneNeck[c] - toneCheek[c]) + fits[c][1] * (U[i] - chinU) + (c === 0 ? shadeAt(i) - FORM_L * (1 - formIn[i]) : 0);
+            const model = toneCheek[c] + ramp * (toneNeck[c] - toneCheek[c]) + fits[c][1] * (U[i] - chinU) + (c === 0 ? shadeAt(i) - formL * (1 - formIn[i]) : 0);
             // The neck turns away at its sides too.
             const neckSide = c === 0 ? FORM_L * (1 - smooth(Math.min(U[i] - neckL, neckR - U[i]) / FORM_REACH)) : 0;
             return fs * ((1 - b) * sample(fillGrid[c], x, y) + b * model) + (1 - fs) * (sample(neckGrid[c], x, y) - neckSide);
@@ -707,7 +705,7 @@ function estimateWindow(image, pts, strength, keep, finish) {
             if (kept.data[i] >= 0.5 && keptInner[i] < 1 && hairNear[i] >= 0.5) {
                 // The border blend: part of the estimate, fading to nothing a few pixels in.
                 const t = (1 - keptInner[i]) * amount;
-                const est = skinAt(x, y, i), fill = [Math.min(top, est[0] + TEXTURE_GAIN * texture[0][i]), est[1], est[2]];
+                const est = skinAt(x, y, i), fill = [knee(est[0] + TEXTURE_GAIN * texture[0][i], topL), est[1], est[2]];
                 lab.L[i] += t * (fill[0] - lab.L[i]);
                 lab.a[i] += t * (fill[1] - lab.a[i]);
                 lab.b[i] += t * (fill[2] - lab.b[i]);
@@ -795,16 +793,22 @@ function estimateWindow(image, pts, strength, keep, finish) {
                 continue;
             // Below full coverage a share of her own beard shows through; it fades out with the beard's
             // (softened) density, so the ghost has no hard edge where the hairs stopped.
-            wt *= amount + (1 - amount) * (1 - Math.min(1, ghost[i])) * smooth(amount / 0.5);
+            // Strength is a grooming finish: 30 removes the beard mass before stubble is added, instead of
+            // blending 70% of the original hair back in.
+            const removal = smooth(amount / 0.28);
+            wt *= onBeard ? removal : removal * (0.55 + 0.45 * (1 - Math.min(1, ghost[i])));
             const d = Math.min(1, density[i]) * stubble;
             // Under the jaw: the shadow comes in across the soft jaw edge, then fades down the neck.
             const shade = JAW_SHADOW_L * smooth(jawShadow[i]) * (1 - jawIn[i]);
             const est = skinAt(x, y, i);
-            const skinL = Math.min(top, est[0] + texGain * texture[0][i] - STUBBLE_L * d);
+            const skinL = est[0] + texGain * texture[0][i] - STUBBLE_L * d;
             const skinT = toneOnly
                 // Her own skin in the band: only its broad tone moves to the estimate's.
-                ? [Math.min(Math.max(baseL, top), baseL + Math.min(top, est[0] - STUBBLE_L * d) - skinLow[0][i]) - shade, baseA + est[1] - 0.3 * STUBBLE_B * d - skinLow[1][i], baseB + est[2] - STUBBLE_B * d - skinLow[2][i]]
+                ? [baseL + est[0] - STUBBLE_L * d - skinLow[0][i] - shade, baseA + est[1] - 0.3 * STUBBLE_B * d - skinLow[1][i], baseB + est[2] - STUBBLE_B * d - skinLow[2][i]]
                 : [skinL - shade, est[1] + texture[1][i] - 0.3 * STUBBLE_B * d, est[2] + texture[2][i] - STUBBLE_B * d];
+            // Never lighter than her brightest cheek (or this pixel's own value): a soft knee, not a flat clip, so the
+            // copied pores still read in the highlights.
+            skinT[0] = knee(skinT[0], toneOnly ? Math.max(baseL, topL) : topL);
             const target = bgGrid && bgShare > 0
                 ? skinT.map((v, c) => (1 - bgShare) * v + bgShare * sample(bgGrid[c], x, y))
                 : skinT;
@@ -820,13 +824,13 @@ function estimateWindow(image, pts, strength, keep, finish) {
             lab.a[i] += wt * (target[1] - lab.a[i]);
             lab.b[i] += wt * (target[2] - lab.b[i]);
             // Stubble (at a low finish): short hairs as single darker, greyer dots where the beard grew.
-            if ((onBeard || wide[i] > 0) && d > 0 && bgShare < 0.5 && grain(x, y, 11) < STUBBLE_DOTS * d) {
-                lab.L[i] -= wt * STUBBLE_DOT_L * Math.sqrt(d);
-                lab.a[i] -= wt * 0.4 * lab.a[i] * Math.sqrt(d);
-                lab.b[i] -= wt * 0.4 * lab.b[i] * Math.sqrt(d);
-            }
+            if ((onBeard || wide[i] > 0) && d > 0 && bgShare < 0.5)
+                stubbleVis[i] = wt * Math.min(1, d / Math.max(1e-6, stubble));
             weight[i] = Math.max(wt, stray > 0 ? stray * amount : 0);
         }
+    // Stubble as hairs from the person's own beard colour, on blue-noise follicles (see stubble.ts).
+    const stub = renderStubble({ L: lab.L, a: lab.a, b: lab.b, original, visibility: stubbleVis, hairMask: clean, w, h, iod,
+        chin: pts[LANDMARKS.chin], across: [face.ux, face.uy], down: [-face.uy, face.ux], finish, seed: 911, shadow: false });
     const toneAfter = [lab.L, lab.a, lab.b].map((pl) => inner.length ? inner.reduce((t, i) => t + pl[i], 0) / inner.length : 0);
     // The patch's top and bottom thirds (inside the jaw), after, to compare with the cheek and neck.
     let vLo = Infinity, vHi = -Infinity;
@@ -843,7 +847,10 @@ function estimateWindow(image, pts, strength, keep, finish) {
     Object.assign(metrics, { edited_pixels: edited, grain_l: grainSd.map(r3).join("/"), grid: `${gw}x${gh}`, stray_pixels: strayPx, backdrop_pixels: backdropPx,
         backdrop_l_max: r3(bgMaxL), finish: r3(finish), stubble: r3(stubble), tex_gain: r3(texGain), cheek_grain: r3(cheekGrain),
         tone_before: toneBefore.map(r3).join("/"), tone_cheek: toneCheek.map(r3).join("/"), tone_after: toneAfter.map(r3).join("/"),
-        tone_nose: toneNose.map(r3).join("/"), tone_neck: toneNeck.map(r3).join("/"), tone_top: toneTop.map(r3).join("/"), tone_bottom: toneBottom.map(r3).join("/"), neck_u: `${r3(neckL)}..${r3(neckR)}`, known_cells: r4(known.reduce((s, v) => s + v, 0) / known.length) });
+        tone_nose: toneNose.map(r3).join("/"), tone_neck: toneNeck.map(r3).join("/"), tone_top: toneTop.map(r3).join("/"), tone_bottom: toneBottom.map(r3).join("/"), neck_u: `${r3(neckL)}..${r3(neckR)}`, known_cells: r4(known.reduce((s, v) => s + v, 0) / known.length),
+        texture_sd_ratio: r4(quiltOr.sdRatio), texture_kurtosis_ratio: r4(quiltOr.kurtRatio), quilt_blocks: quiltOr.blocks, quilt_ms: r3(quiltOr.ms),
+        texture_source: quilt ? "own_skin_quilt" : "none_subpixel",
+        light_r2: r3(light.r2), light_reliable: light.reliable, follicles: stub.follicles, follicle_nn_cv: r3(stub.nnCV),
+        stubble_grey_share: r3(stub.greyShare), donor_marks_excluded: marks.length });
     return { image: encode(image, lab, weight), weight, backdrop, label: FULL_LABEL, metrics };
 }
-//# sourceMappingURL=full.js.map

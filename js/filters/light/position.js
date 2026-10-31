@@ -75,4 +75,3 @@ register({ name: "light.centre", family: "light", skinHue: false, image: centre,
 register({ name: "light.grade", family: "light", skinHue: true, image: grade,
     params: { topHue: angle(), topAmount: num(0, 0, 0.1), bottomHue: angle(), bottomAmount: num(0, 0, 0.1) },
     help: "A tint graded from the top of the photo to the bottom" });
-//# sourceMappingURL=position.js.map

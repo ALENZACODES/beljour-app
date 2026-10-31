@@ -121,4 +121,3 @@ export function controlIcon(controlId) {
 export function framingPoints(width, height) {
     return symmetricFace(width, height, Math.round(width * 0.47), Math.round(height * 0.63)).map(([x, y]) => [x, y]);
 }
-//# sourceMappingURL=shape-art.js.map

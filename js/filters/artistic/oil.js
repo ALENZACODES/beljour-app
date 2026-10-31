@@ -104,4 +104,3 @@ export function pigmentOil(image, params, offsetX = 0, offsetY = 0) {
         quadrant_north_west_share: counts[0] / n, quadrant_north_east_share: counts[1] / n,
         quadrant_south_west_share: counts[2] / n, quadrant_south_east_share: counts[3] / n }, ["Paint treatment only; clothing, body shape and facial proportions are not generated."]);
 }
-//# sourceMappingURL=oil.js.map

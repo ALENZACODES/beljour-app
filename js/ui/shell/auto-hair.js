@@ -33,7 +33,10 @@ export function autoCrown(source) {
     for (let y = 0; y < bottom; y++)
         for (let x = x0; x <= x1; x++) {
             const i = y * w + x;
-            if (closed[i] >= 0.5 && !(face[i] >= 0.5)) {
+            // The closing treats the image edge as hair, so near the top border it filled background between
+            // flyaways (Hair fibres then painted a grey block there). Within r of the border only real hair counts.
+            const nearEdge = y < r || x < r || x > w - 1 - r;
+            if ((nearEdge ? hair[i] >= 0.5 : closed[i] >= 0.5) && !(face[i] >= 0.5)) {
                 data[i] = 1;
                 n++;
             }
@@ -70,4 +73,3 @@ export function autoPlacement(source) {
         }
     return enough(n, w, h) ? { width: w, height: h, channels: 1, data } : null;
 }
-//# sourceMappingURL=auto-hair.js.map

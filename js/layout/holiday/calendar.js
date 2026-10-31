@@ -96,4 +96,3 @@ export function upcoming(today, region, wanted, windowDays = 45, variants = {}) 
     }
     return found.sort((a, b) => a.daysUntil - b.daysUntil || order.indexOf(a.occurrence.occasion) - order.indexOf(b.occurrence.occasion));
 }
-//# sourceMappingURL=calendar.js.map

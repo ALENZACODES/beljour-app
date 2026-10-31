@@ -10,4 +10,3 @@ export function installEyesBrowsLink(container) {
     link.setAttribute("aria-label", "Open local eyes, brows and original art simulations");
     container.append(link);
 }
-//# sourceMappingURL=install.js.map

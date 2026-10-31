@@ -116,4 +116,3 @@ export class ProBrowserBenchmark {
         });
     }
 }
-//# sourceMappingURL=benchmark.js.map

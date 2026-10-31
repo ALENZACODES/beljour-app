@@ -120,4 +120,3 @@ export function measure(points, referenceSet = "golden", custom = {}) {
     });
     return { referenceSet, midline, ratios, note: NOTE };
 }
-//# sourceMappingURL=ratios.js.map

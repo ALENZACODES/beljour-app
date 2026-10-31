@@ -23,4 +23,3 @@ export function quoteDisplay(quote) {
     return { text: `${numberOfUnits(units)} · ${budget}`, detail: `${detail}${caution}${why ? `. ${why}` : ""}`,
         available, scope };
 }
-//# sourceMappingURL=quote-display.js.map

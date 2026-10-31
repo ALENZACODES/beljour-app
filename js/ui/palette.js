@@ -61,4 +61,3 @@ export function token(name, element) {
     catch { /* no page or a blocked lookup: fall back to the light value */ }
     return PALETTE[name];
 }
-//# sourceMappingURL=palette.js.map

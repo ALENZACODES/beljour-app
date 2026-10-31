@@ -156,4 +156,3 @@ export class LookShelf {
         return [...this.byEffect.values()].sort((a, b) => ORDER[a.effect] - ORDER[b.effect]);
     }
 }
-//# sourceMappingURL=look.js.map

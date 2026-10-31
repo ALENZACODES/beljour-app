@@ -9,4 +9,3 @@ export * as ratios from "./ratios.js";
 export * as symmetry from "./symmetry.js";
 export * as golden from "./golden.js";
 export * as guarded from "./guarded.js";
-//# sourceMappingURL=index.js.map

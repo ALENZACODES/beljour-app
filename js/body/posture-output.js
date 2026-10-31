@@ -100,4 +100,3 @@ export async function exportProtectedPosture(result, inspection, settings = {}, 
     return exportPostureImage({ ...result.guarded, image: result.image, label: result.label,
         lockLevel: result.lockLevel }, FIXES[result.fix].id, settings, encoder);
 }
-//# sourceMappingURL=posture-output.js.map

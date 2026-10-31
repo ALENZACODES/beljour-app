@@ -189,4 +189,3 @@ export function mountInstallPage(doc, host, controller) {
         },
     };
 }
-//# sourceMappingURL=install-page.js.map

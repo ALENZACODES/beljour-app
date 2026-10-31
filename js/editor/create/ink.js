@@ -91,4 +91,3 @@ export function strokeBounds(s) {
     const r = s.width / 2 + (s.brush === "neon" ? s.width * 1.5 : 0);
     return { x0: x0 - r, y0: y0 - r, x1: x1 + r, y1: y1 + r };
 }
-//# sourceMappingURL=ink.js.map

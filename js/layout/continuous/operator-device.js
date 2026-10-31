@@ -49,4 +49,3 @@ export function operatorDeviceCaption(result) {
     return `${count}/4 local browser facilities detected. ${result.note} `
         + "No photo, personal device fingerprint, or network request was collected.";
 }
-//# sourceMappingURL=operator-device.js.map

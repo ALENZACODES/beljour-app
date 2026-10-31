@@ -49,4 +49,3 @@ export function regionSink(polite, assertive) {
         requestAnimationFrame(() => { region.textContent = text; });
     };
 }
-//# sourceMappingURL=announcer.js.map

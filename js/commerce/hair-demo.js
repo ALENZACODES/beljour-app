@@ -331,4 +331,3 @@ export async function setupHairDemo() {
         status(error instanceof Error ? error.message : "This device cannot open the optional local haircut gallery.");
     }
 }
-//# sourceMappingURL=hair-demo.js.map

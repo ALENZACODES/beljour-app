@@ -84,4 +84,3 @@ export function auditPatches(image, masks, gains, whiteMode, minimum, cheekLimit
     return { samples, audit: { usable: reason === null, reason, cheek_distance: distance,
             zone_sizes: sizes, white_mode: whiteMode, note } };
 }
-//# sourceMappingURL=reading.js.map

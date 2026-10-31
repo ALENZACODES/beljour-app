@@ -49,4 +49,3 @@ export async function clearPublicShellStorage(caches) {
     }
     return removed;
 }
-//# sourceMappingURL=install-storage.js.map

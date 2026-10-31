@@ -50,4 +50,3 @@ export function defineCurls(photo, mask, amount) { const out = new Uint8ClampedA
             out[i * photo.channels + c] = Math.round(photo.data[i * photo.channels + c] + detail * .55 * a);
         }
     } return out; }
-//# sourceMappingURL=colour.js.map

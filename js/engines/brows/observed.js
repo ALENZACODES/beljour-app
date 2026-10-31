@@ -151,4 +151,3 @@ export function renderLamination(image, evidence, frames, settings) {
         refused_components: refused, transported_pixels: swaps.length, maximum_movement_px: swaps.length ? maxMove : 0,
         length_scale: 1, smoothing_applied: false, rgb_histogram_conserved: true }, warnings, amount > 0 && !swaps.length ? "unavailable" : "simulation");
 }
-//# sourceMappingURL=observed.js.map

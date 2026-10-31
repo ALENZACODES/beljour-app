@@ -140,4 +140,3 @@ export function median(values) {
 export function unchanged(image, label, metrics = {}) {
     return { image: copyOf(image), weight: new Float64Array(image.width * image.height), label, metrics: { ...metrics, unchanged: true } };
 }
-//# sourceMappingURL=common.js.map

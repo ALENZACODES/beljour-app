@@ -66,4 +66,3 @@ export function assessLocalQuality(definition, metrics, externalVerified = false
     return { outcome: failed.length ? 'fail' : 'unproven',
         checked, incomplete, failed, realfacePass: false };
 }
-//# sourceMappingURL=quality-r2h.js.map

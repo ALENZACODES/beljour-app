@@ -36,4 +36,3 @@ export function renderShape(image, frames, settings) {
         left_width_px: frames[1].width, right_width_px: frames[0].width,
         thickness_scale: design.thickness_scale, guide_only: true }, [design.warning], "simulation", design);
 }
-//# sourceMappingURL=shape.js.map

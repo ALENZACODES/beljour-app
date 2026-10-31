@@ -114,4 +114,3 @@ export function threePointCurve(midtone) {
     }
     return [{ x: 0, y: 0 }, { x: 0.5, y: midtone }, { x: 1, y: 1 }];
 }
-//# sourceMappingURL=curves.js.map

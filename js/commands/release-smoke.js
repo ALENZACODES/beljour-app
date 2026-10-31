@@ -99,4 +99,3 @@ export async function runFiveCommandSyntheticSmoke(identity, seed = 17, edge = 3
         session.closePhoto();
     }
 }
-//# sourceMappingURL=release-smoke.js.map

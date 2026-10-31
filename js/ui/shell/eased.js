@@ -6,4 +6,3 @@ export function easedPercent(percent) {
     const s = Math.max(0, Math.min(1, percent / 100));
     return Math.round(1000 * s * (2 - s)) / 10;
 }
-//# sourceMappingURL=eased.js.map

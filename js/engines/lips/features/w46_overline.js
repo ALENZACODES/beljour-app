@@ -11,4 +11,3 @@ export function previewW46(pixels, width, height, points, amount = .4, style = "
     return { pixels: result.data, guideFraction, passed: guidePixels > 0, note: "Guide follows the checked lip edge and intentionally limits extension beyond it." };
 }
 export const passDefinitionW46 = "guide follows existing vermilion edge and overline remains a bounded simulation";
-//# sourceMappingURL=w46_overline.js.map

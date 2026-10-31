@@ -27,4 +27,3 @@ function inWorker(scope) {
 const scope = globalThis;
 if (inWorker(scope))
     scope.addEventListener("message", serve(defaultRegistry(), scope));
-//# sourceMappingURL=worker.js.map

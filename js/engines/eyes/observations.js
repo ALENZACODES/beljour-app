@@ -81,4 +81,3 @@ export function photometricTraceEvidence(photo, trace) {
     return { samples: values.length, missing, median_dark_line_contrast: median, classification: "diagnostic_only", trace_removed: false,
         warning: "Grey or low-contrast lashes can score weakly; confirm the trace visually." };
 }
-//# sourceMappingURL=observations.js.map

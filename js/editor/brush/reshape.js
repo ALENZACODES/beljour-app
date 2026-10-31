@@ -272,4 +272,3 @@ function rgbCopy(img) {
             out[i * 3 + c] = img.data[i * 4 + c];
     return out;
 }
-//# sourceMappingURL=reshape.js.map

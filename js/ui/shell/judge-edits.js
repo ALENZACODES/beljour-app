@@ -1,5 +1,6 @@
 /** Screens for three distinct edits, each gated by in-memory action consent. */
-import { LOCAL_DISCLOSURE, MOCK_DISCLOSURE, } from "../../layout/judge-contract.js";
+import { providerLive } from "../provider-claims.js";
+import { judgeProviderNote, LOCAL_DISCLOSURE, MOCK_DISCLOSURE, } from "../../layout/judge-contract.js";
 import { paintJudgeLook } from "./judge-canvas.js";
 import { judgeChoice, judgeHeading, judgeNode, judgeNotice, judgeParagraph, judgePreview, } from "./judge-elements.js";
 import { renderIdentityControls } from "./identity-controls.js";
@@ -64,7 +65,7 @@ export function renderJudgeHair(doc, host, state, image, onHair, enhancements) {
     applyEnhancements(doc, panel, "hair", state, enhancements);
     panel.append(judgeNotice(doc, "Local demo", enabled
         ? LOCAL_DISCLOSURE
-        : "Select a photo and opt into the hair action on step 2, or skip."));
+        : "Choose an image on step 1, or skip this step."));
     editColumns(doc, panel, editPreview(doc, state, image, "Preview with optional illustrative hair overlay", enhancements), host);
 }
 export function renderJudgeFace(doc, host, state, image, onFace, enhancements) {
@@ -84,10 +85,10 @@ export function renderJudgeFace(doc, host, state, image, onFace, enhancements) {
     applyEnhancements(doc, panel, "face", state, enhancements);
     panel.append(judgeNotice(doc, "Local demo", enabled
         ? LOCAL_DISCLOSURE
-        : "Select an image and opt into the face action on step 2, or skip."));
+        : "Choose an image on step 1, or skip this step."));
     editColumns(doc, panel, editPreview(doc, state, image, "Preview with optional illustrative face overlay", enhancements), host);
 }
-export function renderJudgeMock(doc, host, state, image, onMock, enhancements) {
+export function renderJudgeMock(doc, host, state, image, onMock, enhancements, live = providerLive()) {
     const panel = judgeNode(doc, "div", "lg-judge-controls");
     panel.append(judgeHeading(doc, "Mock YouCam try-on"));
     panel.append(judgeParagraph(doc, MOCK_DISCLOSURE));
@@ -98,11 +99,10 @@ export function renderJudgeMock(doc, host, state, image, onMock, enhancements) {
     applyEnhancements(doc, panel, "mock", state, enhancements);
     panel.append(judgeNotice(doc, "Not a live API result", enabled
         ? "A blue accessory overlay represents where a live try-on could appear. No YouCam unit is consumed."
-        : "Opt into the mock try-on on step 2. This does not grant live YouCam access."));
-    panel.append(judgeParagraph(doc, "For the real, separately consented flow, open the Photo lab and choose a styling action.", "lg-judge-small"));
-    const link = judgeNode(doc, "a", "lg-judge-inline-link", "Open real Photo lab");
+        : "Choose an image on step 1, or skip. The mock never reaches YouCam."));
+    panel.append(judgeParagraph(doc, judgeProviderNote(live), "lg-judge-small"));
+    const link = judgeNode(doc, "a", "lg-judge-inline-link", "Open the Photo lab");
     link.href = "index.html#/photo";
     panel.append(link);
     editColumns(doc, panel, editPreview(doc, state, image, "Preview with optional mock accessory overlay", enhancements), host);
 }
-//# sourceMappingURL=judge-edits.js.map

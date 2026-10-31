@@ -397,4 +397,3 @@ export class Pipeline {
         this.disposed = true;
     }
 }
-//# sourceMappingURL=pipeline.js.map

@@ -205,7 +205,7 @@ export function displacement(face, target) {
 export function renderShape(image, face, values, options = {}) {
     requireColour(image);
     checkFace(face);
-    const target = targetMesh(face, values, options);
+    const target0 = targetMesh(face, values, options), target = options.adjust ? options.adjust(target0) : target0;
     const asked = options.strength ?? 1;
     const moved = displacement(face, target);
     if (moved.max_iod_percent < 1e-9) {
@@ -220,7 +220,7 @@ export function renderShape(image, face, values, options = {}) {
         editMask.data[i] = movedField.data[i] > 1e-6 ? 1 : 0;
     const actualTarget = face.map((p, i) => [p[0] + (target[i][0] - p[0]) * warp.strengthUsed,
         p[1] + (target[i][1] - p[1]) * warp.strengthUsed]);
-    return { image: apply(image, warp.result.field), editMask, target: actualTarget, label: SIMULATION,
+    return { image: apply(image, warp.result.field), editMask, target: actualTarget, label: SIMULATION, field: warp.result.field,
         metrics: { strength_used: asked * warp.strengthUsed, guard_scale: warp.strengthUsed,
             min_area_ratio: warp.flips.minAreaRatio, ...displacement(face, actualTarget) } };
 }
@@ -253,4 +253,3 @@ export class ShapeEngine {
             provenance: "local", pipelineVersion: this.version };
     }
 }
-//# sourceMappingURL=geometry.js.map

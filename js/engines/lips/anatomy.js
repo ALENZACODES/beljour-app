@@ -116,4 +116,3 @@ export function describeLip(anatomy) {
         interpretation: "Measured geometry only. No attractiveness or procedure-suitability score.",
     };
 }
-//# sourceMappingURL=anatomy.js.map

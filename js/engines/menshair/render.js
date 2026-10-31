@@ -244,4 +244,3 @@ export function renderStyle(image, width, height, hairMask, anchors, recipe, sca
             total_pixels: n, mask_support_pixels: supportPixels, provider_calls: 0,
             note: "Tonal guide only; no strand segmentation, hair removal or restored scalp." } };
 }
-//# sourceMappingURL=render.js.map

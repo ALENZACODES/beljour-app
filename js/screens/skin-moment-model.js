@@ -439,4 +439,3 @@ export function unitsStatusLine(s) {
     return s.judge ? `Judge code accepted: live skin analysis is on. ${left[0].toUpperCase()}${left.slice(1)}.`
         : `Public visit: ${left}. A skin analysis costs at least 9, so a public visit gets the local estimate plus the two 1-unit makeup try-ons.`;
 }
-//# sourceMappingURL=skin-moment-model.js.map

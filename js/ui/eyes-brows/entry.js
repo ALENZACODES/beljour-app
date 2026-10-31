@@ -391,4 +391,3 @@ if (root) {
     const dispose = mountEyesBrows(root);
     window.addEventListener("pagehide", dispose, { once: true });
 }
-//# sourceMappingURL=entry.js.map

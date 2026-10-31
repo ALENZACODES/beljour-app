@@ -50,4 +50,3 @@ export function finishEnhance(original, rescued, mode, strength, faceMask) {
     const safe = guardOutput(original, modeFinish(rescued, mode, strength), weights);
     return { image: safe.image, applied: true, mix: safe.applied_mix };
 }
-//# sourceMappingURL=enhance-finish.js.map

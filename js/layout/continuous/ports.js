@@ -42,4 +42,3 @@ export function canTryon(state, subjects) {
         && state.sourceRevision === subjects.revision
         && state.identityLock && state.permissions.local && state.permissions.mock;
 }
-//# sourceMappingURL=ports.js.map

@@ -4,12 +4,13 @@ export const downloadFile = (name, type, bytes) => {
     anchor.href = url;
     anchor.download = name;
     document.body.append(anchor);
+    // The URL lives long enough for every browser to start the download (some read it after the
+    // click returns, and a URL revoked at once gives a silent, failed download), then it is freed.
     try {
         anchor.click();
     }
     finally {
         anchor.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 0);
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
     }
 };
-//# sourceMappingURL=download.js.map

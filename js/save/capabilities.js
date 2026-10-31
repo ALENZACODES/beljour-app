@@ -58,4 +58,3 @@ export function registryProblems(catalogue = CATALOGUE, effects = EFFECTS, rende
     }
     return problems;
 }
-//# sourceMappingURL=capabilities.js.map

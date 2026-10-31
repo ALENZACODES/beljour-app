@@ -117,4 +117,3 @@ export function spark(values, label) {
     svg.append(line);
     return svg;
 }
-//# sourceMappingURL=widgets.js.map

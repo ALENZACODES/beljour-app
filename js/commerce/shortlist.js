@@ -140,4 +140,3 @@ export function buildShortlist(catalogue, ranked, input = {}, concerns = []) {
         simulated: true, checkout_enabled: false,
         notice: 'Illustrative Canadian-dollar samples only; no inventory, taxes, shipping or verified shade match.' };
 }
-//# sourceMappingURL=shortlist.js.map

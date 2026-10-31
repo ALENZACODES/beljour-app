@@ -17,7 +17,7 @@ export const CATALOGUE = [
     { id: "makeup", title: "Makeup try-on (YouCam)", description: "Makeup previews use the approved YouCam task gateway after a quote and click.",
         category: "YouCam styling", source: "youcam", sample: "portrait",
         safety: "Sent to YouCam, deleted after the result. Preview, not a promise.", shortcut: "M" },
-    { id: "hair-style", title: "Hair Studio", description: "73 offline haircut ideas, one synthetic example, reference rights, pose guard and variant planning. Real requests use the existing YouCam styling gateway.",
+    { id: "hair-style", title: "Hair Studio", description: "347 haircut ideas to browse offline, one synthetic example, reference rights, pose guard and variant planning. Real requests use the existing YouCam styling gateway.",
         category: "YouCam styling", source: "youcam", sample: "portrait",
         safety: "Catalogue and illustrated replay stay on this device. Only an expressly consented styling request may reach YouCam.", shortcut: "H" },
     { id: "filters", title: "Filters", description: "Colour and light looks, most loved first. One tap, a 0-100 slider, gentle by default.",
@@ -105,4 +105,3 @@ export const SIDEBAR_SECTIONS = ["Local studio", "Adjust and crop", "YouCam styl
 export function toolsIn(category) {
     return CATALOGUE.filter((item) => item.category === category);
 }
-//# sourceMappingURL=catalogue.js.map

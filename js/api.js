@@ -97,6 +97,22 @@ export const api = {
     startTask: (body) => post("/api/tasks/start", body),
     task: (requestKey) => call(`/api/tasks/${encodeURIComponent(requestKey)}`),
     resumeTasks: (tickets) => post("/api/tasks/resume", { tickets }),
+    /** Older from YouCam Aging (2 units, "age" consent): the reply names a delta pack, never an image. */
+    olderYoucam: (body) => post("/api/older/youcam", body),
+    olderPack: async (path) => {
+        if (!/^\/api\/older\/pack\/[\w-]+\.bin$/.test(path))
+            throw new ApiError(0, "invalid_path", "Unexpected result address.");
+        let resp;
+        try {
+            resp = await fetch(requireBase() + path, { headers: sessionHeaders() });
+        }
+        catch {
+            throw new ApiError(0, "offline", "Can't reach the BELJOUR server. Try again shortly.");
+        }
+        if (!resp.ok)
+            throw new ApiError(resp.status, "older_pack", "The Older result has expired. Run it again (a saved result costs nothing).");
+        return resp.arrayBuffer();
+    },
 };
 export async function commerceTransport({ endpoint, method, payload, timeoutMs = 95_000 }) {
     // Disallow arbitrary paths, query strings, protocol-relative URLs and surprises.
@@ -158,4 +174,3 @@ export async function partnerRegion() {
         return null;
     }
 }
-//# sourceMappingURL=api.js.map

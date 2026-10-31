@@ -121,4 +121,3 @@ export function requestRealProductDownload(doc, report, urls = URL, defer = (tas
         defer(() => urls.revokeObjectURL(url));
     }
 }
-//# sourceMappingURL=judge-live-report.js.map

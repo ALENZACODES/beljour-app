@@ -223,4 +223,3 @@ export function renderPreview(source, width, height, channels, plan, level, sele
         }
     return { image: output, data, selectedMaskPixels, protectedPixels };
 }
-//# sourceMappingURL=golden.js.map

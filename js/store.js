@@ -71,4 +71,3 @@ export function trend(entries, concern) {
     const first = real[0].scores[concern], last = real[real.length - 1].scores[concern];
     return { first, last, change: Math.round((last - first) * 10) / 10 };
 }
-//# sourceMappingURL=store.js.map

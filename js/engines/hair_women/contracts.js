@@ -18,4 +18,3 @@ export function validateGeometry(g) { for (const p of [g.crown, g.left_temple, g
         if (!Number.isFinite(v) || v < -.25 || v > 1.25)
             throw new RangeError("invalid head landmark"); if (Math.abs(g.right_temple[0] - g.left_temple[0]) < .05 || Math.abs(g.chin[1] - g.crown[1]) < .1)
     throw new RangeError("degenerate head landmarks"); }
-//# sourceMappingURL=contracts.js.map

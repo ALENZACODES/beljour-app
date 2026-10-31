@@ -244,4 +244,3 @@ export function drawnSprite(name, side = SPRITE_SIDE) {
     cache.set(key, sprite);
     return sprite;
 }
-//# sourceMappingURL=fallbacks.js.map

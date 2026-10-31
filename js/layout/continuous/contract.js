@@ -66,4 +66,3 @@ export function defaultLevels() {
 export function completedTourCount(state) {
     return state.completed.length;
 }
-//# sourceMappingURL=contract.js.map

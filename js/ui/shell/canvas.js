@@ -68,4 +68,3 @@ export function downloadCanvas(canvas, filename = "beljour-preview.png") {
         }, "image/png");
     });
 }
-//# sourceMappingURL=canvas.js.map

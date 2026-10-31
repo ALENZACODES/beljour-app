@@ -16,4 +16,3 @@ export function chooseRenderer(device, image) {
         : new CpuBackend();
     return { pipeline: new Pipeline(backend), capabilities, backend };
 }
-//# sourceMappingURL=index.js.map

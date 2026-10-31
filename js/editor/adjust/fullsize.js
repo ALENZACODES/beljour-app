@@ -256,4 +256,3 @@ export function savedLine(result) {
     return soft.length ? `Saved at full size (${size}). ${soft.join(", ")} moved or drew pixels, so inside ${soft.length === 1 ? "its area" : "their areas"} the preview-size render is used and is softer.`
         : `Saved at full size (${size}).`;
 }
-//# sourceMappingURL=fullsize.js.map

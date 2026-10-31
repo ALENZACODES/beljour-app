@@ -130,4 +130,3 @@ export class EditorialShadeBookModel {
     }
     clearSelection() { this.chosen = null; }
 }
-//# sourceMappingURL=editorial-shade-model.js.map

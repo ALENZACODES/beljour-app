@@ -33,4 +33,3 @@ export function summarizeColourAcceptance(receipts, options = {}) {
         external_evidence: external, release_pass: external && total > 0 && counts.rendered_closer === total,
         evidence: external ? "external_review" : "synthetic_local", tested_against_real_products: false };
 }
-//# sourceMappingURL=colour-acceptance.js.map

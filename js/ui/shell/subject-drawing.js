@@ -59,4 +59,3 @@ export function drawTwoPersonSample(target) {
     ctx.font = "600 16px system-ui";
     ctx.fillText("TWO DRAWN ADULTS · NO REAL FACES", 38, 592);
 }
-//# sourceMappingURL=subject-drawing.js.map

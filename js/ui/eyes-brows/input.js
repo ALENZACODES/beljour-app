@@ -123,4 +123,3 @@ export function cloneImage(image) {
     validateImage(image);
     return { width: image.width, height: image.height, channels: 4, data: new Uint8ClampedArray(image.data) };
 }
-//# sourceMappingURL=input.js.map

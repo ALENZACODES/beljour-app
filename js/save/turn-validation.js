@@ -10,4 +10,3 @@ export function checkedTurnWeights(weights, width, height) {
     }
     return { module: "warp_turn", refused: false, weights: new Float32Array(weights) };
 }
-//# sourceMappingURL=turn-validation.js.map

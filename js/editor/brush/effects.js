@@ -266,4 +266,3 @@ export function colourPainted(img, mask, amount, hex) {
     noLighten(base, out.data, mapped(new Float64Array(mask.data.length), mask.data, (v) => (v > 0 && amount > 0 ? 1 : 0)));
     return out;
 }
-//# sourceMappingURL=effects.js.map

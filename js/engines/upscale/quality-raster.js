@@ -55,4 +55,3 @@ export function throwIfAborted(signal) {
     if (signal?.aborted)
         throw new DOMException("Quality job cancelled", "AbortError");
 }
-//# sourceMappingURL=quality-raster.js.map

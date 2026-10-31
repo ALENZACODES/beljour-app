@@ -132,4 +132,3 @@ export class TimeWarpScan {
         this.currentState = "disposed";
     }
 }
-//# sourceMappingURL=time-warp.js.map

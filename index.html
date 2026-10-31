@@ -4,7 +4,7 @@
   <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script><link rel="icon" href="icons/beljour.svg" type="image/svg+xml"><script src="js/root-redirect.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>BELJOUR — FULL BEAUTY STUDIO</title>
-  <meta name="description" content="Try a look on your own photo first. Every result says where it came from. Makeup, hair styling and Skin Moment skin analysis results come from the YouCam API.">
+  <meta name="description" content="Try a look on your own photo first. Every result says where it came from. In this build every result is made on your device; YouCam makeup, hair styling and Skin Moment analysis turn on only when a server is connected." data-provider-live="Try a look on your own photo first. Every result says where it came from. Makeup, hair styling and Skin Moment skin analysis results come from the YouCam API.">
   <meta name="theme-color" content="#6B3044">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="theme.css">
@@ -31,10 +31,11 @@
   </div>
   <footer class="foot">
     <a href="#/privacy">Privacy and your data</a>
-    <span>Makeup, hair styling and Skin Moment skin analysis results come from the YouCam API by Perfect Corp. Every result is labelled with where it came from.</span>
+    <span data-provider-live="Makeup, hair styling and Skin Moment skin analysis results come from the YouCam API by Perfect Corp. Every result is labelled with where it came from.">This build runs on your device: no server is connected, so nothing is sent to YouCam (by Perfect Corp) and no units are used. Skin Moment shows labelled saved examples. Every result is labelled with where it came from.</span>
     <span>Looks and shape changes are simulations. General information, not medical advice.</span>
   </footer>
   <div id="announcer" class="visually-hidden" aria-live="polite"></div>
+  <script type="module" src="js/ui/provider-claims.js"></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

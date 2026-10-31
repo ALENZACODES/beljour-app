@@ -60,4 +60,3 @@ export async function exportTierRelease(result, settings = {}, encoder = canvasE
     const file = await exportColourSafe(result.image, tier === "uhd4k" ? "BELJOUR_4K_experimental" : "BELJOUR_HD1080", settings, encoder);
     return { ...file, tier, experimental };
 }
-//# sourceMappingURL=quality-export-tier.js.map

@@ -89,4 +89,3 @@ export function gradeDiagnostics(field, width) {
     return { grade_min: min, grade_max: max, bottom_is_shorter: monotone,
         blend_coverage: blend / field.grade.length, transition_coverage: transition / field.grade.length };
 }
-//# sourceMappingURL=graded.js.map

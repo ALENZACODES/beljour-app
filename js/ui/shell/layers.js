@@ -17,7 +17,7 @@ export function clampOpacity(n) {
  * strokes as text (editor/brush/stroke.ts) up to MAX_STROKE_TEXT. */
 function validParams(params) {
     // 40: the Adjust and Colour mixer tools keep one key per slider that is off its default.
-    return Object.keys(params).length <= MAX_PARAMS && Object.entries(params).every(([k, v]) => /^[a-z][a-z0-9_-]{0,40}$/.test(k)
+    return Object.keys(params).length <= MAX_PARAMS && Object.entries(params).every(([k, v]) => /^[a-z][A-Za-z0-9_-]{0,40}$/.test(k)
         && (typeof v === "string" && (v.length <= 100 || k === "strokes" && v.length <= MAX_STROKE_TEXT)
             || typeof v === "number" && Number.isFinite(v) || typeof v === "boolean"));
 }
@@ -93,4 +93,3 @@ export function describeStack(stack) {
         hidden: stack.filter((i) => !i.enabled).length,
         simulation: stack.some((i) => i.enabled && i.simulation) };
 }
-//# sourceMappingURL=layers.js.map

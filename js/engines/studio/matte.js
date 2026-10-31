@@ -76,4 +76,3 @@ export function remove(image, coarse) {
     }
     return { image: out, channels: 4, label: LABEL_REMOVE, crops: [], metrics: { ...refined.metrics, tool: "remove" } };
 }
-//# sourceMappingURL=matte.js.map

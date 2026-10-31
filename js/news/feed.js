@@ -220,4 +220,3 @@ export function concernFromHash(hash) {
     const m = /(?:^|[#&])concern=([a-z-]+)/.exec(hash);
     return m && CONCERN_IDS.has(m[1]) ? m[1] : "all";
 }
-//# sourceMappingURL=feed.js.map

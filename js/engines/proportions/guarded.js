@@ -19,4 +19,3 @@ export function checkedProportions(mesh, reference = "golden") {
         return { module: "proportions", refused: true, code, message };
     }
 }
-//# sourceMappingURL=guarded.js.map

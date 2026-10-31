@@ -37,4 +37,3 @@ export async function loadPictures(listed = LENS_FILES, dir = LENS_DIR) {
         loaded.set(f, s); }));
     return (file) => loaded.get(file) ?? null;
 }
-//# sourceMappingURL=pictures.js.map

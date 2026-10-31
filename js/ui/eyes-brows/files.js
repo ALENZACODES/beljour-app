@@ -91,4 +91,3 @@ export function download(blob, name) {
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-//# sourceMappingURL=files.js.map

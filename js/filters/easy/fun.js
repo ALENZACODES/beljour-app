@@ -23,4 +23,3 @@ export function renderFun(image, width, height, left, right, nose, mouth, option
         out = restore(out, image, iris);
     return protectedMask ? restore(out, image, protectedMask) : out;
 }
-//# sourceMappingURL=fun.js.map

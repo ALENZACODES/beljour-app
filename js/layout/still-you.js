@@ -191,4 +191,3 @@ export function stillYou(before, after, opts) {
     return { state, marksFound: kept.found, marksKept: kept.kept, skinDL: shift.skinDL, lightened: shift.lightened,
         usedFacePoints: Boolean(opts.face), text: `Photo checks: ${parts.join(", ")}${opts.face ? "" : " (rough face area)"}` };
 }
-//# sourceMappingURL=still-you.js.map

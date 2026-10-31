@@ -55,4 +55,3 @@ export function visibleIris(pts, side, height, width) {
         disk[i] &= opening[i];
     return disk;
 }
-//# sourceMappingURL=eye-geometry.js.map

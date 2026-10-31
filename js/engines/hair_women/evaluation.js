@@ -19,4 +19,3 @@ export function hairMetrics(photo, after, coverage) { let outside = 0, outN = 0,
     if (photo.channels === 4)
         alpha = Math.max(alpha, Math.abs(after[o + 3] - photo.data[o + 3]));
 } return { outside_error: outN ? outside / outN : 0, changed_fraction: changed / coverage.length, alpha_error: alpha, texture_ratio: textureRatio(photo, after, coverage), mean_inside_change: inN ? inside / inN : 0 }; }
-//# sourceMappingURL=evaluation.js.map

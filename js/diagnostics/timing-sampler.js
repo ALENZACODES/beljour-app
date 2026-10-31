@@ -80,4 +80,3 @@ export async function measureSyntheticTiming(doc, options = {}) {
         canvas.height = 0;
     }
 }
-//# sourceMappingURL=timing-sampler.js.map

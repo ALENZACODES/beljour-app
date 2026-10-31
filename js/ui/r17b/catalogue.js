@@ -49,4 +49,3 @@ export const CARDS = [
 export function card(id) { const found = CARDS.find(item => item.id === id); if (!found)
     throw new RangeError(`unknown R17B card ${id}`); return found; }
 export const W_ROWS = CARDS.filter(item => /^W\d+$/.test(item.id));
-//# sourceMappingURL=catalogue.js.map

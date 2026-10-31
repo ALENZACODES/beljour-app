@@ -84,4 +84,3 @@
         report("unhandled promise rejection", event.reason);
     });
 })();
-//# sourceMappingURL=page-guard.js.map

@@ -193,4 +193,3 @@ export function createHouseArt(doc, kind) {
     }
     return svg;
 }
-//# sourceMappingURL=house-art.js.map

@@ -179,4 +179,3 @@ export function isReplayProof(raw) {
         return false;
     }
 }
-//# sourceMappingURL=proof-ledger.js.map

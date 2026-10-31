@@ -77,4 +77,3 @@ export class VideoBackground {
     }
     reset() { this.masks.reset(); this.lastMask = null; }
 }
-//# sourceMappingURL=background.js.map

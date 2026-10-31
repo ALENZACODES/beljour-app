@@ -99,4 +99,3 @@ export async function withProtectedArtifact(artifact, kind, binding, keyId, key,
         plain.fill(0);
     }
 }
-//# sourceMappingURL=protected-artifact.js.map

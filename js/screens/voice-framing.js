@@ -97,4 +97,3 @@ export function voiceFramingScreen(open, deps = {}) {
     const element = h("section", { class: "voice-framing", "aria-label": "Voice framing" }, h("h2", {}, "Voice framing"), h("p", {}, "Spoken cues help you frame a selfie without watching the screen: closer or further, left or right, up or down, head level, then hold still."), h("p", { class: "fine" }, "Uses your face points, read on this device. Nothing is recorded or uploaded."), video, cue, h("div", { class: "row" }, start, use, stop));
     return { element, dispose: halt };
 }
-//# sourceMappingURL=voice-framing.js.map

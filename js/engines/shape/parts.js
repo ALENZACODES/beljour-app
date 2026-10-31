@@ -410,4 +410,3 @@ export function renderParts(image, face, values, { strength = 1, optedIn = false
             maxMoveIodPercent: maxMove / iod * 100, identitySimilarity: similarity, minJacobian: Math.min(...rows.map((r) => r.minJacobian)),
             minAreaRatio: Math.min(...rows.map((r) => r.minAreaRatio)), apertureChangePercent, parts: rows } };
 }
-//# sourceMappingURL=parts.js.map

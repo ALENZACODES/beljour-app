@@ -305,4 +305,3 @@ if (page) {
     const lab = mountQualityLab(page);
     window.addEventListener("pagehide", () => lab.dispose(), { once: true });
 }
-//# sourceMappingURL=quality-lab.js.map

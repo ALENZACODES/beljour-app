@@ -163,4 +163,3 @@ export function applySelective(rgb, width, height, area, values, opacity) {
     }
     return mask;
 }
-//# sourceMappingURL=selective.js.map

@@ -55,4 +55,3 @@ export function centreRetention(mask, worn, width, height) {
     return after / base;
 }
 export function monotonicWear(mask, width, height) { const two = centreRetention(mask, wearField(mask, width, height, "two_hours"), width, height); const coffee = centreRetention(mask, wearField(mask, width, height, "coffee"), width, height); const meal = centreRetention(mask, wearField(mask, width, height, "meal"), width, height); return { two_hours: two, coffee, meal, monotonic: two > coffee && coffee > meal }; }
-//# sourceMappingURL=wear.js.map

@@ -119,4 +119,3 @@ export function restoreTraceBackground(image, mask, protectedMask) {
     }
     return { image: output, unreliable };
 }
-//# sourceMappingURL=raster.js.map

@@ -187,4 +187,3 @@ export class ClipJob {
 export function createClipJob(stream, options) {
     return new ClipJob(stream, options);
 }
-//# sourceMappingURL=clip-jobs.js.map

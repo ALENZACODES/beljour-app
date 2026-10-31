@@ -16,7 +16,6 @@ export function addGrey(image, mesh, hair, amount) {
     if (amount === 0)
         return { image: { ...image, data: new Uint8Array(image.data) }, label: LABEL, greyPixels: 0 };
     // Stop 5 is the age engine's full older step; the amount scales it, and only the hair layer is on.
-    const out = renderAge(image, mesh, { stop: 5, strength: amount / 100, layers: HAIR_ONLY, hairMask: hair });
+    const out = renderAge(image, mesh, { stop: 5, strength: amount / 100, layers: HAIR_ONLY, hairMask: hair, greyMode: "wash" });
     return { image: out.image, label: LABEL, greyPixels: out.metrics.grey_pixels };
 }
-//# sourceMappingURL=grey-add.js.map

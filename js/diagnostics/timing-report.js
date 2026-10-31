@@ -62,4 +62,3 @@ export function safeTimingJson(report) {
         throw new RangeError("Invalid timing report");
     return JSON.stringify(report, null, 2);
 }
-//# sourceMappingURL=timing-report.js.map

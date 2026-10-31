@@ -87,4 +87,3 @@ export function portraitLooks() {
 export function portraitLook(id) {
     return portraitLooks().find((look) => look.id === id) ?? null;
 }
-//# sourceMappingURL=looks.js.map

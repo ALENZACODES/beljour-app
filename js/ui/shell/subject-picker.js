@@ -55,4 +55,3 @@ export function attachSubjectPicker(doc, host, snapshot, actions) {
         + "No age, gender, ethnicity or attractiveness is inferred.", "lg-judge-small"));
     host.append(panel);
 }
-//# sourceMappingURL=subject-picker.js.map

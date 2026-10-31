@@ -181,4 +181,3 @@ export function sharpen(rgb, width, height, amount) {
         addLuma(rgb, i, Math.max(-0.15, Math.min(0.15, amount * 1.6 * d * gate * (1 - 0.4 * skin))));
     }
 }
-//# sourceMappingURL=detail.js.map

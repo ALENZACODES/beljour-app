@@ -59,4 +59,3 @@ export class IdentityLockController {
 export function mockIdentityLock() {
     return new IdentityLockController(null);
 }
-//# sourceMappingURL=identity-lock.js.map

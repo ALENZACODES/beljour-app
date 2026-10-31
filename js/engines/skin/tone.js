@@ -39,4 +39,3 @@ export function evenTone(image, skin, face, strength = 30, redness = 50) {
     return { image: out, weight, label: LABEL, metrics: { reference_a: Math.round(references[0] * 1e3) / 1e3,
             reference_b: Math.round(references[1] * 1e3) / 1e3, redness, guarded_pixels: guarded } };
 }
-//# sourceMappingURL=tone.js.map

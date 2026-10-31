@@ -67,4 +67,3 @@ export function preparePostureFrame(frame, released) {
         head: shrinkMask(frame.head, size.width, size.height),
         controls: scaleControls(frame.controls, size.width, size.height), size, stage: "preview" };
 }
-//# sourceMappingURL=posture-preview.js.map

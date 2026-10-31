@@ -8,4 +8,3 @@ export * as fmm from "./fmm.js";
 export * as patchmatch from "./patchmatch.js";
 export { FillEngine, LEARNED_METHODS, METHODS, fill, fillAny } from "./fill.js";
 export * as onnx from "./onnx/index.js";
-//# sourceMappingURL=index.js.map

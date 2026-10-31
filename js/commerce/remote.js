@@ -58,4 +58,3 @@ export class KeyProxyCommerceRemote {
         return request(`/api/photos/${photo_id}`, undefined, "DELETE");
     }
 }
-//# sourceMappingURL=remote.js.map

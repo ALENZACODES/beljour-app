@@ -49,4 +49,3 @@ export class ProgressivePreview {
         this.photoHash = null;
     }
 }
-//# sourceMappingURL=interaction.js.map

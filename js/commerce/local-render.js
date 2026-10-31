@@ -119,4 +119,3 @@ export async function renderProviderResult(dataUrl, reference, guard = new Pixel
         bitmap.close();
     }
 }
-//# sourceMappingURL=local-render.js.map

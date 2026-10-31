@@ -740,4 +740,3 @@ export function mountContinuousDemo(doc, host, onExit, options = {}) {
     render();
     return { state, image, render, dispose };
 }
-//# sourceMappingURL=mount.js.map

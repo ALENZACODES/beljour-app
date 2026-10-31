@@ -53,4 +53,3 @@ export function renderCompare(state, frames, options) {
     return { image, layout, captions, description, simulation: layout.panes.some((p) => frames[p.frame].simulation),
         status: `${info.title} · ${layout.columns} column${layout.columns === 1 ? "" : "s"}` };
 }
-//# sourceMappingURL=compare-render.js.map

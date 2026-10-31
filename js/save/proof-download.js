@@ -68,4 +68,3 @@ export function browserReceiptDelivery(recipe) {
         }
     };
 }
-//# sourceMappingURL=proof-download.js.map

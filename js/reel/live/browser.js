@@ -133,4 +133,3 @@ export async function frameToPng(image) {
     put(canvas, image);
     return new Promise((resolve, reject) => canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("This frame could not be saved."))), "image/png"));
 }
-//# sourceMappingURL=browser.js.map

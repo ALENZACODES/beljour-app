@@ -78,4 +78,3 @@ export function stickersScreen(editor, deps = {}) {
     });
     return h("section", { class: "stickers", "aria-label": "Sticker pack" }, h("h2", {}, "Sticker pack"), h("p", { class: "fine" }, "Made from your edited photo on this device. Captions use your device's own font. Nothing is uploaded."), h("label", {}, "Caption ", caption), make, preview, status);
 }
-//# sourceMappingURL=stickers.js.map

@@ -5,4 +5,3 @@
  */
 export { LearnedModelUnavailable, SessionLoader, plainTensor } from "./runtime.js";
 export { LAYOUTS, MIGAN_ID, MiganFill, buildFeeds, compositeHole, cropBox, decodeOutput, defaultMigan, holeBox } from "./migan.js";
-//# sourceMappingURL=index.js.map

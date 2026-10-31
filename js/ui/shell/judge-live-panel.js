@@ -139,4 +139,3 @@ export function renderJudgeLivePanel(doc, host, checks, options = {}) {
 export function linkForRealDemo(id) {
     return realDemoRoute(id).href;
 }
-//# sourceMappingURL=judge-live-panel.js.map

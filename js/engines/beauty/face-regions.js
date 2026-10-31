@@ -179,4 +179,3 @@ export function skinMap(image, mesh, masks = {}) {
         soft[i] = Math.min(1, Math.max(0, Math.min(soft[i], oval[i]) * (1 - Math.min(1, Math.max(0, features[i])))));
     return { rect, lab, frame: f, skin: soft, features, stats };
 }
-//# sourceMappingURL=face-regions.js.map

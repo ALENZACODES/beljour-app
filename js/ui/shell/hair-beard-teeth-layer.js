@@ -43,6 +43,11 @@ export function applyHairBeardTeethLayer(image, source, layer) {
     }
     const strength = Math.min(100, 100 * easeStrength(layer.strength));
     const result = removeBeard(image, source.face, strength);
+    // A full beard hides the skin and the jaw line: the Studio shows the designed refusal and leaves the
+    // photo byte-identical (clearance audit S6). The labelled estimate stays behind an explicit opt-in
+    // parameter that no Studio control sets, pending a ruling on its scope.
+    if (isShaveRefusal(result) && result.code === "full_beard" && layer.parameters.estimate_full_beard !== true)
+        return unchanged(image, result.message, "Clean-shave visual estimate.", { status: "refused", reason_code: result.code });
     if (isShaveRefusal(result) && result.code === "full_beard") {
         // A full beard hides the skin: paint the labelled estimate from her cheek instead of refusing.
         // A part-mixed estimate lets the hidden beard show through as a grey ghost, so this path uses a
@@ -59,4 +64,3 @@ export function applyHairBeardTeethLayer(image, source, layer) {
     return { image: { ...image, data: result.image }, label: result.label,
         metrics: { ...result.metrics, status: "edited", mask_source: "face points" } };
 }
-//# sourceMappingURL=hair-beard-teeth-layer.js.map

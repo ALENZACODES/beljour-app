@@ -211,4 +211,3 @@ export function publicReport(board) {
         levels: evidence, totals: levelTotals(evidence), simulated: true, provider_calls: 0,
         real_face_status: "not_tested", label: BOARD_LABEL };
 }
-//# sourceMappingURL=level-board.js.map

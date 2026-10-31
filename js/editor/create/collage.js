@@ -96,4 +96,3 @@ export function relayout(board, layoutId) {
 export function boardUnits(aspect) {
     return { width: PAGE_UNITS, height: PAGE_UNITS * aspectRatio(aspect) };
 }
-//# sourceMappingURL=collage.js.map

@@ -91,7 +91,7 @@ export function renderSkinTool(tool, image, points, strength = 30, params = {}) 
         if (tool === "freckles")
             return freckles(image, skin, face, strength, params.density ?? 50, params.seed ?? 7);
         if (tool === "tan")
-            return tan(image, skin, params.direction ?? "add", strength, params.undertone ?? "neutral", params.allowLightening ?? false);
+            return tan(image, skin, params.direction ?? "add", strength, params.undertone ?? "neutral", params.allowLightening ?? false, { mesh: points });
         if (tool === "matte")
             return matte(image, skin, face, strength);
         if (tool === "glow")
@@ -104,4 +104,3 @@ export function renderSkinTool(tool, image, points, strength = 30, params = {}) 
         throw error;
     }
 }
-//# sourceMappingURL=studio.js.map

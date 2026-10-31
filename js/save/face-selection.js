@@ -92,4 +92,3 @@ export class FaceSelectionSession {
         this.height = 0;
     }
 }
-//# sourceMappingURL=face-selection.js.map

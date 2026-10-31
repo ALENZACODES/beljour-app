@@ -52,4 +52,3 @@ export function releaseBlockers(feature, decision, realFaceTested, realFacePasse
         blockers.push("cultural review must be recorded separately");
     return [...new Set(blockers)];
 }
-//# sourceMappingURL=safety.js.map

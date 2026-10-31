@@ -77,4 +77,3 @@ export function assessShade(hex, measuredSkin) {
         notes.push("No ashy/orange warning under these limited colour rules. This is not a guarantee of wearability.");
     return { measured: true, deltaE: ciede2000(shade, skin), flags, notes, label: SUITABILITY_LABEL };
 }
-//# sourceMappingURL=colour.js.map

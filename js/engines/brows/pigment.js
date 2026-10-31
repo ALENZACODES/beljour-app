@@ -96,4 +96,3 @@ export function compareMethods(image, frames, settings) {
         powder: renderPigment(image, frames, "W72", { ...settings, method: "powder" }),
         nano: renderPigment(image, frames, "W72", { ...settings, method: "nano" }) };
 }
-//# sourceMappingURL=pigment.js.map

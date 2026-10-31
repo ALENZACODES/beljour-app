@@ -8,4 +8,3 @@ export { DEFINITIONS, STYLE_KEYS, TEXTURES, definition as styleGuideDefinition, 
 export { StyleGuideSession, renderStyleGuide } from "./style-preview.js";
 export { auditStyle, assertEvidenceSchema, countGroups, monotoneCoverage } from "./style-audit.js";
 export { checkedChoices, comparison as compareStyleGuides, safeRecipe as safeStyleRecipe } from "./style-compare.js";
-//# sourceMappingURL=index.js.map

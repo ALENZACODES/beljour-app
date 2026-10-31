@@ -201,4 +201,3 @@ export function facePhoto(points, width, height, seed = 1) {
         out.data[i] = Math.min(255, Math.max(0, roundHalfEven(img[i])));
     return out;
 }
-//# sourceMappingURL=beard.js.map

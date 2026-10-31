@@ -98,4 +98,3 @@ export function renderContinuousOperator(doc, snapshot, actions) {
     section.append(judgeParagraph(doc, "Separate verification is required for live YouCam, real faces, device budgets and the frozen release gate.", "lg-cont-caption"));
     return section;
 }
-//# sourceMappingURL=continuous-operator-panel.js.map

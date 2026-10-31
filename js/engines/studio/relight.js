@@ -56,4 +56,3 @@ export function relight(image, coarse, points, side = "upper-left", amount = 50)
     return { image: out.data, channels: out.channels, label: LABEL, crops: [],
         metrics: { tool: "relight", side, gain_before_balance: lit.raw, max_gain: MAX_GAIN * share } };
 }
-//# sourceMappingURL=relight.js.map

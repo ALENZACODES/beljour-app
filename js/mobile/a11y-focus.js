@@ -65,4 +65,3 @@ export class FocusObservationSession {
         this.last = null;
     }
 }
-//# sourceMappingURL=a11y-focus.js.map

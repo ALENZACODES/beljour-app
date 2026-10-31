@@ -217,4 +217,3 @@ export function myPhotos() {
     }
     return shared = new PhotoLibrary(backend, keepSetting(storage));
 }
-//# sourceMappingURL=library.js.map

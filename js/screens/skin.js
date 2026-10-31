@@ -97,4 +97,3 @@ export function renderSkin(main, ctx, dependencies = localPreviewDependencies) {
         main.append(h("section", {}, h("h2", {}, "YouCam Skin Analysis product matching"), h("p", {}, "The local tools above work here. Consented YouCam product matching needs the configured API and your own uploaded photo.")));
     main.append(h("p", { class: "fine" }, "General cosmetic information, not medical advice."));
 }
-//# sourceMappingURL=skin.js.map

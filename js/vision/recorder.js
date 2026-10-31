@@ -261,4 +261,3 @@ element("save-fixture").addEventListener("click", () => {
     })().catch((error) => status(String(error)));
 });
 redraw();
-//# sourceMappingURL=recorder.js.map

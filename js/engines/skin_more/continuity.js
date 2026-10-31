@@ -19,4 +19,3 @@ export function regionPairNames(names) {
     return [names[0], names[1]];
 }
 export function lightingCaveat(m) { return m.lightingWarning ? "The checked regions have a large luminance gap, so lighting may dominate the apparent colour difference." : "The comparison is within one photo but still depends on local lighting and camera processing."; }
-//# sourceMappingURL=continuity.js.map

@@ -36,4 +36,3 @@ export function payloadBand(size) {
         return "medium";
     return "large";
 }
-//# sourceMappingURL=privacy.js.map

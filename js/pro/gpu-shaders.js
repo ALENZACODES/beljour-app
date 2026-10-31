@@ -31,4 +31,3 @@ void main() {
   float blue = texelFetch(curveTable, ivec2(indices.b, 0), 0).b;
   outputColour = vec4(mix(original.rgb, vec3(red, green, blue), coverage), original.a);
 }`;
-//# sourceMappingURL=gpu-shaders.js.map

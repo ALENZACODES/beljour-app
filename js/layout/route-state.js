@@ -19,7 +19,7 @@ export function resolveClassicRoute(hash, ctx) {
         requested,
         destination: START_ROUTE,
         redirected: true,
-        reason: "Open a photo and complete the required consent before this feature.",
+        reason: ctx.photoSrc ? "This feature needs the photo prepared on the app server first." : "Open a photo before this feature.",
     };
 }
 /** A screen that uses async work must not pull focus back after another route wins. */
@@ -39,4 +39,3 @@ export class RouteRevision {
         this.revision++;
     }
 }
-//# sourceMappingURL=route-state.js.map

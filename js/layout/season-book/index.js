@@ -44,4 +44,3 @@ export function unregisterSeasonBookPort() {
     mounted?.dispose();
     mounted = null;
 }
-//# sourceMappingURL=index.js.map

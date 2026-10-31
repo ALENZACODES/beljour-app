@@ -31,4 +31,3 @@ export function renderCanvasStyle(input, mask, anchors, recipe, scalpMask = null
     context.putImageData(new ImageData(new Uint8ClampedArray(effect.pixels), image.width, image.height), 0, 0);
     return output;
 }
-//# sourceMappingURL=studio.js.map

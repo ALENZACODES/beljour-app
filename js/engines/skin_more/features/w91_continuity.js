@@ -2,4 +2,3 @@
 import { applyContinuity, continuityPlan, evaluateContinuity, lightingCaveat, measure } from "../continuity.js";
 export function previewW91(pixels, w, h, source, target, amount = .5) { const before = measure(pixels, w, h, source, target), plan = continuityPlan(pixels, w, h, source, target, amount), out = applyContinuity(pixels, w, h, target, plan), gate = evaluateContinuity(pixels, out, w, h, source, target), after = measure(out, w, h, source, target); return { pixels: out, beforeDeltaE: before.deltaE, afterDeltaE: after.deltaE, lightingWarning: before.lightingWarning, bodyShapeScored: false, passed: gate.pass, caveat: lightingCaveat(before) }; }
 export const passDefinitionW91 = "checked colour gap must not increase; no body-shape score; lighting caveat always present";
-//# sourceMappingURL=w91_continuity.js.map

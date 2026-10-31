@@ -77,4 +77,3 @@ export function detailView(metrics) {
     content.append(h("details", { class: "eb-measurements" }, h("summary", {}, "Preview measurements"), readings, h("p", { class: "eb-note" }, "Numerical checks describe this rendering. Appearance, realism and real-face acceptance need separate review.")));
     return content;
 }
-//# sourceMappingURL=present.js.map

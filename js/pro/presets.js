@@ -29,4 +29,3 @@ export function planProExport(width, height, recipe, fileStem) {
     const geometry = makeCropGeometry(width, height, recipe.crop, preset.maxEdge);
     return { preset, geometry, filename: `${safeStem(fileStem)}.${preset.extension}`, label: simulationText(recipe) };
 }
-//# sourceMappingURL=presets.js.map

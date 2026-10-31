@@ -45,4 +45,3 @@ export class Client {
         this.pending = null;
     }
 }
-//# sourceMappingURL=client.js.map

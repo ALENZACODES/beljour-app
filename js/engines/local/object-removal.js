@@ -74,4 +74,3 @@ export function removeObject(image, mask, { landmarks = null, strength = 100, me
     report.filled_pixels = filled;
     return edited(blendBytes(image, outcome.image, weight), weight, LABEL, report);
 }
-//# sourceMappingURL=object-removal.js.map

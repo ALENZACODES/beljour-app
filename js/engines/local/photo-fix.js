@@ -49,4 +49,3 @@ export function blendBytes(original, edit, weight) {
     }
     return out;
 }
-//# sourceMappingURL=photo-fix.js.map

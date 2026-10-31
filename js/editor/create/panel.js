@@ -489,4 +489,3 @@ export function createScreen(editor, tab, deps = {}) {
     const panel = new CreatePanel(editor, tab, deps);
     return { element: panel.element, dispose: () => panel.dispose(), panel };
 }
-//# sourceMappingURL=panel.js.map

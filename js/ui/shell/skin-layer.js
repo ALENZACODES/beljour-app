@@ -53,4 +53,3 @@ export function applySkinLayer(image, source, layer) {
     return { image: { width: image.width, height: image.height, channels: image.channels, data: result.image },
         label: result.label, metrics: { ...result.metrics, tool, mask_source: "face points" } };
 }
-//# sourceMappingURL=skin-layer.js.map

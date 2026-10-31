@@ -17,4 +17,3 @@ export function fixture() {
     [324, 318, 402, 317, 14, 87, 178, 88, 95, 78, 191, 80, 81, 82, 13, 312, 311, 310, 415].forEach((id, i) => pts[id] = lip[i % lip.length]);
     return { image: { width, height, channels: 4, data }, landmarks: pts, region: [{ name: "teeth", points: [[.43, .67], [.57, .67], [.56, .69], [.44, .69]] }, { name: "gum", points: [[.44, .665], [.56, .665], [.55, .675], [.45, .675]] }] };
 }
-//# sourceMappingURL=fixture.js.map

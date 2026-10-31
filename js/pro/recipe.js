@@ -150,4 +150,3 @@ export function cloneRecipe(recipe) {
 export function emptyRecipe() {
     return cloneRecipe(defaultRecipe());
 }
-//# sourceMappingURL=recipe.js.map

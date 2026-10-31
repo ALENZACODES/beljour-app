@@ -110,4 +110,3 @@ export function rainExpression(image, mesh, params) {
     const out = blend(src, warped, support);
     return result("rain-expression", src, out, support, LABEL, { ...field.checks, tear_pixels: tearPixels, tear_alpha_max: maximumAlpha }, ["Procedural expression; it does not infer how you feel."], { displacement_x: field.dx, displacement_y: field.dy, tear_alpha: water.water });
 }
-//# sourceMappingURL=rain.js.map

@@ -78,4 +78,3 @@ export function summarizeTriage(outcomes) {
     return { format: "beljour-fibre-triage/1", total: outcomes.length, statuses, codes: sorted,
         kind: "synthetic_or_user_inputs", provider_calls: 0 };
 }
-//# sourceMappingURL=fibre-evidence.js.map

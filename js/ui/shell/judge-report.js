@@ -44,4 +44,3 @@ export function renderJudgeReport(doc, host, state, clock) {
     panel.append(pre);
     host.append(panel);
 }
-//# sourceMappingURL=judge-report.js.map

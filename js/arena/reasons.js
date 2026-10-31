@@ -28,4 +28,3 @@ export const DIMENSION_HELP = {
     flattering: "Would she be happy to post it?",
     still_her: "Would she say this still looks like her? (women judges, women's photos)",
 };
-//# sourceMappingURL=reasons.js.map

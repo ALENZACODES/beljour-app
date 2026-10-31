@@ -139,4 +139,3 @@ export function downloadProofGraphic(doc, input) {
         URL.revokeObjectURL(url);
     }
 }
-//# sourceMappingURL=proof-graphic.js.map

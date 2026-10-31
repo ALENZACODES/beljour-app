@@ -57,4 +57,3 @@ export function auditBook(shades = catalogue(), folios = folioNumbers(shades)) {
         folios_contiguous: contiguous, min_separation: round(best.d, 4), closest_pair: [best.a, best.b],
         note: "Original in-house digital swatches; not physical dye products." });
 }
-//# sourceMappingURL=book-audit.js.map

@@ -61,4 +61,3 @@ export function skinMatchSection(ctx) {
     controller.open(ctx.photo?.photo_id);
     return box;
 }
-//# sourceMappingURL=skin-match.js.map

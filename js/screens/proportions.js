@@ -92,4 +92,3 @@ export function renderProportions(main, ctx) {
     });
     main.append(h("h2", {}, "Face ratios"), h("p", {}, "Local simulation. These ratios use your measured face points. Reference ratios do not rate your appearance and are not targets."), run, out);
 }
-//# sourceMappingURL=proportions.js.map

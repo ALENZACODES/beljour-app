@@ -65,4 +65,3 @@ export function auditLevel(c, fix, level) {
 export function postureEvidenceExportLabel() {
     return SIMULATION_LABEL;
 }
-//# sourceMappingURL=posture-evidence.js.map

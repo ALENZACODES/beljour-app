@@ -172,4 +172,3 @@ export function summarise(report) {
         return `Can't use this photo for ${report.purpose === "styling" ? "styling" : "editing"}: ${blocked} check${blocked === 1 ? "" : "s"} failed.`;
     return `${passed} of ${report.checks.length} checks passed${warned ? `, ${warned} to look at` : ""}.`;
 }
-//# sourceMappingURL=precheck.js.map

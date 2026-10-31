@@ -142,4 +142,3 @@ export function describe(l) {
     return `Drawing (${l.strokes.length} stroke${l.strokes.length === 1 ? "" : "s"})`;
 }
 export function isColour(c) { return HEX.test(c); }
-//# sourceMappingURL=doc.js.map

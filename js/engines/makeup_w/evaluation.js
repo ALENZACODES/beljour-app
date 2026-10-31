@@ -22,4 +22,3 @@ export function makeupMetrics(photo, after, coverage) { let outside = 0, outN = 
     if (photo.channels === 4)
         alpha = Math.max(alpha, Math.abs(after[o + 3] - photo.data[o + 3]));
 } return { outside_error: outN ? outside / outN : 0, alpha_error: alpha, mean_luminance_shift: inN ? lum / inN : 0, deep_chroma_ratio: darkN ? aC / Math.max(bC, 1e-9) : 1, changed_fraction: changed / coverage.length }; }
-//# sourceMappingURL=evaluation.js.map

@@ -146,4 +146,3 @@ export function savedResult(face, moment, now = new Date()) {
     return { ...base, photo: face.day0, concerns: rows(first, concerns),
         reference: moment === "buy" && face.foundation ? { url: face.foundation, label: REFERENCE_LABEL } : null };
 }
-//# sourceMappingURL=skin-moment-faces.js.map

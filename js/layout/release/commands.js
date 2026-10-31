@@ -42,4 +42,3 @@ export function commandsPending(result) {
         throw new Error("Missing command rows");
     return result.rows.filter((row) => row.availability !== "available").length;
 }
-//# sourceMappingURL=commands.js.map

@@ -71,4 +71,3 @@ export function finishMetadata(name, colour, amount) {
         claim: "Digital appearance simulation, not a product wear test.",
     };
 }
-//# sourceMappingURL=finish.js.map

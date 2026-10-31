@@ -95,4 +95,3 @@ export function parseBoardRecipe(value) {
     checkSelections(selections);
     return selections;
 }
-//# sourceMappingURL=consultation-board.js.map

@@ -124,4 +124,3 @@ export function validateCatalogue() {
     }
     return problems;
 }
-//# sourceMappingURL=catalogue.js.map

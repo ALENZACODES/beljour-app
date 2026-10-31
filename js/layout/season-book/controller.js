@@ -217,4 +217,3 @@ export class SeasonBookController {
         this.subscribers.clear();
     }
 }
-//# sourceMappingURL=controller.js.map

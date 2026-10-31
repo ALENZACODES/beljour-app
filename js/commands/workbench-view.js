@@ -330,4 +330,3 @@ export function mountProWorkbench(root, model, codec = new BrowserPhotoCodec()) 
         },
     };
 }
-//# sourceMappingURL=workbench-view.js.map

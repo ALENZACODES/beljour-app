@@ -107,4 +107,3 @@ export class LiveMirror {
         this.effect?.reset();
     }
 }
-//# sourceMappingURL=mirror.js.map

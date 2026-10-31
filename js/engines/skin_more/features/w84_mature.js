@@ -5,4 +5,3 @@ export function previewW84(pixels, w, h, mask, style = "texture_first", amount =
     return { pixels: out, style, textureScore: gate.score, lineBlur: profile.lineBlur, antiAgeClaim: false, passed: gate.pass && profile.lineBlur === 0 };
 }
 export const passDefinitionW84 = "texture score >=0.78, zero line blur, no younger/anti-age claim";
-//# sourceMappingURL=w84_mature.js.map

@@ -110,4 +110,3 @@ export function decodeIntegrity(text) {
         throw new RangeError("passport integrity check failed");
     return payload;
 }
-//# sourceMappingURL=passport.js.map

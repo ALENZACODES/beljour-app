@@ -24,4 +24,3 @@ export function serialiseBundle(b) { return { ...b, assumptions: [...b.assumptio
 export function competenceClaim() { return false; }
 export function compareBundles(a, b) { return { complexion: b.complexion - a.complexion, lip: b.lip - a.lip, eye: b.eye - a.eye, brow: b.brow - a.brow, jewellery: b.jewellery - a.jewellery }; }
 export function occasionCatalogue() { return Object.keys(bundles).sort().map(k => serialiseBundle(bundles[k])); }
-//# sourceMappingURL=occasion.js.map

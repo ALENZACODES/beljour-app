@@ -11,4 +11,3 @@ scope.onmessage = (event) => {
         scope.postMessage({ id: event.data?.id, ok: false, message });
     }
 };
-//# sourceMappingURL=worker.js.map

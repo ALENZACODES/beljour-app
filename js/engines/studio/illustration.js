@@ -7,6 +7,8 @@
  * web/src/filters, whose source digest pins the measured Proof Wall run. Author: John Khan.
  */
 import { boxMean } from "../core/filters.js";
+import { renderClock } from "../skin/texture-law.js";
+import { cartoonV2 } from "./cartoon.js";
 import { sobel } from "../../filters/artistic/ink.js";
 import { kuwahara, paintTexture } from "../../filters/artistic/oil.js";
 import { blend, hashNoise, luma, number, parameters, photo, result, rgbValues, smooth01 } from "../../filters/artistic/types.js";
@@ -52,7 +54,8 @@ function cel(rgb, source, w, h, levels, ink, threshold) {
  * tone instead of being pulled down into grey specks; only clear dark marks (moles, freckles,
  * more than MARK_FLOOR levels below their surroundings) are drawn back. */
 export const CARTOON_SOFT = 0.24, MARK_FLOOR = 6;
-function cartoon(rgb, w, h) {
+/** The Python-parity cartoon (offline and golden bytes). The Studio passes face boxes and gets cartoonV2. */
+function cartoonFlat(rgb, w, h) {
     const painted = kuwahara(rgb, w, h, 2).rgb, n = w * h, levels = 3;
     const lum = boxPlane(lumaPlane(painted, n, 1), w, h, Math.max(1, Math.round(Math.min(w, h) / 200)));
     const base = boxPlane(lum, w, h, Math.max(2, Math.floor(Math.min(h, w) / 16)));
@@ -120,14 +123,29 @@ function portrait(rgb, w, h) {
     return out;
 }
 const DRAW = {
-    "sancerre-cartoon": cartoon, "fougeres-comic": comic, "banyuls-wash": wash, "chambord-portrait": portrait,
+    "sancerre-cartoon": cartoonFlat, "fougeres-comic": comic, "banyuls-wash": wash, "chambord-portrait": portrait,
 };
 export function illustrate(look, image, params) {
+    const started = renderClock();
     if (!Object.hasOwn(LOOKS, look))
         throw new RangeError(`look must be one of ${Object.keys(LOOKS).join(", ")}`);
     const src = photo(image), n = src.width * src.height;
-    const amount = number(parameters(params, DEFAULTS).amount, "amount", 0, 1);
-    const drawn = DRAW[look](rgbValues(src), src.width, src.height).map((v) => Math.min(255, Math.max(0, v)));
+    // Sancerre uses the scale-aware renderer; every detected face box (small background faces too) comes
+    // in as params.faces = [{ x, y, w, h, iod? }] so the filters scale per face. It is not a look setting.
+    const { faces: faceList, ...settings } = (params ?? {});
+    const faces = Array.isArray(faceList) ? faceList : [];
+    const amount = number(parameters(params === undefined ? undefined : settings, DEFAULTS).amount, "amount", 0, 1);
+    let extra = {};
+    let drawnRaw;
+    if (look === "sancerre-cartoon" && Array.isArray(faceList)) {
+        const v2 = cartoonV2(rgbValues(src), src.width, src.height, faces);
+        drawnRaw = v2.rgb;
+        extra = { line_share: v2.metrics.lineShare, specks_removed: v2.metrics.specksRemoved, specks_left: v2.metrics.specksLeft,
+            blotches: v2.metrics.blotches, faces_scaled: v2.metrics.faces, tone_dl_ratio: v2.metrics.toneDL, tone_drift_share: v2.metrics.toneDrift, tone_gate: v2.metrics.toneGate ? 1 : 0 };
+    }
+    else
+        drawnRaw = DRAW[look](rgbValues(src), src.width, src.height);
+    const drawn = drawnRaw.map((v) => Math.min(255, Math.max(0, v)));
     const support = new Float64Array(n).fill(amount);
     const out = blend(src, drawn, support);
     let before = 0, after = 0;
@@ -136,6 +154,5 @@ export function illustrate(look, image, params) {
         before += luma(src.data[o], src.data[o + 1], src.data[o + 2]);
         after += luma(out[o], out[o + 1], out[o + 2]);
     }
-    return result(look, src, out, support, LABEL, { geometry_displacement: 0, look, mean_luma_change: (after - before) / n }, ["Illustration of your own photo; no costume, body, face or background is generated."]);
+    return result(look, src, out, support, LABEL, { geometry_displacement: 0, look, mean_luma_change: (after - before) / n, render_ms: renderClock() - started, artistic_texture_exception: true, ...extra }, ["Illustration of your own photo; no costume, body, face or background is generated."]);
 }
-//# sourceMappingURL=illustration.js.map

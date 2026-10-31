@@ -51,4 +51,3 @@ export function fixRedEye(image, landmarks, { strength = 100 } = {}) {
     }
     return edited(out, weight, LABEL, report);
 }
-//# sourceMappingURL=red-eye.js.map

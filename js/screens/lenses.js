@@ -221,4 +221,3 @@ export async function renderLenses(root) {
 const root = typeof document !== "undefined" ? document.getElementById("ln-root") : null;
 if (root)
     void renderLenses(root);
-//# sourceMappingURL=lenses.js.map

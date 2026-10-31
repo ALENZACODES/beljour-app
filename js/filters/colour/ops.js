@@ -370,4 +370,3 @@ export function runOp(name, rgb, params) {
     return rgb;
 }
 export const linearToOklabPixel = linearToOklab;
-//# sourceMappingURL=ops.js.map

@@ -82,4 +82,3 @@ export class History {
         return { count: this.length, current: this.cursor, labels: this.steps.map((s) => s.label) };
     }
 }
-//# sourceMappingURL=history.js.map

@@ -70,4 +70,3 @@ export function guardFilterLook(before, look, source, parameters) {
     const capped = neverLighter(rgb(before), rgb(look), skin);
     return { image: { width: w, height: h, channels: 3, data: capped.data }, area: skin === masks.skin?.data ? "face points" : "rough face area", clamped: capped.clamped };
 }
-//# sourceMappingURL=never-lighter.js.map

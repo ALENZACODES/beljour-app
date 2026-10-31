@@ -122,4 +122,3 @@ export const unitToByte = (v) => roundHalfEven(clamp01(v) * 255);
 export function byteLightness(r, g, b, scratch = [0, 0, 0]) {
     return srgbToLab(r / 255, g / 255, b / 255, scratch)[0];
 }
-//# sourceMappingURL=space.js.map

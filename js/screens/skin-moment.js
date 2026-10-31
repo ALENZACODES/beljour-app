@@ -187,9 +187,11 @@ export function mountSkinMoment(root, start = "") {
             onclick: (e) => { e.stopPropagation(); go(() => controller.choose(m.id)); } }, m.title)), h("p", { class: "sm-moment-q", id: `sm-moment-${m.id}-q` }, m.question), h("p", { class: "sm-moment-d", id: `sm-moment-${m.id}-d` }, m.detail))), h("button", { type: "button", class: "lg-link sm-moment-example", onclick: () => go(() => controller.example(m.id)) }, "See a saved example", h("span", { class: "visually-hidden" }, ` for ${m.title}`))));
         return [
             todayStrip(),
-            h("div", { class: "sm-hero" }, h("div", { class: "sm-hero-text" }, ...heading("What's your skin moment?", "Skin Moment"), h("p", { class: "sm-lede" }, "Pick the one you're in right now. You get your measured skin scores and one plan: what to do today, this week, and what to stop."), live ? demoNote : h("p", { class: "sm-notice", role: "note" }, onDevice ? ON_DEVICE_NOTE : NO_SERVER_NOTE)), art("welcome-hero", { className: "sm-hero-art" })),
+            h("div", { class: "sm-hero" }, h("div", { class: "sm-hero-text" }, ...heading("What's your skin moment?", "Skin Moment"), h("p", { class: "sm-lede" }, live
+                ? "Pick the one you're in right now. You get your measured skin scores and one plan: what to do today, this week, and what to stop."
+                : "Pick the one you're in right now. You get skin scores (a saved example, or an estimate made on this device) and one plan: what to do today, this week, and what to stop."), live ? demoNote : h("p", { class: "sm-notice", role: "note" }, onDevice ? ON_DEVICE_NOTE : NO_SERVER_NOTE)), art("welcome-hero", { className: "sm-hero-art" })),
             h("ul", { class: "sm-moments", "aria-label": "Choose your moment" }, ...cards),
-            h("section", { class: "sm-how", "aria-labelledby": "sm-how-h" }, h("h2", { id: "sm-how-h" }, "How it works"), h("ol", { class: "sm-how-steps" }, h("li", {}, h("strong", {}, "Pick your moment. "), "Each one asks a different question of your skin."), h("li", {}, h("strong", {}, "Say what may be sent. "), "Agree to the YouCam calls your moment makes, each named first, or keep it to a local estimate."), h("li", {}, h("strong", {}, "Add one photo. "), "It is checked on this device first, so no unit is spent on a photo that can't be read."), h("li", {}, h("strong", {}, "Get one plan. "), "Today, this week, what to stop, and when to see a dermatologist, each with its reason.")), h("p", { class: "lg-small" }, "Cosmetic guidance, not medical advice. No brand pays to appear. ", h("a", { href: "trust.html" }, "How your photo is handled"), ".")),
+            h("section", { class: "sm-how", "aria-labelledby": "sm-how-h" }, h("h2", { id: "sm-how-h" }, "How it works"), h("ol", { class: "sm-how-steps" }, h("li", {}, h("strong", {}, "Pick your moment. "), "Each one asks a different question of your skin."), h("li", {}, h("strong", {}, "Say what may be sent. "), "Each YouCam call your moment makes is named first and covered by the one consent you give on this device, or keep it to a local estimate."), h("li", {}, h("strong", {}, "Add one photo. "), "It is checked on this device first, so no unit is spent on a photo that can't be read."), h("li", {}, h("strong", {}, "Get one plan. "), "Today, this week, what to stop, and when to see a dermatologist, each with its reason.")), h("p", { class: "lg-small" }, "Cosmetic guidance, not medical advice. No brand pays to appear. ", h("a", { href: "trust.html" }, "How your photo is handled"), ".")),
             live ? judgePanel() : null,
         ].filter((x) => !!x);
     }
@@ -283,16 +285,26 @@ export function mountSkinMoment(root, start = "") {
     function consent(s) {
         const info = momentInfo(s.moment);
         const list = whatIsSent(s.moment);
-        const agreed = h("input", { type: "checkbox", id: "sm-agree" });
         const problem = h("p", { class: "sm-problem", role: "alert", id: "sm-consent-problem" }, s.problem ?? "");
         if (!s.problem)
             problem.hidden = true;
+        // One consent (owner's order): no tick box of this page's own. Continue goes through the single
+        // per-device consent (ui/one-consent.ts), which asks only if it was never given on this device;
+        // what this moment sends is an inline label, as on every other YouCam action.
+        const proceed = async () => {
+            if (!(await ensureConsent())) {
+                problem.textContent = "Nothing was sent. Continue when you're ready, or choose the local estimate.";
+                problem.hidden = false;
+                return;
+            }
+            controller.agree({ agreed: true });
+        };
         return [
             ...heading("Before anything is sent", `${info.title} · ${info.question}`),
             h("div", { class: "sm-split" }, h("section", { class: "sm-card", "aria-labelledby": "sm-sent-h" }, art("privacy", { className: "sm-card-art" }), h("h2", { id: "sm-sent-h" }, uiIcon("privacy-lock"), "What is sent"), h("ul", { class: "sm-list sm-list-sent" }, ...list.sent.map((x) => h("li", {}, x))), h("h2", {}, "What stays with you"), h("ul", { class: "sm-list sm-list-kept" }, ...list.kept.map((x) => h("li", {}, x)))), h("form", { class: "sm-card sm-consent", "aria-labelledby": "sm-agree-h", onsubmit: (e) => {
                     e.preventDefault();
-                    go(() => controller.agree({ agreed: agreed.checked }));
-                } }, h("h2", { id: "sm-agree-h" }, uiIcon("consent-tick"), "Your choice"), live ? null : h("p", { class: "sm-notice", role: "note" }, onDevice ? ON_DEVICE_NOTE : "No server is connected to this copy, so nothing will be sent: you'll see a saved example."), h("p", { class: "sm-tick" }, agreed, h("label", { for: "sm-agree" }, consentText(s.moment))), problem, h("div", { class: "sm-actions" }, h("button", { type: "submit", class: "lg-button lg-primary" }, "Agree and add a photo"), h("button", { type: "button", class: "lg-button", "aria-describedby": "sm-local-d",
+                    go(proceed);
+                } }, h("h2", { id: "sm-agree-h" }, uiIcon("consent-tick"), "Your choice"), live ? null : h("p", { class: "sm-notice", role: "note" }, onDevice ? ON_DEVICE_NOTE : "No server is connected to this copy, so nothing will be sent: you'll see a saved example."), h("p", { class: "lg-small sm-send-line provider-label", id: "sm-send-d" }, consentText(s.moment)), problem, h("div", { class: "sm-actions" }, h("button", { type: "submit", class: "lg-button lg-primary", "aria-describedby": "sm-send-d" }, "Continue and add a photo"), h("button", { type: "button", class: "lg-button", "aria-describedby": "sm-local-d",
                 onclick: () => go(() => controller.localOnly()) }, "Local estimate only")), h("p", { class: "lg-small", id: "sm-local-d" }, LOCAL_TEXT))),
             h("div", { class: "sm-actions sm-actions-back" }, h("button", { type: "button", class: "lg-link", onclick: () => go(() => controller.back()) }, "← Choose a different moment")),
         ];
@@ -381,7 +393,9 @@ export function mountSkinMoment(root, start = "") {
         return box;
     }
     function scoresSection(v) {
-        return h("section", { class: "sm-section", "aria-labelledby": "sm-scores-h" }, h("h2", { id: "sm-scores-h" }, "Your measured scores"), h("ul", { class: "sm-scores" }, ...v.scores.map((s) => h("li", { class: `sm-score sm-score-${s.tone}` }, h("span", { class: "sm-score-label" }, concernIcon(s.concern), s.label), h("span", { class: "sm-score-raw" }, h("strong", {}, String(s.raw)), h("span", {}, " / 100")), h("span", { class: "sm-meter", "aria-hidden": "true" }, h("span", { style: { width: `${s.raw}%` } })), h("span", { class: "sm-score-band" }, s.band), s.ui ? h("span", { class: "sm-score-ui" }, s.ui) : null))), h("p", { class: "lg-small" }, v.scoresNote));
+        return h("section", { class: "sm-section", "aria-labelledby": "sm-scores-h" }, 
+        // The heading says where the numbers came from: only a live reading is "measured".
+        h("h2", { id: "sm-scores-h" }, v.badgeTone === "live" ? "Your measured scores" : v.badgeTone === "local" ? "Your scores, estimated on this device" : "Saved example scores"), h("ul", { class: "sm-scores" }, ...v.scores.map((s) => h("li", { class: `sm-score sm-score-${s.tone}` }, h("span", { class: "sm-score-label" }, concernIcon(s.concern), s.label), h("span", { class: "sm-score-raw" }, h("strong", {}, String(s.raw)), h("span", {}, " / 100")), h("span", { class: "sm-meter", "aria-hidden": "true" }, h("span", { style: { width: `${s.raw}%` } })), h("span", { class: "sm-score-band" }, s.band), s.ui ? h("span", { class: "sm-score-ui" }, s.ui) : null))), h("p", { class: "lg-small" }, v.scoresNote));
     }
     function checkinSection(v, live_) {
         const c = v.checkin;
@@ -660,4 +674,3 @@ function syncHash(moment) {
 const root = typeof document !== "undefined" ? document.getElementById("sm-root") : null;
 if (root)
     mountSkinMoment(root, location.hash.slice(1));
-//# sourceMappingURL=skin-moment.js.map

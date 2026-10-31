@@ -179,4 +179,3 @@ export function renderPrecheck(details, summary, list, report) {
     details.open = report.verdict === "blocked";
     return line;
 }
-//# sourceMappingURL=strip-view.js.map

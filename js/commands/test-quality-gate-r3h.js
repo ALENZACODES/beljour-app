@@ -109,4 +109,3 @@ export function testR3HQuality() {
     }
     return count;
 }
-//# sourceMappingURL=test-quality-gate-r3h.js.map

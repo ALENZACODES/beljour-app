@@ -7,9 +7,10 @@ import { rootStrength } from "./strength-curve.js";
 import { requireColour, encodeChannel, roundHalfEven, SRGB_TO_LINEAR } from "../../engines/core/buffer.js";
 import { enhance, MODES } from "../../engines/local/enhance.js";
 import { readCrown, shadeCard, hairColour } from "../../engines/local/fibre.js";
-import { renderFibres, PRODUCTS } from "../../engines/local/strands.js";
+import { PRODUCTS } from "../../engines/local/strands.js";
+import { renderFibresFlow } from "../../engines/local/fibres-flow.js";
 import { renderBeard, STYLES } from "../../engines/local/beard.js";
-import { plan, renderPosture, FIXES } from "../../engines/local/posture.js";
+import { plan, renderPosture, backgroundDetail, PLAIN_BACKGROUND_DETAIL, FIXES } from "../../engines/local/posture.js";
 import { postureSettings } from "./settings.js";
 import { effective } from "./layers.js";
 import { appearanceOrder } from "./appearance-stack.js";
@@ -36,7 +37,9 @@ import { mapToOutput, readGeometry, isIdentity } from "../../editor/crop/geometr
 /** The Enhance mode that runs the one-tap auto fix; the other modes are the guarded rescue modes. */
 export const AUTO_FIX = "auto";
 /** Least Lab distance between the crown's hair and gap tones for Hair fibres to have anything to fill. ASSUMED. */
-export const FIBRE_MIN_CONTRAST = 12, FIBRE_POWER = 0.15;
+/** Posture strength curve: share of the guarded maximum move = (strength/100)^POSTURE_CURVE. */
+export const POSTURE_CURVE = 0.7;
+export const FIBRE_MIN_CONTRAST = 12, FIBRE_POWER = 0.5;
 /** The points after a layer that moved them and was mixed in at `weight` (0-1). A partly mixed
  * warp has no single true geometry; moving the points by the same share is ASSUMED. */
 export function nextFace(before, after, weight) {
@@ -228,11 +231,15 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
                 metrics: { product, status: "refused", reason_code: "no_scalp_showing", message, crown_contrast: Math.round(contrast * 10) / 10 } };
         }
         const shade = shadeCard(hairColour(img, reading.split.hair));
-        // A steeper curve than the face tools (FIBRE_POWER): the gaps are a small share of the photo, so
-        // 30 already fills most of them, and every step up to 100 still adds fibres.
-        const result = renderFibres(img, area, reading.split.scalp, shade.top[0].lab, { product, hair: reading.split.hair, amount: Math.min(100, 100 * rootStrength(layer.strength, FIBRE_POWER)), seed: 17 });
+        // A root curve (FIBRE_POWER 0.5): the default 50 gives amount 71 (about 74% of the scalp covered), 100 gives
+        // 90%. The old 0.15 gave 90 at the default, so default and maximum looked the same.
+        const result = renderFibresFlow(img, area, reading.split.scalp, shade.top[0].lab, { product, hair: reading.split.hair, amount: Math.min(100, 100 * rootStrength(layer.strength, FIBRE_POWER)), seed: 17 });
         return { image: result.image, label: result.label,
-            metrics: { product, scalp_share: reading.overall_scalp_share, fibres: Number(result.metrics.fibres || 0), crown_contrast: Math.round(contrast * 10) / 10 } };
+            metrics: { product, scalp_share: reading.overall_scalp_share, fibres: result.metrics.fibres,
+                status: result.metrics.status, refused_grey_root_px: result.metrics.refused_grey_root_px,
+                covered_scalp: result.metrics.covered_scalp, flow_coherence_in_gap: result.metrics.flow_coherence_in_gap,
+                render_ms: result.metrics.render_ms, texture_source: "own_photo",
+                crown_contrast: Math.round(contrast * 10) / 10 } };
     }
     if (layer.kind === "posture") {
         const requested = stringParam(layer, "fix", "lean");
@@ -243,11 +250,32 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
             throw new RangeError("Posture fix needs a matching front or side view");
         const config = postureSettings({ bandShare: numberParam(layer, "band_share", postureSettings().bandShare),
             capShare: numberParam(layer, "cap_share", postureSettings().capShare) });
-        const p = plan(source.body, fix, layer.strength / 100, { capShare: config.capShare });
-        const result = renderPosture(img, source.person, p, { bandShare: config.bandShare });
+        // A photo without both shoulders (a headshot) or with body points off the photo is refused cleanly:
+        // the photo stays as it is and later tools and the photo checks keep working.
+        const refuse = (message) => ({ image: { ...img, data: new Uint8ClampedArray(img.data) },
+            label: `${message} Posture simulation.`, metrics: { fix, status: "refused", reason_code: "shoulders_not_visible", message } });
+        const W = img.width, H = img.height, inside = (q) => !!q && q[0] >= 0 && q[1] >= 0 && q[0] < W && q[1] < H;
+        const shoulders = source.body ? Object.entries(source.body.points).filter(([name]) => name.includes("shoulder")).map(([, q]) => q) : [];
+        if (!source.body || !source.person || !shoulders.length || !shoulders.every(inside))
+            return refuse("Posture needs both shoulders inside the photo; this looks like a headshot.");
+        let p, result;
+        const detail = backgroundDetail(img, source.person, config.bandShare);
+        try {
+            // The plan asks for the full fix (capped); the slider takes a share of the largest move the fold guard
+            // allows, on a gentle curve (the default 50 gives about 0.62 of it). Before, the guard capped 50 and 100 alike.
+            p = plan(source.body, fix, 1, { capShare: config.capShare });
+            result = renderPosture(img, source.person, p, { bandShare: config.bandShare, layers: true,
+                amount: Math.pow(Math.min(100, Math.max(0, layer.strength)) / 100, POSTURE_CURVE),
+                fillMethod: detail < PLAIN_BACKGROUND_DETAIL ? "biharmonic" : "patchmatch" });
+        }
+        catch (e) {
+            if (e instanceof RangeError)
+                return refuse(`This posture edit could not be made: ${e.message}.`);
+            throw e;
+        }
         return { image: result.image, label: result.label,
             metrics: { fix, cap_share: config.capShare, band_share: config.bandShare,
-                strength_used: result.strengthUsed, cap_scale: p.capScale } };
+                strength_used: result.strengthUsed, cap_scale: p.capScale, background_detail: Math.round(detail * 100) / 100, fill: String(result.metrics.fill) } };
     }
     throw new Error("This layer has no approved local renderer");
 }
@@ -334,4 +362,3 @@ export function defaultBeardColour(img, face) {
         }
     return count && sum / count < 90 ? "#0E0A09" : "#241915";
 }
-//# sourceMappingURL=pipeline.js.map

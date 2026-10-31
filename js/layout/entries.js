@@ -37,4 +37,3 @@ if (page === "home") {
     mountAccessibilityEntry(document, window);
     mountInstallEntry(document, window);
 }
-//# sourceMappingURL=entries.js.map

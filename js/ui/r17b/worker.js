@@ -7,4 +7,3 @@ self.onmessage = (event) => { const job = event.data.job; try {
 catch (error) {
     self.postMessage({ id: job.id, ok: false, error: error instanceof Error ? error.message : "render failed" });
 } };
-//# sourceMappingURL=worker.js.map

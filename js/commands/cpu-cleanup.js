@@ -160,4 +160,3 @@ export class CpuCleanup {
         return { width: frame.width, height: frame.height, channels: frame.channels, pixels: output };
     }
 }
-//# sourceMappingURL=cpu-cleanup.js.map

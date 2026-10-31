@@ -355,4 +355,3 @@ export function diaryResult(entry, snapshots) {
 export function deviceCheckins(storage = browserStorage()) {
     return new CheckinStore(storage).list();
 }
-//# sourceMappingURL=store.js.map

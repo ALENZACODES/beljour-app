@@ -141,4 +141,3 @@ export function inspectOutput(before, after, options = {}) {
         eyes: options.eyeMask === undefined ? missing() : protectedPixels(before, after, options.eyeMask),
         detail: options.detailMask === undefined ? missing() : textureObservation(before, after, options.detailMask) };
 }
-//# sourceMappingURL=inspection.js.map

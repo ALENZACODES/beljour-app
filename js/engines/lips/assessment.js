@@ -54,4 +54,3 @@ export function gateLip(row) {
         failures.push("finish preview flattened lip lines");
     return { passed: failures.length === 0, failures };
 }
-//# sourceMappingURL=assessment.js.map

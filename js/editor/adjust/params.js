@@ -104,4 +104,3 @@ export function scaled(values, strength) {
 export function adjustIsNeutral(values) {
     return ADJUST_SLIDERS.every((spec) => spec.shapes !== undefined || values[spec.key] === spec.neutral);
 }
-//# sourceMappingURL=params.js.map

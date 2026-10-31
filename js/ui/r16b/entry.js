@@ -166,4 +166,3 @@ if (root) {
     const dispose = mount(root);
     window.addEventListener("pagehide", dispose, { once: true });
 }
-//# sourceMappingURL=entry.js.map

@@ -1,4 +1,5 @@
 import { STUDIO_IDS } from "../ui/shell/types.js";
+import { SAMPLE_IDS } from "../ui/shell/demo.js";
 import { regionMask } from "../data/regions/index.js";
 import { stillYou } from "./still-you.js";
 import { CATEGORIES, STRENGTH_TICKS, clampStrength, effectsIn, studioFor } from "./effects.js";
@@ -32,6 +33,9 @@ import { createScreen } from "../editor/create/panel.js";
 import { applyStory } from "../editor/create/tabs.js";
 import { STORIES } from "../editor/create/story.js";
 import { faceMapPanel, studioMapKey } from "../screens/face-map.js";
+import { downloadFile } from "../save/download.js";
+/** The source id the Studio gives its built-in example person (ui/shell/view.ts). */
+const EXAMPLE_SOURCE = "upload:example-person-1";
 /** The Create panel's tabs, by the panel id a Home link uses (#tool=<id>). */
 export const CREATE_PANELS = {
     text: "text", draw: "draw", stickerlayer: "stickers", frames: "frames", collage: "collage", story: "story"
@@ -134,10 +138,23 @@ export function editTag(layers) {
 export function recipeSteps(steps) {
     return steps.map((s) => ({ tool: s.kind, strength: s.strength, settings: { ...s.params }, provider: "local" }));
 }
+/** A saved look's steps as layers for the batch panel (all on this device). */
+export function lookLayers(look) {
+    return look.steps.map((step, i) => ({ id: `saved-${i}`, kind: step.kind, name: step.kind,
+        strength: step.strength, parameters: { ...step.params }, enabled: true, opacity: 1, provenance: "local",
+        origin: "photo", simulation: !["enhance", "filters"].includes(step.kind) }));
+}
 export class EditorChrome {
     view;
     doc;
     looks = new LookStore(browserLooks());
+    /** The saved look opened from Home (#look=<id>). It stays on while she switches photos: each new
+     * photo gets the look again once its face map has settled, so the status line never claims edits
+     * the photo does not have. */
+    activeLook = null;
+    pendingLook = null;
+    /** The panel last opened under the photo. */
+    openKind = null;
     library = new LookLibrary(browserLookStorage());
     offer = new SaveOffer(browserStore());
     savedAsLook = false;
@@ -177,8 +194,8 @@ export class EditorChrome {
             this.say("Split compare: drag the line or use the arrow keys on the photo.");
         });
         // A new photo opens on its Face map, the first step every face tool stands on (face-map.ts).
-        this.doc.addEventListener("beljour:new-photo", () => this.openDeliverable("facemap", undefined, false));
-        this.doc.getElementById("lg-batch-review")?.addEventListener("click", () => this.openDeliverable("batch"));
+        this.doc.addEventListener("beljour:new-photo", () => this.newPhoto());
+        this.doc.getElementById("lg-batch-review")?.addEventListener("click", () => this.openBatch());
         this.doc.getElementById("lg-group-faces")?.addEventListener("click", () => this.openDeliverable("faces"));
         this.doc.getElementById("lg-best-selfie")?.addEventListener("click", () => this.openDeliverable("selfie"));
         this.doc.getElementById("lg-export-sizes")?.addEventListener("click", () => this.openDeliverable("sizes"));
@@ -315,12 +332,12 @@ export class EditorChrome {
         }
         else if (action.kind === "look") {
             const look = this.looks.get(action.id);
+            this.activeLook = look;
+            this.pendingLook = null;
             if (!look)
                 this.say("That saved look isn't in this browser.");
-            else {
-                const res = applySteps(this.editor, look.steps);
-                this.say(`${look.name}: ${res.added} edit${res.added === 1 ? "" : "s"} applied` + (res.skipped.length ? `; skipped ${res.skipped.join("; ")}` : "."));
-            }
+            else
+                this.openLook(look);
         }
         else if (action.kind === "try") {
             const tried = tryStep(action.value);
@@ -340,10 +357,7 @@ export class EditorChrome {
                 const name = this.doc.getElementById("lg-look-name");
                 if (name)
                     name.value = look.name;
-                const layers = look.steps.map((step, i) => ({ id: `saved-${i}`, kind: step.kind, name: step.kind,
-                    strength: step.strength, parameters: { ...step.params }, enabled: true, opacity: 1, provenance: "local",
-                    origin: "photo", simulation: !["enhance", "filters"].includes(step.kind) }));
-                this.openDeliverable("batch", layers);
+                this.openDeliverable("batch", lookLayers(look));
             }
         }
         else if (action.kind === "category") {
@@ -387,14 +401,110 @@ export class EditorChrome {
             const copy = paywallCopy();
             this.say(`${copy.title}: ${copy.trial} ${DEMO_NOTE}`);
         }
+        if (action.kind !== "look" && (action.kind !== "none" || !globalThis.location?.hash)) {
+            this.activeLook = null;
+            this.pendingLook = null;
+        }
         if (action.kind !== "none") {
             this.view.draw();
             this.refresh();
         }
     }
+    /** Open a saved look on the built-in picture it was made on (a drawn sample at once; the example
+     * person once the Studio has opened it), or on the photo open now, and say which photo it is on. */
+    openLook(look) {
+        const editor = this.view.editor, ref = look.photo;
+        if (ref?.startsWith("sample:") && editor.source.id !== ref) {
+            const id = ref.slice("sample:".length);
+            if (SAMPLE_IDS.includes(id)) {
+                editor.loadSample(id);
+                this.view.afterSource();
+            }
+        }
+        else if (ref === "example:person-1" && editor.source.id !== EXAMPLE_SOURCE) {
+            // The Studio swaps in the example person on a first open; the look waits for it (newPhoto).
+            this.pendingLook = { look, sourceId: EXAMPLE_SOURCE };
+            this.say(`${look.name}: opening the example person it was made on.`);
+            setTimeout(() => {
+                if (this.pendingLook?.look !== look)
+                    return;
+                this.pendingLook = null;
+                this.applyLook(look, true);
+            }, 30_000);
+            return;
+        }
+        this.applyLook(look, false);
+    }
+    applyLook(look, fallback) {
+        const res = applySteps(this.editor, look.steps), label = this.view.editor.source.label;
+        this.say(`${look.name}: ${res.added} edit${res.added === 1 ? "" : "s"} applied to ${label}`
+            + (fallback ? " (the picture it was made on could not be opened)" : "")
+            + (res.skipped.length ? `; skipped ${res.skipped.join("; ")}` : "."));
+        this.view.draw();
+        this.refresh();
+    }
+    /** A new photo is open: its Face map comes first; an open saved look waits for it, then applies. */
+    newPhoto() {
+        const look = this.activeLook, sourceId = this.view.editor.source.id;
+        if (look && this.pendingLook?.look === look && this.pendingLook.sourceId === sourceId) {
+            // The picture the look was made on has just opened.
+            this.openDeliverable("facemap", undefined, false);
+            this.applyPendingLook(sourceId);
+            return;
+        }
+        if (look) {
+            this.pendingLook = { look, sourceId };
+            this.say(`${look.name}: applying to this photo once its face map is ready.`);
+        }
+        this.openDeliverable("facemap", undefined, false);
+        if (!look)
+            return;
+        // A drawn sample has no Face map to wait for; a map that never reports still gets the look.
+        if (this.view.editor.source.kind === "sample")
+            this.applyPendingLook(sourceId);
+        else
+            setTimeout(() => this.applyPendingLook(sourceId), 20_000);
+    }
+    /** Give the waiting saved look to the photo it was meant for (once). */
+    applyPendingLook(sourceId) {
+        const pending = this.pendingLook;
+        if (!pending || pending.sourceId !== sourceId)
+            return;
+        this.pendingLook = null;
+        if (this.view.editor.source.id !== sourceId)
+            return;
+        const res = applySteps(this.editor, pending.look.steps);
+        this.say(`${pending.look.name}: ${res.added} edit${res.added === 1 ? "" : "s"} applied to ${this.view.editor.source.label}`
+            + (res.skipped.length ? `; skipped ${res.skipped.join("; ")}` : "."));
+        this.view.draw();
+        this.refresh();
+    }
+    /** "Apply to photos": the edits on this photo, or the open saved look when this photo has none
+     * the batch can use. */
+    openBatch() {
+        const layers = this.editor.document.layers;
+        const usable = layers.some((l) => l.enabled && l.strength > 0 && l.opacity > 0 && ["enhance", "filters", "lighting"].includes(l.kind));
+        const look = this.activeLook;
+        if (!usable && look) {
+            const name = this.doc.getElementById("lg-look-name");
+            if (name && !name.value.trim())
+                name.value = look.name;
+            this.openDeliverable("batch", lookLayers(look));
+        }
+        else
+            this.openDeliverable("batch");
+    }
     /** Hand the Face map's points to the open photo's face tools: only for the photo it was read
      * from, and only while there are no edits (attaching points starts the edits afresh). */
     attachMap(map, sourceId) {
+        try {
+            this.attachPoints(map, sourceId);
+        }
+        finally {
+            this.applyPendingLook(sourceId);
+        }
+    }
+    attachPoints(map, sourceId) {
         const editor = this.view.editor;
         if (editor.source.id !== sourceId || !map.points || editor.document.layers.length)
             return;
@@ -418,9 +528,19 @@ export class EditorChrome {
         const panel = this.doc.getElementById("lg-deliverable");
         if (!panel)
             return;
+        // Redrawing the panel already in view (a face chip refreshing Group photo) keeps her place.
+        const redraw = !panel.hidden && this.openKind === kind;
+        this.openKind = kind;
         this.closePanel?.();
         this.closePanel = null;
         const name = this.doc.getElementById("lg-look-name")?.value.trim() || "My look";
+        // Every file a panel saves is also confirmed on the studio's own status line, next to the
+        // buttons she pressed, so a save never finishes silently even when the panel is out of view.
+        const download = (file, type, bytes) => {
+            downloadFile(file, type, bytes);
+            this.say(`Saved ${file} on this device. Look in your downloads.`);
+        };
+        const simulationLabel = () => simulationLabelPref(browserStore()).get();
         try {
             const createTab = CREATE_PANELS[kind];
             if (createTab) {
@@ -452,19 +572,19 @@ export class EditorChrome {
                 this.closePanel = screen.dispose;
             }
             else if (kind === "tattoo") {
-                panel.replaceChildren(tattooScreen(this.view.editor, name, { simulationLabel: () => simulationLabelPref(browserStore()).get() }));
+                panel.replaceChildren(tattooScreen(this.view.editor, name, { simulationLabel, download }));
             }
             else if (kind === "stickers") {
-                panel.replaceChildren(stickersScreen(this.view.editor, { simulationLabel: () => simulationLabelPref(browserStore()).get() }));
+                panel.replaceChildren(stickersScreen(this.view.editor, { simulationLabel, download }));
             }
             else if (kind === "video") {
-                panel.replaceChildren(beforeAfterScreen(this.view.editor, name, { simulationLabel: () => simulationLabelPref(browserStore()).get() }));
+                panel.replaceChildren(beforeAfterScreen(this.view.editor, name, { simulationLabel, download }));
             }
             else if (kind === "event") {
                 panel.replaceChildren(eventTrialScreen(() => this.looks.list()));
             }
             else if (kind === "sizes") {
-                panel.replaceChildren(exportSizesScreen(this.view.editor, name, { simulationLabel: () => simulationLabelPref(browserStore()).get() }));
+                panel.replaceChildren(exportSizesScreen(this.view.editor, name, { simulationLabel, download }));
             }
             else if (kind === "selfie") {
                 panel.replaceChildren(bestSelfieScreen((source) => { this.view.editor.load(source); this.view.afterSource(); this.refresh(); }));
@@ -476,8 +596,19 @@ export class EditorChrome {
             }
             panel.hidden = false;
             this.doc.getElementById("lg-close-deliverable")?.removeAttribute("hidden");
-            if (scroll)
+            if (scroll && redraw)
                 panel.scrollIntoView({ block: "nearest" });
+            else if (scroll) {
+                // The panel opens under the photo, often below the fold: bring it to the top of the view,
+                // move focus to its heading and say where it went, so the button never looks dead.
+                panel.scrollIntoView({ block: "start" });
+                const heading = panel.querySelector("h2");
+                if (heading) {
+                    heading.setAttribute("tabindex", "-1");
+                    heading.focus?.({ preventScroll: true });
+                }
+                this.say(`${heading?.textContent?.trim() || "The panel"} is open below the photo.`);
+            }
         }
         catch (error) {
             this.say(error instanceof Error ? error.message : String(error));
@@ -492,7 +623,9 @@ export class EditorChrome {
             return;
         }
         try {
-            const look = this.looks.save(name, steps);
+            const id = this.view.editor.source.id;
+            const photo = id.startsWith("sample:") ? id : id === EXAMPLE_SOURCE ? "example:person-1" : undefined;
+            const look = this.looks.save(name, steps, photo);
             this.savedAsLook = true;
             // The versioned recipe (Save System v1) goes to IndexedDB; failures keep the My Look copy.
             void this.library.saveLook(look.name, recipeSteps(look.steps)).catch(() => undefined);
@@ -574,7 +707,13 @@ export class EditorChrome {
     /** Keep this face's edits, move the editor to face `index` and bring back that face's edits. */
     switchFace(index) {
         const group = this.groupSession();
-        if (!group || index === group.active)
+        if (!group) {
+            // One mapped face: it is always the face being edited.
+            if (faceCount(this.editor) === 1)
+                this.say("Editing face 1, the only face found in this photo. Every edit applies to it.");
+            return;
+        }
+        if (index === group.active)
             return;
         group.session.setEdits(group.active, this.editor.document.layers);
         this.view.editor.setFace(group.session.faces[index]);
@@ -587,8 +726,11 @@ export class EditorChrome {
     /** "All": the face being edited gives its edits to every face. */
     editAllFaces() {
         const group = this.groupSession();
-        if (!group)
+        if (!group) {
+            if (faceCount(this.editor) === 1)
+                this.say("There is one face in this photo, so every edit already applies to all of it.");
             return;
+        }
         group.session.setEdits(group.active, this.editor.document.layers);
         group.session.copyToAll(group.active);
         this.say(`Face ${group.active + 1}'s edits now apply to every face, each inside its own face.`);
@@ -604,20 +746,21 @@ export class EditorChrome {
                 const chip = this.doc.createElement("button");
                 chip.type = "button";
                 chip.textContent = String(i + 1);
-                chip.disabled = n <= 1;
+                chip.disabled = n < 1;
                 chip.setAttribute("aria-label", `Edit face ${i + 1}`);
-                chip.setAttribute("aria-pressed", String(n > 1 && i === active));
+                chip.setAttribute("aria-pressed", String(n >= 1 && i === active));
                 chip.addEventListener("click", () => this.switchFace(i));
                 return chip;
             });
             const all = this.doc.createElement("button");
             all.type = "button";
             all.textContent = "All";
-            all.disabled = n <= 1;
+            all.disabled = n < 1;
             all.addEventListener("click", () => this.editAllFaces());
             const note = this.doc.createElement("span");
             note.className = "lg-small lg-faces-note";
-            note.textContent = n > 1 ? `${n} faces. Pick a face to edit it, or All. Each face's edits stay inside that face.` : "One face, or no recorded face points.";
+            note.textContent = n > 1 ? `${n} faces. Pick a face to edit it, or All. Each face's edits stay inside that face.`
+                : n === 1 ? "One face mapped. Edits apply to this face." : "No face points yet: run the Face map to find the face.";
             faces.replaceChildren(...chips, all, note);
         }
         // 4.1: each face chip shows that face, cut from this photo on the device.
@@ -633,4 +776,3 @@ export function mountChrome(view) {
     chrome.mount();
     return chrome;
 }
-//# sourceMappingURL=editor-chrome.js.map

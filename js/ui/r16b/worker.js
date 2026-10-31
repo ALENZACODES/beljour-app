@@ -10,4 +10,3 @@ scope.onmessage = e => {
         scope.postMessage({ id: e.data?.id, ok: false, message: error instanceof Error ? error.message : "Local preview failed." });
     }
 };
-//# sourceMappingURL=worker.js.map

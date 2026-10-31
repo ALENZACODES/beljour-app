@@ -110,4 +110,3 @@ export function browserShellRenderer() {
     }
     return new ShellGpuRenderer(canvas);
 }
-//# sourceMappingURL=gpu-renderer.js.map

@@ -94,4 +94,3 @@ export class BrowserObservedLockLedger {
         return evaluateCommandLocks(this.snapshot());
     }
 }
-//# sourceMappingURL=observed-ledger.js.map

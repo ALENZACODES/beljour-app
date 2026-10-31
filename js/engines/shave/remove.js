@@ -138,4 +138,3 @@ export function removeBeard(image, points, strength = 30, keep = []) {
     Object.assign(metrics, { restored_pixels: restored, amount_cap: cap });
     return { image: out, weight, label: LABEL, metrics };
 }
-//# sourceMappingURL=remove.js.map

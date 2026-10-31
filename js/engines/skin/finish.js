@@ -88,4 +88,3 @@ export function glow(image, skin, face, strength = 30, style = "cassis") {
     }
     return { image: encode(image, lab, weight), weight, label, metrics: { style, balance_l: Math.round(balance * 1e4) / 1e4, peak_lift: peakLift } };
 }
-//# sourceMappingURL=finish.js.map

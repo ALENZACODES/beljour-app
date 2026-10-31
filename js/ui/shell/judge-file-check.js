@@ -124,4 +124,3 @@ export async function preflightJudgeFile(file) {
         throw new Error("The selected image appears incomplete.");
     return inspectJudgeHeader(header, file.type);
 }
-//# sourceMappingURL=judge-file-check.js.map

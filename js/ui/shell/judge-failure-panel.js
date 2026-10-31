@@ -36,4 +36,3 @@ export function renderJudgeFailurePanel(doc, host, replay, actions) {
     section.append(details);
     host.append(section);
 }
-//# sourceMappingURL=judge-failure-panel.js.map

@@ -266,4 +266,3 @@ export function uiIcon(name, fallback, size = 28) {
     });
     return box;
 }
-//# sourceMappingURL=skin-moment-art.js.map

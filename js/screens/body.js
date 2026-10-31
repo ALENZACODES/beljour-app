@@ -69,4 +69,3 @@ export async function renderBody(main, ctx) {
     showPosture();
     await showTrends();
 }
-//# sourceMappingURL=body.js.map

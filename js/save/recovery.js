@@ -138,4 +138,3 @@ export function browserRecovery() {
     catch { /* private mode can deny the getter */ }
     return new RecipeRecovery(storage);
 }
-//# sourceMappingURL=recovery.js.map

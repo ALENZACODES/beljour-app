@@ -116,4 +116,3 @@ export function assessCalibrationGap(reportedPercent = REPORTED_PERCENT) {
         percentage_point_gap: round(Math.max(0, 95 - reportedPercent), 4),
         status: "UNPROVEN", synthetic_closes_real_gap: false, release_pass: false });
 }
-//# sourceMappingURL=calibration.js.map

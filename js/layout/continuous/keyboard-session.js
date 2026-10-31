@@ -74,4 +74,3 @@ export class ContinuousKeyboardSession {
         this.target.removeEventListener("keydown", this.onKey);
     }
 }
-//# sourceMappingURL=keyboard-session.js.map

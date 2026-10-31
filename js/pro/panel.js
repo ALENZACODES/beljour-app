@@ -410,4 +410,3 @@ export function mountProPanel(host) {
         },
     };
 }
-//# sourceMappingURL=panel.js.map

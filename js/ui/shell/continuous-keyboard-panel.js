@@ -57,4 +57,3 @@ export function renderContinuousKeyboardPanel(doc, display, actions) {
     section.append(instructions);
     return section;
 }
-//# sourceMappingURL=continuous-keyboard-panel.js.map

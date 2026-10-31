@@ -72,4 +72,3 @@ export function observeCoverResult(before, result, markedScalp) {
         observation: observeCover(before, result.image, markedScalp, result.hairRgb), level: result.level,
         provider_calls: 0 };
 }
-//# sourceMappingURL=observed-cover.js.map

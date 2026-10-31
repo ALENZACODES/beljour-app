@@ -62,4 +62,3 @@ export function readHairColour(image, hairMask, options = {}) {
     return Object.freeze({ refused: false, reading: found, level: measuredLevel(found.lab), corrected: found.white_mode !== "none",
         suggestions: suggest(found.lab, { count: 3 }), halves_delta_e: split, excluded_transparent: excluded });
 }
-//# sourceMappingURL=reading.js.map

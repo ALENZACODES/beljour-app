@@ -8,4 +8,3 @@ export * from "./w54_optical.js";
 export * from "./w55_finish.js";
 export * from "./w56_wear.js";
 export * from "./w57_pigmentation.js";
-//# sourceMappingURL=index.js.map

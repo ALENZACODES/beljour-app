@@ -79,4 +79,3 @@ export function statusCopy(status) {
         case "disposed": return "This demonstration session has ended.";
     }
 }
-//# sourceMappingURL=cassette-contract.js.map

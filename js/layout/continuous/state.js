@@ -294,4 +294,3 @@ export function countApplied(applied) {
 export function minimumLevel(levels) {
     return Math.min(...Object.values(levels));
 }
-//# sourceMappingURL=state.js.map

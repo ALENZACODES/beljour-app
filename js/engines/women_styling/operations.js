@@ -169,4 +169,3 @@ export function layersFor(req) {
         throw new Error('Unknown or blocked W feature');
     return run(req);
 }
-//# sourceMappingURL=operations.js.map

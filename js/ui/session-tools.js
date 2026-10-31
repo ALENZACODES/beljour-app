@@ -148,4 +148,3 @@ export function mountSessionTools(editor, redraw, recovery = browserRecovery(), 
     return () => { if (disposed)
         return; disposed = true; unsubscribe(); unlisten(); refreshCodes(); diagnostics.clear(); panel.remove(); };
 }
-//# sourceMappingURL=session-tools.js.map

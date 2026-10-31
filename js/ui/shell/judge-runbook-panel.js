@@ -44,4 +44,3 @@ export function renderJudgeRunbookPanel(doc, host, summary, witness, options = {
     details.append(content);
     host.append(details);
 }
-//# sourceMappingURL=judge-runbook-panel.js.map

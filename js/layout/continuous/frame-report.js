@@ -69,4 +69,3 @@ export function downloadFrameReport(doc, summary) {
         URL.revokeObjectURL(url);
     }
 }
-//# sourceMappingURL=frame-report.js.map

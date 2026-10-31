@@ -48,4 +48,3 @@ export function renderJudgeSource(doc, host, state, image, actions) {
     layout.append(controls, preview);
     host.replaceChildren(layout);
 }
-//# sourceMappingURL=judge-source.js.map

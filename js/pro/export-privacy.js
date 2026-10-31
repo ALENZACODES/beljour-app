@@ -83,4 +83,3 @@ export async function scrubEncodedBlob(blob, mime) {
     owned.set(cleaned);
     return new Blob([owned.buffer], { type: mime });
 }
-//# sourceMappingURL=export-privacy.js.map

@@ -82,4 +82,3 @@ export async function exportColourSafe(raster, name, settings = {}, encoder = ca
         name: `${name}.${mime === "image/png" ? "png" : "jpg"}`,
     };
 }
-//# sourceMappingURL=colour-export.js.map

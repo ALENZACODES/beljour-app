@@ -28,9 +28,14 @@
       <label for="lg-judge-name">Your judge name (no real name needed)</label>
       <input id="lg-judge-name" name="judge" required minlength="2" maxlength="40" pattern="[A-Za-z0-9_.@\-]{2,40}" autocomplete="off">
       <label class="lg-switch"><input type="checkbox" id="lg-woman-judge"> I am a woman judge (asks the Still Her score on women's photos)</label>
-      <label for="lg-bundle">Bundle folder</label>
-      <input id="lg-bundle" type="file" webkitdirectory multiple>
-      <button type="submit" class="lg-button lg-primary">Start judging</button>
+      <button type="submit" class="lg-button lg-primary" name="set" value="builtin" id="lg-judge-builtin">Judge the built-in set (8 pairs, nothing to upload)</button>
+      <p class="lg-small">The built-in set is the app's own drawn portrait (no photo of anyone) on four skin tones, light to very dark, with two filters, each at two strengths. Which strength is which is hidden and the sides are shuffled.</p>
+      <details>
+        <summary>Or open a bundle folder from this device</summary>
+        <label for="lg-bundle">Bundle folder</label>
+        <input id="lg-bundle" type="file" webkitdirectory multiple>
+        <button type="submit" class="lg-button" name="set" value="folder" id="lg-judge-folder">Judge this folder</button>
+      </details>
     </form>
     <p id="lg-judge-status" class="lg-small" role="status" aria-live="polite"></p>
     <section id="lg-judge" class="lg-judge" aria-label="Judging"></section>

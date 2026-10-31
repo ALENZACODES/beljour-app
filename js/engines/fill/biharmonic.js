@@ -160,4 +160,3 @@ export function biharmonic(values, mask, { tolerance = 1e-10, maxIterations = 40
     }
     return { image, iterations, residual, box: [left, top, right, bottom], converged: residual.every((v) => v <= 1e-6) };
 }
-//# sourceMappingURL=biharmonic.js.map

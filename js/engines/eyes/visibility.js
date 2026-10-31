@@ -79,4 +79,3 @@ export function displaySupport(before, after, coverage, eyeFrames) {
         near_black_share: s.count ? s.black / s.count : null, near_white_share: s.count ? s.white / s.count : null,
         metric_kind: "display_support_only", realism_score: null }));
 }
-//# sourceMappingURL=visibility.js.map

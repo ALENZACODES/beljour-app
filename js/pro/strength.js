@@ -62,4 +62,3 @@ export class StrengthLevels {
                 ? DEFAULT_LOCK_LEVEL : DEFAULT_LEVEL;
     }
 }
-//# sourceMappingURL=strength.js.map

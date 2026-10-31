@@ -79,4 +79,3 @@ export function rolledFace(points, degrees) {
     const a = degrees * Math.PI / 180, c = Math.cos(a), s = Math.sin(a);
     return points.map(([x, y]) => [(x - cx) * c - (y - cy) * s + cx, (x - cx) * s + (y - cy) * c + cy]);
 }
-//# sourceMappingURL=face-synthetic.js.map

@@ -437,4 +437,3 @@ export function maskForSelectedFace(faces, id, region, width, height) {
         throw new RangeError(`face ${id} was not detected`);
     return regionMask(region, face.landmarks, width, height);
 }
-//# sourceMappingURL=index.js.map

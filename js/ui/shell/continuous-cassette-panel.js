@@ -98,4 +98,3 @@ export function renderCassettePanel(doc, state, drawn, cassette, actions) {
     section.append(separate);
     return section;
 }
-//# sourceMappingURL=continuous-cassette-panel.js.map

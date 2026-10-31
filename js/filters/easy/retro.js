@@ -33,4 +33,3 @@ export function renderRetro(image, width, height, options = DEFAULT_RETRO, prote
     const irisSafe = iris ? restore(out, image, iris) : out;
     return protectedMask ? restore(irisSafe, image, protectedMask) : irisSafe;
 }
-//# sourceMappingURL=retro.js.map

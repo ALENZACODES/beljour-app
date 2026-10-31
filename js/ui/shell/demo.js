@@ -9,11 +9,15 @@ import { facePhoto } from "../../engines/local/beard.js";
 import { syntheticCrown } from "../../engines/local/fibre.js";
 import { scene, addNoise, lowLight } from "../../engines/local/enhance.js";
 import { regionMask } from "../../data/regions/index.js";
-export const SAMPLE_IDS = ["low-light", "crown", "portrait", "body-front", "body-side"];
+import { coilyPortrait, headroomPortrait, teethPortrait } from "../../engines/local/sample-portraits.js";
+export const SAMPLE_IDS = ["low-light", "crown", "portrait", "id-headroom", "coily", "teeth", "body-front", "body-side"];
 export const SAMPLE_NAMES = {
     "low-light": "Low-light chart", crown: "Drawn crown", portrait: "Drawn portrait",
+    "id-headroom": "Drawn ID photo, headroom above", coily: "Drawn portrait, coily hair", teeth: "Drawn smile, teeth showing",
     "body-front": "Front-body figure", "body-side": "Side-body figure",
 };
+/** The drawn samples that carry a face (the face tools can use any of them). */
+export const FACE_SAMPLE_IDS = ["portrait", "id-headroom", "coily", "teeth"];
 export function makeSample(id) {
     if (id === "low-light") {
         const img = addNoise(lowLight(scene(240, 200), 0.4), 8, 5);
@@ -30,6 +34,11 @@ export function makeSample(id) {
         // The drawn face is drawn inside exactly this oval, so it is the sample's person area.
         const person = regionMask("face_oval", face, 272, 336, { normalized: false, supersample: 2 });
         return { id: `sample:${id}`, kind: "sample", label: SAMPLE_NAMES[id], image, face, person, disposable: true };
+    }
+    if (id === "id-headroom" || id === "coily" || id === "teeth") {
+        const drawn = id === "id-headroom" ? headroomPortrait() : id === "coily" ? coilyPortrait() : teethPortrait();
+        return { id: `sample:${id}`, kind: "sample", label: SAMPLE_NAMES[id], image: drawn.image, face: drawn.face,
+            person: drawn.person, ...(drawn.hair ? { hair: drawn.hair } : {}), disposable: true };
     }
     if (id === "body-front") {
         const item = frontFigure({ width: 200, height: 260, lean: 5, shoulderDrop: 7, seed: 4 });
@@ -90,4 +99,3 @@ export function uploadedSource(image, id) {
         throw new RangeError("Image is too large");
     return { id, image, kind: "uploaded", label: "Photo on this device", disposable: true };
 }
-//# sourceMappingURL=demo.js.map

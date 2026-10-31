@@ -32,4 +32,3 @@ export const DEEP_REFERENCE = [
     { id: "LG-24O", name: "Reference 24O", depth: 10, step: 24,
         undertone: "olive", lab: [17.0, 1.93, 9.1] },
 ];
-//# sourceMappingURL=deep-reference.js.map

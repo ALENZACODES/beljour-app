@@ -7,4 +7,3 @@ export const YOUCAM_PRODUCTS = Object.freeze({
     skin: "YouCam Skin Analysis API · product matching",
 });
 export const YOUCAM_NOTICE = "Live requests go through our server after your quote and consent. Local simulations use no YouCam units.";
-//# sourceMappingURL=provider-labels.js.map

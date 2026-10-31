@@ -79,4 +79,3 @@ export function renderJudgeExport(doc, host, state, image, actions) {
     columns.append(controls, preview);
     host.replaceChildren(columns);
 }
-//# sourceMappingURL=judge-export-screen.js.map

@@ -323,4 +323,3 @@ export function mapToOutput(width, height, g, p) {
     const t = new Transform(width, height, g), rect = cropRect(width, height, g), q = t.forward(p);
     return [q[0] - rect.x, q[1] - rect.y];
 }
-//# sourceMappingURL=geometry.js.map

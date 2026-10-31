@@ -56,4 +56,3 @@ export async function guardFacePixels(before, after, width, height, faceRegion, 
     return { pixels: output, similarity: decision.similarity, guarded: true,
         blendedBack: lowScore, lockLevel: level };
 }
-//# sourceMappingURL=identity.js.map

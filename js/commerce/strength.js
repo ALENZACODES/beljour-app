@@ -53,4 +53,3 @@ export class LevelHistory {
         return Object.fromEntries(KINDS.map((kind) => [kind, this.get(kind)]));
     }
 }
-//# sourceMappingURL=strength.js.map

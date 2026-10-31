@@ -9,6 +9,7 @@ import { PALETTE, PHOTO_MARK, withAlpha } from "../../ui/palette.js";
 import { CHANNEL_LABELS, CURVE_CHANNELS, CURVE_PRESETS, STRAIGHT, addPoint, curvePreset, movePoint, presetParams, readCurves, removePoint, sampleCurve, withCurve } from "./curves.js";
 import { candidate, choiceRow, commit, frameScheduler, layerOf, rememberFocus, workingImage } from "./kit.js";
 import { orderNote } from "./panel.js";
+import { capturePointer } from "../../ui/shell/pointer-capture.js";
 const SIDE = 256;
 const state = { channel: "master", point: 1 };
 /** 256-bin histogram of one channel (luma for the RGB curve), scaled to 0..1. */
@@ -132,7 +133,7 @@ export function curvesScreen(host) {
         }
         state.point = best;
         dragging = true;
-        graph.setPointerCapture?.(event.pointerId);
+        capturePointer(graph, event.pointerId);
         redraw();
         preview();
     });
@@ -220,4 +221,3 @@ export function curvesScreen(host) {
     rememberFocus(panel, "curves");
     return panel;
 }
-//# sourceMappingURL=curves-panel.js.map

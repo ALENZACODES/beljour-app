@@ -112,7 +112,7 @@ async function route() {
     const r = parseClassicRoute(location.hash);
     const target = routeReady(ctx, r) ? r : "photo";
     if (target !== r) {
-        announce("Open a photo and give any required consent before choosing this tool.");
+        announce(ctx.photoSrc ? "This tool needs the photo prepared on the app server first." : "Open a photo first. Built-in samples work too.");
     }
     renderSteps(target);
     clientShell.update("classic", location.hash, {
@@ -223,4 +223,3 @@ api.health().then((hl) => {
 // R15 Workstream B additive navigation. Author: John Khan.
 import { installEyesBrowsLink } from "./ui/eyes-brows/install.js";
 installEyesBrowsLink(document.querySelector(".foot"));
-//# sourceMappingURL=main.js.map

@@ -125,4 +125,3 @@ export function toBytes(unit) {
 export function sample(table, points, size = SIZE) {
     return points.map(([i, j, k]) => { const at = ((i * size + j) * size + k) * 3; return [table[at], table[at + 1], table[at + 2]]; });
 }
-//# sourceMappingURL=lut.js.map

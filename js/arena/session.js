@@ -136,4 +136,3 @@ export function sideForKey(key) {
         return "B";
     return null;
 }
-//# sourceMappingURL=session.js.map
