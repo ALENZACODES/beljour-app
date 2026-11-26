@@ -43,3 +43,4 @@ export function mountAccessibilityEntry(doc = document, browser = window) {
         },
     };
 }
+//# sourceMappingURL=accessibility-entry.js.map

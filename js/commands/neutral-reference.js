@@ -42,3 +42,4 @@ export function referenceNeutralResize(original, scale) {
     }
     return { width, height, channels: original.channels, pixels };
 }
+//# sourceMappingURL=neutral-reference.js.map

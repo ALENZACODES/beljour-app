@@ -12,3 +12,4 @@ export function siteRoot() {
         return "/";
     }
 }
+//# sourceMappingURL=site-root.js.map

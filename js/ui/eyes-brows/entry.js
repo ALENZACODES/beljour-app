@@ -12,6 +12,7 @@ import { canvasPoint } from "./observations.js";
 import { detailView } from "./present.js";
 import { PreviewSession } from "./session.js";
 import { PALETTE } from "../palette.js";
+import { SAMPLE_PHOTOS, sampleFile } from "../../photos/samples.js";
 export function mountEyesBrows(root) {
     const session = new PreviewSession(), worker = new PreviewClient();
     let importController = null;
@@ -231,10 +232,9 @@ export function mountEyesBrows(root) {
             showError(error);
         }
     }
-    photoInput.addEventListener("change", async () => {
-        const file = photoInput.files?.[0];
-        if (!file)
-            return;
+    photoInput.addEventListener("change", () => { const file = photoInput.files?.[0]; if (file)
+        void openFile(file); });
+    async function openFile(file, example = false) {
         const token = ++generation;
         importController?.abort();
         importController = new AbortController();
@@ -250,6 +250,8 @@ export function mountEyesBrows(root) {
             draw();
             status.textContent = detect.disabled ? "Photo opened locally. Add checked face points before eye and brow previews." : "Photo opened locally. Reading face points on this device…";
             // Face points are read automatically when the model is available; the button stays for a re-read.
+            if (example)
+                status.textContent = "A synthetic example person (not a real person) is open so you can try every preview. Open your own photo to use yours.";
             if (!detect.disabled)
                 void findPoints();
         }
@@ -257,7 +259,7 @@ export function mountEyesBrows(root) {
             if (token === generation)
                 showError(error);
         }
-    });
+    }
     evidenceInput.addEventListener("change", async () => {
         const file = evidenceInput.files?.[0], image = session.image, version = session.version;
         if (!file || !image)
@@ -381,6 +383,11 @@ export function mountEyesBrows(root) {
     result.addEventListener("pointercancel", () => { pointerId = null; session.observations?.cancel(); draw(); });
     featureControls();
     refresh();
+    // Open on a high-resolution synthetic example person rather than empty canvases; her own photo replaces it.
+    const example = SAMPLE_PHOTOS.find((p) => p.file === "person-2.jpg");
+    if (example)
+        void sampleFile(example).then((file) => { if (!session.hasPhoto && !disposed)
+            return openFile(file, true); }).catch(() => { });
     return () => { disposed = true; generation++; importController?.abort(); stopMotion(); worker.dispose(); session.clear(); root.replaceChildren(); };
 }
 function anatomySelect(label) {
@@ -391,3 +398,4 @@ if (root) {
     const dispose = mountEyesBrows(root);
     window.addEventListener("pagehide", dispose, { once: true });
 }
+//# sourceMappingURL=entry.js.map

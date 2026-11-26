@@ -289,3 +289,4 @@ export function amountOf(strength) {
     const s = strength / 100;
     return 1 - (1 - s) ** 1.7;
 }
+//# sourceMappingURL=photo-ops.js.map

@@ -205,3 +205,4 @@ export class LocalSession {
     safeExportText() { return stableStringify(this.safeExport()); }
     auditSha256() { return sha256(this.safeExportText()); }
 }
+//# sourceMappingURL=provenance.js.map

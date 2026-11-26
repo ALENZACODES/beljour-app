@@ -45,7 +45,7 @@ export function flowRibbons(image, mask, paint, frame, seed = 173) {
         const vx = Math.cos(theta), vy = Math.sin(theta), sign = vy < 0 ? -1 : 1;
         return [vx * sign, vy * sign, coherence];
     };
-    const random = seeded(seed), workstreams = Math.min(14, Math.max(6, Math.round(W / 29))), radius = Math.max(1.8, Math.min(6.3, W / 76));
+    const random = seeded(seed), lanes = Math.min(14, Math.max(6, Math.round(W / 29))), radius = Math.max(1.8, Math.min(6.3, W / 76));
     let ribbonCount = 0, coherenceSum = 0;
     const paintRow = (x, y, strength, rad) => {
         const a = Math.max(0, Math.floor(x - rad - 1)), b = Math.min(w - 1, Math.ceil(x + rad + 1));
@@ -68,8 +68,8 @@ export function flowRibbons(image, mask, paint, frame, seed = 173) {
                 lift[i] = Math.min(0.86, 1 - (1 - lift[i]) * (1 - clamp01(cell)));
             }
     };
-    for (let workstream = 0; workstream < workstreams; workstream++) {
-        let x = x0 + (workstream + 0.2 + 0.65 * random()) / workstreams * W;
+    for (let lane = 0; lane < lanes; lane++) {
+        let x = x0 + (lane + 0.2 + 0.65 * random()) / lanes * W;
         const column = Math.max(0, Math.min(w - 1, Math.round(x)));
         let y = colTop[column] + (0.16 + 0.16 * random()) * Math.max(1, colBottom[column] - colTop[column]);
         if (colBottom[column] < colTop[column] || y >= h || mask[Math.floor(y) * w + column] < 0.25)
@@ -83,7 +83,7 @@ export function flowRibbons(image, mask, paint, frame, seed = 173) {
             const [vx, vy, coherence] = orientation(x, y);
             coherences += coherence;
             paintRow(x, y, strength, width);
-            const drift = 0.15 * Math.sin(steps * 0.09 + workstream * 2.2) + 0.05 * (fieldHash(workstream, steps >> 3, seed) - 0.5);
+            const drift = 0.15 * Math.sin(steps * 0.09 + lane * 2.2) + 0.05 * (fieldHash(lane, steps >> 3, seed) - 0.5);
             x += Math.max(-1.8, Math.min(1.8, vx / Math.max(0.32, vy))) + drift;
             y += 1;
         }
@@ -110,3 +110,4 @@ export function flowRibbons(image, mask, paint, frame, seed = 173) {
             paintedShare: changed / Math.max(1, total), rootMax, flowCoherence: coherenceSum / Math.max(1, ribbonCount),
             sourceTexture: "own_photo" } };
 }
+//# sourceMappingURL=ribbon-flow.js.map

@@ -85,3 +85,4 @@ function mountMyPhotos(doc) {
     library.subscribe(() => { void show(); });
     void show();
 }
+//# sourceMappingURL=trust-view.js.map

@@ -60,3 +60,4 @@ export function mountProofSummary(parent) {
     show(null);
     return { element: root, show, dispose: () => root.remove() };
 }
+//# sourceMappingURL=posture-proof-summary.js.map

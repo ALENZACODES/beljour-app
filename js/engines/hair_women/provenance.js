@@ -43,3 +43,4 @@ export function hairReplayCompatible(first, second) {
     validateHairEvidence(second);
     return JSON.stringify(first) === JSON.stringify(second);
 }
+//# sourceMappingURL=provenance.js.map

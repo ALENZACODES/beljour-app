@@ -229,3 +229,4 @@ export class StyleGuideSession {
         return renderStyleGuide(photo, hair, geometry, style, level, { ...options, guideFactory: cached });
     }
 }
+//# sourceMappingURL=style-preview.js.map

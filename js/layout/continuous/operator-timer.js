@@ -101,3 +101,4 @@ export function operatorClockCaption(reading) {
     const limit = reading.exceeded ? "Target exceeded" : "Within the three-minute target";
     return `${seconds}s active (${reading.status}); ${limit}. Actual device performance is separate.`;
 }
+//# sourceMappingURL=operator-timer.js.map

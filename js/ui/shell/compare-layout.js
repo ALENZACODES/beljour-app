@@ -221,3 +221,4 @@ export function layoutProblems(layout, box, measure = estimateWidth) {
     });
     return problems;
 }
+//# sourceMappingURL=compare-layout.js.map

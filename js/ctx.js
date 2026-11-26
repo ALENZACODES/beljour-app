@@ -21,10 +21,10 @@ export function routeReady(ctx, route) {
     // Body, Reel and Video ask the single consent themselves when a photo, clip or camera is opened.
     if (["photo", "privacy", "palettes", "body", "reel", "video"].includes(route))
         return true;
-    // Hair and Makeup open on the photo on this device too: each says on its own screen what needs
-    // the photo prepared on the app server, instead of sending her back to the Photo step.
-    if (["skin", "shade", "proportions", "previews", "hair", "tryon"].includes(route))
+    if (["skin", "shade", "proportions", "previews", "tryon"].includes(route))
         return !!ctx.photoSrc;
+    if (route === "hair")
+        return true;
     return ctx.consent && !!ctx.photo;
 }
 export function requirePhoto(ctx) {
@@ -37,3 +37,4 @@ export function requirePhoto(ctx) {
 export function landmarkArray(ctx) {
     return ctx.face ? ctx.face.points.map((p) => [p.x, p.y]) : undefined;
 }
+//# sourceMappingURL=ctx.js.map

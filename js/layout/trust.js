@@ -70,10 +70,10 @@ export function simulationLabelPref(store) {
 }
 export function trustItems(deps) {
     return [
-        { id: "on-device", title: "On-device mode", toggle: true, state: deps.consent.localOnly ? "on" : "off",
-            detail: "When on, nothing is ever sent to YouCam. Local tools keep working; makeup, hair styling and Skin Moment's skin analysis pause." },
+        { id: "on-device", title: "Everything runs on this device", toggle: false, state: "built",
+            detail: "Skin reading, makeup, hair, shade and every Studio tool run in your browser. No photo is ever uploaded." },
         { id: "never-train", title: "We never train on your photos", toggle: false, state: "built",
-            detail: "This app has no training step. Local edits never leave this device. A photo goes to YouCam only after you agree to it, for makeup or hair styling or a Skin Moment skin analysis, and our server deletes it within an hour." },
+            detail: "This app has no training step, and your photos never leave this device." },
         { id: "neutral-defaults", title: "Neutral defaults", toggle: false, state: "built",
             detail: "No default ever lightens skin, slims a face or removes freckles or moles. Reshaping is off until you turn it on. Every default is checked on six skin tones before release." },
         { id: "simulation-label", title: "Simulation label on saved photos", toggle: true, state: deps.simulationLabel.get() ? "on" : "off",
@@ -175,3 +175,4 @@ export async function deleteFaceData(deps) {
 export function receiptText(receipt) {
     return [`Deletion receipt ${receipt.id}`, receipt.at, ...receipt.lines.map((l) => `${l.what}: ${l.result}. ${l.detail}`)].join("\n");
 }
+//# sourceMappingURL=trust.js.map

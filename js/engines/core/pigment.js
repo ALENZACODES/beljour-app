@@ -280,3 +280,4 @@ export function clusterHaze(fs, L, support, w, h, iod, peakL = 1.6) {
     }
     return out;
 }
+//# sourceMappingURL=pigment.js.map

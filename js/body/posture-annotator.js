@@ -163,3 +163,4 @@ export function mountPostureAnnotator(parent, intake, onError = () => { }) {
         },
     };
 }
+//# sourceMappingURL=posture-annotator.js.map

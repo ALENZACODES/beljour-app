@@ -146,3 +146,4 @@ export function saveOperatorReport(doc, data) {
         URL.revokeObjectURL(href);
     }
 }
+//# sourceMappingURL=operator-report.js.map

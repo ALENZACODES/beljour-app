@@ -210,7 +210,7 @@ export function mountJudgeMode(doc, host, onExit) {
                 showApply: true,
                 applyAll: () => {
                     if (!image.canIllustrate || !session.applyFiveIllustrations()) {
-                        message = "Five edits need a chosen image with a selected person.";
+                        message = "Five edits require a checked target and local, hair and face consent.";
                     }
                     else {
                         evidence.changedEdit();
@@ -346,7 +346,7 @@ export function mountJudgeMode(doc, host, onExit) {
         else {
             actions.append(judgeButton(doc, "Finish", "finish-footer", exit, true));
         }
-        const footer = judgeParagraph(doc, `${SIMULATION_MARK}. No real YouCam request occurs in this demo.`, "lg-judge-disclaimer");
+        const footer = judgeParagraph(doc, `${SIMULATION_MARK}. Nothing is uploaded in this demo.`, "lg-judge-disclaimer");
         page.append(header, journey, guide, surface, extras, status, actions, footer);
         host.replaceChildren(page);
         const focusable = [
@@ -496,3 +496,4 @@ export function mountJudgeMode(doc, host, onExit) {
     render();
     return { session, image, render, dispose };
 }
+//# sourceMappingURL=judge-mode.js.map

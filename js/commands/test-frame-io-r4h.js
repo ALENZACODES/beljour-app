@@ -71,3 +71,4 @@ export function testFrameIo() {
     count++;
     return count;
 }
+//# sourceMappingURL=test-frame-io-r4h.js.map

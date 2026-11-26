@@ -114,7 +114,7 @@ export function applyFoundation(image, mesh, strength, options = {}) {
         return map;
     const { rect, lab, frame, stats } = map, n = rect.w * rect.h, bandsNow = bands(map), { fine } = bandsNow;
     // The edge-keeping base can keep pore-scale detail on deep or high-contrast skin; then "mid" holds that detail
-    // with its sign flipped and evening it SHARPENED the pores (texture 1.17 on the deep-skin sample, makeup workstream,
+    // with its sign flipped and evening it SHARPENED the pores (texture 1.17 on the deep-skin sample, makeup lane,
     // Oct 30). The base is softened a little so the mid band only ever holds blotches, never pores.
     const base = blur(bandsNow.base, rect.w, rect.h, 0.012 * frame.iod), mid = new Float32Array(n);
     for (let i = 0; i < n; i++)
@@ -146,3 +146,4 @@ export function applyFoundation(image, mesh, strength, options = {}) {
             shade_l: Math.round(targetL * 10) / 10, shade_a: Math.round(shade[1] * 10) / 10, shade_b: Math.round(shade[2] * 10) / 10,
             measured_l: Math.round(stats.L * 10) / 10, neck_matched: neck !== null, average_rise_removed: Math.round(taken * 1000) / 1000, lighter_chosen: lighter } };
 }
+//# sourceMappingURL=skin-retouch.js.map

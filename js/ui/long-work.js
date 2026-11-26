@@ -41,3 +41,4 @@ export class LongWork {
     }
     get running() { return this.controller !== null; }
 }
+//# sourceMappingURL=long-work.js.map

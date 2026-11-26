@@ -78,3 +78,4 @@ export function money(cents, locale = "en-CA") {
         throw Error("Invalid monetary amount");
     return new Intl.NumberFormat(locale, { style: "currency", currency: "CAD" }).format(cents / 100);
 }
+//# sourceMappingURL=bag.js.map

@@ -89,3 +89,4 @@ export function mountHolidayEngine(doc, looks, options = {}) {
     refresh();
     return { prefs, tags, refresh };
 }
+//# sourceMappingURL=view.js.map

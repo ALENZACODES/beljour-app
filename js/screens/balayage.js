@@ -62,3 +62,4 @@ export function balayageScreen(editor, changed) {
     section.append(h("label", {}, "Target level ", target), h("label", {}, "Colour history ", history), h("label", {}, "Toner ", toner), status, run, h("p", { class: "fine" }, "A strand test and an in-person colour consultation determine suitability. Prices and outcomes need an individual assessment."));
     return section;
 }
+//# sourceMappingURL=balayage.js.map

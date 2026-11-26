@@ -71,13 +71,13 @@ export function shotListText(report) {
         "",
         "NEXT SCREEN: Five Pro Commands — manual review only unless the owner adapter executes.",
         "NEXT SCREEN: Seasonal catalogue — source availability required; do not invent packs.",
-        "NEXT SCREEN: Mock or disabled provider — no YouCam API request in this tour.",
+        "NEXT SCREEN: Mock try-on — nothing is uploaded in this tour.",
         "NEXT SCREEN: Before/after — compare the original and marked simulation.",
         "NEXT SCREEN: Save — labelled PNG, user-initiated only; optional local reopen.",
         "",
         `Observed local sequence time: ${report.elapsedMs.toFixed(1)} ms.`,
         "This is not the duration of a complete 1–3 minute judge video.",
-        "Live YouCam: NOT VERIFIED by this observation.",
+        "Real photos: NOT VERIFIED by this observation.",
         "Pro Command production execution: NOT VERIFIED by this observation.",
         "Authorized real-face quality: NOT VERIFIED by this observation.",
         "Frozen 100,000-face release gate: NOT VERIFIED by this observation.",
@@ -110,3 +110,4 @@ export function downloadShotList(doc, report) {
         URL.revokeObjectURL(url);
     }
 }
+//# sourceMappingURL=sequence-shotlist.js.map

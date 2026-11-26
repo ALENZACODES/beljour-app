@@ -66,3 +66,4 @@ export class Device {
         this.listeners.clear();
     }
 }
+//# sourceMappingURL=device.js.map

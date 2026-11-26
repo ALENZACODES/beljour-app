@@ -14,3 +14,4 @@ export function postureSettings(overrides = {}) {
         throw new RangeError("Body movement cap must be 1–12% of torso height");
     return { bandShare, capShare };
 }
+//# sourceMappingURL=settings.js.map

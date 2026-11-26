@@ -70,7 +70,11 @@ function cap(delta, caps) {
     });
 }
 /** Apply one policy to both directions; identity pins stay exact even beside duplicates. */
-export function regularizeTargets(before, requested, referenceScale, pinned = [], prepared) {
+export function regularizeTargets(before, requested, referenceScale, pinned = [], prepared, 
+/** Multiplies the global move cap (GLOBAL_CAP_SHARE x referenceScale); 1 by default. A caller
+ * that asks for a stronger recipe on purpose (gender's Hyper gain) raises it with the request,
+ * so the request is not silently clipped back. Local spacing and edge slope rules still hold. */
+globalCapScale = 1) {
     checkPoints(before, "before");
     checkPoints(requested, "requested");
     if (before.length !== requested.length)
@@ -82,7 +86,7 @@ export function regularizeTargets(before, requested, referenceScale, pinned = []
     const rawLengths = raw.map(([x, y]) => Math.hypot(x, y));
     const requestedMax = Math.max(...rawLengths);
     const caps = Float64Array.from(graph.spacing, (spacing, i) => locked.has(i)
-        ? 0 : Math.min(referenceScale * GLOBAL_CAP_SHARE, spacing * LOCAL_CAP_SHARE));
+        ? 0 : Math.min(referenceScale * GLOBAL_CAP_SHARE * Math.max(1, globalCapScale), spacing * LOCAL_CAP_SHARE));
     const base = cap(raw, caps);
     let delta = base.map(([x, y]) => [x, y]);
     for (let step = 0; step < DIFFUSION_STEPS; step++) {
@@ -164,3 +168,4 @@ export function regularizeTargets(before, requested, referenceScale, pinned = []
             requested_max: requestedMax, applied_max: Math.max(...delta.map(([x, y]) => Math.hypot(x, y))),
             max_edge_slope: slope, pinned: pins, raster_q3_required: true } };
 }
+//# sourceMappingURL=regularize.js.map

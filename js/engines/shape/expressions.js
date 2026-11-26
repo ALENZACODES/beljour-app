@@ -57,3 +57,4 @@ export function renderExpression(image, face, expression, { amount = 100, streng
 export function catalogue(feature) {
     return EXPRESSIONS.filter((e) => feature === undefined || e.feature === feature);
 }
+//# sourceMappingURL=expressions.js.map

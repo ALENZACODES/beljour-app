@@ -116,3 +116,4 @@ export function renderPaywall(doc, host, onAction) {
     host.replaceChildren(dialog);
     return dialog;
 }
+//# sourceMappingURL=paywall.js.map

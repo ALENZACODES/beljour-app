@@ -127,3 +127,4 @@ export class BrowObservationEditor {
         this.listeners.clear();
     }
 }
+//# sourceMappingURL=editor.js.map

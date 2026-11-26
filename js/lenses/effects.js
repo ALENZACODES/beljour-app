@@ -175,18 +175,25 @@ export function applyEffect(image, f, kind, share, t = 0, person = null) {
         }
         case "comic": {
             // Ink lines on the edges, and the brightness (not the hue) stepped into five levels, so a
-            // face keeps its own skin colour on every tone instead of breaking into colour bands.
+            // face keeps its own skin colour on every tone instead of breaking into colour bands. The
+            // levels are read from a softened brightness and meet in a short smooth ramp, so smooth
+            // skin turns into a few broad flat tones rather than speckled patches.
             const L = new Float32Array(n), d = out.data, step = 255 / 4;
             for (let i = 0; i < n; i++)
                 L[i] = 0.2126 * src[i * c] + 0.7152 * src[i * c + 1] + 0.0722 * src[i * c + 2];
+            const soft = floatImage(W, H, 1, true);
+            soft.data.set(L);
+            const Ls = boxMean(soft, Math.max(1, Math.min(32, Math.round(0.006 * Math.max(W, H))))).data;
             for (let y = 1; y < H - 1; y++)
                 for (let x = 1; x < W - 1; x++) {
                     const i = y * W + x, o = i * c;
                     const gx = L[i - W + 1] + 2 * L[i + 1] + L[i + W + 1] - L[i - W - 1] - 2 * L[i - 1] - L[i + W - 1];
                     const gy = L[i + W - 1] + 2 * L[i + W] + L[i + W + 1] - L[i - W - 1] - 2 * L[i - W] - L[i - W + 1];
                     const mag = Math.sqrt(gx * gx + gy * gy), edge = mag <= 90 ? 0 : mag >= 230 ? 1 : (mag - 90) / 140;
-                    const l = L[i], stepped = Math.max(step / 2, Math.round(l / step) * step);
-                    const scale = (l > 1 ? 1 + share * 0.6 * (stepped / l - 1) : 1) * (1 - 0.85 * share * edge);
+                    const l = L[i], t = Ls[i] / step, k = Math.floor(t), fr = Math.max(0, Math.min(1, (t - k - 0.3) / 0.4));
+                    const stepped = Math.max(step / 2, (k + fr * fr * (3 - 2 * fr)) * step);
+                    const flat = Ls[i] > 1 ? stepped / Ls[i] : 1;
+                    const scale = (l > 1 ? 1 + share * 0.6 * (flat - 1) : 1) * (1 - 0.85 * share * edge);
                     d[o] = src[o] * scale;
                     d[o + 1] = src[o + 1] * scale;
                     d[o + 2] = src[o + 2] * scale;
@@ -342,3 +349,4 @@ export function applyEffect(image, f, kind, share, t = 0, person = null) {
     }
     return out;
 }
+//# sourceMappingURL=effects.js.map

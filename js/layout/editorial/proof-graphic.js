@@ -110,7 +110,7 @@ export function proofGraphicSvg(input) {
     }
     parts.push(hairline(66, 1200, 1014));
     parts.push(textLine(66, 1242, "Original local illustration and manual review only.", 18));
-    parts.push(textLine(66, 1274, "Live YouCam, real-face and 100,000-face gates need separate evidence.", 17, { colour: MUTED }));
+    parts.push(textLine(66, 1274, "Real-face and 100,000-face gates need separate evidence.", 17, { colour: MUTED }));
     parts.push(`<path d="M948 1264H1014" fill="none" stroke="${RED}" stroke-width="2"/>`);
     parts.push("</svg>\n");
     const output = parts.join("\n");
@@ -139,3 +139,4 @@ export function downloadProofGraphic(doc, input) {
         URL.revokeObjectURL(url);
     }
 }
+//# sourceMappingURL=proof-graphic.js.map

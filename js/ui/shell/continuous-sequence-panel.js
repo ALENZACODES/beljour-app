@@ -17,7 +17,7 @@ export function renderLocalSequencePanel(doc, snapshot, actions) {
     panel.dataset.sequencePhase = snapshot.phase;
     const heading = judgeNode(doc, "h3", "", "Local seven-edit replay");
     const intro = judgeParagraph(doc, "After you personally opt in, this can show seven drawn edits in order. "
-        + "It stops before Pro Commands, YouCam and download. No live service runs.", "lg-cont-caption");
+        + "It stops before Pro Commands and download. No live service runs.", "lg-cont-caption");
     const status = judgeParagraph(doc, sequenceReadableStatus(snapshot), "lg-cont-sequence-status");
     status.dataset.sequenceStatus = snapshot.reason;
     status.setAttribute("role", "status");
@@ -54,3 +54,4 @@ export function renderLocalSequencePanel(doc, snapshot, actions) {
     panel.append(heading, intro, status, progress, count, timeline, controls, disclosure, external, elapsed);
     return panel;
 }
+//# sourceMappingURL=continuous-sequence-panel.js.map

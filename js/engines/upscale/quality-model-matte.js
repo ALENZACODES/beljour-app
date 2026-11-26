@@ -103,3 +103,4 @@ export async function hairMatteDiagnostic(source, hair, models, signal) {
         band.fill(0);
     }
 }
+//# sourceMappingURL=quality-model-matte.js.map

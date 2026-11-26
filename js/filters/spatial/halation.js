@@ -44,3 +44,4 @@ register({
     halo: (p, frame) => PASSES * glowRadius(p.radius, frame),
     help: "Highlight-edge halation preserving sharp highlight cores",
 });
+//# sourceMappingURL=halation.js.map

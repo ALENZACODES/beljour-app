@@ -12,3 +12,4 @@ export async function upscaleFaceDetail(before, width, height, faceMask, render,
     const result = render(before.slice(), legacyAmount(checked));
     return guardFacePixels(before, result, width, height, faceMask, guard, lockLevel);
 }
+//# sourceMappingURL=identity-hooks.js.map

@@ -101,3 +101,4 @@ export function renderStubble(s) {
     return { follicles: pts.length, meanNN: mean, nnCV: mean > 0 ? sd / mean : 0, greyShare: pts.length ? grey / pts.length : 0,
         ms: (typeof performance !== "undefined" ? performance.now() : Date.now()) - t0 };
 }
+//# sourceMappingURL=stubble.js.map

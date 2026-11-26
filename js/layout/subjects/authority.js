@@ -88,3 +88,4 @@ export function subjectSelectionLabel(snapshot) {
     const origin = snapshot.source === "drawn" ? "Drawn person" : "Detected face";
     return `${origin} ${index + 1} of ${total} selected; ${total - 1} unchanged bystanders`;
 }
+//# sourceMappingURL=authority.js.map

@@ -393,3 +393,4 @@ export function browserColourGpu() {
 }
 /** Register the browser runner as the pipeline's default (called once by the Studio page). */
 export function installColourGpu() { useColourRunner(browserColourGpu); }
+//# sourceMappingURL=gpu.js.map

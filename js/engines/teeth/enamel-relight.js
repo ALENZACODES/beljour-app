@@ -66,3 +66,4 @@ export function relightEnamel(image, lab, selected, opening, strength, labToRgb,
     return { image: out, weight, meanLift: sumLift / Math.max(1, added), maxL: Number.isFinite(maxL) ? maxL : 0,
         translucentProtected: transProtected, edgeFeatherPixels: feathers, renderMs: renderClock() - start };
 }
+//# sourceMappingURL=enamel-relight.js.map

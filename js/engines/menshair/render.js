@@ -1,4 +1,4 @@
-/** R16 Workstream C: an on-device short-sides *tonal simulation*; no generated hair.
+/** R16 Lane C: an on-device short-sides *tonal simulation*; no generated hair.
  * Inputs are original pixels, caller-cleared hair/scalp mask and head landmarks.
  * Bitwise outside-mask preservation and Python parity are contractual.
  * Author: John Khan.
@@ -244,3 +244,4 @@ export function renderStyle(image, width, height, hairMask, anchors, recipe, sca
             total_pixels: n, mask_support_pixels: supportPixels, provider_calls: 0,
             note: "Tonal guide only; no strand segmentation, hair removal or restored scalp." } };
 }
+//# sourceMappingURL=render.js.map

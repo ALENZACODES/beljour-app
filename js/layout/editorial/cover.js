@@ -70,3 +70,4 @@ export function coverAudit(value) {
         liveProviderVerified: false,
     };
 }
+//# sourceMappingURL=cover.js.map

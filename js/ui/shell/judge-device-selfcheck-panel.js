@@ -27,3 +27,4 @@ export function renderJudgeDeviceSelfCheckPanel(doc, host, root) {
         + "No screenshot or private data is saved by this diagnostic."));
     host.append(details);
 }
+//# sourceMappingURL=judge-device-selfcheck-panel.js.map

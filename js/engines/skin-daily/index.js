@@ -260,3 +260,4 @@ export function pick(day, lenses, stories) {
     const [kind, id] = items[index];
     return { kind, id, index };
 }
+//# sourceMappingURL=index.js.map

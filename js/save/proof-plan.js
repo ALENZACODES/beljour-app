@@ -134,3 +134,4 @@ export function describeProof(bundle) {
         `${failed} failed, ${unproven} incomplete, ${missing} missing. ` +
         "Not a real-face, identity, realism or fairness acceptance result.";
 }
+//# sourceMappingURL=proof-plan.js.map

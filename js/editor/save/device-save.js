@@ -92,3 +92,4 @@ export async function savePhoto(canvas, original, options = {}) {
     const route = await saveFile(file, nav, options.download ?? downloadFile);
     return { route, name, width: canvas.width, height: canvas.height, exif, platform };
 }
+//# sourceMappingURL=device-save.js.map

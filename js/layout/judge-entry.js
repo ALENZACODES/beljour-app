@@ -66,3 +66,4 @@ export function mountJudgeEntry(doc = document, browser = window) {
         },
     };
 }
+//# sourceMappingURL=judge-entry.js.map

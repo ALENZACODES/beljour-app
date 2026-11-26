@@ -160,3 +160,4 @@ export function turnPyramidComposite(original, turned, support, requestedLevels 
     }
     return out;
 }
+//# sourceMappingURL=turn-pyramid.js.map

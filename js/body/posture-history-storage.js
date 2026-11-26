@@ -98,3 +98,4 @@ export function browserPostureSettingsStore() {
         return null;
     }
 }
+//# sourceMappingURL=posture-history-storage.js.map

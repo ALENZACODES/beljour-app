@@ -173,3 +173,4 @@ export function donorPoreField(planes, source, target, tone, w, h, iod, seed = 3
                 bands[c][i] *= gain;
     return { bands, sourceSd, outputSd: outputSd * gain, donors: donors.length };
 }
+//# sourceMappingURL=donor-texture.js.map

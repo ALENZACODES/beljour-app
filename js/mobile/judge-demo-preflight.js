@@ -28,7 +28,7 @@ export function evaluateDemoCapabilities(ports) {
         typeof ports.online === "boolean"
             ? availability("network", "Connection state", ports.online, "Navigator state is advisory and does not establish API availability.")
             : notTested("network", "Connection state", "Connection status cannot be determined on this browser."),
-        notTested("real-provider", "Live YouCam integration", "The mock walkthrough never tests API keys, units, quotes or provider responses."),
+        notTested("real-photo-reading", "Skin reading on a real photo", "The walkthrough uses drawings; the on-device reader on a real photo is a separate check."),
         notTested("physical-screen-reader", "Physical screen reader", "VoiceOver, TalkBack, NVDA and real keyboard interactions are separate tests."),
         notTested("device-performance", "Device performance", "Canvas availability is not a phone, 4G, export-time or memory measurement."),
     ];
@@ -63,5 +63,6 @@ export function demoCapabilitySummary(report) {
     for (const row of report.checks)
         counts[row.status] += 1;
     return `${counts.supported} available, ${counts.unavailable} unavailable, `
-        + `${counts["not-tested"]} not tested. Provider connectivity is not checked.`;
+        + `${counts["not-tested"]} not tested. A real photo is not checked here.`;
 }
+//# sourceMappingURL=judge-demo-preflight.js.map

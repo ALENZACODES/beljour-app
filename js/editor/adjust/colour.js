@@ -255,3 +255,4 @@ export function colourPass(data, width, height, u, base) {
             data[i + 2] = px[2];
         }
 }
+//# sourceMappingURL=colour.js.map

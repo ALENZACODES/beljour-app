@@ -131,12 +131,12 @@ export function renderReleaseView(doc, host, snapshot, readiness, commands, envi
     const content = el(doc, "section", "lg-release-workspace");
     content.dataset.releaseTheme = "french";
     const header = el(doc, "header", "lg-release-header");
-    const title = el(doc, "h2", "", "Release readiness and real-demo transfer");
+    const title = el(doc, "h2", "", "Release readiness and real-demo handoff");
     title.id = "lg-release-heading";
     title.tabIndex = -1;
     header.append(title);
     header.append(el(doc, "p", "", "Use the real application links to perform a manual check. "
-        + "No synthetic edit or checkbox certifies live YouCam or real-face quality."));
+        + "No synthetic edit or checkbox certifies real-face quality."));
     const progress = el(doc, "p", "lg-release-progress", readiness.summary);
     progress.setAttribute("role", "status");
     progress.setAttribute("aria-live", "polite");
@@ -181,3 +181,4 @@ export function renderReleaseView(doc, host, snapshot, readiness, commands, envi
     content.append(header, preflight, pro, main, footer);
     host.replaceChildren(content);
 }
+//# sourceMappingURL=view.js.map

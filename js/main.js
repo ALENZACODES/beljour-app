@@ -1,5 +1,5 @@
 /** App shell: header, step bar, pinned photo panel and hash routing. */
-import { api, apiBase, store } from "./api.js";
+import { api, apiBase } from "./api.js";
 import { STEPS, releaseLocalPhoto, routeReady } from "./ctx.js";
 import { announce, clear, h } from "./dom.js";
 import { mountClientShell } from "./layout/client-shell.js";
@@ -15,7 +15,6 @@ import { renderShade } from "./screens/shade.js";
 import { renderPalettes } from "./screens/palettes.js";
 import { renderSkin } from "./screens/skin.js";
 import { renderTryon } from "./screens/tryon.js";
-import { resumePending } from "./session.js";
 import { clearAll, listSkin } from "./store.js";
 import { appConsent } from "./ui/shell/consent.js";
 const main = document.getElementById("main");
@@ -98,7 +97,7 @@ async function renderPrivacy() {
         count = (await listSkin()).length;
     }
     catch { /* storage blocked */ }
-    main.append(h("h1", {}, "Privacy"), h("ul", { class: "plain-list" }, h("li", {}, "No account, no tracking."), h("li", {}, "Opening a photo keeps it on this device. Preparing it on the app server is a separate choice and sends a re-encoded JPEG without the original file metadata. Approved YouCam makeup, hair styling and Skin AI product matching each ask for action-specific consent."), h("li", {}, "Uploaded photos are deleted from the app server within an hour. We ask YouCam to delete each task after its result returns."), h("li", {}, "Results are cached for up to a day so a repeat view is free. Deleting your photo removes them at once."), h("li", {}, "Current shade measurements, face ratios, symmetry and shape simulations run in your browser. Opening these local tools does not upload your photo or face points."), h("li", {}, `Saved history on this device: ${count} entr${count === 1 ? "y" : "ies"}. No photo files.`)), h("div", { class: "row" }, h("button", { class: "btn btn-quiet", onclick: async () => {
+    main.append(h("h1", {}, "Privacy"), h("ul", { class: "plain-list" }, h("li", {}, "No account, no tracking."), h("li", {}, "Every tool runs in your browser: skin reading, shade, makeup, hair colour, face ratios, symmetry and shape simulations. Your photo and face points are never uploaded."), h("li", {}, `Saved history on this device: ${count} entr${count === 1 ? "y" : "ies"}. No photo files.`)), h("div", { class: "row" }, h("button", { class: "btn btn-quiet", onclick: async () => {
             const data = JSON.stringify(await listSkin(), null, 1);
             const a = h("a", { href: URL.createObjectURL(new Blob([data], { type: "application/json" })), download: "beljour-history.json" });
             a.click();
@@ -112,7 +111,7 @@ async function route() {
     const r = parseClassicRoute(location.hash);
     const target = routeReady(ctx, r) ? r : "photo";
     if (target !== r) {
-        announce(ctx.photoSrc ? "This tool needs the photo prepared on the app server first." : "Open a photo first. Built-in samples work too.");
+        announce("Open a photo and give any required consent before choosing this tool.");
     }
     renderSteps(target);
     clientShell.update("classic", location.hash, {
@@ -157,6 +156,12 @@ async function route() {
             case "privacy":
                 await renderPrivacy();
                 break;
+        }
+        if (target !== r) {
+            // Say on the page, not only to screen readers, why the tool sent her back here.
+            const label = STEPS.find((x) => x.route === r)?.label ?? "That tool";
+            const text = `${label} needs a photo first. Open one below, then choose ${label} again.`;
+            main.prepend(h("p", { class: "notice route-gate", role: "status" }, text));
         }
         if (routeRevision.isLatest(revision))
             clientShell.errors?.dismiss();
@@ -203,23 +208,10 @@ window.addEventListener("pageshow", event => {
 });
 refreshPhotoPanel();
 void route();
-api.health().then((hl) => {
-    clientShell.connection?.tracker.setService(true);
-    mode.textContent = hl.live ? "Live: uses YouCam units" : "Demo mode: saved results, no units used";
-    mode.className = hl.live ? "mode live" : "mode demo";
-    // tasks that were still running when the page or the server last went away
-    if (!appConsent.localOnly)
-        void resumePending(store, api.resumeTasks).catch(() => undefined);
-}).catch(() => {
-    if (apiBase() === null) {
-        mode.textContent = "On-device mode: cloud features are off";
-        mode.className = "mode demo";
-        return;
-    }
-    clientShell.connection?.tracker.setService(false);
-    mode.textContent = "Server asleep or offline";
-    mode.className = "mode off";
-});
-// R15 Workstream B additive navigation. Author: John Khan.
+// Every tool runs on this device; there is no server to wait for.
+mode.textContent = "On-device: your photos never leave this device";
+mode.className = "mode demo";
+// R15 Lane B additive navigation. Author: John Khan.
 import { installEyesBrowsLink } from "./ui/eyes-brows/install.js";
 installEyesBrowsLink(document.querySelector(".foot"));
+//# sourceMappingURL=main.js.map

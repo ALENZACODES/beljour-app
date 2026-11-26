@@ -59,3 +59,4 @@ export function checkFibreContract(stored, tolerance = 1e-9) {
     });
     return problems;
 }
+//# sourceMappingURL=fibre-parity.js.map

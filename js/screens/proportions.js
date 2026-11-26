@@ -83,7 +83,7 @@ export function renderProportions(main, ctx) {
             const points = measuredMesh(ctx.face?.points, ctx.size.w, ctx.size.h);
             const report = measure(points);
             const rows = report.ratios.filter(item => (Array.isArray(item.value) ? item.value : [item.value]).every(Number.isFinite));
-            out.append(h("p", { class: "source" }, "Local simulation. Measured on this device; no YouCam call."), h("ul", { class: "ratios" }, ...rows.map(ratioRow)), h("p", { class: "fine" }, report.note));
+            out.append(h("p", { class: "source" }, "Local simulation. Measured on this device."), h("ul", { class: "ratios" }, ...rows.map(ratioRow)), h("p", { class: "fine" }, report.note));
             announce("Local ratios ready.");
         }
         catch (error) {
@@ -92,3 +92,4 @@ export function renderProportions(main, ctx) {
     });
     main.append(h("h2", {}, "Face ratios"), h("p", {}, "Local simulation. These ratios use your measured face points. Reference ratios do not rate your appearance and are not targets."), run, out);
 }
+//# sourceMappingURL=proportions.js.map

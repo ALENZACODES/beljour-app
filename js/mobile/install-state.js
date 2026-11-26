@@ -87,3 +87,4 @@ export class InstallState {
         this.observers.clear();
     }
 }
+//# sourceMappingURL=install-state.js.map

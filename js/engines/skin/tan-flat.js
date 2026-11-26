@@ -49,3 +49,4 @@ export function tanFlat(image, skin, direction = "add", strength = 30, undertone
     }
     return { image: encode(image, lab, weight), weight, label: REMOVE_LABEL, metrics: { direction: "remove", undertone, lightens: true } };
 }
+//# sourceMappingURL=tan-flat.js.map

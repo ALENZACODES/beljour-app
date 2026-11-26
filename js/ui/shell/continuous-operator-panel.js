@@ -28,7 +28,7 @@ export function renderContinuousOperator(doc, snapshot, actions) {
     section.append(judgeNode(doc, "h3", "", "Real-product rehearsal (optional)"));
     section.append(judgeParagraph(doc, "This separate checklist opens existing application pages. No drawn image, "
         + "consent, recipe, or private data is transferred. Confirmations are operator self-reports, "
-        + "not evidence of working YouCam APIs, identity accuracy, or release approval."));
+        + "not evidence of identity accuracy or release approval."));
     const header = judgeNode(doc, "div", "lg-cont-operator-toolbar");
     const clock = judgeParagraph(doc, operatorClockCaption(snapshot.clock));
     clock.id = "lg-cont-operator-clock";
@@ -95,6 +95,7 @@ export function renderContinuousOperator(doc, snapshot, actions) {
     for (const advice of gaps.advice)
         section.append(judgeParagraph(doc, advice, "lg-cont-caption"));
     section.append(operatorButton(doc, "Download photo-free rehearsal record", "operator-report", actions.export));
-    section.append(judgeParagraph(doc, "Separate verification is required for live YouCam, real faces, device budgets and the frozen release gate.", "lg-cont-caption"));
+    section.append(judgeParagraph(doc, "Separate verification is required for real faces, device budgets and the frozen release gate.", "lg-cont-caption"));
     return section;
 }
+//# sourceMappingURL=continuous-operator-panel.js.map

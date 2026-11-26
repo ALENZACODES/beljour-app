@@ -9,9 +9,28 @@ import { regionMask } from "../data/regions/index.js";
 import { isRefusal, renderSkinTool } from "../engines/skin/studio.js";
 import { healBlemishes } from "../engines/skin/blemish.js";
 import { compareSnapshots } from "../engines/skin-checkin/store.js";
-import { SAVED_CHECKIN, SAVED_EXTRAS } from "./generated/skin-moment-saved.js";
 import { framingPoints } from "./shape-art.js";
 export { framingPoints };
+/** The full look's colours, measured by our local engines on the "Before I buy" example person. */
+export const SAVED_LOOK = { image_url: null, label: "Saved example. The colours the full-look try-on would use; no image is stored with the app.",
+    swatches: [{ category: "foundation", label: "Base, never lighter than measured", color: "#D2A79B" },
+        { category: "lip_color", label: "Lip colour, from your measured lip colour", color: "#C26569" },
+        { category: "blush", label: "Blush, from your cool undertone", color: "#D68C96" }] };
+export const SAVED_PREVIEW = { image_url: null,
+    label: "Saved example. What the skin preview would soften (breakouts, redness, texture, pores); no image is stored with the app.",
+    concerns: [{ concern: "acne", label: "Breakouts", strength: 0.4 }, { concern: "redness", label: "Redness", strength: 0.3 },
+        { concern: "texture", label: "Texture", strength: 0.2 }, { concern: "pore", label: "Pores", strength: 0.2 }] };
+/** Two made-up check-ins five weeks apart, in the six concerns the on-device reader measures.
+ * Hydration moved past its noise band (better), redness moved past its band (worse), the rest
+ * stayed within normal photo-to-photo variation. */
+const CHECKIN_SCORES = [
+    ["acne", 47.1, 49.8], ["redness", 61.8, 54.6], ["moisture", 50.1, 58.2],
+    ["oiliness", 60.3, 61.0], ["texture", 62.0, 63.4], ["pore", 65.4, 66.1]
+];
+export const SAVED_CHECKINS = [
+    { taken_at: "2026-09-23T09:30:00Z", source: "local", concerns: CHECKIN_SCORES.map(([concern, before]) => ({ concern, raw_score: before })) },
+    { taken_at: "2026-10-28T09:30:00Z", source: "local", concerns: CHECKIN_SCORES.map(([concern, , after]) => ({ concern, raw_score: after })) }
+];
 export const DEMO_PHOTO_ID = "saved-example";
 const DISCLAIMER = "Not medical advice. Cosmetic suggestions only; product types, not tested against real products.";
 /** services/skin.py band(): 80 and over looks good, 60 to 79 has room to improve. */
@@ -22,36 +41,18 @@ const scores = (names) => names.map((c) => ({ concern: c, label: LABELS[c], raw_
 // skin_planner.py concern sets.
 const BUY = ["moisture", "oiliness", "redness", "texture"];
 const BREAKOUT = ["acne", "redness", "texture", "pore"];
-/* ------------------------------- planner steps ------------------------------- */
-/** youcam/units.py _SKIN_SD: up to this many concerns cost this many units. */
-const SKIN_UNITS = [[4, 9], [8, 12], [12, 14], [16, 16]];
-export function skinAnalysisUnits(concerns) {
-    const tier = SKIN_UNITS.find(([upTo]) => concerns <= upTo);
-    if (!tier || concerns < 1)
-        throw new RangeError("skin analysis takes 1 to 16 concerns");
-    return tier[1];
-}
-export const NOT_LIVE = "not_live: a saved example runs here, so this live call is only planned, never sent.";
-export const NO_CONSENT = "no_consent: you chose a local estimate, so nothing goes to YouCam.";
-const SAVED_WHY = "Saved example: made-up scores stored with the app, so the whole flow runs with no key. Nothing was sent.";
-const TONE_WHY = "Saved example: a skin tone reply in YouCam's documented shape, its colours measured on the AI-generated example person's picture by our own local engines. Nothing was sent.";
-const PREVIEW_WHY = "Saved example: the concerns and strengths the live preview would ask for, drawn on the example picture on this device by our own skin engines. Nothing was sent.";
-function steps(moment, mode, concerns) {
-    const live = (action, units, why) => ({ action, why, status: "skipped", units: mode === "local" ? 0 : units, cached: false, reason: mode === "local" ? NO_CONSENT : NOT_LIVE });
+/* ---------------------------------- steps ---------------------------------- */
+const SAVED_WHY = "Saved example: made-up scores stored with the app, for an example person. Nothing was read from your photo.";
+function steps(moment) {
     const done = (action, why) => ({ action, why, status: "done", units: 0, cached: false, reason: null });
-    const analysis = live("skin-analysis", skinAnalysisUnits(concerns), moment === "buy" ? `Skin analysis to read moisture, oil, redness and texture: ${concerns} concerns for ${skinAnalysisUnits(concerns)} units.`
-        : moment === "checkin" ? `Skin analysis on the same concerns as last time: ${concerns} concerns for ${skinAnalysisUnits(concerns)} units.`
-            : `Skin analysis focused on acne, redness, texture and pores: ${concerns} concerns for ${skinAnalysisUnits(concerns)} units.`);
-    const list = [analysis, done("saved-example", SAVED_WHY)];
-    if (moment === "buy") {
-        list.push(live("skin-tone-analysis", 20, "Skin tone reading: your skin and lip colour measured by YouCam, so the shade and the lip colour start from you, for 20 units."), ...(mode === "local" ? [] : [done("saved-example", TONE_WHY)]), done("local-shade-match", "Shade and coverage matched on this device from the colour of the face shown, without YouCam. Never lighter than measured."), live("makeup-vto", 1, "Makeup try-on of the matched shade and coverage on your photo for 1 unit."), done("local-foundation-preview", "Foundation preview drawn on this device instead of the YouCam try-on."), live("makeup-vto", 1, "Full-look try-on: the same base plus a lip colour and blush picked from your measured colouring, on your photo for 1 unit."), done("local-look-swatches", "The lip colour and blush for the full look, drawn on the example picture on this device and shown as colour swatches, instead of the YouCam try-on."));
-    }
-    else if (moment === "breakout") {
-        list.push(live("skin-simulation", 4, "Skin preview: your photo with the concerns this plan works on softened, not erased, so you can see what it aims for. A simulation, not a promise. Up to 4 concerns for 4 units."), ...(mode === "local" ? [] : [done("saved-example", PREVIEW_WHY)]));
-    }
-    else if (moment === "checkin") {
-        list.push(done("local-compare", "Today against the earlier check-in, per concern, with a noise band so a small change reads as no real change."));
-    }
+    const list = [done("saved-example", SAVED_WHY)];
+    if (moment === "buy")
+        list.push(done("shade-match", "Shade matched on this device from the colour of the face shown. Never lighter than measured."), done("foundation-preview", "The matched shade drawn on the face shown, at sheer coverage."), done("full-look", "A lip colour and blush picked from the undertone, each deeper than the skin, drawn with the base."));
+    else if (moment === "breakout")
+        list.push(done("skin-preview", "The concerns the plan works on, softened on the face shown, not erased."));
+    else
+        list.push(done("compare", "Today against the earlier check-in, per concern, with a noise band so a small change reads as no real change."));
+    list.push(done("plan", "One plan from the lowest scores, by the skin guide's rules."));
     return list.map((s, i) => ({ n: i + 1, ...s }));
 }
 /* ------------------------------ before I buy ------------------------------ */
@@ -107,12 +108,12 @@ export function drawnFaceLab() {
 }
 /** "Before I buy" for the face shown: its measured depth and undertone name the skin tint, and the
  * try-on words repeat that product's shade and coverage. */
-export function buyExample(lab = drawnFaceLab(), mode = "youcam") {
+export function buyExample(lab = drawnFaceLab()) {
     const profile = profileOf(lab ?? [55, 12, 18]);
     const products = buyProducts(profile);
     const tint = products[0];
     return { moment: "buy", photo_id: DEMO_PHOTO_ID, source: "saved_example", fallback: null, message: null,
-        steps: steps("buy", mode, BUY.length), units: { spent: 0, left: null, cap: null }, disclaimer: DISCLAIMER,
+        steps: steps("buy"), units: { spent: 0, left: null, cap: null }, disclaimer: DISCLAIMER,
         analysis: { concerns: scores(BUY), concerns_source: "Saved example", profile },
         plan: {
             today: [{ text: "Start with a sheer skin tint at your measured depth, not lighter", because: "redness 61 and oil 64 show; a sheer layer evens them without a heavy base" }],
@@ -122,39 +123,46 @@ export function buyExample(lab = drawnFaceLab(), mode = "youcam") {
             see_dermatologist_if: [DERM.redness], products, label: "Cosmetic steps from your measured concerns."
         },
         tryon: { image_url: "", product_id: tint.id, shade: tint.shade, coverage: tint.coverage,
-            label: `Saved example: ${tint.name.toLowerCase()}, ${tint.coverage} coverage, drawn on this device, not a YouCam render.` },
-        tone: mode === "local" ? null : SAVED_EXTRAS.tone, look: mode === "local" ? null : SAVED_EXTRAS.look };
+            label: `Saved example: ${tint.name.toLowerCase()}, ${tint.coverage} coverage, drawn on this device.` },
+        tone: null, look: SAVED_LOOK };
 }
 const DERM = {
     acne: "Painful, deep or scarring breakouts deserve a visit to a doctor or dermatologist.",
     redness: "Persistent redness, flushing or bumps can be rosacea; a doctor can confirm.",
 };
 /* ------------------------------ is it working? ------------------------------ */
-const todaySnapshot = () => ({ taken_at: SAVED_CHECKIN.taken_at, source: "youcam",
-    concerns: SAVED_CHECKIN.reply.analysis.concerns.map((c) => ({ concern: c.concern, raw_score: c.raw_score })) });
 /** The earlier check-in and today's, as the example's own history. */
-export const SAVED_HISTORY = [SAVED_CHECKIN.previous, todaySnapshot()];
+export const SAVED_HISTORY = SAVED_CHECKINS;
 /** The comparison, by the browser check-in engine, in the wire form the server sends (delta to
  * one decimal, as services/skin_moment.checkin_block). */
 export function savedCheckin() {
-    const previous = SAVED_CHECKIN.previous;
-    const full = compareSnapshots(previous, todaySnapshot());
+    const [previous, today] = SAVED_CHECKINS;
+    const full = compareSnapshots(previous, today);
     return { previous_at: previous.taken_at, days_between: full.days_between, summary: full.summary,
         changes: full.changes.map((c) => ({ concern: c.concern, label: c.label, before: c.before, after: c.after,
             delta: Math.round(c.delta * 10) / 10, noise_band: c.noise_band, verdict: c.verdict, higher_is_better: c.higher_is_better })) };
 }
-export function savedExample(moment, mode = "youcam") {
+export function savedExample(moment) {
     if (moment === "buy")
-        return buyExample(drawnFaceLab(), mode);
+        return buyExample(drawnFaceLab());
     if (moment === "checkin") {
-        const r = SAVED_CHECKIN.reply;
-        // The page has no server here, so the server's "not_live" fallback and note don't apply; the
-        // page's own Saved example note says what this is.
-        return { ...r, fallback: null, message: null, steps: steps("checkin", mode, r.analysis.concerns.length), checkin: savedCheckin() };
+        const today = SAVED_CHECKINS[1].concerns;
+        const concerns = [...today].sort((a, b) => a.raw_score - b.raw_score).map((c) => ({ concern: c.concern, label: LABELS[c.concern], raw_score: c.raw_score, band: band(c.raw_score), ui_score: Math.round(c.raw_score) }));
+        return { moment, photo_id: DEMO_PHOTO_ID, source: "saved_example", fallback: null, message: null,
+            steps: steps(moment), units: { spent: 0, left: null, cap: null }, disclaimer: DISCLAIMER, checkin: savedCheckin(),
+            analysis: { concerns, concerns_source: "Saved example", profile: profileOf([70.5, 18.7, 19.1]) },
+            plan: {
+                today: [{ text: "Morning: gentle cleanser, hyaluronic acid, moisturiser, then SPF 30 or more", because: "a calm base and water held in the top layer" },
+                    { text: "Evening: gentle cleanser, then moisturiser", because: "removes sunscreen and the day" }],
+                this_week: [{ text: "Keep going with what you use for hydration", because: "looks better by more than normal photo-to-photo variation over 35 days" },
+                    { text: "Notice triggers such as heat, spicy food or harsh scrubs", because: "redness looks worse by more than normal variation" }],
+                stop: [{ text: "The newest product you added, until you can tell what changed redness", because: "redness looks worse over 35 days" }],
+                see_dermatologist_if: [DERM.redness, DERM.acne], label: "Cosmetic steps from your measured concerns."
+            } };
     }
     return { moment, photo_id: DEMO_PHOTO_ID, source: "saved_example", fallback: null, message: null,
-        steps: steps(moment, mode, BREAKOUT.length), units: { spent: 0, left: null, cap: null }, disclaimer: DISCLAIMER,
-        preview: mode === "local" ? null : SAVED_EXTRAS.preview,
+        steps: steps(moment), units: { spent: 0, left: null, cap: null }, disclaimer: DISCLAIMER,
+        preview: SAVED_PREVIEW,
         analysis: { concerns: scores(BREAKOUT), concerns_source: "Saved example", profile: profileOf(drawnFaceLab() ?? [55, 12, 18]) },
         plan: {
             today: [{ text: "Wash with a gentle cleanser, then a light moisturiser", because: "keeps the skin calm without stripping it" },
@@ -172,7 +180,7 @@ export const SAVED = {
     history: (moment) => (moment === "checkin" ? SAVED_HISTORY : []),
 };
 /** A foundation preview drawn on this device with the local shade engine (our own code, never
- * a YouCam render): the best match at the measured depth, never lighter. `points` are pixel face
+ * an outside render): the best match at the measured depth, never lighter. `points` are pixel face
  * points. Null when the engine declines (no reliable skin reading). */
 export function foundationPreview(image, points, coverage = SHEER_COVERAGE) {
     const pts = points.map(([x, y]) => [x, y, 0]);
@@ -193,7 +201,7 @@ export function demoTryOn() {
     const after = foundationPreview(sample.image, sample.face.map(([x, y]) => [x, y]));
     return after ? { before: sample.image, after } : null;
 }
-/** The saved example's preview on an AI-generated example person. Unlike foundationPreview it
+/** The saved example's preview on a synthetic example person. Unlike foundationPreview it
  * does not stop when the shade finder calls the reading unreliable (it does on these pictures
  * with framing points: the zones disagree), because nothing here is named or measured for
  * anyone: the shade is the nearest sample shade to the picture's measured colour so the
@@ -303,3 +311,4 @@ export function examplePersonSoftened(image, points, concerns) {
     }
     return out;
 }
+//# sourceMappingURL=skin-moment-demo.js.map

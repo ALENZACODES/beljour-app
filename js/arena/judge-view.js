@@ -1,7 +1,7 @@
-/** The judging page (arena.html): judge the built-in set that ships with the app (assets/arena/
- * builtin/, drawn portraits only, no upload) or open a judge bundle folder from this device, judge
- * each pair blind, and save the answers as a file to hand back. Images are read from the chosen
- * folder with object URLs, or fetched from this site for the built-in set; nothing is uploaded.
+/** The judging page (arena.html): judge the built-in set that ships with the site (assets/arena/
+ * builtin/: the six synthetic example people, no upload), or open a judge bundle folder from this
+ * device; judge each pair blind and save the answers as a file to hand back. Images are fetched
+ * from this site for the built-in set or read from the chosen folder; nothing is uploaded.
  * Answers are kept in this browser between reloads when storage works.
  * Author: John Khan.
  */
@@ -9,8 +9,10 @@ import { clear, h } from "../dom.js";
 import { DIMENSION_HELP, DIMENSION_LABELS, JUDGE_DIMENSIONS, REASONS } from "./reasons.js";
 import { BundleError, JudgingSession, readBundle, sideForKey } from "./session.js";
 const DRAFT_PREFIX = "beljour.judging.";
-/** The built-in judging set, relative to arena.html (works under a sub-path such as /beljour-app/). */
+/** The built-in judging set, relative to arena.html (works under a sub-path such as /beljour/). */
 export const BUILTIN_BUNDLE = "assets/arena/builtin/";
+/** Arena v1 face-tool set: production pipeline vs naive single pass (arena/README.md). */
+export const FACES_BUNDLE = "assets/arena/faces-v1/";
 function storage() {
     try {
         return globalThis.localStorage ?? null;
@@ -48,8 +50,8 @@ export class JudgeView {
             throw new BundleError("Choose the bundle folder (it holds manifest.json and an images folder).");
         this.start(readBundle(JSON.parse(await manifest.text())), judge, womanJudge);
     }
-    /** Open the built-in set from this site: the manifest and every picture it names, checked by
-     * the same bundle reader as a folder. No file is chosen and nothing is uploaded. */
+    /** Open the built-in set from this site: the manifest and every picture it names, checked by the
+     * same bundle reader as a folder. No file is chosen and nothing is uploaded. */
     async openBuiltin(judge, womanJudge, base = BUILTIN_BUNDLE, fetcher = (u) => fetch(u, { credentials: "omit" })) {
         const get = async (path) => {
             const res = await fetcher(base + path);
@@ -62,7 +64,7 @@ export class JudgeView {
         this.files.clear();
         for (const path of paths) {
             const blob = await (await get(path)).blob();
-            this.files.set(path, new File([blob], path.slice("images/".length), { type: "image/png" }));
+            this.files.set(path, new File([blob], path.slice("images/".length), { type: path.endsWith(".jpg") ? "image/jpeg" : "image/png" }));
         }
         this.start(bundle, judge, womanJudge);
     }
@@ -178,7 +180,7 @@ export function mountJudge(doc = document) {
         const folder = doc.getElementById("lg-bundle").files;
         const judge = doc.getElementById("lg-judge-name").value.trim();
         const woman = doc.getElementById("lg-woman-judge").checked;
-        // The submitter says which set: the built-in one (the default button) or a chosen folder.
+        // The submitter says which set: the built-in one (the main button) or a chosen folder.
         const which = e.submitter?.value ?? "builtin";
         try {
             if (which === "folder") {
@@ -188,7 +190,7 @@ export function mountJudge(doc = document) {
             }
             else {
                 status.textContent = "Loading the built-in set…";
-                await view.openBuiltin(judge, woman);
+                await view.openBuiltin(judge, woman, which === "faces" ? FACES_BUNDLE : BUILTIN_BUNDLE);
             }
             form.hidden = true;
         }
@@ -199,3 +201,4 @@ export function mountJudge(doc = document) {
     doc.addEventListener("keydown", (e) => view.key(e));
     return view;
 }
+//# sourceMappingURL=judge-view.js.map

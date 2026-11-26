@@ -170,3 +170,4 @@ export async function loadReviewedLocalModels(candidates, factory, signal) {
             item.bytes.fill(0);
     }
 }
+//# sourceMappingURL=quality-model-loader.js.map

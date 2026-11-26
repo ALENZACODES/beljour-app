@@ -71,3 +71,4 @@ export function verifiedEvidenceReport(value) {
         throw new EvidenceRefused(integrity.problems[0]);
     return report;
 }
+//# sourceMappingURL=posture-proof-integrity.js.map

@@ -121,3 +121,4 @@ export function applyFinish(photo, mask, finish, amount) {
     }
     return out;
 }
+//# sourceMappingURL=colour.js.map

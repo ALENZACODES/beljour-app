@@ -148,3 +148,4 @@ export class VisionWorkerClient {
 }
 let shared = null;
 export function defaultVisionClient() { return shared ??= new VisionWorkerClient(); }
+//# sourceMappingURL=client.js.map

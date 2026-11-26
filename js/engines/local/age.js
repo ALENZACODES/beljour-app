@@ -13,6 +13,7 @@ import { olderFeatureTone } from "./older-tone.js";
 import { brightenEyeWhites, cheekLift, eraseCreases, greyBrows, lipFullness, olderSag, recolourGrey, smoothCrepe, youngCues } from "./younger-structure.js";
 import { centralSkin, findMarks, iodOf } from "../../layout/still-you.js";
 import { renderClock } from "../skin/texture-law.js";
+import { gaussian } from "../core/bands.js";
 export const VERSION = "age-spike-r6/1";
 export const LABEL = "Age-look simulation of lines, texture and shape; not a prediction of how you will age.";
 export const OLDER_STOPS = [1, 2, 3, 4, 5];
@@ -174,6 +175,72 @@ export function relayOwnHighBand(input, output, field, moved) {
         }
     }
 }
+/** Younger's surface pass smooths with wide blurs, which near the silhouette (jaw, neck, temples)
+ * mix the background into the skin and leave a pale rim. Near the face outline and outside it,
+ * wherever non-skin pixels are close by, the change from the pre-surface image is capped at
+ * SILHOUETTE_CAP levels. Inside the face (under the eyes, cheeks) nothing is capped. */
+export const SILHOUETTE_CAP = 4;
+function guardSilhouette(pre, out, w, h, ch, face, iod) {
+    const n = w * h;
+    const oval = regionMask("face_oval", face, w, h, { normalized: false });
+    const interior = gaussian(oval.data, w, h, Math.max(2, 0.06 * iod));
+    // the photo's own skin: per-channel median around both cheek centres
+    const ref = [0, 1, 2].map((c) => {
+        const v = [];
+        for (const k of [205, 425]) {
+            const cx = face[k][0], cy = face[k][1], r = Math.max(2, 0.1 * iod);
+            for (let y = Math.max(0, Math.round(cy - r)); y < Math.min(h, Math.round(cy + r)); y += 2)
+                for (let x = Math.max(0, Math.round(cx - r)); x < Math.min(w, Math.round(cx + r)); x += 2)
+                    v.push(pre[(y * w + x) * ch + c]);
+        }
+        v.sort((a, b) => a - b);
+        return Math.max(8, v[v.length >> 1] ?? 128);
+    });
+    const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    const refY = 0.299 * ref[0] + 0.587 * ref[1] + 0.114 * ref[2];
+    const notSkin = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+        const r = pre[i * ch], g = pre[i * ch + 1], b = pre[i * ch + 2], y = Math.max(1, 0.299 * r + 0.587 * g + 0.114 * b), ratio = y / refY;
+        const lum = ss(0.4, 0.65, ratio) * (1 - ss(1.6, 2.2, ratio));
+        const chroma = Math.hypot(r / y - ref[0] / refY, b / y - ref[2] / refY);
+        notSkin[i] = 1 - lum * (1 - ss(0.12, 0.26, chroma));
+    }
+    const near = gaussian(notSkin, w, h, Math.max(2, 0.05 * iod));
+    let guarded = 0;
+    for (let i = 0; i < n; i++) {
+        const s = (1 - ss(0.9, 0.995, interior[i])) * ss(0.05, 0.25, near[i]);
+        if (s <= 0)
+            continue;
+        if (s > 0.5)
+            guarded++;
+        for (let c = 0; c < 3; c++) {
+            const o = i * ch + c, d = out[o] - pre[o], capped = Math.max(-SILHOUETTE_CAP, Math.min(SILHOUETTE_CAP, d));
+            out[o] = Math.round(pre[o] + d + s * (capped - d));
+        }
+    }
+    return guarded;
+}
+/** Band around each eye opening, as a share of the eye distance, kept out of Younger's crease eraser. */
+export const LID_HOLD_IOD = 0.1;
+function holdLids(hold, face, w, h, r) {
+    for (const ids of [CONTOURS.right_eye, CONTOURS.left_eye]) {
+        const pts = ids.map((i) => face[i]);
+        const x0 = Math.max(0, Math.floor(Math.min(...pts.map((q) => q[0])) - r)), x1 = Math.min(w - 1, Math.ceil(Math.max(...pts.map((q) => q[0])) + r));
+        const y0 = Math.max(0, Math.floor(Math.min(...pts.map((q) => q[1])) - r)), y1 = Math.min(h - 1, Math.ceil(Math.max(...pts.map((q) => q[1])) + r));
+        for (let y = y0; y <= y1; y++)
+            for (let x = x0; x <= x1; x++) {
+                // distance to the lid polyline (closed), segment by segment
+                let best = Infinity;
+                for (let k = 0; k < pts.length; k++) {
+                    const a = pts[k], b = pts[(k + 1) % pts.length], dx = b[0] - a[0], dy = b[1] - a[1], len = dx * dx + dy * dy;
+                    const t = len ? Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / len)) : 0;
+                    best = Math.min(best, Math.hypot(x - a[0] - t * dx, y - a[1] - t * dy));
+                }
+                if (best <= r)
+                    hold[y * w + x] = 1;
+            }
+    }
+}
 export function renderAge(input, mesh, options) {
     requireColour(input);
     checkFace(mesh);
@@ -197,12 +264,12 @@ export function renderAge(input, mesh, options) {
             forehead_height: Math.min(100, Math.max(-100, -modifier * 20 * fraction * layers.brows_lids)),
             chin_shape: Math.min(100, Math.max(-100, -modifier * 20 * fraction * layers.lips)),
             ...(older ? {} : { cheek_fullness: Math.min(100, 50 * fraction * layers.jowl) }),
-        }, { strength: 1, adjust: older
+        }, { strength: 1, guard: options.protections !== false, adjust: older
                 // Older: mid-face volume falls (malar pads drop) and the lips thin, the reverse of Younger
                 ? (t) => olderSag(mesh, cheekLift(mesh, lipFullness(mesh, t, -0.025 * fraction * layers.lips), -0.03 * fraction * layers.jowl), fraction * layers.brows_lids)
                 : (t) => cheekLift(mesh, lipFullness(mesh, t, 0.03 * fraction * layers.lips), 0.025 * fraction * layers.jowl) });
         output = geometry.image;
-        if (geometry.field)
+        if (geometry.field && options.protections !== false)
             relayOwnHighBand(input, output, geometry.field, geometry.editMask.data);
         face = geometry.target;
         skin = regionMask("skin", face, input.width, input.height, { normalized: false, supersample: 2 });
@@ -214,7 +281,8 @@ export function renderAge(input, mesh, options) {
     // pores and moles never treated as lines, brown spots as melanin, all lit by the photo's own light.
     // Replaces the stroke drawing, the RGB tone wash and the one-band blur.
     // Younger holds the marks the photo check counts (found on the input, before any change).
-    const keepMarks = older ? undefined : findMarks(input, regionMask("skin", mesh, input.width, input.height, { normalized: false, supersample: 2 }), iodOf(input.width, mesh));
+    const keepMarks = older || options.protections === false ? undefined : findMarks(input, regionMask("skin", mesh, input.width, input.height, { normalized: false, supersample: 2 }), iodOf(input.width, mesh));
+    const preSurface = older || options.protections === false ? null : new Uint8Array(output.data);
     const surface = renderAgeSurface(output, skin, face, { older, fraction, iod: faceFrame(face).iod, keepMarks,
         // Older places no brown spots (synthesised marks); Younger never placed any.
         lines: layers.lines, colour: layers.colour, texture: layers.texture, spots: older ? 0 : layers.spots, seed,
@@ -226,6 +294,7 @@ export function renderAge(input, mesh, options) {
     const wrinklePixels = surface.wrinklePixels, wrinkleContrast = surface.wrinkleContrast, spots = surface.spots;
     const texture = fraction * layers.texture, colour = fraction * layers.colour;
     const { width: w, height: h, channels } = output;
+    let silhouettePixels = 0;
     let creasePixels = 0, greyPixels = 0, eyeWhitePixels = 0, hairColourPixels = 0, greyBefore = 0, greyAfter = 0, hairHighBand = 1;
     if (!older) {
         // Lines out, own pores in (the wrinkles live in the high band the surface pass keeps).
@@ -234,7 +303,7 @@ export function renderAge(input, mesh, options) {
         const supportMask = floatImage(w, h, 1);
         for (let i = 0; i < w * h; i++)
             supportMask.data[i] = surface.edit[i];
-        const iodM = iodOf(input.width, mesh), holdMarks = [...(keepMarks ?? []), ...findMarks(input, supportMask, iodM), ...findMarks(input, centralSkin(w, h), iodM)];
+        const iodM = iodOf(input.width, mesh), holdMarks = options.protections === false ? [] : [...(keepMarks ?? []), ...findMarks(input, supportMask, iodM), ...findMarks(input, centralSkin(w, h), iodM)];
         for (const m of holdMarks) {
             const r = m.radius + 2;
             for (let y = Math.max(0, Math.floor(m.y - r)); y <= Math.min(h - 1, Math.ceil(m.y + r)); y++)
@@ -242,11 +311,18 @@ export function renderAge(input, mesh, options) {
                     if ((x - m.x) ** 2 + (y - m.y) ** 2 <= r * r)
                         hold[y * w + x] = 1;
         }
+        // The lid line itself is held too: on deep skin the lower-lid crease is the eye's own edge, and
+        // erasing it made the eye read 10 to 13 % taller (Arena v1, dark band). Under-eye smoothing
+        // further down still runs.
+        if (options.protections !== false)
+            holdLids(hold, face, w, h, LID_HOLD_IOD * faceFrame(face).iod);
         const cr = eraseCreases(output, surface.edit, face, Math.min(1, 1.25 * Math.pow(fraction, 0.8)) * layers.lines, hold);
         creasePixels = cr.creasePixels;
         smoothCrepe(output, surface.edit, face, Math.pow(fraction, 0.8) * layers.texture, hold);
         youngCues(output, surface.edit, face, fraction * layers.colour);
         eyeWhitePixels = brightenEyeWhites(output, face, fraction * layers.colour);
+        if (preSurface)
+            silhouettePixels = guardSilhouette(preSurface, output.data, w, h, channels, face, iodOf(input.width, mesh));
         if (options.hairMask && layers.hair > 0) {
             const hair = requireMask(options.hairMask, w, h);
             const rc = recolourGrey(output, hair.data, face, Math.min(1, 1.1 * fraction) * layers.hair, seed + 9);
@@ -270,7 +346,7 @@ export function renderAge(input, mesh, options) {
         const img = output;
         // own crepe and fine-line band raised 1.3-1.6x where it already exists (cored: structure is left alone)
         smoothCrepe(img, surface.edit, face, -0.6 * Math.sqrt(fraction) * layers.texture, hold);
-        // workstream 01 ideas 3+4: brow and lip contrast against the skin down (coarse layer only), limbal ring and whites dulled
+        // lane 01 ideas 3+4: brow and lip contrast against the skin down (coarse layer only), limbal ring and whites dulled
         const tone = olderFeatureTone(img, face, fraction * layers.colour);
         img.data.set(tone.image.data);
     }
@@ -314,7 +390,7 @@ export function renderAge(input, mesh, options) {
     }
     return { image: output, editMask, layersUsed: layers, label: LABEL, face,
         metrics: { stop: options.stop, strength_used: (options.strength ?? 1) * guardScale,
-            guard_scale: guardScale, wrinkle_pixels: wrinklePixels, wrinkle_contrast: wrinkleContrast,
+            guard_scale: guardScale, silhouette_guard_pixels: silhouettePixels, wrinkle_pixels: wrinklePixels, wrinkle_contrast: wrinkleContrast,
             spots_drawn: spots, grey_pixels: greyPixels, eye_white_pixels: eyeWhitePixels, crease_pixels: creasePixels, hair_colour_pixels: hairColourPixels,
             hair_grey_share_before: greyBefore, hair_grey_share_after: greyAfter, hair_high_band_ratio: hairHighBand, texture_amount: texture, colour_amount: colour,
             released_photo_validated: 0, seed, render_ms: renderClock() - started,
@@ -324,3 +400,4 @@ export function renderAge(input, mesh, options) {
             marks_before: surface.marksBefore, marks_after: surface.marksAfter,
             marks_kept: surface.marksBefore ? Math.min(1.5, surface.marksAfter / surface.marksBefore) : 1, light_r2: surface.lightR2 } };
 }
+//# sourceMappingURL=age.js.map

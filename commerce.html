@@ -4,7 +4,7 @@
   <meta charset="utf-8"><script src="js/diagnostics/page-guard.js"></script><link rel="icon" href="icons/beljour.svg" type="image/svg+xml">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#6B3044">
-  <meta name="description" content="Consent-first cosmetic sample matching and optional YouCam makeup virtual try-on. Fictional items and local fallback.">
+  <meta name="description" content="Cosmetic sample matching and makeup previews drawn on your device. Fictional items; your photo is never uploaded.">
   <title>Sample Looks · BELJOUR</title>
   <link rel="stylesheet" href="theme.css">
   <link rel="stylesheet" href="styles.css">
@@ -20,7 +20,7 @@
 <div class="commerce-tricolour" aria-hidden="true"><span></span><span></span><span></span></div>
 <main id="main" class="commerce-shell">
   <div class="commerce-intro">
-    <p class="eyebrow">Skin AI × sample product matching</p>
+    <p class="eyebrow">skin analysis × sample product matching</p>
     <h1>See the look before choosing a shade.</h1>
     <p>Use an original photo or a locally drawn illustration. Compare sample colours, see why each was suggested, and collect a demo bag. There is no checkout.</p>
     <p class="commerce-disclaimer">Every product, swatch and price here is fictional. Matches are not real-product testing, medical advice or a reason to change your skin tone.</p>
@@ -36,21 +36,10 @@
       <p id="photo-details" class="fineprint" aria-live="polite"></p>
     </section>
     <section class="commerce-panel" aria-labelledby="consent-heading">
-      <p class="step-number">02 / PRIVATE OR OPTIONAL PROVIDER</p>
-      <h2 id="consent-heading">Choose how to process</h2>
-      <fieldset class="mode-choice">
-        <legend>Processing</legend>
-        <label><input id="mode-local" type="radio" name="processing" value="local" checked> <strong>On this device</strong><span>No upload, no Skin AI, only manually selected sample shades and approximate colour overlays.</span></label>
-        <label><input id="mode-youcam" type="radio" name="processing" value="youcam"> <strong>Consented Skin AI and makeup preview</strong><span>Your selected photo is sent to the BELJOUR key proxy and may be sent to YouCam. The server limits units and falls back locally if unavailable.</span></label>
-      </fieldset>
-      <fieldset id="sharing-consent" class="consent-fieldset" disabled hidden>
-        <legend>Permission for this selected photo</legend>
-        <label><input type="checkbox" id="confirm-skin"> I agree to send this photo for optional Skin AI analysis and product matching.</label>
-        <label><input type="checkbox" id="confirm-makeup"> I agree to send this photo for optional YouCam makeup virtual try-on.</label>
-        <p class="fineprint">Skin AI results are cosmetic scores, not a diagnosis. The app removes EXIF metadata before uploading. Local mode stops new provider requests; delete the temporary server copy separately below.</p>
-      </fieldset>
-      <p class="fineprint">You can request deletion of previously uploaded photos even after switching to local mode or disabling the provider.</p>
-      <button id="forget-server-photo" type="button" class="button-muted">Delete temporary server photo</button>
+      <p class="step-number">02 / ON THIS DEVICE</p>
+      <h2 id="consent-heading">Your colours</h2>
+      <p class="fineprint">Everything on this page runs on your device. Your photo is never uploaded.</p>
+      <input id="mode-local" type="hidden" value="local">
       <label for="depth">Your starting depth band <span class="fineprint">(1 lightest, 10 deepest)</span></label>
       <select id="depth" name="depth"><option value="1">1 · Porcelain</option><option value="2">2 · Fair</option><option value="3">3 · Light</option><option value="4">4 · Light-medium</option><option value="5">5 · Medium</option><option value="6">6 · Medium-tan</option><option value="7">7 · Tan</option><option value="8">8 · Deep-tan</option><option value="9" selected>9 · Deep</option><option value="10">10 · Rich-deep</option></select>
       <label for="undertone">Undertone for local suggestions</label>
@@ -68,7 +57,7 @@
     <section class="commerce-budget-tools" id="sample-budget-tools" aria-labelledby="sample-budget-title">
       <h3 id="sample-budget-title">Compare fictional sample costs and a three-piece look</h3>
       <p>Use the results already loaded above. Filtering and the sample total run only in the browser.
-        Your photograph, Skin AI results and account details are never stored in this comparison.</p>
+        Your photograph, skin analysis results and account details are never stored in this comparison.</p>
       <div class="commerce-grid">
         <div><label for="sample-budget-dollars">Maximum sample total, CAD (tax and shipping excluded)</label>
           <input type="number" min="0" max="1000" step="5" value="60" id="sample-budget-dollars" inputmode="numeric"></div>
@@ -91,8 +80,7 @@
     <section class="commerce-panel look-composer" id="look-composer" aria-labelledby="look-title">
       <p class="eyebrow">OPTIONAL · SAMPLE LOOK</p>
       <h2 id="look-title">Combine up to three fictional cosmetic effects</h2>
-      <p>Choose one foundation, one cheek colour and one lip colour from the fictional options.
-        Local mode never uploads a photograph; provider mode requires fresh makeup consent.</p>
+      <p>Choose one foundation, one cheek colour and one lip colour from the fictional options. Drawn on this device.</p>
       <p class="simulation-disclosure"><strong>Simulation only.</strong> No real physical product or shade has been tested.</p>
       <ol id="look-steps" aria-live="polite"></ol>
       <p id="look-subtotal" aria-live="polite">No sample items selected</p>
@@ -118,7 +106,7 @@
       <input id="effect-strength" type="range" min="0" max="100" value="50" aria-label="Visual simulation strength">
       <button id="update-preview" type="button" class="button-muted">Update preview</button>
       <button id="save-preview" type="button" class="button-primary">Save preview to this device</button>
-      <p class="fineprint">YouCam results, when available, are labelled as YouCam simulations. A local fallback is separately labelled and uses no provider units.</p>
+      <p class="fineprint">Every preview is drawn on this device and labelled as a simulation.</p>
     </section>
     <section class="commerce-panel" aria-labelledby="bag-heading" id="bag-panel">
       <p class="step-number">05 / YOUR DEMO BAG</p>
@@ -134,7 +122,7 @@
   <section class="commerce-panel" id="hair-gallery" aria-labelledby="hair-gallery-heading">
     <p class="step-number">06 / HAIR REFERENCE STYLES</p>
     <h2 id="hair-gallery-heading">Explore tonal hair concepts, locally</h2>
-    <p class="fineprint">A separate, drawn portrait demonstrates how the local mask-limited tone engine responds to hundreds of original haircut configurations. This is not automatic hairstyle generation or a prediction of a haircut. No visitor photo or YouCam API is used here.</p>
+    <p class="fineprint">A separate, drawn portrait demonstrates how the local mask-limited tone engine responds to hundreds of original haircut configurations. This is not automatic hairstyle generation or a prediction of a haircut. No visitor photo is used here.</p>
     <div class="commerce-grid">
       <div>
         <label for="hair-category">Browse style presentation (not your gender)</label>
@@ -212,7 +200,7 @@
 <footer class="commerce-footer"><span>Original sample catalogue · John Khan</span> <span>Local visual effects are simulations, not real shade tests.</span> <a href="trust.html">Privacy and trust</a></footer>
 <script type="module" src="js/commerce/page.js"></script>
 
-<!-- R18 Workstream C: preloaded static catalogues; no runtime network call or provider token. -->
+<!-- R18 Lane C: preloaded static catalogues; no runtime network call or provider token. -->
 <script src="js/commerce-static-data.js"></script>
 
 </body>

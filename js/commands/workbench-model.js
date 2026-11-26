@@ -317,3 +317,4 @@ export class ProWorkbenchModel {
         }).join(' ') ?? '';
     }
 }
+//# sourceMappingURL=workbench-model.js.map

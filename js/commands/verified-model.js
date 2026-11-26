@@ -69,3 +69,4 @@ export async function loadVerifiedIdentityRuntime(weights, evidence, policy, fac
         },
     };
 }
+//# sourceMappingURL=verified-model.js.map

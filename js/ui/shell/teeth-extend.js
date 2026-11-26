@@ -102,3 +102,4 @@ export function extendWhitening(before, after, width, height, channels, points, 
         }
     return soft;
 }
+//# sourceMappingURL=teeth-extend.js.map

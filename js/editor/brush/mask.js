@@ -126,3 +126,4 @@ export function maskBox(mask, level = 0) {
         }
     return x1 < 0 ? null : [x0, y0, x1, y1];
 }
+//# sourceMappingURL=mask.js.map

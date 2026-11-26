@@ -109,12 +109,12 @@ export function analyse(points, regions) {
         for (const [r, l] of table) {
             const m = reflect(points[r], line);
             const [a, b] = frame([m[0] - points[l][0], m[1] - points[l][1]], line);
-            const ai = a / iod, bi = b / iod, size = Math.hypot(ai, bi);
+            const dx = a / iod, dy = b / iod, size = Math.hypot(dx, dy);
             sum += size;
             max = Math.max(max, size);
-            across += ai;
-            along += bi;
-            pairs.push({ right: r, left: l, across: ai, along: bi, size });
+            across += dx;
+            along += dy;
+            pairs.push({ right: r, left: l, across: dx, along: dy, size });
         }
         const n = table.length;
         out.push({ name, pairs: n, mean: sum / n, max, across: across / n, along: along / n });
@@ -232,3 +232,4 @@ export function safeTargets(points, strength, options = {}) {
     return { points: out, refused: false, reason: "ok", yawDegrees: yaw, rollDegrees: roll, scale,
         maxMoveIod: final / iod, rawMaxMoveIod: rawMax };
 }
+//# sourceMappingURL=symmetry.js.map

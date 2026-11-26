@@ -1,4 +1,4 @@
-/** One-at-a-time local editing; no automatic consent, YouCam, export or Pro Commands. */
+/** One-at-a-time local editing; no automatic consent, export or Pro Commands. */
 /** Author: John Khan. */
 import { LOCAL_EDIT_SEQUENCE, safeSequenceElapsed, sameSequenceAuthority, sequenceAuthority, sequenceStep, } from "./sequence-contract.js";
 /** Session-local, fixed evidence only. Never contains pixels or subject identifiers. */
@@ -324,3 +324,4 @@ export class LocalEditSequence {
             throw new Error("The drawn replay has been disposed");
     }
 }
+//# sourceMappingURL=sequence-runner.js.map

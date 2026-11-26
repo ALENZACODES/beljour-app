@@ -21,3 +21,4 @@ export function mountHomeGroups(doc = document, win = window) {
     fromHash();
     win.addEventListener("hashchange", fromHash);
 }
+//# sourceMappingURL=home-groups.js.map

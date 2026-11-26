@@ -18,7 +18,7 @@ export const EDGE_STRAIN_SHARE = 0.35;
 export const SMOOTHING_PASSES = 2;
 export const SMOOTHING_LAMBDA = 0.5;
 export const SMOOTHING_MU = -0.53;
-export const PROJECTION_PASSES = 6;
+export const PROJECTION_PASSES = 24;
 export const RAMP_MIN_FACE_SHARE = 0.12;
 export const RAMP_FULL_TURN_FACE_SHARE = 0.16;
 export const RAMP_PLATEAU_SHARE = 0.45;
@@ -153,7 +153,8 @@ export function regulariseTargets(before, proposed, referenceScale, share = EDGE
                 continue;
             if (locked[i] && locked[j])
                 continue;
-            const full = 1 - limit / size;
+            // A hair inside the limit, so averaging duplicate points cannot round a capped edge back over it.
+            const full = 1 - limit * (1 - 1e-9) / size;
             if (locked[i])
                 delta[j] = [delta[j][0] - dx * full, delta[j][1] - dy * full];
             else if (locked[j])
@@ -372,3 +373,4 @@ export function relaxLowJacobian(field, iod, target = LOCAL_TARGET_DET, rounds =
     }
     return { field: makeField(mapX, mapY), attenuation: att, regions_scaled: scaled, rounds: done, min_scale: minScale };
 }
+//# sourceMappingURL=turn-field.js.map

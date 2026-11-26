@@ -63,3 +63,4 @@ export class PixelSmoother {
     }
     reset() { this.last = null; }
 }
+//# sourceMappingURL=temporal.js.map

@@ -53,3 +53,4 @@ export function drawSplitView(ctx, before, after, view) {
         }
     }
 }
+//# sourceMappingURL=split.js.map

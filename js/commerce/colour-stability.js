@@ -40,3 +40,4 @@ export function assessColourStability(readings, options = {}) {
     const code = picks.every((p) => p === best.record.id) ? null : "unstable_swatch";
     return result(rows.length, spread, code, picks, code === null ? plan : null);
 }
+//# sourceMappingURL=colour-stability.js.map

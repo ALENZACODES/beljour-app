@@ -37,3 +37,4 @@ export function whiten(image, opening, strength = 100) {
     result.reason = result.changed ? "measured local edit" : "no enamel-like pixels inside opening";
     return result;
 }
+//# sourceMappingURL=whiten.js.map

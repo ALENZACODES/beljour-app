@@ -38,6 +38,10 @@ export const CLIENT_LINKS = [
         href: "studio.html#cat=Photo", group: "local", requirement: "none", page: "studio", hash: "cat=Photo" },
     { id: "filters", label: "Filters", description: "Original local colour and light looks",
         href: "studio.html#cat=Filters", group: "local", requirement: "none", page: "studio", hash: "cat=Filters" },
+    { id: "lenses", label: "Face lenses", description: "Props and effects that follow your face",
+        href: "lenses.html", group: "local", requirement: "none", page: "other" },
+    { id: "arena", label: "Blind judging", description: "Judge looks side by side, sides hidden",
+        href: "arena.html", group: "information", requirement: "none", page: "other" },
     { id: "privacy", label: "Your data", description: "Photo and history details",
         href: "index.html#/privacy", group: "information", requirement: "none", page: "classic", hash: "privacy" },
 ];
@@ -103,3 +107,4 @@ export function validateClientLinks() {
     }
     return problems;
 }
+//# sourceMappingURL=client-routes.js.map

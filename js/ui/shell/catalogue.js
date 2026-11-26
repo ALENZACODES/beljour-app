@@ -14,12 +14,9 @@ export const CATALOGUE = [
     { id: "face-makeup", title: "Makeup", description: "Lipstick (matte, satin or gloss), blush, eyeshadow and eyeliner, drawn on this device from your face points. Lip lines and skin texture stay.",
         category: "Local studio", source: "local", sample: "portrait",
         safety: "Makeup simulation on this device; your photo is not sent anywhere. Preview, not a promise.", shortcut: "" },
-    { id: "makeup", title: "Makeup try-on (YouCam)", description: "Makeup previews use the approved YouCam task gateway after a quote and click.",
-        category: "YouCam styling", source: "youcam", sample: "portrait",
-        safety: "Sent to YouCam, deleted after the result. Preview, not a promise.", shortcut: "M" },
-    { id: "hair-style", title: "Hair Studio", description: "347 haircut ideas to browse offline, one synthetic example, reference rights, pose guard and variant planning. Real requests use the existing YouCam styling gateway.",
-        category: "YouCam styling", source: "youcam", sample: "portrait",
-        safety: "Catalogue and illustrated replay stay on this device. Only an expressly consented styling request may reach YouCam.", shortcut: "H" },
+    { id: "hair-style", title: "Hair Studio", description: "Browse hundreds of cuts by length and texture, see each as a diagram, plan the variants and take a salon brief to your stylist.",
+        category: "Local studio", source: "guide", sample: "portrait",
+        safety: "Catalogue, diagrams and brief on this device. It doesn't redraw a haircut on your photo.", shortcut: "H" },
     { id: "filters", title: "Filters", description: "Colour and light looks, most loved first. One tap, a 0-100 slider, gentle by default.",
         category: "Local studio", source: "local", sample: "portrait",
         safety: "On this device. With the skin guard on, a look never lightens your skin or turns its hue.", shortcut: "L" },
@@ -83,10 +80,10 @@ export function readiness(id, photo) {
     const row = tool(id);
     if (row.source === "planned")
         return { ready: false, reason: "Filters will be added after the must-have tools are complete." };
+    if (row.source === "guide")
+        return { ready: false, reason: "The Hair Studio below plans a cut; it draws nothing on the photo." };
     if (!photo)
         return { ready: false, reason: "Load an on-device photo or a drawn sample first." };
-    if (row.source === "youcam")
-        return { ready: false, reason: "Use the Makeup / Hair styling screens with a quote and an explicit consented upload. This canvas does not silently send your photo." };
     if ((id === "recolour" || id === "balayage" || id === "grey") && !photo.hair)
         return { ready: false, reason: "Mark the hair area on your own photo first." };
     if (id === "balayage" && !photo.hairPaint)
@@ -101,7 +98,8 @@ export function readiness(id, photo) {
         return { ready: false, reason: "Select the crown area below, or use the drawn crown sample." };
     return { ready: true };
 }
-export const SIDEBAR_SECTIONS = ["Local studio", "Adjust and crop", "YouCam styling", "Planned"];
+export const SIDEBAR_SECTIONS = ["Local studio", "Adjust and crop", "Planned"];
 export function toolsIn(category) {
     return CATALOGUE.filter((item) => item.category === category);
 }
+//# sourceMappingURL=catalogue.js.map

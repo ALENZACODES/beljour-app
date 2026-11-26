@@ -181,3 +181,4 @@ export function guideFields(style, geometry, width, height, rowStart = 0, rowSto
     }
     return { zone, grade, tone };
 }
+//# sourceMappingURL=style-guides.js.map

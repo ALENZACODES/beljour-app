@@ -120,3 +120,4 @@ export function navigationCoverage(groups) {
     const found = new Set(groups);
     return CLIENT_LINKS.filter((item) => !found.has(item.group)).map((item) => item.id);
 }
+//# sourceMappingURL=client-navigation.js.map

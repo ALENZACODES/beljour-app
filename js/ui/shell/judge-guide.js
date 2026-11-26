@@ -17,7 +17,7 @@ export const JUDGE_SCRIPT = [
 export const JUDGE_EVIDENCE_LIMITS = [
     "The generated drawing is a placeholder, not a person or a measured result.",
     "All illustration edits are local and deliberately simple.",
-    "The mock try-on is not evidence of YouCam API connectivity or performance.",
+    "The mock try-on is an overlay, not a real try-on.",
     "The real provider integration must be shown separately using the existing application route.",
     "No 10,000-face fairness, 100,000-face release or mobile speed claim is made here.",
     "An in-app clock is a single user's rehearsal time, not a performance benchmark.",
@@ -71,3 +71,4 @@ export function renderJudgeGuide(doc, host, state, actions) {
     area.append(contents);
     host.replaceChildren(area);
 }
+//# sourceMappingURL=judge-guide.js.map

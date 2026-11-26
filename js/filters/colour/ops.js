@@ -179,10 +179,19 @@ function vibrance(rgb, i, p, s) {
     s[2] *= k;
     putLab(rgb, i, s);
 }
+/** Shadow tints fade out towards black (OKLab L 0.15 to 0.40), so near-black hair, brows and
+ * clothes keep their own colour instead of turning navy or teal; skin, even deep skin, sits above
+ * the ramp and gets the full tint. */
+export const TINT_BLACK_FROM = 0.15, TINT_BLACK_TO = 0.40;
+export function blackKeep(light) {
+    const t = Math.min(1, Math.max(0, (light - TINT_BLACK_FROM) / (TINT_BLACK_TO - TINT_BLACK_FROM)));
+    return t * t * (3 - 2 * t);
+}
 function splitTone(rgb, i, p, s) {
     getLab(rgb, i, s);
+    const keep = blackKeep(clamp01(s[0]));
     const u = clamp01(s[0]) ** (2 ** -n(p, "balance"));
-    push(s, n(p, "shadowHue"), n(p, "shadowAmount") * (1 - u) ** 2);
+    push(s, n(p, "shadowHue"), n(p, "shadowAmount") * (1 - u) ** 2 * keep);
     push(s, n(p, "highlightHue"), n(p, "highlightAmount") * u ** 2);
     putLab(rgb, i, s);
 }
@@ -200,7 +209,7 @@ function fade(rgb, i, p, s) {
     const k = 1 - FADE_CHROMA * f;
     s[1] *= k;
     s[2] *= k;
-    push(s, n(p, "toneHue"), n(p, "toneAmount") * (1 - u) ** 2);
+    push(s, n(p, "toneHue"), n(p, "toneAmount") * (1 - u) ** 2 * blackKeep(u));
     putLab(rgb, i, s);
 }
 function highlightRolloff(rgb, i, p, s) {
@@ -370,3 +379,4 @@ export function runOp(name, rgb, params) {
     return rgb;
 }
 export const linearToOklabPixel = linearToOklab;
+//# sourceMappingURL=ops.js.map

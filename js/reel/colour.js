@@ -151,3 +151,4 @@ export function splitMasks(rgba) {
     }
     return { skin, lips, cheeks };
 }
+//# sourceMappingURL=colour.js.map

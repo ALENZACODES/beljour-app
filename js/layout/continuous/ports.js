@@ -17,7 +17,7 @@ export function localTourTryon(mode = "mock") {
             }
             return {
                 result: "mock-applied", providerCalls: 0, unitsSpent: 0, imageSent: false,
-                copy: "Local illustration completed. No YouCam request was sent.",
+                copy: "Local illustration completed. Nothing was uploaded.",
             };
         },
     });
@@ -42,3 +42,4 @@ export function canTryon(state, subjects) {
         && state.sourceRevision === subjects.revision
         && state.identityLock && state.permissions.local && state.permissions.mock;
 }
+//# sourceMappingURL=ports.js.map

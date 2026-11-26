@@ -24,8 +24,8 @@ export const REGION_TITLES = {
 /** Mesh index loops and hull sets per region. Pairs follow the anatomy table ([right, left] of
  * the person); the left side is built from the right with MediaPipe's mirror partners. */
 const NOSE_SET = [168, 6, 197, 195, 5, 4, 1, 19, 94, 2, 98, 327, 129, 358, 64, 294, 48, 278, 122, 351, 196, 419, 3, 248, 51, 281, 97, 326];
-const CHEEK_RIGHT = [116, 117, 118, 101, 36, 205, 187, 147, 123, 50];
-const CHEEK_LEFT = [345, 346, 347, 330, 266, 425, 411, 376, 352, 280];
+export const CHEEK_RIGHT = [116, 117, 118, 101, 36, 205, 187, 147, 123, 50];
+export const CHEEK_LEFT = [345, 346, 347, 330, 266, 425, 411, 376, 352, 280];
 /** Lower lid (lower0) then the third ring below it (lower3), right to left, closing the band. */
 const UNDER_RIGHT = [33, 7, 163, 144, 145, 153, 154, 155, 133, 245, 128, 121, 120, 119, 118, 117, 111, 143];
 const UNDER_LEFT = [263, 249, 390, 373, 374, 380, 381, 382, 362, 465, 357, 350, 349, 348, 347, 346, 340, 372];
@@ -251,3 +251,4 @@ export function regionAt(map, x, y) {
     const hits = map.regions.filter((r) => r.polygons.some(inside));
     return hits.sort((a, b) => a.polygons.reduce((s, p) => s + area(p), 0) - b.polygons.reduce((s, p) => s + area(p), 0))[0] ?? null;
 }
+//# sourceMappingURL=map.js.map

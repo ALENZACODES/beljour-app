@@ -156,3 +156,4 @@ export function auditLabel(observation) {
     return `Checked ${observation.inspected} native controls in this page. `
         + "Screen-reader and physical-device verification remain required.";
 }
+//# sourceMappingURL=accessibility-audit.js.map

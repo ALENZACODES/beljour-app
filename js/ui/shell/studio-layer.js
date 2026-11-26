@@ -13,7 +13,7 @@ export const STUDIO_TOOL_NAMES = Object.freeze({
 export const STUDIO_DEFAULTS = Object.freeze({
     tool: "blur", backdrop: "chinon", side: "upper-left", industry: "technology",
 });
-export const ILLUSTRATION_DEFAULTS = Object.freeze({ look: "sancerre-cartoon" });
+export const ILLUSTRATION_DEFAULTS = Object.freeze({ look: "chambord-portrait" });
 /** Tools that also need her 478 face points. */
 export const NEEDS_FACE = new Set(["relight", "headshot", "authentic"]);
 function text(layer, key, defaults) {
@@ -73,3 +73,4 @@ export function applyStudioLayer(image, source, layer) {
         throw error;
     }
 }
+//# sourceMappingURL=studio-layer.js.map

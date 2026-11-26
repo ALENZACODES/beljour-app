@@ -32,3 +32,4 @@ export class VideoEnhance {
     }
     reset() { this.pixels.reset(); this.lastCondition = ""; }
 }
+//# sourceMappingURL=enhance.js.map

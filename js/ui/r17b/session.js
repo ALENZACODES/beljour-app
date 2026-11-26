@@ -31,3 +31,4 @@ export class Session {
     fail(job) { if (job.revision === this.revision)
         this.result = null; }
 }
+//# sourceMappingURL=session.js.map

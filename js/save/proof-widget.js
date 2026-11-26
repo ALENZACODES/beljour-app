@@ -215,3 +215,4 @@ export function mountProofWidget(root, options) {
         },
     };
 }
+//# sourceMappingURL=proof-widget.js.map

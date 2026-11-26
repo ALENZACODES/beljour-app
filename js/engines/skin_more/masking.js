@@ -216,3 +216,4 @@ export function outsideChangeFraction(before, after, allowed) {
         }
     return n ? c / n : 0;
 }
+//# sourceMappingURL=masking.js.map

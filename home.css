@@ -145,3 +145,10 @@
 @media (min-width: 1100px) { .hub-features { grid-template-columns: repeat(3, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .home-page * { scroll-behavior: auto !important; } }
 .home-moment-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; }
+
+/* Arena v1 scoreboard (written by arena/home_block.py from the run summary) */
+.home-arena { display: grid; gap: 0.4rem; padding: var(--space-4); margin-bottom: var(--space-5); border: 1px solid var(--line, #d9c7cf); border-radius: 12px; background: var(--paper, #fbf8f6); }
+.home-arena h2 { margin: 0.1rem 0 0.2rem; font-size: clamp(1.3rem, 3.4vw, 1.8rem); }
+.home-arena p { margin: 0; max-width: 46rem; }
+.home-arena-number strong { font-size: 1.35em; }
+.home-arena .lg-button { justify-self: start; margin-top: 0.4rem; }

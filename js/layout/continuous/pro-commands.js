@@ -1,4 +1,4 @@
-/** The five named commands are owned by Workstream H, not reimplemented here. */
+/** The five named commands are owned by Lane H, not reimplemented here. */
 export const PRO_COMMANDS = [
     "/IDENTITYLOCK",
     "/CLEANUP",
@@ -82,3 +82,4 @@ export function commandCoverage(rows) {
     }
     return { known, available, full: names.size === 5 && available === 5 };
 }
+//# sourceMappingURL=pro-commands.js.map

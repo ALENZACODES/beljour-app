@@ -71,7 +71,7 @@ export function formatRealProductVisitReport(report) {
         `Operator reported observations: ${report.observed}`,
         `Blocked or unavailable: ${report.blocked}`,
         `Not checked: ${report.notRun}`,
-        "Verified YouCam calls by this checklist: NONE",
+        "Uploads by this checklist: NONE",
         "Actual provider units measured: NOT MEASURED",
         "Saved image output and identity preservation: NOT MEASURED",
         "100,000-face release gate: NOT TESTED",
@@ -121,3 +121,4 @@ export function requestRealProductDownload(doc, report, urls = URL, defer = (tas
         defer(() => urls.revokeObjectURL(url));
     }
 }
+//# sourceMappingURL=judge-live-report.js.map

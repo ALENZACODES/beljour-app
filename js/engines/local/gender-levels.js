@@ -79,3 +79,4 @@ export function stopSeparation(a, b, box, threshold = 12) {
         }
     return total ? changed / total : 0;
 }
+//# sourceMappingURL=gender-levels.js.map

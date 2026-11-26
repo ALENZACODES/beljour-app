@@ -77,3 +77,4 @@ export function inspectSafeResult(source, selection, result) {
         identityVerification: "NOT_PERFORMED", realFaceQuality: "NOT_RUN", releaseQuality: "NOT_RUN",
     };
 }
+//# sourceMappingURL=safe-quality.js.map

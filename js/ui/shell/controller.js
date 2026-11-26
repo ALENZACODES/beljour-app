@@ -419,3 +419,4 @@ export class Editor {
     /** Convenient guarded sample adoption from studio nav. */
     loadRecommendedSample() { this.loadSample(defaultSample(this.document.studio), this.document.studio); }
 }
+//# sourceMappingURL=controller.js.map

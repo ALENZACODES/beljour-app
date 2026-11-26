@@ -284,3 +284,4 @@ export function faceMapPanel(options) {
         }
     }
 }
+//# sourceMappingURL=face-map.js.map

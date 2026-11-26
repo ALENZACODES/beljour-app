@@ -46,7 +46,7 @@ export function formatJudgeSafeReport(report) {
         "BELJOUR — FULL BEAUTY STUDIO · Your best day. Still you. — local Judge Mode rehearsal",
         "Schema: beljour-judge-rehearsal/1",
         `Classification: ${report.label}`,
-        "This is a rehearsal transcript, not a verified live YouCam API result.",
+        "This is a rehearsal transcript, not a verified real-photo result.",
         "No source image, filename, identity, consent values or photograph is included.",
         "",
         "REHEARSAL SUMMARY",
@@ -58,7 +58,7 @@ export function formatJudgeSafeReport(report) {
         `Not observed: ${report.missing}`,
         `Browser download requested: ${report.downloadRequestRecorded ? "yes" : "no"}`,
         "Download arrival and saved-file integrity: NOT VERIFIED",
-        "Real YouCam API availability and result: NOT MEASURED",
+        "Real-photo result: NOT MEASURED",
         "Real-face fairness and quality: NOT TESTED",
         "Physical device accessibility and speed: NOT TESTED",
         "",
@@ -124,3 +124,4 @@ export function requestJudgeReportDownload(doc, report, urls = URL, defer = (tas
         defer(() => urls.revokeObjectURL(url));
     }
 }
+//# sourceMappingURL=judge-proof-report.js.map

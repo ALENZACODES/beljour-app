@@ -138,3 +138,4 @@ export function batchReviewScreen(name, layers, deps = {}) {
     draw();
     return { element, model, dispose: () => { removeConsentListener(); dispose(); } };
 }
+//# sourceMappingURL=batch-review.js.map

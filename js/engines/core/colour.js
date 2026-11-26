@@ -191,3 +191,4 @@ export function rotateHue(rgb, turn) {
     const hue = (((h + turn) % 360) + 360) % 360;
     return oklabToRgb(lchToLab([L, c, hue])).map((v) => Math.min(255, Math.max(0, v)));
 }
+//# sourceMappingURL=colour.js.map

@@ -108,3 +108,4 @@ export function summary(p) {
         parts.push("paused; tap Resume to continue");
     return parts.join(", ") + ".";
 }
+//# sourceMappingURL=batch.js.map

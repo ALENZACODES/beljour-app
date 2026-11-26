@@ -126,3 +126,4 @@ export class ContinuousAccessibilitySession {
         this.lastAuthority = null;
     }
 }
+//# sourceMappingURL=accessibility-session.js.map

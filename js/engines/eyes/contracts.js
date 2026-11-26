@@ -123,3 +123,4 @@ export function polylineLength(points) {
         length += Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]);
     return length;
 }
+//# sourceMappingURL=contracts.js.map

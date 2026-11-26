@@ -102,3 +102,4 @@ export function render(rgb, width, height, area, iod, spec, scale) {
     }
     return { image: toBytes(out), glints: g };
 }
+//# sourceMappingURL=sparkle.js.map

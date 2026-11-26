@@ -45,3 +45,4 @@ export function contrastGrade(foreground, background) {
     const ratio = contrastRatio(fg, bg);
     return { ratio, grade: ratio >= 4.5 ? "passes-normal-text" : "low" };
 }
+//# sourceMappingURL=a11y-contrast.js.map

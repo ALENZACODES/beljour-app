@@ -1,7 +1,7 @@
 /** Salon conversation notes and a print-safe grid, without storing photos.
  * The user's chosen styles are transferable decisions, not photographic claims.
  * Never serializes a portrait, reference image bytes, object URL, face attributes,
- * YouCam key, skin metadata or consent token. Offline-only; no fetch.
+ * key, skin metadata or consent token. Offline-only; no fetch.
  * Author: John Khan.
  */
 import { styleById, clampStrength } from "./model.js";
@@ -87,7 +87,7 @@ export function buildSalonBrief(selection, board, options = {}) {
         modifiers, personalNotes, referenceProvided: Boolean(selection.reference),
         rightsAcknowledged: Boolean(selection.reference && selection.referenceRights && options.referenceRights !== false),
         guidance: labels(selection, primary),
-        disclosure: "Style plans and diagrams only. Not results on your face. YouCam results need a separate request and consent." };
+        disclosure: "Style plans and diagrams only. Not results on your face." };
 }
 function assertChoice(value, name) {
     if (typeof value !== "object" || !value)
@@ -111,7 +111,7 @@ export function parseSalonBrief(input, maxBytes = 40_000) {
         throw new TypeError("Not a salon brief");
     const body = value;
     if (body.format !== SALON_FORMAT || body.disclosure !==
-        "Style plans and diagrams only. Not results on your face. YouCam results need a separate request and consent.")
+        "Style plans and diagrams only. Not results on your face.")
         throw new RangeError("Unsupported salon brief format or disclosure");
     assertChoice(body.primary, "Primary cut");
     if (!Array.isArray(body.alternatives) || body.alternatives.length > MAX_BOARD - 1)
@@ -165,7 +165,7 @@ export function salonBriefText(brief) {
 }
 /** A printable, privacy-preserving comparison of *diagrams* only.
  * The board does not rasterize an uploaded face, or claim that unrendered cells
- * contain distinct YouCam outcomes. Each tile has a visible disclosure.
+ * contain distinct outcomes. Each tile has a visible disclosure.
  */
 export function salonBoardSvg(brief, grid, background = "light") {
     if (grid !== 4 && grid !== 9)
@@ -211,3 +211,4 @@ export function salonBoardSvg(brief, grid, background = "light") {
     rows.push(`<text x="${pad}" y="${height - 24}" font-family="system-ui,sans-serif" font-size="10" fill="${PALETTE.muted}">${xml(brief.disclosure)}</text>`);
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" aria-label="Haircut consultation board; unrendered diagrams only">${rows.join("")}</svg>`;
 }
+//# sourceMappingURL=brief.js.map

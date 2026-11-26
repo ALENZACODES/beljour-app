@@ -54,3 +54,4 @@ export function irisColour(image, iris, shade = "forest", strength = 65, pupil) 
     result.reason = result.changed ? "measured local edit" : "iris unobserved or eye closed";
     return result;
 }
+//# sourceMappingURL=iris-colour.js.map

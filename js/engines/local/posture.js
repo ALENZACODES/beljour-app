@@ -327,6 +327,13 @@ export function bodyBand(person, share = BAND_SHARE) {
         throw new RangeError("the person mask is empty");
     return { band: dilate(person, radius), radius };
 }
+/** Posture's biharmonic strip fill. The shared defaults (relative residual 1e-10, up to 4000
+ * iterations a channel) froze the Studio for about a minute on a full-body sample. Measured
+ * 2026-11-02 on sample-full-body-leaning.jpg at the 640 px working size: 1e-5 changes at most
+ * 1 level (mean 0.01 in the hole); capping at 200 iterations takes adding the layer from 14.3 s
+ * to 5.6 s and changes 1 pixel of 228,942 by more than 4 levels (max 5, mean 0.008). */
+export const POSTURE_FILL_TOLERANCE = 1e-5;
+export const POSTURE_FILL_MAX_ITERATIONS = 200;
 export function stripFill(image, strip, person, method, seed = 1) {
     let any = false;
     for (const v of strip.data)
@@ -349,7 +356,7 @@ export function stripFill(image, strip, person, method, seed = 1) {
             throw new RangeError("not enough clean background to move this silhouette");
         return patchMatch(image, strip, { patchRadius: 4, iterations: 6, seed, sourceMask: background }).image;
     }
-    return fill(image, strip, method, { radius: 5 }).image;
+    return fill(image, strip, method, { radius: 5, tolerance: POSTURE_FILL_TOLERANCE, maxIterations: POSTURE_FILL_MAX_ITERATIONS }).image;
 }
 /** Where the body moved: the output's own low band (binomial blur twice, sigma about 1.4 px) plus the
  * source's high band read at the field's nearest source pixel, so a sub-pixel warp keeps the weave, hair and skin detail. */
@@ -635,9 +642,9 @@ export function relayDetail(input, output, field, moved) {
     }
 }
 /** A Catmull-Rom read at fractional offsets damps the fine grain (texture 0.89 on sample A); its relayed detail is
- * lifted back by this gain (texture ~1.0 measured on A and B, workstream 02). */
+ * lifted back by this gain (texture ~1.0 measured on A and B, lane 02). */
 export const CR_GAIN = 1.2;
-/** Side-view pelvic tilt on the layered (Studio) path keeps the arm and hand still (workstream 02). The arm hangs over
+/** Side-view pelvic tilt on the layered (Studio) path keeps the arm and hand still (lane 02). The arm hangs over
  * the turning block, and a cut-out arm layer over a rebuilt body left a torn forearm, a smudged cuff and a rim
  * beside the hand on sample A (the r6 audit's own texture gate failed too). Instead the move fades to nothing
  * over the arm: the arm and hand sample themselves (pixel-identical, the still-pixel step copies the photo), the
@@ -966,3 +973,4 @@ export class PostureLevelMemory {
         return this.set(fix, nudgePostureLevel(this.get(fix), direction));
     }
 }
+//# sourceMappingURL=posture.js.map

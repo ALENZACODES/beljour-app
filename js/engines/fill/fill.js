@@ -35,7 +35,7 @@ export function grownHole(mask, width, height, grow) {
         }
     return grow > 0 && any ? dilate(hole, grow) : hole;
 }
-export function fill(img, mask, method = "biharmonic", { grow = 0, radius = 5, gradient = true, patchRadius = 3, iterations = 5, seed = 1 } = {}) {
+export function fill(img, mask, method = "biharmonic", { grow = 0, radius = 5, gradient = true, patchRadius = 3, iterations = 5, seed = 1, tolerance = 1e-10, maxIterations = 4000 } = {}) {
     requireColour(img);
     if (!METHODS.includes(method))
         throw new RangeError(`method must be one of ${METHODS.join(", ")}`);
@@ -58,7 +58,7 @@ export function fill(img, mask, method = "biharmonic", { grow = 0, radius = 5, g
         details = { radius };
     }
     else {
-        const bh = biharmonic(linear, hole);
+        const bh = biharmonic(linear, hole, { tolerance, maxIterations });
         filled = bh.image;
         details = { iterations: Math.max(...bh.iterations), residual: Math.max(...bh.residual) };
     }
@@ -116,3 +116,4 @@ export class FillEngine {
             provenance: "local", pipelineVersion: VERSION };
     }
 }
+//# sourceMappingURL=fill.js.map

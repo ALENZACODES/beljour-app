@@ -110,3 +110,4 @@ export function nearbyShades(catalogue, sku, depth, tone, max = 8) {
         Number(a.undertone !== tone) - Number(b.undertone !== tone) || a.id.localeCompare(b.id))
         .slice(0, max);
 }
+//# sourceMappingURL=catalogue.js.map

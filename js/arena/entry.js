@@ -4,3 +4,4 @@ import { mountJudge } from "./judge-view.js";
 import { wireSave } from "../layout/topbar.js";
 mountJudge();
 wireSave(document, () => document.querySelector("#lg-judge a[download]")?.click());
+//# sourceMappingURL=entry.js.map

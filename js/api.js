@@ -1,4 +1,5 @@
-/** Typed client for the BELJOUR API. The YouCam key never reaches the browser. */
+/** Typed client for the optional BELJOUR API (our own server-side engines). The app runs on the
+ * device without it: config.js leaves the API origin unset, and every screen has an on-device path. */
 import { browserStore, SESSION_HEADER, sessionId } from "./session.js";
 import { withEndpoint } from "./ui/provenance.js";
 export const store = browserStore();
@@ -73,16 +74,13 @@ export const api = {
     },
     // An <img> cannot send the session header, so the per-tab session id rides as ?s=.
     photoUrl: (id) => `${requireBase()}/api/photos/${encodeURIComponent(id)}.jpg?s=${encodeURIComponent(sessionId(store))}`,
-    skinMatch: (body) => post("/api/skin/match", body),
-    skinMoment: (body) => post("/api/skin/moment", body),
-    /** A path our API returned (a try-on image), as a URL an <img> can load with this tab's session. */
+    /** A path our API returned (an image), as a URL an <img> can load with this tab's session. */
     resultUrl: (path) => {
         if (!path.startsWith("/api/"))
             throw new ApiError(0, "invalid_path", "Unexpected result address.");
         return `${requireBase()}${path}${path.includes("?") ? "&" : "?"}s=${encodeURIComponent(sessionId(store))}`;
     },
     deletePhoto: (id) => call(`/api/photos/${id}`, { method: "DELETE" }),
-    quote: (body) => post("/api/quote", body),
     skin: (photo_id, landmarks) => post("/api/skin/analyze", { photo_id, landmarks }),
     shade: (photo_id, landmarks) => post("/api/shade/analyze", { photo_id, landmarks }),
     proportions: (photo_id, landmarks) => post("/api/face/proportions", { photo_id, landmarks }),
@@ -90,75 +88,7 @@ export const api = {
     surgery: (body) => post("/api/surgery/preview", body),
     simulate: (photo_id, strengths, landmarks) => post("/api/skin/simulate", { photo_id, strengths, landmarks }),
     aging: (photo_id, landmarks) => post("/api/transform/aging", { photo_id, landmarks }),
-    // round 1: session, judge code, styling scope, background tasks
-    session: () => call("/api/session"),
-    judge: (code) => post("/api/session/judge", { code }),
-    stylingScope: () => call("/api/styling/scope"),
-    startTask: (body) => post("/api/tasks/start", body),
-    task: (requestKey) => call(`/api/tasks/${encodeURIComponent(requestKey)}`),
-    resumeTasks: (tickets) => post("/api/tasks/resume", { tickets }),
-    /** Older from YouCam Aging (2 units, "age" consent): the reply names a delta pack, never an image. */
-    olderYoucam: (body) => post("/api/older/youcam", body),
-    olderPack: async (path) => {
-        if (!/^\/api\/older\/pack\/[\w-]+\.bin$/.test(path))
-            throw new ApiError(0, "invalid_path", "Unexpected result address.");
-        let resp;
-        try {
-            resp = await fetch(requireBase() + path, { headers: sessionHeaders() });
-        }
-        catch {
-            throw new ApiError(0, "offline", "Can't reach the BELJOUR server. Try again shortly.");
-        }
-        if (!resp.ok)
-            throw new ApiError(resp.status, "older_pack", "The Older result has expired. Run it again (a saved result costs nothing).");
-        return resp.arrayBuffer();
-    },
 };
-export async function commerceTransport({ endpoint, method, payload, timeoutMs = 95_000 }) {
-    // Disallow arbitrary paths, query strings, protocol-relative URLs and surprises.
-    const exact = new Set([
-        "/api/photos", "/api/commerce/match", "/api/commerce/try-on", "/api/commerce/look/try-on",
-        "/api/commerce/bag", "/api/commerce/bag/add", "/api/commerce/bag/remove",
-        "/api/commerce/wishlist", "/api/commerce/bag/clear",
-    ]);
-    if (!exact.has(endpoint) && !/^\/api\/photos\/[0-9a-f]{64}$/.test(endpoint)) {
-        throw new ApiError(0, "invalid_path", "Unrecognized commerce endpoint.");
-    }
-    if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1000 || timeoutMs > 120_000) {
-        throw new ApiError(0, "invalid_timeout", "Invalid commerce request timeout.");
-    }
-    const base = requireBase();
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-        const headers = sessionHeaders();
-        if (payload && !(payload instanceof FormData))
-            headers["Content-Type"] = "application/json";
-        const response = await fetch(base + endpoint, {
-            method: method ?? (payload === undefined ? "GET" : "POST"),
-            headers,
-            body: payload === undefined ? undefined : payload instanceof FormData ? payload : JSON.stringify(payload),
-            signal: controller.signal,
-            cache: "no-store",
-            credentials: "omit",
-        });
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) {
-            const outer = result !== null && typeof result === "object" ? result : {};
-            const err = outer.error;
-            throw new ApiError(response.status, typeof err?.code === "string" ? err.code : "server", typeof err?.message === "string" ? err.message : `Commerce service replied ${response.status}.`);
-        }
-        return result;
-    }
-    catch (reason) {
-        if (reason instanceof ApiError)
-            throw reason;
-        throw new ApiError(0, "connection", "Unable to reach the service. The original photo and local recipe remain on this device.");
-    }
-    finally {
-        clearTimeout(timer);
-    }
-}
 /** The partner spot's region (docs/PARTNER-SPOT.md): GET /api/region, which reads only a country
  * header the hosting CDN sets, and only when the operator configured it. Sends no session id,
  * cookie or photo; any failure reads as no answer. Author: John Khan. */
@@ -174,3 +104,4 @@ export async function partnerRegion() {
         return null;
     }
 }
+//# sourceMappingURL=api.js.map

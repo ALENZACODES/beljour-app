@@ -854,3 +854,4 @@ function estimateWindow(image, pts, strength, keep, finish, zs = []) {
         stubble_grey_share: r3(stub.greyShare), donor_marks_excluded: marks.length });
     return { image: encode(image, lab, weight), weight, backdrop, label: FULL_LABEL, metrics };
 }
+//# sourceMappingURL=full.js.map

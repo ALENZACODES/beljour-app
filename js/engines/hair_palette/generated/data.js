@@ -2076,3 +2076,4 @@ export const RAW_HAIR_PALETTE = {
         }
     ]
 };
+//# sourceMappingURL=data.js.map

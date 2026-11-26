@@ -81,3 +81,4 @@ export function renderGenderLook(photo, masks, options) {
         },
     };
 }
+//# sourceMappingURL=index.js.map

@@ -33,7 +33,7 @@ export function renderCassettePanel(doc, state, drawn, cassette, actions) {
     mark.setAttribute("aria-label", "BELJOUR — FULL BEAUTY STUDIO. Your best day. Still you.");
     mark.append(judgeNode(doc, "span", "lg-demo-wordmark", "BELJOUR"), judgeNode(doc, "span", "lg-demo-brand-description", "FULL BEAUTY STUDIO"), judgeNode(doc, "span", "lg-demo-brand-tagline", "Your best day. Still you."));
     const title = judgeNode(doc, "h3", "lg-cassette-heading", "Offline styling examples");
-    const lead = judgeParagraph(doc, "Three authored, locally cached illustrations. These are not YouCam outputs or real skin readings.");
+    const lead = judgeParagraph(doc, "Three authored, locally cached illustrations. These are not real skin readings.");
     section.append(mark, title, lead);
     const cards = judgeNode(doc, "ul", "lg-cassette-grid");
     for (const card of cassette.cards) {
@@ -98,3 +98,4 @@ export function renderCassettePanel(doc, state, drawn, cassette, actions) {
     section.append(separate);
     return section;
 }
+//# sourceMappingURL=continuous-cassette-panel.js.map

@@ -25,6 +25,10 @@ export class FilterCatalogue {
         return r;
     }
     ids() { return this.recipes.map((r) => r.id); }
+    /** The looks the gallery, the Studio strip and the look list offer: status Build. Looks moved to
+     * Post stay in the catalogue, so a saved look, a link, a lens or a holiday look that names one
+     * still opens it; they are just not offered as a choice. */
+    shown() { return this.recipes.filter((r) => r.status === "Build"); }
     tabs() {
         const out = [];
         for (const r of this.recipes)
@@ -47,3 +51,4 @@ export function catalogue() {
     }
     return shipped;
 }
+//# sourceMappingURL=registry.js.map

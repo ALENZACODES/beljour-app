@@ -32,7 +32,7 @@ export function mountInstallPage(doc, host, controller) {
     title.id = "lg-install-heading";
     title.tabIndex = -1;
     const intro = node(doc, "p", "Optional browser installation. Only reviewed public shell assets are cached. No photo or recipe is cached here.");
-    const limits = node(doc, "p", "Online YouCam services need a connection and explicit consent. Cached pages do not prove offline editing.");
+    const limits = node(doc, "p", "Cached pages do not prove offline editing; model features need their model files.");
     const offlineButton = node(doc, "button", "Enable public offline shell");
     offlineButton.type = "button";
     offlineButton.id = "lg-install-offline";
@@ -189,3 +189,4 @@ export function mountInstallPage(doc, host, controller) {
         },
     };
 }
+//# sourceMappingURL=install-page.js.map

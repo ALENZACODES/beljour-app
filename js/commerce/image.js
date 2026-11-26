@@ -93,3 +93,4 @@ export async function cleanUpload(photo) {
         resolve(blob);
     }, "image/jpeg", 0.88));
 }
+//# sourceMappingURL=image.js.map

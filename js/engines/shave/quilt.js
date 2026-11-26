@@ -195,3 +195,4 @@ export function quiltOwnSkin(planes, donor, target, tone, w, h, iod, opts = {}) 
         sdRatio: ss.sd > 1e-9 ? so.sd / ss.sd : 0, kurtRatio: ss.exKurt > 0.25 ? so.exKurt / ss.exKurt : 1,
         ms: (typeof performance !== "undefined" ? performance.now() : Date.now()) - t0 };
 }
+//# sourceMappingURL=quilt.js.map

@@ -214,7 +214,7 @@ export function renderShape(image, face, values, options = {}) {
             metrics: { strength_used: asked, guard_scale: 1, min_area_ratio: 1, ...moved } };
     }
     const lay = options.lay ?? layout(face, image.width, image.height);
-    const warp = meshWarp(image.width, image.height, face, target, { lay, guard: true });
+    const warp = meshWarp(image.width, image.height, face, target, { lay, guard: options.guard ?? true });
     const movedField = moveMagnitude(warp.result.field), editMask = floatImage(image.width, image.height, 1);
     for (let i = 0; i < editMask.data.length; i++)
         editMask.data[i] = movedField.data[i] > 1e-6 ? 1 : 0;
@@ -253,3 +253,4 @@ export class ShapeEngine {
             provenance: "local", pipelineVersion: this.version };
     }
 }
+//# sourceMappingURL=geometry.js.map

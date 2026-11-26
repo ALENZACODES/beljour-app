@@ -104,3 +104,4 @@ export class SeasonalCatalogueController {
         this.cached = { status: "unavailable", cards: [], explanation: "Seasonal catalogue closed." };
     }
 }
+//# sourceMappingURL=seasonal.js.map

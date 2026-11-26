@@ -5,7 +5,7 @@ const EVIDENCE_EXPLANATIONS = {
     consent: "Review local actions; separate real-provider consent is not granted here.",
     hair: "The selected hair overlay is decorative, not generated or tracked.",
     face: "The selected face overlay is illustrative, not a diagnostic or quality result.",
-    tryon: "The accessory is mock-only; zero YouCam units are consumed.",
+    tryon: "The accessory is mock-only; nothing is uploaded.",
     compare: "The before/after comparison is a local Canvas view.",
     export: "The saved raster always contains the simulation label.",
     plans: "The trial and prices are illustrative; no charge or subscription is created.",
@@ -79,3 +79,4 @@ export function safeEvidenceNote(state) {
     }
     return "Progress describes only this local illustration, not live provider validation.";
 }
+//# sourceMappingURL=judge-readiness.js.map

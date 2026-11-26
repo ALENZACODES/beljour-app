@@ -8,7 +8,7 @@ export const FRAME_TTL_MS = 180_000;
 export const FRAME_CAPTIONS = Object.freeze({
     hair: "Illustrative hair colour and highlights. No hairstyle transfer was performed.",
     makeup: "Illustrative cheek colour and style guide. No product fit was verified.",
-    skin: "Drawn complexion reference grid. No Skin AI result or diagnosis is available.",
+    skin: "Drawn complexion reference grid. No skin analysis result or diagnosis is available.",
 });
 export function isFrameId(value) {
     return FRAME_IDS.some((item) => item === value);
@@ -77,3 +77,4 @@ export function validFrame(frame) {
         return false;
     return true;
 }
+//# sourceMappingURL=frame-cache-contract.js.map

@@ -1,5 +1,5 @@
 /** Images on the Skin Moment page. Each slot has a fixed file name in web/assets/skin-moment/
- * (screen art plus a "-dark" version) and faces/ (the AI-generated example people, named as in
+ * (screen art plus a "-dark" version) and faces/ (the synthetic example people, named as in
  * skin-moment-faces.ts). The build writes
  * index.json listing the files that are really there (scripts/copy-static.mjs), so the page asks
  * for an image only when it exists and never shows a broken one. Until then, and whenever a file
@@ -20,7 +20,7 @@ export const SCREEN_ART = [
 /** Wide (3:2) slots; every other slot is square. */
 export const WIDE = new Set(["welcome-hero", "consent", "empty-history", "tryon-intro", "privacy", "about"]);
 export const FACE_COUNTS = { day0: 60, day42: 60, foundation: 60 };
-export const AI_PERSON = "AI-generated example person";
+export const AI_PERSON = "synthetic example person";
 export function faceFile(n, kind) {
     if (!Number.isInteger(n) || n < 1 || n > FACE_COUNTS[kind])
         throw new RangeError(`no face ${n} for ${kind}`);
@@ -266,3 +266,4 @@ export function uiIcon(name, fallback, size = 28) {
     });
     return box;
 }
+//# sourceMappingURL=skin-moment-art.js.map

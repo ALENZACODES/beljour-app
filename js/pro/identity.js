@@ -1,5 +1,5 @@
 /** Typed, fail-closed identity hook for local face edits.
- * ASSUMED contract until Workstream H publishes its public command exports.
+ * ASSUMED contract until Lane H publishes its public command exports.
  * The guard must read actual before/after data; this module does not estimate identity.
  */
 import { DEFAULT_LOCK_LEVEL, validateLevel } from "./strength.js";
@@ -56,3 +56,4 @@ export async function guardFacePixels(before, after, width, height, faceRegion, 
     return { pixels: output, similarity: decision.similarity, guarded: true,
         blendedBack: lowScore, lockLevel: level };
 }
+//# sourceMappingURL=identity.js.map

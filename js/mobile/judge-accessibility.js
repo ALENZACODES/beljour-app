@@ -60,3 +60,4 @@ export function prepareJudgeRegion(host, labelId) {
     host.setAttribute("aria-labelledby", labelId);
     host.setAttribute("aria-roledescription", "guided illustration");
 }
+//# sourceMappingURL=judge-accessibility.js.map

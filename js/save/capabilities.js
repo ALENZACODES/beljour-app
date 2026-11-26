@@ -8,7 +8,7 @@ import { TOOLS } from "./recipe.js";
 export function recipeAvailability(steps, source) {
     return steps.map((step) => {
         if (step.provider !== "local")
-            return { tool: step.tool, available: false, reason: "A new YouCam quote and consent are required." };
+            return { tool: step.tool, available: false, reason: "This step was saved with an online tool the app no longer uses." };
         if (!RENDER_KINDS.includes(step.tool))
             return { tool: step.tool, available: false, reason: "This saved tool has no editor renderer yet." };
         const state = readiness(step.tool, source);
@@ -58,3 +58,4 @@ export function registryProblems(catalogue = CATALOGUE, effects = EFFECTS, rende
     }
     return problems;
 }
+//# sourceMappingURL=capabilities.js.map

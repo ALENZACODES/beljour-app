@@ -98,3 +98,4 @@ export function paintSubjectOverlays(ctx, box, state, width, height) {
         ctx.restore();
     }
 }
+//# sourceMappingURL=subject-render.js.map

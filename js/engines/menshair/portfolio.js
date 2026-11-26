@@ -62,3 +62,4 @@ export function renderEvidence(image, width, height, mask, landmarks, styleId, l
         source_unchanged: sourceUnchanged, outside_unchanged: outside, alpha_unchanged: alpha,
         verified: status === "rendered" && sourceUnchanged && outside && alpha });
 }
+//# sourceMappingURL=portfolio.js.map

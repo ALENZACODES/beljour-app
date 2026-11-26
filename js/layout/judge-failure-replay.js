@@ -1,5 +1,5 @@
 /** Deterministic, provider-free refusal demonstrations for a local rehearsal.
- * These represent potential UX states; they are not recorded YouCam outcomes.
+ * These represent potential UX states; they are not recorded outcomes.
  */
 export const MOCK_FAILURE_CASES = [
     {
@@ -103,3 +103,4 @@ export function validateFailureReplay(snapshot) {
         return false;
     return snapshot.reason === item.cause && snapshot.recovery === item.recovery;
 }
+//# sourceMappingURL=judge-failure-replay.js.map

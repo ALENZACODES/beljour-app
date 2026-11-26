@@ -159,3 +159,4 @@ export function attachProToExistingEditor(options) {
         },
     };
 }
+//# sourceMappingURL=host-shell-adapter.js.map

@@ -1,0 +1,25 @@
+# BELJOUR Cloudflare Pages: applied to static responses; no credentials.
+# The approved Render proxy is permitted, but never contacted without explicit
+# operator configuration and action-specific consent. MediaPipe WASM is same-origin.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://beljour.onrender.com; connect-src 'self' https://beljour.onrender.com; font-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+/js/*
+  Cache-Control: public, max-age=3600
+
+/*.html
+  Cache-Control: no-cache
+
+/config.js
+  Cache-Control: no-store
+
+/_headers
+  Cache-Control: no-store

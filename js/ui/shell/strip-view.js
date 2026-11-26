@@ -51,7 +51,11 @@ export class StripView {
         }, (error) => {
             if (ticket !== this.ticket)
                 return;
-            this.note.textContent = `Previews unavailable: ${error instanceof Error ? error.message : String(error)}`;
+            const message = error instanceof Error ? error.message : String(error);
+            this.context = { studio, source, next: plan.length > STRIP_PAGE ? 1 : null, total: plan.length };
+            // Tiles stay tappable (r1 disabled every one, so a failed page offered nothing to pick).
+            this.render(plan.slice(0, STRIP_PAGE).map((tile) => (tile.option ? { ...tile, status: "unrendered", reason: message } : tile)), selected);
+            this.note.textContent = `Preview images unavailable: ${message}. You can still tap any option.`;
         });
     }
     /** Load the next ranked page and add it to the strip (large catalogues). */
@@ -71,8 +75,14 @@ export class StripView {
             this.render(all, selected);
             (this.container.querySelectorAll(".shell-thumb")[shown.length])?.focus();
         }, (error) => {
-            if (ticket === this.ticket)
-                this.note.textContent = `Previews unavailable: ${error instanceof Error ? error.message : String(error)}`;
+            if (ticket !== this.ticket)
+                return;
+            const message = error instanceof Error ? error.message : String(error);
+            const plan = planStrip(ctx.studio, ctx.source);
+            const fallback = plan.slice(page * STRIP_PAGE, (page + 1) * STRIP_PAGE).map((tile) => (tile.option ? { ...tile, status: "unrendered", reason: message } : tile));
+            ctx.next = (page + 1) * STRIP_PAGE < plan.length ? page + 1 : null;
+            this.render([...shown, ...fallback], selected);
+            this.note.textContent = `Some previews unavailable: ${message}. You can still tap any option.`;
         });
     }
     /** Re-mark the active tile after an edit, without re-rendering pictures. */
@@ -92,13 +102,7 @@ export class StripView {
             const tile = tiles[0];
             const p = el("p", "shell-strip-empty", tile?.reason ?? "No previews for this tool.");
             this.container.append(p);
-            if (tile?.status === "provider") {
-                const b = el("button", "shell-button", "About sending a photo for styling");
-                b.type = "button";
-                b.addEventListener("click", () => this.hooks.provider());
-                this.container.append(b);
-            }
-            this.note.textContent = tile?.status === "provider" ? "Rendered on the styling screen" : "Free, on this device";
+            this.note.textContent = "Free, on this device";
             return;
         }
         let slow = 0, total = 0;
@@ -125,6 +129,8 @@ export class StripView {
                 b.disabled = true;
                 b.title = tile.reason ?? "Not available";
             }
+            else if (tile.status === "unrendered")
+                b.title = `${tile.reason ?? "Preview unavailable."} Tap to use ${tile.label}.`;
             else
                 b.title = `Use ${tile.label}${tile.simulation ? " (simulation)" : ""}${tile.note ? `. ${tile.note}` : ""}`;
             if (tile.ms !== undefined) {
@@ -136,7 +142,7 @@ export class StripView {
             this.container.append(b);
         }
         if (!pending && this.context && this.context.next !== null) {
-            const left = this.context.total - real.length;
+            const left = Math.max(0, this.context.total - real.length);
             const more = el("button", "shell-button shell-thumb-more", `Show ${Math.min(STRIP_PAGE, left)} more`);
             more.type = "button";
             more.setAttribute("aria-label", `Show ${Math.min(STRIP_PAGE, left)} more previews, ${left} not shown yet`);
@@ -179,3 +185,4 @@ export function renderPrecheck(details, summary, list, report) {
     details.open = report.verdict === "blocked";
     return line;
 }
+//# sourceMappingURL=strip-view.js.map

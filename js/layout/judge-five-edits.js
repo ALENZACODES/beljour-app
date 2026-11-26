@@ -47,3 +47,4 @@ export function fiveEditHeadline(state) {
     const summary = fiveEditSummary(state);
     return `${summary.appliedCount} of 5 local illustrative edits selected`;
 }
+//# sourceMappingURL=judge-five-edits.js.map

@@ -66,3 +66,4 @@ export function previewGeometry(geometry, maxEdge = 640) {
         height: Math.max(1, Math.floor(geometry.height * scale)),
     };
 }
+//# sourceMappingURL=crop.js.map

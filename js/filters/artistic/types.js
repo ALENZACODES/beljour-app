@@ -153,3 +153,4 @@ export function bilinear(source, x, y) {
     }
     return out;
 }
+//# sourceMappingURL=types.js.map

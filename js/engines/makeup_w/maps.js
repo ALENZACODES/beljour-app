@@ -51,3 +51,4 @@ export function contourMap(width, height, shape) {
         }
     return out;
 }
+//# sourceMappingURL=maps.js.map

@@ -21,3 +21,4 @@ export async function privateSourceBinding(sourceSha256, sessionSalt) {
         bytes.fill(0);
     }
 }
+//# sourceMappingURL=source-binding.js.map

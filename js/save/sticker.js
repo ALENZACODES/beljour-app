@@ -174,3 +174,4 @@ export function stickerPack(sticker, cut) {
     });
     return { zip: storeZip(files.map((f) => ({ name: `BELJOUR Stickers/${f.name}`, bytes: f.bytes }))), files, from: cut.from, note: cut.note };
 }
+//# sourceMappingURL=sticker.js.map

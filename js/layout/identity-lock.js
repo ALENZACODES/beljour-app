@@ -1,4 +1,4 @@
-/** R23d requested identity protection. The Workstream H engine is not yet integrated.
+/** R23d requested identity protection. The Lane H engine is not yet integrated.
  * This typed client boundary must not be mistaken for an identity-quality gate.
  */
 import { parseVisibleStrength } from "./strength-scale.js";
@@ -59,3 +59,4 @@ export class IdentityLockController {
 export function mockIdentityLock() {
     return new IdentityLockController(null);
 }
+//# sourceMappingURL=identity-lock.js.map

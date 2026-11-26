@@ -101,3 +101,4 @@ export function deviceCaveats(environment) {
     }
     return caveats;
 }
+//# sourceMappingURL=device.js.map

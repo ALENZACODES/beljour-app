@@ -1,4 +1,4 @@
-/** Default-on temporary pixel guard until Workstream H supplies public IdentityLock.
+/** Default-on temporary pixel guard until Lane H supplies public IdentityLock.
  * This is a pixel difference proxy, not biometric identity recognition.
  * Never treat an absent guard as approval. Author: John Khan.
  */
@@ -89,3 +89,4 @@ export class PixelArrayGuard {
             lock_level: level, engine: "pixel_proxy", decision: "original_kept" };
     }
 }
+//# sourceMappingURL=identity.js.map

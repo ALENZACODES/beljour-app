@@ -265,3 +265,4 @@ export class GpuProSurface {
         return this.fallback.encode(mime, quality);
     }
 }
+//# sourceMappingURL=gpu.js.map

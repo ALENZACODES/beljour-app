@@ -126,3 +126,4 @@ export function ring(cx, cy, rx, ry, count) {
         out.push([cx + rx * Math.cos((2 * Math.PI * k) / count), cy + ry * Math.sin((2 * Math.PI * k) / count)]);
     return out;
 }
+//# sourceMappingURL=triangulate.js.map

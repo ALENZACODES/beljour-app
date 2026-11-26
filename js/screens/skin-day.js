@@ -333,3 +333,4 @@ export function mountSkinDay(root, store = new DailyStore(), storage = browserSt
 const root = typeof document !== "undefined" ? document.getElementById("sd-root") : null;
 if (root)
     mountSkinDay(root);
+//# sourceMappingURL=skin-day.js.map

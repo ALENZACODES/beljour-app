@@ -1,9 +1,8 @@
-/** Reusable pieces: score ruler, before/after slider, cost button, notices. */
-import { quoteDisplay } from "./quote-display.js";
-import { api, ApiError } from "../api.js";
+/** Reusable pieces: score ruler, before/after slider, notices. */
+import { ApiError } from "../api.js";
 import { announce, h } from "../dom.js";
 import { badgeModel, provenanceOf } from "./provenance.js";
-/** A 0..100 ruler. Solid tick: YouCam's measured score. Hollow tick: its friendlier display score. */
+/** A 0..100 ruler. Solid tick: the measured score. Hollow tick: its friendlier display score. */
 export function ruler(raw, ui, label) {
     const wrap = h("div", { class: "ruler", role: "img",
         "aria-label": `${label}: measured ${raw} out of 100, display score ${ui}` });
@@ -38,10 +37,10 @@ export function sourceNote(meta) {
         return h("div", {}, provenanceBadge(meta), h("p", { class: "notice notice-warn" }, "Sample numbers made up for the demo, not a real analysis. Run the recorder with a real photo to replace them."));
     }
     const text = {
-        live: `Fresh result from YouCam. Used ${meta.units_spent} unit${meta.units_spent === 1 ? "" : "s"}.`,
-        cache: "Same photo and settings as before, so this came from the cache at no cost.",
-        demo: "Saved demo result. No units used.",
-        local: "Made on our server without YouCam. No units used.",
+        live: "Fresh result.",
+        cache: "Same photo and settings as before, so this came from the cache.",
+        demo: "Saved demo result.",
+        local: "Made by our own code. Nothing was sent to an outside service.",
     };
     return h("div", {}, provenanceBadge(meta), h("p", { class: "source" }, text[meta.source] ?? ""));
 }
@@ -53,39 +52,6 @@ export function errorBox(err) {
     }
     announce(message);
     return h("p", { class: "notice notice-error", role: "alert" }, message);
-}
-/**
- * A button that shows its unit price before running. Asks the server, which knows
- * whether the same request is already cached.
- */
-export function costButton(label, quoteBody, onRun) {
-    const price = h("span", { class: "price" }, quoteBody ? "checking price" : "free");
-    const btn = h("button", { class: "btn" }, h("span", {}, label), price);
-    if (quoteBody) {
-        api.quote(quoteBody).then((q) => {
-            const description = quoteDisplay(q);
-            price.textContent = description.text;
-            btn.title = description.detail;
-            btn.setAttribute("data-flow", description.scope);
-            btn.disabled = !description.available;
-        }).catch(() => {
-            price.textContent = "quote unavailable";
-            btn.title = "Can't verify the server price or visit allowance";
-            btn.disabled = true;
-        });
-    }
-    btn.addEventListener("click", async () => {
-        btn.disabled = true;
-        btn.setAttribute("aria-busy", "true");
-        try {
-            await onRun();
-        }
-        finally {
-            btn.disabled = false;
-            btn.removeAttribute("aria-busy");
-        }
-    });
-    return btn;
 }
 export function swatch(hex, label) {
     return h("span", { class: "swatch", style: { background: hex }, role: "img", "aria-label": `${label} ${hex}` });
@@ -117,3 +83,4 @@ export function spark(values, label) {
     svg.append(line);
     return svg;
 }
+//# sourceMappingURL=widgets.js.map

@@ -14,7 +14,7 @@ function drawCachedFrame(doc, frame) {
     picture.width = frame.width;
     picture.height = frame.height;
     picture.setAttribute("role", "img");
-    picture.setAttribute("aria-label", `${frame.id} local illustrated thumbnail, not YouCam output`);
+    picture.setAttribute("aria-label", `${frame.id} local illustrated thumbnail`);
     const context = picture.getContext("2d");
     if (!context)
         throw new Error("Cached frame canvas is unavailable");
@@ -35,7 +35,7 @@ export function renderContinuousFramePanel(doc, summary, selected, actions, repl
     panel.setAttribute("aria-label", "Cached local illustrations");
     panel.append(judgeNode(doc, "h3", "lg-cache-heading", "Offline result replay"));
     panel.append(judgeParagraph(doc, "Frames are rendered from original drawings in this browser. "
-        + "They are not saved YouCam results, clinical measurements or product claims.", "lg-cache-caption"));
+        + "They are not clinical measurements or product claims.", "lg-cache-caption"));
     const commands = judgeNode(doc, "div", "lg-cache-controls");
     const warm = control(doc, "Prepare three local frames", "prepare", actions.prepare);
     warm.disabled = summary.phase === "warming";
@@ -102,3 +102,4 @@ export function renderContinuousFramePanel(doc, summary, selected, actions, repl
         + "Real-face and frozen release evidence: not verified.", "lg-cache-caption"));
     return panel;
 }
+//# sourceMappingURL=continuous-frame-panel.js.map

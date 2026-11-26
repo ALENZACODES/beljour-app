@@ -12,3 +12,4 @@ export * as piecewise from "./piecewise.js";
 export * as tps from "./tps.js";
 export * as triangulate from "./triangulate.js";
 export { WarpEngine } from "./engine.js";
+//# sourceMappingURL=index.js.map

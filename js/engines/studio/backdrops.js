@@ -76,3 +76,4 @@ export function renderBackdrop(id, width, height) {
     }
     return out;
 }
+//# sourceMappingURL=backdrops.js.map

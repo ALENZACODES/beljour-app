@@ -158,3 +158,4 @@ export function checkVectors(doc) {
         }
     });
 }
+//# sourceMappingURL=parity.js.map

@@ -133,3 +133,4 @@ export function rendersAtFullSize(layer) {
 export function movesPixels(layer) {
     return layer.kind === "retouch" && brushOf(layer) === "reshape";
 }
+//# sourceMappingURL=layer.js.map

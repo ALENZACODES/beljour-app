@@ -125,3 +125,4 @@ export function safeUpscale(photo, selection, options = {}) {
         allocation, release, label: SAFE_LABEL,
     });
 }
+//# sourceMappingURL=safe.js.map

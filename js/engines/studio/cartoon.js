@@ -197,3 +197,4 @@ export function cartoonV2(rgb, w, h, faces = []) {
     return { rgb: out, metrics: { toneDL, toneDrift, toneGate: toneDL <= 0.01 && toneDL >= -0.03 && toneDrift <= 0.02, lineShare: lineCount / n, specksRemoved: cleaned.removed, specksLeft, blotches, faces: faces.length,
             ms: (typeof performance !== "undefined" ? performance.now() : Date.now()) - t0 } };
 }
+//# sourceMappingURL=cartoon.js.map

@@ -157,3 +157,4 @@ export function renderHair(photo, hairMask, scalpMask, geometry, options) {
     }
     return { data, coverage, report };
 }
+//# sourceMappingURL=engine.js.map

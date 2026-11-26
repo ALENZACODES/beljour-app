@@ -196,3 +196,4 @@ export class PostureEditHistory {
         this.revision += 1;
     }
 }
+//# sourceMappingURL=posture-history.js.map

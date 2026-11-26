@@ -13,6 +13,7 @@
  *  - its seam audit also counts the NEW silhouette's legitimate edge (0.59 with no ghost at all in my
  *    synthetic test), so its pass mark depends on how far the body moved. The audit here measures
  *    gradient ACROSS the OLD outline only, against the background's own edge statistics.
+ * Face and body mapping: concept only, no code copied, after MediaPipe Pose Landmarker (body landmarks as the joint points).
  */
 import { clamp, gaussian, lstarOf, lumLin, srgbToLin } from "../core/bands.js";
 function integralMean(src, w, h, r) {
@@ -287,3 +288,4 @@ export function haloStep(out, alphaNew) {
     }
     return na && nb ? a / na - b / nb : 0;
 }
+//# sourceMappingURL=posture-layers.js.map

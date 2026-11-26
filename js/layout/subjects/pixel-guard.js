@@ -195,3 +195,4 @@ export function auditIsolatedSubject(before, after, ticket, snapshot) {
 export function subjectIsolationPass(metrics) {
     return metrics.changedAlphaPixels === 0 && metrics.protectedChangedPixels === 0;
 }
+//# sourceMappingURL=pixel-guard.js.map

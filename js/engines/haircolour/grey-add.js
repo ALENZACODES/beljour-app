@@ -19,3 +19,4 @@ export function addGrey(image, mesh, hair, amount) {
     const out = renderAge(image, mesh, { stop: 5, strength: amount / 100, layers: HAIR_ONLY, hairMask: hair, greyMode: "wash" });
     return { image: out.image, label: LABEL, greyPixels: out.metrics.grey_pixels };
 }
+//# sourceMappingURL=grey-add.js.map

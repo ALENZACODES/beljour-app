@@ -73,3 +73,4 @@ export function autoPlacement(source) {
         }
     return enough(n, w, h) ? { width: w, height: h, channels: 1, data } : null;
 }
+//# sourceMappingURL=auto-hair.js.map

@@ -12,7 +12,8 @@ export const JUDGEMENT_FORMAT = "beljour-judgement/1";
 export class BundleError extends Error {
 }
 const ID = /^[0-9a-f]{12}$/;
-const IMG = /^images\/[0-9a-f]{16}\.png$/;
+/** Random bundle names only, PNG or JPEG (the built-in set is JPEG to stay small to load). */
+const IMG = /^images\/[0-9a-f]{16}\.(png|jpg)$/;
 export function readBundle(raw) {
     const b = raw;
     if (!b || b.format !== BUNDLE_FORMAT)
@@ -136,3 +137,4 @@ export function sideForKey(key) {
         return "B";
     return null;
 }
+//# sourceMappingURL=session.js.map

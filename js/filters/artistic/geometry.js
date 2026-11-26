@@ -122,3 +122,4 @@ export function over(rgb, totalAlpha, colour, alpha) {
         totalAlpha[i] = 1 - (1 - totalAlpha[i]) * (1 - a);
     }
 }
+//# sourceMappingURL=geometry.js.map

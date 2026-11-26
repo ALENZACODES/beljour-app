@@ -95,3 +95,4 @@ export function shadeById(id, kind) {
     }
     throw new RangeError("Unknown shade id");
 }
+//# sourceMappingURL=loaders.js.map

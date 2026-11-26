@@ -58,19 +58,13 @@ export function variants(options) {
 export function withResult(board, slot, url, provenance) {
     if (!Number.isInteger(slot) || slot < 0 || slot >= board.size)
         throw new RangeError("Unknown variant slot");
-    if (!url.startsWith("data:image/") && !url.startsWith("hair-assets/"))
-        throw new RangeError("Unexpected result URL");
-    if (provenance === "synthetic" && !url.startsWith("hair-assets/"))
+    if (provenance !== "synthetic" || !url.startsWith("hair-assets/"))
         throw new RangeError("A synthetic result must use a bundled sample");
-    if (provenance === "youcam" && !url.startsWith("data:image/"))
-        throw new RangeError("Only validated result image data may be displayed");
     const old = board.tiles[slot];
     if (old.state === "empty" || old.state === "inspiration")
         throw new Error("A cut idea cannot be relabelled as a provider result");
     const tiles = board.tiles.map((item, n) => n !== slot ? item : { ...item, resultUrl: url,
-        state: provenance === "synthetic" ? "synthetic-demo" : "ready",
-        provenance, reason: provenance === "synthetic" ? "Illustrated synthetic S2 example; not a YouCam output."
-            : "Result of an approved YouCam styling request." });
+        state: "synthetic-demo", provenance, reason: "Illustrated synthetic S2 example." });
     return { size: board.size, tiles, ready: tiles.filter((x) => x.state === "ready").length,
         unrendered: tiles.filter((x) => !x.resultUrl).length,
         labelled: tiles.length };
@@ -90,7 +84,7 @@ export function taskPlan(selected, verified = new Set()) {
         if (!item.template_id || !verified.has(item.template_id))
             throw new Error("This template is not confirmed in a real S1 manifest");
         list.push({ action: "hair-style", options: { template_id: item.template_id }, estimatedUnits: 2,
-            note: "One preview at the currently quoted YouCam rate, not a complete variant grid." });
+            note: "One illustrated preview, not a complete variant grid." });
     }
     for (const [key, value] of Object.entries(selected.adjuncts)) {
         const score = clampStrength(value);
@@ -110,3 +104,4 @@ export function taskPlan(selected, verified = new Set()) {
 export function canApplyReference(selection, poseOkay, consentOkay) {
     return Boolean(selection.reference && selection.referenceRights && poseOkay && consentOkay);
 }
+//# sourceMappingURL=variants.js.map

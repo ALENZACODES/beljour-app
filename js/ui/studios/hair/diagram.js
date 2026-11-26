@@ -1,4 +1,4 @@
-/** Original haircut consultation diagrams (NOT photographic or YouCam try-on).
+/** Original haircut consultation diagrams (not photographic try-on).
  * Each illustration is a vector schematic of the cut's silhouette, length and
  * texture. No model weights, photo processing, copied styling assets or persons.
  * Hair diagrams are never presented as a preview of the person's appearance.
@@ -210,3 +210,4 @@ export function diagramDistance(a, b) {
         "curlCount", "fade", "fringe", "taper", "braidCount", "updo"];
     return keys.reduce((sum, key) => sum + Math.abs(left[key] - right[key]), 0);
 }
+//# sourceMappingURL=diagram.js.map

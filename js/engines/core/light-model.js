@@ -255,3 +255,4 @@ export function bumpRatio(hgt, N, L, w, h, opts = {}) {
         }
     return out;
 }
+//# sourceMappingURL=light-model.js.map

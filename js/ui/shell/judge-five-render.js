@@ -50,3 +50,4 @@ export function paintSingleExtraEdits(ctx, state, gain) {
         ctx.restore();
     }
 }
+//# sourceMappingURL=judge-five-render.js.map

@@ -164,3 +164,4 @@ export async function createFixture(input) {
     };
     return validateFixture(result);
 }
+//# sourceMappingURL=fixtures.js.map

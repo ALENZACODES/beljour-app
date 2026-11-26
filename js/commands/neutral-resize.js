@@ -92,3 +92,4 @@ export function resizeNeutralTiled(frame, scale, tileSize, signal) {
     return Object.freeze({ image: Object.freeze({ width, height, channels: frame.channels,
             pixels: output }), tiles, estimatedPeakTileBytes });
 }
+//# sourceMappingURL=neutral-resize.js.map

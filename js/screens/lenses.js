@@ -1,7 +1,7 @@
 /** #111 Face lenses page (web/lenses.html): pick a lens from thumbnails drawn live on an example
  * person, see it on a photo, capture it, or wear it on the live mirror.
  *
- * Pictures: the AI-generated example people the build listed (skin-moment-art.ts presentFiles),
+ * Pictures: the synthetic example people the build listed (skin-moment-art.ts presentFiles),
  * her own photo (opened on this device; needs the face reader), or a drawn face when neither is
  * there. Face points come from the face reader through vision/client.ts when the build staged it
  * (as skin-moment.ts checks), otherwise from the example pictures' fixed framing, which the page
@@ -24,12 +24,24 @@ import { LiveMirror } from "../reel/live/mirror.js";
 import { downloadFile } from "../save/download.js";
 import { canvasEncoder } from "../save/export.js";
 import { faceMapFor } from "../face/map-reader.js";
+import { devicePersonMask } from "./stickers.js";
 import { faceReaderReady } from "../vision/staged.js";
 import { photoPicker } from "../photos/picker.js";
-import { framingPoints } from "./shape-art.js";
+import { framingPoints, PEOPLE_DIR, PEOPLE_FILES } from "./shape-art.js";
 import { ART_DIR, presentFiles } from "./skin-moment-art.js";
 import { EXAMPLE_LABEL, FRAMING_NOTE, NEEDS_READER, NO_FACE, PREVIEW_SIDE, capture, examplePeople, thumbnail } from "./lenses-model.js";
 const KIND_TITLES = [["props", "Props"], ["warp", "Fun warps"], ["beauty", "Beauty"], ["effect", "Effects"]];
+/** The person mask for a still (screens/stickers.ts), so "behind her" effects follow her outline
+ * instead of the head-and-shoulders estimate. Null when the person reader is not installed. */
+async function personOf(image) {
+    try {
+        const m = await devicePersonMask(image);
+        return m ? Float32Array.from(m.data) : null;
+    }
+    catch {
+        return null;
+    }
+}
 function paint(canvas, image) {
     canvas.width = image.width;
     canvas.height = image.height;
@@ -84,7 +96,7 @@ export async function renderLenses(root) {
     const title = h("h2", { class: "ln-title" }, lens.title);
     /** While the slider moves, the props redraw alone; the colour pass (much slower) follows on release. */
     const draw = (beauty = true) => {
-        const out = applyLens(shown.image, shown.points, lens, Number(strength.value), { sprites: pictures, beauty, precise: !shown.estimated });
+        const out = applyLens(shown.image, shown.points, lens, Number(strength.value), { sprites: pictures, beauty, precise: !shown.estimated, person: shown.person ?? null });
         paint(preview, out.image);
         preview.setAttribute("aria-label", `${lens.title} on ${shown.label}`);
         label.textContent = [lensLabel(lens), shown.label].filter(Boolean).join(" ");
@@ -128,7 +140,7 @@ export async function renderLenses(root) {
     strength.addEventListener("change", () => draw());
     saveBtn.addEventListener("click", async () => {
         try {
-            const out = applyLens(shown.image, shown.points, lens, Number(strength.value), { sprites: pictures, precise: !shown.estimated }).image;
+            const out = applyLens(shown.image, shown.points, lens, Number(strength.value), { sprites: pictures, precise: !shown.estimated, person: shown.person ?? null }).image;
             const file = await capture(out, lens, ++saved, canvasEncoder());
             downloadFile(file.name, "image/jpeg", file.bytes);
             announce(`Saved ${file.name}.`);
@@ -145,7 +157,7 @@ export async function renderLenses(root) {
             try {
                 const image = pixelsOf(await loadImage(url));
                 const points = (await readerReady()) ? await readPoints(image, `lens-photo:${f.name}:${f.size}:${f.lastModified}`) : null;
-                show({ image, points, note: points || (await readerReady()) ? "" : NEEDS_READER, label: "Your photo." });
+                show({ image, points, note: points || (await readerReady()) ? "" : NEEDS_READER, label: "Your photo.", person: await personOf(image) });
             }
             catch {
                 status.textContent = "This photo could not be opened.";
@@ -192,16 +204,18 @@ export async function renderLenses(root) {
     // Example people and lens pictures arrive after first paint.
     const [listed, found, reader] = await Promise.all([presentFiles().catch(() => new Set()), loadPictures().catch(() => NO_PICTURES), readerReady()]);
     pictures = found;
-    const examples = examplePeople(listed);
+    // The high-resolution example people first (assets/people, 1600 px), then the older 640 px ones.
+    const examples = [...PEOPLE_FILES.map((file, i) => ({ n: i + 1, file, url: `${PEOPLE_DIR}/${file}` })),
+        ...examplePeople(listed).map((ex, i) => ({ ...ex, n: PEOPLE_FILES.length + i + 1, url: `${ART_DIR}/${ex.file}` }))];
     for (const ex of examples) {
-        const url = `${ART_DIR}/${ex.file}`;
+        const url = ex.url;
         const b = h("button", { type: "button", class: "ln-person", "data-person": String(ex.n) }, h("img", { src: url, alt: "", width: "64", height: "64", loading: "lazy" }), h("span", { class: "visually-hidden" }, `${EXAMPLE_LABEL} ${ex.n}`));
         b.addEventListener("click", async () => {
             try {
                 const image = pixelsOf(await loadImage(url));
                 const read = reader ? await readPoints(image, `lens-example:${url}`) : null;
                 const points = read ?? framingPoints(image.width, image.height).map(([x, y]) => [x, y]);
-                show({ image, points, note: read ? "" : FRAMING_NOTE, label: `${EXAMPLE_LABEL}.`, estimated: !read });
+                show({ image, points, note: read ? "" : FRAMING_NOTE, label: `${EXAMPLE_LABEL}.`, estimated: !read, person: await personOf(image) });
             }
             catch {
                 status.textContent = "This example picture could not be opened.";
@@ -221,3 +235,4 @@ export async function renderLenses(root) {
 const root = typeof document !== "undefined" ? document.getElementById("ln-root") : null;
 if (root)
     void renderLenses(root);
+//# sourceMappingURL=lenses.js.map

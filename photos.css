@@ -48,3 +48,6 @@
 .ph-sample-use { display: flex; flex-direction: column; align-items: center; gap: .2rem; width: 5.2rem; padding: .25rem; border: 1px solid rgba(0,0,0,.15); border-radius: .4rem; background: transparent; cursor: pointer; font: inherit; font-size: .75rem; line-height: 1.15; }
 .ph-sample-use img { width: 48px; height: 72px; object-fit: cover; border-radius: .25rem; }
 .ph-sample-label { font-size: .8rem; }
+.ph-sample-name { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ph-sample-tone { font-size: .75rem; opacity: .75; }
+.ph-sample-lead { font-size: .75rem; color: #1f6b45; font-weight: 600; }

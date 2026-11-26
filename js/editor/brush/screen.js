@@ -94,3 +94,4 @@ export function retouchScreen(session, hooks) {
     ];
     return h("section", { class: "lg-retouch", "aria-label": "Retouch brushes" }, ...parts);
 }
+//# sourceMappingURL=screen.js.map

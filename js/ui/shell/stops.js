@@ -48,3 +48,4 @@ export function hapticTick(from, to, device = globalThis.navigator) {
         return false;
     return device.vibrate(10);
 }
+//# sourceMappingURL=stops.js.map

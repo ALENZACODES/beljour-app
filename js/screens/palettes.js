@@ -346,3 +346,4 @@ export function renderPalettes(main, ctx) {
     main.replaceChildren(screen.element);
     return () => screen.dispose();
 }
+//# sourceMappingURL=palettes.js.map

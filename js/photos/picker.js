@@ -11,7 +11,7 @@
  */
 import { h } from "../dom.js";
 import { ensureConsent } from "../ui/one-consent.js";
-import { SAMPLE_LABEL, SAMPLE_PHOTOS, sampleFile, sampleUrl } from "./samples.js";
+import { SAMPLE_LABEL, SAMPLE_PHOTOS, sampleFile, sampleUrl, toneLabel, toneShort } from "./samples.js";
 import { sniff } from "../image/decode.js";
 import { MAX_PHOTOS, myPhotos } from "./library.js";
 import { head, looksLikeHeic, PhotoOpenError, preparePhoto, OPEN_MESSAGE } from "./prepare.js";
@@ -81,6 +81,14 @@ export function photoPicker(options) {
     input.accept = "image/*";
     input.multiple = true;
     const camera = h("input", { type: "file", id: `${id}-camera`, class: hidden, accept: "image/*", capture: "user", "aria-label": "Take a photo" });
+    // With a gate the visible button opens the input, so the hidden input leaves the tab order
+    // (otherwise keyboard users meet "Add photos" twice). Without a gate a label opens it, and the
+    // input itself must stay focusable.
+    if (options.gate) {
+        if (!options.input)
+            input.tabIndex = -1;
+        camera.tabIndex = -1;
+    }
     const gated = async () => !options.gate || await options.gate();
     /** A label opens its input directly; with a gate it is a button that asks first. */
     const trigger = (target, text, cls) => options.gate
@@ -89,6 +97,11 @@ export function photoPicker(options) {
         : h("label", { for: target.id, class: cls }, text);
     const showCamera = (options.camera ?? true) && (options.touch ?? isTouch());
     const actions = h("div", { class: "ph-actions" }, options.input ? null : input, options.input ? null : trigger(input, label, `${classes.button} ph-add`), showCamera ? camera : null, showCamera ? trigger(camera, "Take a photo", `${classes.quiet} ph-camera`) : null);
+    const orderedSamples = () => {
+        const first = options.firstSamples?.files ?? [];
+        return [...first.map((f) => SAMPLE_PHOTOS.find((sp) => sp.file === f)).filter((sp) => !!sp),
+            ...SAMPLE_PHOTOS.filter((sp) => !first.includes(sp.file))];
+    };
     // "Try a sample photo": synthetic fictional adults, opened like a picked photo but never kept.
     const samples = h("div", { class: "ph-samples", role: "group", "aria-label": "Sample photos" });
     samples.hidden = true;
@@ -96,8 +109,12 @@ export function photoPicker(options) {
             samples.hidden = !samples.hidden;
             sampleToggle.setAttribute("aria-expanded", String(!samples.hidden));
             if (!samples.hidden && !samples.children.length) {
-                samples.append(h("p", { class: "ph-note ph-sample-label" }, `${SAMPLE_LABEL}. Each one is a synthetic picture of a fictional adult.`), h("ul", { class: "ph-sample-list" }, ...SAMPLE_PHOTOS.map((sp) => h("li", { class: "ph-sample-item" }, h("button", { type: "button", class: "ph-sample-use", "data-sample": sp.file, title: `${sp.name}. ${SAMPLE_LABEL}`,
-                    "aria-label": `Use sample: ${sp.name}. ${SAMPLE_LABEL}`, onclick: () => { void useSample(sp); } }, h("img", { src: sampleUrl(sp), alt: "", width: 48, height: 72, loading: "lazy", decoding: "async" }), h("span", { class: "ph-sample-name" }, sp.name))))));
+                samples.append(h("p", { class: "ph-note ph-sample-label" }, `${SAMPLE_LABEL}. Each one is a synthetic picture of a fictional adult.`), h("ul", { class: "ph-sample-list" }, ...orderedSamples().map((sp) => {
+                    const tone = toneLabel(sp), lead = options.firstSamples?.files.includes(sp.file) ? options.firstSamples.note : "";
+                    const extra = [lead, tone].filter(Boolean).join(". ");
+                    return h("li", { class: "ph-sample-item" }, h("button", { type: "button", class: "ph-sample-use", "data-sample": sp.file, title: `${sp.name}${extra ? `. ${extra}` : ""}. ${SAMPLE_LABEL}`,
+                        "aria-label": `Use sample: ${sp.name}${extra ? `. ${extra}` : ""}. ${SAMPLE_LABEL}`, onclick: () => { void useSample(sp); } }, h("img", { src: sampleUrl(sp), alt: "", width: 48, height: 72, loading: "lazy", decoding: "async" }), h("span", { class: "ph-sample-name" }, sp.name, lead ? h("span", { class: "ph-sample-lead", "aria-hidden": "true" }, "✓ checks pass") : null, tone ? h("span", { class: "ph-sample-tone", "aria-hidden": "true" }, toneShort(sp)) : null)));
+                })));
             }
         } }, "Try a sample photo");
     async function useSample(sp) {
@@ -252,3 +269,4 @@ export function photoPicker(options) {
     void refresh();
     return { element, actions, input, strip, pick, refresh, dispose };
 }
+//# sourceMappingURL=picker.js.map

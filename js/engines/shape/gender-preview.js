@@ -230,3 +230,4 @@ export class SparseSeam {
         return quantile(excess, .9) / this.reference;
     }
 }
+//# sourceMappingURL=gender-preview.js.map

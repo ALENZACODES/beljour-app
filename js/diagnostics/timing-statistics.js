@@ -40,3 +40,4 @@ export function compareBudget(data, targetMs) {
         p95WithinTarget: data.p95Ms <= targetMs,
     };
 }
+//# sourceMappingURL=timing-statistics.js.map

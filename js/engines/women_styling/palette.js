@@ -64,3 +64,4 @@ export function suggestedPalette(family, outfit) {
         return distance(a) - distance(b) || a.key.localeCompare(b.key);
     }).slice(0, 4);
 }
+//# sourceMappingURL=palette.js.map

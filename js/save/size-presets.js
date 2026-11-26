@@ -98,3 +98,4 @@ export async function exportSize(image, presetId, encoder, options) {
         simulationLabel: options.simulationLabel, isSimulation: options.isSimulation });
     return { file: { ...file, name: file.name.replace(/_01\.jpg$/, `_${lookSlug(preset(presetId).label)}_${plan.width}x${plan.height}.jpg`) }, plan };
 }
+//# sourceMappingURL=size-presets.js.map

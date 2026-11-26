@@ -137,3 +137,4 @@ export function slotView(config, region, today) {
         return { show: "label", label: config.label };
     return { show: "placement", label: config.label, key, placement: p };
 }
+//# sourceMappingURL=partner.js.map

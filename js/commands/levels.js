@@ -58,3 +58,4 @@ export function isCompliantSlider(min, max, step) {
         return false;
     }
 }
+//# sourceMappingURL=levels.js.map

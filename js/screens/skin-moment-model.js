@@ -1,89 +1,48 @@
 import { CONCERNS as CHECKIN_CONCERNS } from "../engines/skin-checkin/index.js";
 import { CheckinStore } from "../engines/skin-checkin/store.js";
 import { productForCatalogue, productForLine } from "./skin-moment-products.js";
-export const CONSENT_VERSION = "beljour-consent/2";
 export const MOMENTS = [
     { id: "buy", title: "Before I buy", question: "Will this product suit my skin?", art: "moment-buy",
-        detail: "Your skin is measured, product types are ranked by what it shows, and the best match is tried on your face." },
+        detail: "Your skin is read, product types are ranked by what it shows, and the best match is drawn on your face." },
     { id: "breakout", title: "After a breakout", question: "What do I do now?", art: "moment-breakout",
-        detail: "What to do today, this week, and what to stop, from the redness, spots and texture measured in your photo." },
+        detail: "What to do today, this week, and what to stop, from the redness, spots and texture in your photo." },
     { id: "checkin", title: "Is it working?", question: "Has my skin changed since last time?", art: "moment-checkin",
-        detail: "Today's measurement next to your last one, kept on this device only. Small changes are called no real change." },
+        detail: "Today's reading next to your last one, kept on this device only. Small changes are called no real change." },
 ];
-export const CONSENT_TEXT = "Send this photo to YouCam for one skin analysis. YouCam deletes the photo after the result.";
-/** The agreement line for a moment: the one consent names every YouCam call the moment can make
- * with this photo (the server checks it again before each one). */
-export function consentText(moment) {
-    if (moment === "buy")
-        return "Send this photo to YouCam for one skin analysis, one skin tone reading and two makeup try-ons on the same photo (the matched shade, then the full look with lip colour and blush). YouCam deletes the photo after each result.";
-    if (moment === "breakout")
-        return "Send this photo to YouCam for one skin analysis and one skin preview of the plan on the same photo. YouCam deletes the photo after each result.";
-    return CONSENT_TEXT;
-}
-/** The plain list of what leaves this device, per moment. */
-export function whatIsSent(moment) {
-    const sent = ["This photo, to the Beljour server and from there to YouCam for one skin analysis."];
-    if (moment === "buy")
-        sent.push("The same photo for one skin tone reading (skin and lip colour) and two makeup try-ons: the matched shade, then the full look.");
-    if (moment === "breakout")
-        sent.push("The same photo for one skin preview: the concerns the plan works on, softened, not erased.");
-    if (moment === "checkin")
-        sent.push("The scores from your last check-in (numbers only, never a photo), so the server can compare.");
-    return { sent, kept: [
-            "Your earlier check-ins stay on this device. You can delete them at any time.",
-            "No name, email or account. Uploads to the Beljour server are deleted within an hour.",
-            "Units come from this app's allowance; you never pay for a call.",
-        ] };
-}
-/** YouCam units a live run of each moment uses, as the moment's own plan states them. */
-export const MOMENT_UNITS = { buy: 31, breakout: 13, checkin: 14 };
-/** The inline, non-blocking cloud label for a moment. */
-export function sendLine(moment) {
-    return `YouCam · sends this photo for one skin analysis${moment === "buy" ? ", a tone reading and two try-ons" : moment === "breakout" ? " and one skin preview" : ""} · ${MOMENT_UNITS[moment]} units`;
-}
-export const LOCAL_TEXT = "Local estimate only: nothing is sent to YouCam and no units are used. The photo still goes to the Beljour server, which measures fewer things.";
+/** The one line about where her photo goes: nowhere. */
+export const DEVICE_TEXT = "Read on this device. Your photo is never uploaded, and your check-ins stay in this browser.";
 export const DEMO_LABEL = "Saved example";
-export const DEMO_NOTE = "Saved example: a stored result, not a measurement of your photo. No server is used and no units are spent.";
-/** A server is connected but has no YouCam key (GET /api/health says live: false). */
-export const DEMO_SERVER_NOTE = "Demo mode: saved examples, no YouCam calls. This server has no YouCam key, so every moment shows a saved example, clearly labelled.";
-export const NO_SERVER_NOTE = "This copy has no server connected, so each moment runs from a saved example, clearly labelled. Your photo, if you add one, is only checked on this device.";
+export const DEMO_NOTE = "Saved example: a stored result for an example person, not a reading of your photo.";
 export const PHOTO_MIN_SIDE = 480;
 export const PHOTO_MAX_BYTES = 8_000_000;
-/** The app's own photo checks (face/quality.ts) plus the server's size limits, as one list. */
+/** The app's own photo checks (face/quality.ts) plus the size limits, as one list. */
 export function photoChecks(f) {
     const out = [];
     const short = Math.min(f.width, f.height);
     out.push(short >= PHOTO_MIN_SIDE
         ? { id: "size", level: "pass", message: `Big enough (${f.width} × ${f.height}).` }
-        : { id: "size", level: "block", message: `Too small: the short side is ${short} pixels and skin analysis needs at least ${PHOTO_MIN_SIDE}.` });
+        : { id: "size", level: "block", message: `Too small: the short side is ${short} pixels and a skin reading needs at least ${PHOTO_MIN_SIDE}.` });
     if (f.bytes > PHOTO_MAX_BYTES)
         out.push({ id: "bytes", level: "block", message: "Over 8 MB after preparing. Choose a smaller photo." });
     if (f.face === null) {
-        out.push({ id: "face", level: "info", message: "The face check isn't available on this device; the server checks the face before any unit is spent." });
+        out.push({ id: "face", level: "block", message: "The face reader isn't available in this browser, so the skin can't be read. A saved example still works." });
     }
     else {
-        for (const c of f.face) {
+        for (const c of f.face)
             out.push({ id: c.id, level: c.ok ? "pass" : c.id === "face" ? "block" : "warn", message: c.message });
-        }
     }
     return out;
 }
 export function photoVerdict(checks) {
     return checks.some((c) => c.level === "block") ? "blocked" : checks.some((c) => c.level === "warn") ? "warn" : "ready";
 }
-export class ConsentMissing extends Error {
-}
 export class PhotoNotReady extends Error {
 }
-export function attestation(photoId, givenAt) {
-    return { version: CONSENT_VERSION, scope: "skin", photo_id: photoId, given_at: givenAt };
-}
-/** The scores worth keeping for a later check-in: measured raw scores only, never a photo. */
+/** The scores worth keeping for a later check-in: raw scores only, never a photo. */
 export function snapshotOf(reply, takenAt) {
     if (reply.source === "saved_example" || !reply.analysis.concerns.length)
         return null;
-    return { taken_at: takenAt, source: reply.source === "youcam" ? "youcam" : "local",
-        concerns: reply.analysis.concerns.map((c) => ({ concern: c.concern, raw_score: c.raw_score })) };
+    return { taken_at: takenAt, source: "local", concerns: reply.analysis.concerns.map((c) => ({ concern: c.concern, raw_score: c.raw_score })) };
 }
 function errorFields(err) {
     const e = err;
@@ -91,20 +50,18 @@ function errorFields(err) {
         message: e && typeof e.message === "string" && e.message ? e.message : "Something went wrong. Your choices are kept; try again." };
 }
 export class MomentController {
-    transport;
+    runner;
     history;
     demo;
     now;
     state = { kind: "choose" };
     listeners = new Set();
-    consentGiven = false;
-    constructor(transport, history, demo, now = Date.now) {
-        this.transport = transport;
+    constructor(runner, history, demo, now = Date.now) {
+        this.runner = runner;
         this.history = history;
         this.demo = demo;
         this.now = now;
     }
-    get demoMode() { return this.transport === null; }
     get busy() { return this.state.kind === "loading"; }
     subscribe(fn) {
         this.listeners.add(fn);
@@ -127,36 +84,16 @@ export class MomentController {
     choose(moment) {
         if (!MOMENTS.some((m) => m.id === moment))
             throw new RangeError("unknown moment");
-        // One consent per device (owner's order, Oct 29): it is asked when the photo is opened, so a
-        // moment goes straight to its photo step, with an inline line saying what is sent.
-        this.consentGiven = true;
-        return this.set({ kind: "photo", moment, mode: "youcam", photo: null });
+        return this.set({ kind: "photo", moment, photo: null });
     }
-    /** Agree to send. The tick is required; without it nothing is sent. */
-    agree(answers) {
-        const moment = this.moment();
-        if (answers.agreed !== true) {
-            const problem = "Continue on the consent screen to send your photo, or choose the local estimate. Nothing was sent.";
-            this.set({ kind: "consent", moment, problem });
-            throw new ConsentMissing(problem);
-        }
-        this.consentGiven = true;
-        return this.set({ kind: "photo", moment, mode: "youcam", photo: null });
-    }
-    /** Local estimate: no YouCam call, so no tick is needed. */
-    localOnly() {
-        const moment = this.moment();
-        this.consentGiven = false;
-        return this.set({ kind: "photo", moment, mode: "local", photo: null });
-    }
-    /** The app's own photo checks on the chosen photo; a blocked photo can't be sent. */
+    /** The app's own photo checks on the chosen photo; a blocked photo can't be read. */
     checked(checks) {
         const s = this.state;
         if (s.kind !== "photo")
             return s;
         const verdict = photoVerdict(checks);
-        const note = verdict === "blocked" ? "This photo can't be used. Choose another one; nothing was sent."
-            : verdict === "warn" ? "Usable, but the result may be less reliable. A clearer photo helps."
+        const note = verdict === "blocked" ? "This photo can't be read. Choose another one."
+            : verdict === "warn" ? "Usable, but the reading may be less certain. A clearer photo helps."
                 : "The photo checks passed.";
         return this.set({ ...s, photo: { checks, verdict, note } });
     }
@@ -164,44 +101,35 @@ export class MomentController {
         const s = this.state;
         return s.kind === "photo" ? this.set({ ...s, photo: null }) : s;
     }
-    /** "Try a saved example": a complete, labelled result without a photo, a server or units. */
-    example(moment, mode = "youcam") {
+    /** "See a saved example": a complete, labelled result without a photo. */
+    example(moment) {
         if (this.busy)
             return this.state;
         if (!MOMENTS.some((m) => m.id === moment))
             throw new RangeError("unknown moment");
-        this.consentGiven = false;
-        return this.set({ kind: "result", moment, reply: this.demo.reply(moment, mode), history: this.demo.history(moment) });
+        return this.set({ kind: "result", moment, reply: this.demo.reply(moment), history: this.demo.history(moment), images: null });
     }
-    /** Send the checked photo (or show the saved example in demo mode). */
+    /** Read the checked photo on this device. */
     async send(photo) {
         if (this.busy)
             return this.state;
         const moment = this.moment();
         const s = this.state;
-        if (this.demoMode) {
-            if (s.kind === "photo" && s.photo?.verdict === "blocked")
-                throw new PhotoNotReady(s.photo.note);
-            return this.example(moment, s.kind === "photo" ? s.mode : "youcam");
-        }
         if (s.kind !== "photo")
             throw new PhotoNotReady("Add a photo first.");
         if (!photo || !s.photo)
-            throw new PhotoNotReady("Add a photo first; it is checked before anything is sent.");
+            throw new PhotoNotReady("Add a photo first; it is checked before it is read.");
         if (s.photo.verdict === "blocked")
             throw new PhotoNotReady(s.photo.note);
-        const mode = s.mode;
-        if (mode === "youcam" && !this.consentGiven)
-            return this.set({ kind: "consent", moment, problem: null });
-        this.set({ kind: "loading", moment, mode });
+        if (!photo.points)
+            throw new PhotoNotReady("No face was read in this photo. Use a clear, front-facing photo.");
+        this.set({ kind: "loading", moment });
+        // Let the "reading" screen paint before the work starts.
+        await new Promise((r) => setTimeout(r, 0));
         try {
-            const { photo_id } = await this.transport.uploadPhoto(photo);
             const previous = moment === "checkin" ? this.history.latest() : null;
-            const body = { moment, photo_id,
-                ...(mode === "local" ? { local_only: true } : { consent: attestation(photo_id, this.now()) }),
-                ...(previous ? { previous } : {}) };
-            const reply = await this.transport.skinMoment(body);
-            // Every measured result is kept on the device so a later "Is it working?" has something to compare with.
+            const { reply, images } = await this.runner.run(moment, photo, previous);
+            // Every reading is kept on the device so a later "Is it working?" has something to compare with.
             const snap = snapshotOf(reply, new Date(this.now()).toISOString());
             if (snap) {
                 try {
@@ -209,14 +137,10 @@ export class MomentController {
                 }
                 catch { /* storage blocked: the result still shows */ }
             }
-            return this.set({ kind: "result", moment, reply, history: this.history.list() });
+            return this.set({ kind: "result", moment, reply, history: this.history.list(), images });
         }
         catch (err) {
             const { code, message } = errorFields(err);
-            if (code.startsWith("consent")) {
-                this.consentGiven = false;
-                return this.set({ kind: "consent", moment, problem: message || "The server asked for your consent again before sending. Nothing was sent." });
-            }
             return this.set({ kind: "error", moment, code, message });
         }
     }
@@ -228,70 +152,39 @@ export class MomentController {
     }
     back() {
         const s = this.state;
-        if (s.kind === "choose")
-            return s;
-        if (s.kind === "consent" || s.kind === "result" || s.moment === null)
-            return this.set({ kind: "choose" });
-        if (s.kind === "loading")
+        if (s.kind === "choose" || s.kind === "loading")
             return s;
         return this.set({ kind: "choose" });
     }
-    /** After an error: back to the photo step, with the same moment and mode. */
+    /** After an error: back to the photo step, with the same moment. */
     retry() {
         const s = this.state;
         if (s.kind !== "error" || !s.moment)
             return this.restart();
-        return this.set({ kind: "photo", moment: s.moment, mode: this.consentGiven ? "youcam" : "local", photo: null });
+        return this.set({ kind: "photo", moment: s.moment, photo: null });
     }
-    restart() { this.consentGiven = false; return this.set({ kind: "choose" }); }
+    restart() { return this.set({ kind: "choose" }); }
 }
 /* ---------------------------------- steps ---------------------------------- */
-export const STEP_NAMES = ["Moment", "Consent", "Photo", "Result"];
-/** Which of the four steps a state belongs to (0-based), for the progress line. */
+export const STEP_NAMES = ["Moment", "Photo", "Result"];
+/** Which of the three steps a state belongs to (0-based), for the progress line. */
 export function stepIndex(s) {
     switch (s.kind) {
         case "choose": return 0;
-        case "consent": return 1;
-        case "photo": return 2;
+        case "photo": return 1;
         case "loading":
         case "result":
-        case "error": return 3;
+        case "error": return 2;
     }
 }
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
-/** A live call a saved example only plans: skipped because no key is set ("not_live"), never sent. */
-const livePlanned = (s) => s.status === "skipped" && /^not_live\b/.test(s.reason ?? "");
 const VERDICT = { better: "Better", worse: "Worse", no_real_change: "No real change" };
-const FALLBACK_NOTICE = {
-    session_cap: "This visit's YouCam allowance is used up, so this is a local estimate.",
-    daily_cap: "Today's YouCam allowance is used up, so this is a local estimate.",
-    balance_floor: "The app's YouCam units are kept in reserve, so this is a local estimate.",
-    kill_switch: "Live YouCam calls are switched off right now, so this is a local estimate.",
-    not_live: "Live YouCam calls aren't set up on this server, so this is a local estimate.",
-    provider_error: "YouCam didn't answer properly, so this is a local estimate. No units were charged for the failed call.",
-    timeout: "YouCam took too long, so this is a local estimate.",
-    out_of_scope: "That call isn't allowed for this flow, so this is a local estimate.",
-    pending: "YouCam is still working; this is a local estimate for now.",
-    local_only: "Local estimate, as you chose: nothing was sent to YouCam.",
-};
-/** The planner's reason codes (skin_planner.py, skin_moment.py, skin_match.py fallback_reason) as plain sentences. */
+/** Step reason codes as plain sentences. */
 export const REASON_TEXT = {
-    not_live: "This is a saved example, so this live call is only planned and never sent.",
-    no_consent: "You chose a local estimate, so nothing goes to YouCam.",
-    local_only: "You chose a local estimate, so nothing goes to YouCam.",
-    no_key: "Live YouCam calls aren't set up on this server, so the local version is used.",
-    skin_off: "Live skin analysis is switched off on this server, so the local version is used.",
-    kill_switch: "Live YouCam calls are switched off right now, so the local version is used.",
-    session_cap: "This visit's YouCam allowance is used up, so the local version is used.",
-    daily_cap: "Today's YouCam allowance is used up, so the local version is used.",
-    balance_floor: "The app's YouCam units are kept in reserve, so the local version is used.",
-    provider_error: "YouCam didn't answer properly, so the local version is used. No units were charged for it.",
-    timeout: "YouCam took too long, so the local version is used.",
-    out_of_scope: "This call isn't allowed for this flow, so it was not sent.",
-    pending: "YouCam was still working, so the local version is shown for now.",
-    earlier_step_refused: "An earlier step didn't go ahead, so this one was not sent either.",
-    no_shade: "No sample shade matched this reading, so there was nothing to try on.",
-    nothing_to_soften: "Every measured concern is at 80 or above, so there is nothing to soften.",
+    no_shade: "No reference shade matched this reading, so there was nothing to draw.",
+    no_preview: "The face points didn't leave enough skin to draw on, so the picture was left out.",
+    nothing_to_soften: "Every concern reads 80 or above, so there is nothing to soften.",
+    bad_previous: "Your last check-in couldn't be read, so there was nothing to compare.",
 };
 /** A step reason ("code: detail", a bare code, or a plain sentence) as a sentence plus its code. */
 export function stepReason(reason) {
@@ -302,16 +195,10 @@ export function stepReason(reason) {
         return { text: reason, code: null };
     const code = m[1];
     const detail = m[2] ? m[2].charAt(0).toUpperCase() + m[2].slice(1) : "";
-    return { text: REASON_TEXT[code] ?? (detail || "This step was not sent."), code };
+    return { text: REASON_TEXT[code] ?? (detail || "This step was left out."), code };
 }
-/** Fallbacks that mean "no units left": the page shows the units-out art for these. */
-export const UNITS_OUT = new Set(["session_cap", "daily_cap", "balance_floor"]);
 export function sourceBadge(reply) {
-    if (reply.source === "saved_example")
-        return DEMO_LABEL;
-    if (reply.source === "youcam")
-        return reply.analysis.concerns_source ?? "YouCam Skin Analysis";
-    return "Local estimate";
+    return reply.source === "saved_example" ? DEMO_LABEL : "Read on this device";
 }
 const clamp = (v) => Math.max(0, Math.min(100, v));
 function changeRow(x, days) {
@@ -347,17 +234,12 @@ export function resultView(reply, history = []) {
         { id: "stop", title: "Stop", art: "plan-stop", lines: p.stop },
     ].filter((s) => s.lines.length)
         .map((s) => ({ ...s, lines: s.lines.map((l) => ({ text: l.text, because: l.because ?? null, picture: productForLine(l.text) })) }));
-    const u = reply.units;
     const sample = reply.source === "saved_example";
-    const planned = reply.steps.reduce((t, s) => t + ((s.status === "done" && !s.cached) || livePlanned(s) ? s.units : 0), 0);
-    const unitsLine = sample ? (planned ? `No units used: this is a saved example. A live run of this plan costs ${plural(planned, "unit")}.`
-        : "No units used: this is a saved example, and a local estimate sends nothing to YouCam.")
-        : `${plural(u.spent, "unit")} used this time${u.left != null ? `, ${u.left} left for this visit` : ""}${u.cap != null ? ` (cap ${u.cap})` : ""}.`;
     const c = reply.checkin;
     const scores = reply.analysis.concerns.map((x) => {
         const raw = Math.round(x.raw_score);
         return { concern: x.concern, label: x.label, raw, band: x.band,
-            ui: typeof x.ui_score === "number" ? `Display score ${Math.round(x.ui_score)}, not used` : null,
+            ui: null,
             tone: raw >= 80 ? "good" : raw >= 60 ? "mid" : "focus" };
     });
     const lowest = [...scores].sort((a, b) => a.raw - b.raw)[0];
@@ -375,19 +257,16 @@ export function resultView(reply, history = []) {
     return {
         heading: `${m.title}: your result`,
         sourceBadge: sourceBadge(reply),
-        badgeTone: sample ? "sample" : reply.source === "youcam" ? "live" : "local",
+        badgeTone: sample ? "sample" : "local",
         message: sample ? DEMO_NOTE : reply.message,
-        notice: reply.fallback ? FALLBACK_NOTICE[reply.fallback] ?? null : null,
+        notice: null,
         scores,
-        scoresNote: "Measured score out of 100; higher looks healthier. This is the number every decision uses. A display score, when YouCam gives one, is shown smaller and never used.",
+        scoresNote: "Score out of 100 for how this photo looks; higher looks smoother, calmer and more even. Light, focus and makeup move it, so compare photos taken the same way.",
         plan: sections, planLabel: p.label, derm: p.see_dermatologist_if,
         products, productsNote: products.length ? "Product types from our own catalogue, ranked by your measured concerns. Not tested against real products; no brand pays to appear." : null,
         steps: reply.steps.map((s) => ({ n: s.n, action: s.action, line: s.why,
-            status: s.status === "done" ? (s.cached ? "Reused" : "Done") : livePlanned(s) ? "Planned (live)" : s.status === "skipped" ? "Skipped" : "Refused",
-            tone: s.status, reason: stepReason(s.reason).text, reasonCode: stepReason(s.reason).code,
-            units: s.cached ? "0 units (reused)" : livePlanned(s) && s.units ? `${plural(s.units, "unit")} live · none now`
-                : s.status !== "done" ? "0 units" : sample && s.units ? `${plural(s.units, "unit")} live · none now` : plural(s.units, "unit") })),
-        unitsLine,
+            status: s.status === "done" ? "Done" : s.status === "skipped" ? "Left out" : "Not done",
+            tone: s.status, reason: stepReason(s.reason).text, reasonCode: stepReason(s.reason).code })),
         checkin, firstCheckin,
         tryon: reply.tryon ? { label: reply.tryon.label, imageUrl: reply.tryon.image_url, shade: reply.tryon.shade, coverage: reply.tryon.coverage } : null,
         tone: reply.tone ? { label: reply.tone.label,
@@ -398,7 +277,7 @@ export function resultView(reply, history = []) {
         preview: reply.preview ? { imageUrl: reply.preview.image_url, label: reply.preview.label,
             rows: reply.preview.concerns.map((c) => ({ concern: c.concern, label: c.label, strength: `softened ${Math.round(c.strength * 100)}%`,
                 percent: Math.round(Math.max(0, Math.min(1, c.strength)) * 100) })) } : null,
-        history: [...history].reverse().map((h) => ({ when: h.taken_at.slice(0, 10), source: sample ? DEMO_LABEL : h.source === "youcam" ? "YouCam" : "Local estimate",
+        history: [...history].reverse().map((h) => ({ when: h.taken_at.slice(0, 10), source: sample ? DEMO_LABEL : h.source === "youcam" ? "earlier app version" : "on this device",
             scores: h.concerns.map((x) => `${labelOf(reply, x.concern)} ${Math.round(x.raw_score)}`).join(" · ") })),
         announce,
         disclaimer: reply.disclaimer || "Not medical advice.",
@@ -415,8 +294,6 @@ export function errorArt(code) {
         return "error-too-dark";
     if (/face/.test(code))
         return "error-no-face";
-    if (UNITS_OUT.has(code) || /unit|quota|cap/.test(code))
-        return "units-out";
     return "error-offline";
 }
 /* -------------------------------- history -------------------------------- */
@@ -431,11 +308,4 @@ export class DeviceHistory {
     clear() { this.store.deleteAll(); }
     exportText() { return this.store.exportText(); }
 }
-/** One plain line about this visit's units, for the quiet "Have a judge code?" panel. */
-export function unitsStatusLine(s) {
-    if (s.kill_switch)
-        return "Live YouCam calls are switched off right now; every moment shows a local estimate.";
-    const left = s.remaining == null ? "no visit cap" : `${plural(s.remaining, "unit")} left for this visit${s.cap != null ? ` (cap ${s.cap})` : ""}`;
-    return s.judge ? `Judge code accepted: live skin analysis is on. ${left[0].toUpperCase()}${left.slice(1)}.`
-        : `Public visit: ${left}. A skin analysis costs at least 9, so a public visit gets the local estimate plus the two 1-unit makeup try-ons.`;
-}
+//# sourceMappingURL=skin-moment-model.js.map

@@ -1,4 +1,4 @@
-/** R16 Workstream B local studio UI. Author: John Khan. */
+/** R16 Lane B local studio UI. Author: John Khan. */
 import { h } from "../../dom.js";
 import { PHOTO_MARK } from "../palette.js";
 import { readFace } from "../../face/landmarks.js";
@@ -166,3 +166,4 @@ if (root) {
     const dispose = mount(root);
     window.addEventListener("pagehide", dispose, { once: true });
 }
+//# sourceMappingURL=entry.js.map

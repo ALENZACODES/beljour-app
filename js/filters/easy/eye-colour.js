@@ -23,3 +23,4 @@ export function renderEyeColour(image, width, height, iris, pupil, highlight, op
     safe = restore(safe, image, highlight);
     return protectedMask ? restore(safe, image, protectedMask) : safe;
 }
+//# sourceMappingURL=eye-colour.js.map

@@ -142,3 +142,4 @@ export function renderEyeMakeup(photo, landmarks, options = {}) {
     Object.assign(report, { warnings, status: "edited", reason_code: "edited", changed_pixels: changed });
     return { image: Uint8ClampedArray.from(current.data), coverage, label: LABEL, report };
 }
+//# sourceMappingURL=makeup.js.map

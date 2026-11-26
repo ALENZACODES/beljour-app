@@ -90,16 +90,18 @@ export function applyMakeup(image, mesh, strength, options = {}) {
         for (const side of [-1, 1]) {
             const [cx, cy] = toPhoto(f, 0.66 * side, 0.62);
             const roll = Math.atan2(f.uy, f.ux);
-            spots.push(ellipseSpot(rect, cx, cy, (deep ? 0.44 : 0.38) * iod, (deep ? 0.26 : 0.21) * iod, roll - side * 0.42));
+            spots.push(ellipseSpot(rect, cx, cy, (deep ? 0.44 : 0.42) * iod, (deep ? 0.26 : 0.24) * iod, roll - side * 0.42));
         }
         // A tint relative to her own skin: the blush's colour difference from her measured skin is
         // added, at most 22 a*/b* units, so it reads as colour on her skin and not a painted patch,
         // and clearly at the default strength (owner bar, Oct 30: nothing faint).
         // Scaled to her skin's lightness (review, Oct 30): on deep skin a fixed redness read as red
         // patches, so the tint, its reach and its floor shrink with depth (tone 1 at L* 65+, 0.4 at L* 45-).
-        const st = map.stats, tone = skinTone(st.L), amount = Math.min(1, 1.05 * e) * (deep ? 0.68 : 0.3 + 0.7 * tone) * op(options.blushOpacity); // deep: lifted from 0.6 after the Batch 2 review; 0.78 read as red patches
+        const st = map.stats, tone = skinTone(st.L), amount = Math.min(1, 1.05 * e) * (deep ? 0.68 : 0.7 * (0.3 + 0.7 * tone)) * op(options.blushOpacity); // deep: lifted from 0.6 after the Batch 2 review; 0.78 read as red patches
         // r3 review: at reach 11 the blush did not show on deep skin at the looks' opacities (0.25 to 0.4)
-        const reach = deep ? 16 : 22 * tone * tone, floor = deep ? 0 : 10 * tone * tone;
+        // Nov 1, 2026 review on the 1600 px example people: reach 22 and floor 10 read as hot-pink
+        // patches on light and medium skin, so the tint is softer and the floor lower.
+        const reach = deep ? 16 : 14 * tone * tone, floor = deep ? 0 : 6 * tone * tone;
         metrics.skin_l = Math.round(st.L * 10) / 10;
         const da = Math.max(-reach, Math.min(reach, Math.sign(blush[1] - st.a) * Math.max(floor, Math.abs(blush[1] - st.a)))), db = deep ? Math.max(-9, Math.min(9, blush[2] - st.b)) : Math.max(-16 * tone, Math.min(16 * tone, blush[2] - st.b));
         const dl = Math.min(0, blush[0] - st.L) * (deep ? 0.6 : 0.4);
@@ -142,7 +144,7 @@ export function applyMakeup(image, mesh, strength, options = {}) {
         const upper = UPPER_LID[side].map((i) => pt(mesh, i));
         const up = upSign(upper, [f.uy, -f.ux]);
         if (shadow && style !== "lid") {
-            // Crease placement (makeup workstream, Oct 30): deepest along the lashes, graded up to the crease and
+            // Crease placement (makeup lane, Oct 30): deepest along the lashes, graded up to the crease and
             // diffused above it; no hard upper edge. Laid on the low band (each pixel keeps its difference from
             // the softened lid), so lid texture and crepe show through; it only ever deepens.
             const smoky = style === "smoky";
@@ -340,7 +342,7 @@ export const LOOKS = [
     { id: "riviera", name: "Riviera", lip: "#D0574A", finish: "gloss", blush: "#E09276", shadow: "#A88068", liner: "none" },
     { id: "montmartre", name: "Montmartre", lip: "#A3283A", finish: "satin", blush: "#C46F72", shadow: "#5B4A48", liner: "#1C1717" },
     { id: "camargue", name: "Camargue", lip: "#8E5446", finish: "matte", blush: "#B97462", shadow: "#7A5A48", liner: "#33261F" },
-    // Full looks (makeup workstream, Oct 30): own-shade foundation first, then colour. Scored at 200% on a light-medium
+    // Full looks (makeup lane, Oct 30): own-shade foundation first, then colour. Scored at 200% on a light-medium
     // woman, a deep-skin man and a medium-deep man; each has its own deep-skin shades.
     { id: "bare", name: "Bare (no-makeup)", lip: "#93534F", finish: "satin", blush: "#D08A7C", shadow: "none", liner: "none",
         lipOpacity: 0.5, blushOpacity: 0.25, trueLip: true, base: "foundation", baseStrength: 35, concealer: 40,
@@ -366,3 +368,4 @@ export function skinTone(L) {
 export const DEEP_TONE = 0.75;
 /** Berry blush, plum-berry lip and a soft brown-black liner for deep skin. ASSUMED shades. */
 export const DEEP_PALETTE = { blush: "#8E3A55", lip: "#6E2440", liner: "#1F1515" };
+//# sourceMappingURL=makeup.js.map

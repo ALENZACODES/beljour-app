@@ -2,7 +2,7 @@
  * Stores references (metadata and temporary blob URL) but never persists photo bytes,
  * API keys, task tickets or face landmarks. Styling previews never become local
  * shell effect layers: the shell owns navigation/history, and provider results
- * retain their distinct YouCam provenance in the same inspector.
+ * keep their own provenance in the same inspector.
  * Author: John Khan.
  */
 import { DEFAULT_QUERY, clampStrength, defaultSelection, filteredStyles, recommendedStyles, styleById } from "./model.js";
@@ -87,7 +87,7 @@ export class HairSession {
             throw new RangeError("Unknown hair adjunct");
         this.selection = { ...this.selection, adjuncts: { ...this.selection.adjuncts,
                 [key]: clampStrength(value) } };
-        this.note = `Only preview planning has changed. ${key} is a separate YouCam styling action, not a local effect.`;
+        this.note = `Only the plan changed: ${key} goes into your salon brief.`;
         this.emit();
     }
     setKeepColour(value) {
@@ -181,3 +181,4 @@ export class HairSession {
         return recommendedStyles(options).map((s) => s.id);
     }
 }
+//# sourceMappingURL=session.js.map

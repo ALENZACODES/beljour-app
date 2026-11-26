@@ -1,5 +1,4 @@
 import { h } from "../dom.js";
-import { capturePointer } from "../ui/shell/pointer-capture.js";
 export class HairPainter {
     width;
     height;
@@ -165,7 +164,7 @@ export function hairPainterSection(image, painter, commit, initialMode = "hair")
         down = true;
         painter.begin();
         cursor = point(event);
-        capturePointer(canvas, event.pointerId);
+        canvas.setPointerCapture?.(event.pointerId);
         painter.line(...cursor, radius, mode, erase);
         repaint();
     });
@@ -204,3 +203,4 @@ export function hairPainterSection(image, painter, commit, initialMode = "hair")
     repaint();
     return h("section", { class: "hair-painter" }, h("h3", {}, "Mark your own hair"), h("p", { class: "fine" }, "Manual selection. Keep skin and background outside the blue area. White marks show lightening placement. Nothing is uploaded."), choose, h("label", {}, eraser, " Erase"), h("label", {}, "Brush size ", size, sizeValue), canvas, status, h("div", { class: "row" }, h("button", { type: "button", class: "btn btn-quiet", onclick: () => { painter.undo(); repaint(); } }, "Undo marking"), h("button", { type: "button", class: "btn btn-quiet", onclick: () => { painter.clear(mode); repaint(); } }, "Clear selected markings"), submit));
 }
+//# sourceMappingURL=hair-painter.js.map

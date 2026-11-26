@@ -29,7 +29,7 @@ export function operatorPreflight(demo, operator, preview) {
     items.push(make("phone-budget", "Preview timing on physical phone", "operations", false, "missing", preview.count
         ? "Local Canvas timing observed; physical phone performance unmeasured"
         : "No local timing measured; physical phone performance unmeasured"));
-    items.push(make("youcam-live", "YouCam API end-to-end", "provider", false, "missing", "Requires separate authorized provider logs and explicit image consent"));
+    items.push(make("real-photo-reading", "On-device skin reading on a real photo", "quality", false, "missing", "Requires a real photo read in Skin Moment, checked by a person"));
     items.push(make("realface", "Independent real-face acceptance", "quality", false, "missing", "Requires authorized external test faces and released quality report"));
     items.push(make("frozen", "Frozen 100,000-face release pass", "quality", false, "missing", "Must come from the separately verified frozen runner"));
     const observedStages = TOUR_STEPS.every((step) => step.id === "save"
@@ -54,3 +54,4 @@ export function preflightCaption(report) {
     return `${checks} local/manual checks recorded; ${missing} still missing or unverified. `
         + "This rehearsal never approves live processing, real faces or public release.";
 }
+//# sourceMappingURL=operator-preflight.js.map

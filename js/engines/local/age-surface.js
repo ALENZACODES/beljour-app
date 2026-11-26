@@ -125,7 +125,7 @@ function renderAgeCore(image, support, points, o) {
             if (col > 0) {
                 linToLabInto(r, gg, b, tmp);
                 const keep = 1 - markMask[i];
-                // sallowTone (workstream 01): desaturate plus a small red->yellow shift instead of a global warm cast; the
+                // sallowTone (lane 01): desaturate plus a small red->yellow shift instead of a global warm cast; the
                 // broad colour move is capped at Delta-E 3, her own mottling (3-12 px band) rides on top.
                 let da = -0.16 * MA[i] * col, db = -0.1 * MB[i] * col + 1.0 * col;
                 const de = Math.hypot(da, db);
@@ -442,3 +442,4 @@ function valleyDepth(P, w, h, d) {
         }
     return out;
 }
+//# sourceMappingURL=age-surface.js.map

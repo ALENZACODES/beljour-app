@@ -57,3 +57,4 @@ export function performanceText(summary) {
     return `${summary.phase}: median ${summary.medianMs}ms, p95 ${summary.p95Ms}ms `
         + `over ${summary.count} observations; reference ${summary.budgetMs}ms`;
 }
+//# sourceMappingURL=performance.js.map

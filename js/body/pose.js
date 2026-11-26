@@ -7,3 +7,4 @@ export async function readPose(image) {
         return null;
     return { landmarks, mask: segmentation.channels[0], width: segmentation.width, height: segmentation.height };
 }
+//# sourceMappingURL=pose.js.map

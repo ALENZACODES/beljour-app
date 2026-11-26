@@ -85,3 +85,4 @@ export function frecklesFlat(image, skin, face, strength = 30, density = 50, see
     const guarded = noLighten(image, out, weight);
     return { image: out, weight, label: LABEL, metrics: { freckles: placed.length, seed, density, guarded_pixels: guarded } };
 }
+//# sourceMappingURL=freckles-flat.js.map

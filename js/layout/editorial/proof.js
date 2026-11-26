@@ -35,18 +35,18 @@ export function proofWallReading(value) {
                 : "No permission to use local edits",
         },
         {
-            id: "download", heading: "File transfer",
+            id: "download", heading: "File handoff",
             state: value.requestedDownload ? "observed" : "pending",
             description: value.requestedDownload
                 ? "Download requested; saved file not independently confirmed"
                 : "No download requested",
         },
         {
-            id: "youcam", heading: "Provider result",
+            id: "youcam", heading: "Try-on result",
             state: value.mockTryon ? "mock" : "pending",
             description: value.mockTryon
-                ? "Mock branch exercised, not a live API response"
-                : "Live YouCam result not verified",
+                ? "Mock branch exercised, not a real-photo result"
+                : "Real-photo try-on not verified",
         },
         {
             id: "identity", heading: "Identity protection",
@@ -150,3 +150,4 @@ export function renderProofWall(doc, value) {
     section.append(node(doc, "p", "lg-editorial-proof-endnote", "No simulated result, manual check or cached illustration is release certification."));
     return section;
 }
+//# sourceMappingURL=proof.js.map

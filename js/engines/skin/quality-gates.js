@@ -71,3 +71,4 @@ export function evaluateShipGate(tool, metrics, evidence) {
     const status = failures.length ? "FAIL" : unknown.length ? "UNKNOWN" : "PASS";
     return { tool, status, timeMs: ms, failures, unknown, pass: status === "PASS" };
 }
+//# sourceMappingURL=quality-gates.js.map

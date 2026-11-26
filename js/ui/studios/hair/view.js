@@ -4,18 +4,14 @@
  * The only rendered offline result is the original synthetic S2 cassette illustration.
  * Author: John Khan.
  */
-import { appConsent } from "../../shell/consent.js";
 import { strengthLabel, hapticTick } from "../../shell/stops.js";
-import { YOUCAM_PRODUCTS } from "../../provider-labels.js";
-import { HAIR_GROUPS, HAIR_STYLES, HAIR_TEXTURES, HAIR_LENGTHS, catalogueSummary, filteredStyles, groupCounts, sourceLabel } from "./model.js";
+import { HAIR_GROUPS, HAIR_TEXTURES, HAIR_LENGTHS, catalogueSummary, filteredStyles, groupCounts, sourceLabel } from "./model.js";
 import { ONE_TAP_HAIR, HairSession } from "./session.js";
 import { evaluateHairPose, poseMessage, syntheticHairPose } from "./pose.js";
 import { HAIR_REPLAY } from "./replay.js";
 import { positiveAdjuncts } from "./variants.js";
 import { hairDiagramDataUri } from "./diagram.js";
 import { buildSalonBrief, salonBriefText, salonBriefJson, salonBoardSvg, MAX_NOTES } from "./brief.js";
-const MAX_REFERENCE_BYTES = 8 * 1024 * 1024;
-const SUPPORTED_REFERENCE = new Set(["image/jpeg", "image/png", "image/webp"]);
 const ADJUNCTS = [
     { id: "bangs", title: "Bangs", description: "Optional fringe styling task" },
     { id: "curl", title: "Curl", description: "Optional wave/curl styling task" },
@@ -90,8 +86,6 @@ export class HairStudio {
     session;
     element;
     context;
-    referenceFile = null;
-    refUrl = null;
     salonNotes = "";
     alive = true;
     subscription;
@@ -112,10 +106,6 @@ export class HairStudio {
     dispose() {
         this.alive = false;
         this.subscription();
-        if (this.refUrl)
-            URL.revokeObjectURL(this.refUrl);
-        this.referenceFile = null;
-        this.refUrl = null;
         this.element.replaceChildren();
     }
     safe(fn) {
@@ -136,97 +126,15 @@ export class HairStudio {
             faceCount: source.faces ?? 1 });
     }
     dropReference() {
-        if (this.refUrl)
-            URL.revokeObjectURL(this.refUrl);
-        this.referenceFile = null;
-        this.refUrl = null;
         this.session.setReference(null);
-    }
-    takeReference(file) {
-        if (!SUPPORTED_REFERENCE.has(file.type))
-            throw new Error("Use JPEG, PNG or WebP for a reference haircut.");
-        if (!file.size || file.size > MAX_REFERENCE_BYTES)
-            throw new Error("Reference cut must be an image under 8 MB.");
-        if (this.refUrl)
-            URL.revokeObjectURL(this.refUrl);
-        this.refUrl = URL.createObjectURL(file);
-        this.referenceFile = file;
-        const ref = { fileName: file.name.slice(0, 120), mime: file.type,
-            size: file.size, localPreview: this.refUrl };
-        this.session.setReference(ref);
-    }
-    actionReady(state, pose) {
-        if (!this.context.onApply || !this.context.photoId)
-            return { ok: false, reason: "Open the classic Hair Studio with an uploaded photo to apply a live request." };
-        if (appConsent.localOnly)
-            return { ok: false, reason: "On-device only is on in Trust Centre." };
-        if (!appConsent.allows(this.context.photoId, "hair-style"))
-            return { ok: false, reason: "Grant photo-specific hair-styling consent before applying." };
-        if (!pose.acceptable || this.context.image?.synthetic)
-            return { ok: false, reason: poseMessage(pose) };
-        if (!state.selection.reference || !this.referenceFile)
-            return { ok: false, reason: "Preset IDs are synthetic. Choose a reference haircut photo instead." };
-        if (!state.selection.referenceRights)
-            return { ok: false, reason: "Tick the reference-image rights checkbox." };
-        return { ok: true, reason: "Reference ready to quote through the single YouCam gateway." };
-    }
-    async apply(reference, adjunct = null) {
-        const state = this.session.state, pose = this.facePose();
-        if (!this.context.onApply) {
-            this.session.setMessage("Demo mode needs no provider. The one illustrated sample remains available.");
-            return;
-        }
-        if (appConsent.localOnly || !this.context.photoId || !appConsent.allows(this.context.photoId, "hair-style") ||
-            !pose.acceptable || this.context.image?.synthetic) {
-            this.session.setMessage("The on-device photo check, individual hair consent, and a real uploaded photo must pass first.");
-            return;
-        }
-        let request;
-        if (adjunct) {
-            const strength = state.selection.adjuncts[adjunct];
-            if (strength <= 0) {
-                this.session.setMessage("Move this styling slider above zero first.");
-                return;
-            }
-            const map = {
-                bangs: "hair-bang", curl: "hair-curl", extension: "hair-extension", volume: "hair-volume",
-            };
-            request = { action: map[adjunct], options: { strength } };
-        }
-        else if (reference) {
-            const ready = this.actionReady(state, pose);
-            if (!ready.ok || !this.referenceFile) {
-                this.session.setMessage(ready.reason);
-                return;
-            }
-            request = { action: "hair-transfer", options: {}, referenceFile: this.referenceFile,
-                referenceRights: state.selection.referenceRights };
-        }
-        else {
-            // This path cannot be reached until a genuine operator-reviewed S1 import is
-            // provided. The synthetic catalogue never authorizes live template IDs.
-            this.session.setMessage("No verified live preset ID yet. Use a reference photo with rights.");
-            return;
-        }
-        this.session.markBusy(true);
-        try {
-            this.session.showResult(await this.context.onApply(request));
-        }
-        catch (error) {
-            this.session.setMessage(error instanceof Error ? error.message : "The provider result couldn't be opened.");
-        }
-        finally {
-            this.session.markBusy(false);
-        }
     }
     head(state) {
         const head = n("div", "hair-heading");
         const start = n("div", "hair-heading-copy");
         start.append(n("h2", "", "Hair Studio"), n("p", "hair-subtitle", "Choose a shape first. Gentle previews, your colour and features unchanged."));
         const trust = n("div", "hair-trust");
-        const local = n("span", "hair-chip hair-chip-local", "Local ideas and demo · no network");
-        const provider = n("span", "hair-chip", `${YOUCAM_PRODUCTS.hair} · only after a quote and consent`);
-        trust.append(local, provider);
+        const local = n("span", "hair-chip hair-chip-local", "On this device · no network");
+        trust.append(local);
         head.append(start, trust);
         return head;
     }
@@ -310,7 +218,7 @@ export class HairStudio {
     }
     catalogue(state) {
         const section = n("section", "hair-subsection hair-catalogue");
-        section.append(n("h3", "", "Cuts for every style and texture"), n("p", "hair-small", "Style names are references, not claims of YouCam availability. No person or skin-tone category limits a cut."), this.catalogueFilters(state));
+        section.append(n("h3", "", "Cuts for every style and texture"), n("p", "hair-small", "Style names are references. No person or skin-tone category limits a cut."), this.catalogueFilters(state));
         const rows = filteredStyles(state.query, new Set(state.favourites));
         const grid = n("div", "hair-card-grid");
         if (!rows.length)
@@ -319,66 +227,22 @@ export class HairStudio {
             for (const row of rows)
                 grid.append(this.card(state, row));
         const counts = groupCounts().map((g) => `${g.title}: ${g.count}`).join(" · ");
-        section.append(n("p", "hair-count", `${rows.length} of ${HAIR_STYLES.length} cuts match. ${counts}`), grid);
+        section.append(n("p", "hair-count", `${rows.length} matching cut${rows.length === 1 ? "" : "s"}. ${counts}`), grid);
         return section;
     }
     controls(state) {
         const selection = state.selection, root = n("section", "hair-subsection");
-        root.append(n("h3", "", "Adjust this look"), n("p", "hair-small", "Each value is 0–100. Extra styling tasks are separate; changing the slider does not change the sample image."));
+        root.append(n("h3", "", "Adjust this look"), n("p", "hair-small", "Each value is 0–100 and goes into your salon brief. The sliders plan the cut; they don't change the photo."));
         const controls = n("div", "hair-control-grid");
         controls.append(slider("Hairstyle strength", selection.strength, (value) => this.session.setStrength(value)));
         for (const entry of ADJUNCTS) {
             const control = n("div", "hair-adjunct");
             control.append(slider(entry.title, selection.adjuncts[entry.id], (value) => this.session.setAdjunct(entry.id, value)), n("p", "hair-small", entry.description));
-            const apply = b(`Try ${entry.title.toLowerCase()} separately`, () => { void this.apply(false, entry.id); }, "hair-mini-button");
-            apply.disabled = selection.adjuncts[entry.id] <= 0 || state.busy || !this.context.onApply || !this.facePose().acceptable || appConsent.localOnly;
-            // With no live styling on this screen (a photo on this device only) the button could never
-            // enable, so it is left out; the slider still plans the variant.
-            if (this.context.onApply)
-                control.append(apply);
             controls.append(control);
         }
         const keep = labelledCheck("Keep my existing colour (recommended)", selection.keepColour, (value) => this.session.setKeepColour(value));
         controls.append(keep);
         root.append(controls);
-        return root;
-    }
-    reference(state, pose) {
-        const root = n("section", "hair-subsection hair-reference");
-        root.append(n("h3", "", "Try a reference haircut"), n("p", "hair-small", "Choose a photo of the cut you own or have permission to use. It stays in this browser until you confirm an upload for one styling task."));
-        const picker = n("input", "hair-file");
-        picker.type = "file";
-        picker.accept = "image/jpeg,image/png,image/webp";
-        picker.setAttribute("aria-label", "Choose your permitted haircut reference");
-        picker.addEventListener("change", () => {
-            const file = picker.files?.[0];
-            picker.value = "";
-            if (file)
-                this.safe(() => this.takeReference(file));
-        });
-        root.append(nameControl("Reference haircut photo", picker));
-        if (state.selection.reference) {
-            const row = n("div", "hair-reference-preview");
-            const im = n("img");
-            im.src = state.selection.reference.localPreview;
-            im.alt = "Locally selected haircut reference";
-            im.loading = "lazy";
-            im.decoding = "async";
-            const details = n("div", "hair-reference-copy");
-            details.append(n("strong", "", state.selection.reference.fileName), n("p", "hair-small", `${Math.round(state.selection.reference.size / 1024)} KB · never sent automatically`), labelledCheck("I own this photo or have permission to use it as a haircut reference.", state.selection.referenceRights, (yes) => this.session.setReferenceRights(yes)));
-            row.append(im, details, b("Remove reference", () => this.dropReference(), "hair-mini-button"));
-            root.append(row);
-        }
-        const note = n("p", "hair-small", "S2 reference-transfer endpoint and cost remain unverified; results are experimental until tested on released real photos.");
-        if (!this.context.onApply) {
-            root.append(n("p", "hair-small", "Trying a reference cut is a YouCam styling task, offered when the photo is prepared on a connected app server. Nothing is sent from here."));
-            return root;
-        }
-        const ready = this.actionReady(state, pose);
-        const apply = b(state.busy ? "Waiting for styling…" : "Quote and try reference cut", () => { void this.apply(true); }, "hair-button hair-apply");
-        apply.disabled = !ready.ok || state.busy;
-        apply.title = ready.reason;
-        root.append(note, apply, n("p", "hair-gate", ready.reason));
         return root;
     }
     board(state) {
@@ -459,17 +323,17 @@ export class HairStudio {
                 const original = n("div", "hair-result-photo");
                 const image = n("img");
                 image.src = this.context.originalSrc;
-                image.alt = "Your original photo before YouCam styling";
+                image.alt = "Your original photo";
                 original.append(image, n("span", "hair-caption", "Before"));
                 figure.append(original);
             }
             const result = n("div", "hair-result-photo");
             const img = n("img");
             img.src = preview.image;
-            img.alt = preview.synthetic ? "Synthetic haircut illustration, not provider output" : "Your hair styling result";
+            img.alt = "Synthetic haircut illustration";
             img.loading = "lazy";
             img.decoding = "async";
-            result.append(img, n("span", "hair-caption", preview.synthetic ? "Synthetic replay, not YouCam" : "YouCam styling"));
+            result.append(img, n("span", "hair-caption", "Drawn example, not your photo"));
             figure.append(result);
             section.append(figure);
         }
@@ -479,8 +343,6 @@ export class HairStudio {
         info.append(n("strong", "", preview.provenance), n("p", "", preview.note));
         if (preview.synthetic)
             info.append(n("small", "", HAIR_REPLAY.flow));
-        else if (preview.status === "live")
-            info.append(n("small", "", "sent to YouCam, deleted after the result"));
         section.append(info);
         return section;
     }
@@ -492,15 +354,13 @@ export class HairStudio {
         status.append(n("strong", "", pose.acceptable ? "Pose check ready" : "Retake or use a clearer photo"), n("p", "hair-small", poseMessage(pose)));
         if (pose.rollDegrees !== null)
             status.append(n("small", "", `Photo tilt ${Math.abs(pose.rollDegrees).toFixed(1)}° · turn proxy ${pose.yawProxy?.toFixed(2)} · not a diagnosis`));
-        const flow = n("p", "hair-small", this.context.mode === "shell"
-            ? "This Hair Studio view only uses an illustrated sample and on-device metadata. No photo is sent from the shell."
-            : "Your uploaded portrait was sent to our server in the photo step. Hair styling requires a separate YouCam consent tick. The reference photo is only uploaded on Apply.");
+        const flow = n("p", "hair-small", "The Hair Studio runs on this device. No photo is sent anywhere.");
         const trust = n("a", "hair-link", "Open Trust Centre");
         trust.href = "trust.html";
-        const label = n("p", "hair-small", "No automatic skin lightening, slimming or facial changes. A reference cut preview is a style simulation. No quality-arena score is assigned until tested on permitted real faces.");
+        const label = n("p", "hair-small", "No skin lightening, slimming or facial changes. Cut ideas and diagrams, not a rendered haircut on your photo.");
         root.append(status, flow, trust, label);
         if (positiveAdjuncts(state.selection.adjuncts).length)
-            root.append(n("p", "hair-small", "Bangs / curl / extension / volume are separate optional provider tasks. A multi-step layered hairstyle is not yet supported."));
+            root.append(n("p", "hair-small", "Bangs, curl, extension and volume are in your salon brief for your stylist."));
         return root;
     }
     draw(state) {
@@ -512,6 +372,7 @@ export class HairStudio {
         summary.setAttribute("role", "status");
         summary.setAttribute("aria-live", "polite");
         summary.textContent = state.note;
-        root.replaceChildren(this.head(state), this.factBar(), summary, this.quickLooks(), this.catalogue(state), this.controls(state), this.reference(state, pose), this.board(state), this.salon(state), this.result(state), this.safety(state, pose));
+        root.replaceChildren(this.head(state), this.factBar(), summary, this.quickLooks(), this.catalogue(state), this.controls(state), this.board(state), this.salon(state), this.result(state), this.safety(state, pose));
     }
 }
+//# sourceMappingURL=view.js.map

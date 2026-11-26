@@ -43,7 +43,7 @@ export function liveTemplateId(styleId, verifiedIds) {
 export function sourceLabel(row) {
     return row.source === "synthetic-s1"
         ? "S1 synthetic catalogue — live template unverified"
-        : "Cut idea only — no YouCam template or rendered result";
+        : "Cut idea only — not a rendered result";
 }
 export function filteredStyles(query, favourites = new Set()) {
     const term = query.term.trim().toLocaleLowerCase();
@@ -120,3 +120,4 @@ export function guardCatalogue() {
     }
     return issues;
 }
+//# sourceMappingURL=model.js.map

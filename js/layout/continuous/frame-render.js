@@ -44,3 +44,4 @@ export function createDrawnFrameRenderer(doc, current) {
         }
     };
 }
+//# sourceMappingURL=frame-render.js.map

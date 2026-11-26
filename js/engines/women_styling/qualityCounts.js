@@ -50,3 +50,4 @@ export function publicReport(records) {
     return { format: 'beljour-women-r24c-counts/1', release_status: 'UNPROVEN',
         groups: aggregateCounts(records), note: 'Count-only summary; no frozen quality PASS inferred.' };
 }
+//# sourceMappingURL=qualityCounts.js.map

@@ -46,3 +46,4 @@ export function refreshDue(lastChecked, today, book) {
         return true;
     return book !== null && now > book.validUntil;
 }
+//# sourceMappingURL=schedule.js.map

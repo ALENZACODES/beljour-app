@@ -21,6 +21,9 @@ export const STATUSES = ["Build", "Stretch", "Post"];
 export const MASK_CLASSES = ["hair", "face-skin", "body-skin", "clothes", "background", "person"];
 export const FACE_REGIONS = ["lips", "brows", "lashes", "eyelids", "cheeks", "region"];
 export const DEFAULT_STRENGTH = { 1: 30 };
+/** The filter catalogue's one-tap default (lane 11): filter looks start at 65 so they show at one tap;
+ * other class-1 looks (portrait looks) keep the gentle 30. Mirrors FILTER_DEFAULT_STRENGTH in schema.py. */
+export const FILTER_DEFAULT_STRENGTH = { 1: 65 };
 const ID = /^[A-Z]{1,3}[0-9]{1,3}$/;
 const ROUND = /^FX[0-9]{1,2}$/;
 const PENDING_ROUND = /^(FX|R)[0-9]{1,2}$/;
@@ -104,7 +107,7 @@ export function checkStage(stage, where) {
         problems.push(`${where}: stage id ${JSON.stringify(s.id)} must be a short lower-case token`);
     return [...problems, ...checkParams(spec, s.params ?? {}, `${where} ${spec.name}`)];
 }
-export function checkRecipe(r, addons) {
+export function checkRecipe(r, addons, defaults = FILTER_DEFAULT_STRENGTH) {
     const where = String(r?.id ?? "?");
     const required = ["id", "name", "version", "class", "tab", "status", "round", "rank", "like", "description", "defaults", "limits",
         "editorial", "needs", "stages", "seed", "safety", "provenance"];
@@ -153,8 +156,8 @@ export function checkRecipe(r, addons) {
     const d = r.defaults;
     if (!Number.isInteger(d.strength) || d.strength < 0 || d.strength > 100)
         problems.push(`${where}: default strength is a whole number 0-100`);
-    else if (DEFAULT_STRENGTH[r.class] !== undefined && d.strength !== DEFAULT_STRENGTH[r.class])
-        problems.push(`${where}: class ${r.class} looks start at ${DEFAULT_STRENGTH[r.class]}`);
+    else if (defaults[r.class] !== undefined && d.strength !== defaults[r.class])
+        problems.push(`${where}: class ${r.class} looks start at ${defaults[r.class]} (one-tap default)`);
     for (const k of ["guard", "protectSkin", "backgroundOnly"])
         if (typeof d[k] !== "boolean")
             problems.push(`${where}: defaults.${k} must be true or false`);
@@ -220,14 +223,14 @@ export function checkRecipe(r, addons) {
         problems.push(`${where}: provenance.writtenFrom must cite filters-plan.md`);
     return problems;
 }
-export function checkCatalogue(data) {
+export function checkCatalogue(data, defaults = FILTER_DEFAULT_STRENGTH) {
     if (data.format !== FORMAT)
         return ["catalogue: unknown format"];
     const addons = new Map(data.addons.map((a) => [a.id, a]));
     const problems = [];
     const ids = new Map(), names = new Map(), ranks = new Map();
     for (const r of data.recipes) {
-        problems.push(...checkRecipe(r, addons));
+        problems.push(...checkRecipe(r, addons, defaults));
         ids.set(r.id, (ids.get(r.id) ?? 0) + 1);
         const key = r.name.toLocaleLowerCase("en");
         if (names.has(key) && names.get(key) !== r.id)
@@ -263,3 +266,4 @@ export function checkCatalogue(data) {
     }
     return problems;
 }
+//# sourceMappingURL=schema.js.map

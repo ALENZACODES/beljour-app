@@ -91,3 +91,4 @@ export class RecipeHistory {
         this.position = 0;
     }
 }
+//# sourceMappingURL=history.js.map

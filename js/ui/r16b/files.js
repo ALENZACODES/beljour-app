@@ -28,3 +28,4 @@ export function downloadPng(canvas, name) {
         setTimeout(() => URL.revokeObjectURL(a.href), 0);
     }, "image/png");
 }
+//# sourceMappingURL=files.js.map

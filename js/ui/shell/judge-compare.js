@@ -58,3 +58,4 @@ export function renderJudgeCompare(doc, host, state, image, onChange) {
     panel.append(judgeParagraph(doc, "Both files stay in browser memory. Only the export step saves a local file.", "lg-judge-small"));
     host.replaceChildren(panel);
 }
+//# sourceMappingURL=judge-compare.js.map

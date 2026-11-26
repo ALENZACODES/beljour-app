@@ -4,7 +4,7 @@ export const CATALOGUE = {
         {
             "id": "C01",
             "name": "Deauville",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Contrast",
             "status": "Build",
@@ -15,13 +15,13 @@ export const CATALOGUE = {
                 "source": "report#9",
                 "reason": "Most-used family in the source app; gentle default keeps skin natural"
             },
-            "description": "Crisp contrast, cool shadows, warm highlights",
+            "description": "Crisp contrast, cool blue highlights and background",
             "editorial": {
                 "family": "Masthead",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -51,25 +51,82 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.contrast",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.45
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.158
+                            ],
+                            [
+                                0.5,
+                                0.485
+                            ],
+                            [
+                                0.75,
+                                0.735
+                            ],
+                            [
+                                1,
+                                0.923
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.188
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                0.75,
+                                0.796
+                            ],
+                            [
+                                1,
+                                0.985
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.031
+                            ],
+                            [
+                                0.25,
+                                0.219
+                            ],
+                            [
+                                0.5,
+                                0.531
+                            ],
+                            [
+                                0.75,
+                                0.86
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 },
                 {
-                    "op": "colour.vibrance",
+                    "op": "light.vignette",
                     "params": {
-                        "amount": 0.35
-                    }
-                },
-                {
-                    "op": "colour.splitTone",
-                    "params": {
-                        "shadowHue": 225,
-                        "shadowAmount": 0.035,
-                        "highlightHue": 70,
-                        "highlightAmount": 0.03,
-                        "balance": 0.0
+                        "amount": 0.387,
+                        "inner": 0.4,
+                        "outer": 1
                     }
                 }
             ],
@@ -80,7 +137,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#9"
                 ],
@@ -92,7 +149,7 @@ export const CATALOGUE = {
         {
             "id": "C02",
             "name": "Biarritz",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -103,13 +160,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Warm, lively before/after on any skin tone"
             },
-            "description": "Rich warm colour with a soft highlight glow",
+            "description": "Rich warm colour with a soft highlight glow, with muted colour",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -143,27 +200,27 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "red": {
-                                "chroma": 0.25,
-                                "light": 0.2
+                                "chroma": 0.6038,
+                                "light": 0.483
                             },
                             "orange": {
-                                "chroma": 0.25,
-                                "light": 0.25
+                                "chroma": 0.6038,
+                                "light": 0.6038
                             },
                             "yellow": {
-                                "chroma": 0.3,
-                                "light": 0.2
+                                "chroma": 0.7245,
+                                "light": 0.483
                             },
                             "green": {
-                                "hue": 8,
-                                "chroma": -0.1
+                                "hue": 1.05,
+                                "chroma": -0.2415
                             },
                             "aqua": {
-                                "hue": 6
+                                "hue": 1.05
                             },
                             "blue": {
-                                "hue": 6,
-                                "chroma": 0.1
+                                "hue": 1.05,
+                                "chroma": 0.2415
                             }
                         }
                     }
@@ -171,16 +228,22 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.2
+                        "amount": 0.483
                     }
                 },
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.12,
+                        "amount": 0.2898,
                         "threshold": 0.75,
                         "radius": 0.02,
-                        "warmth": 0.3
+                        "warmth": 0.7245
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.3675
                     }
                 }
             ],
@@ -191,7 +254,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -203,7 +266,7 @@ export const CATALOGUE = {
         {
             "id": "C03",
             "name": "Giverny",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Natural",
             "status": "Build",
@@ -214,13 +277,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Background colour changes, face stays herself"
             },
-            "description": "Airy and bright; blues and greens lifted",
+            "description": "Airy and bright; blues and greens lifted, with more contrast; darker corners",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -252,7 +315,7 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.12
+                        "ev": 0.1764
                     }
                 },
                 {
@@ -260,16 +323,16 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "red": {
-                                "chroma": -0.25
+                                "chroma": -0.3675
                             },
                             "green": {
-                                "chroma": 0.3
+                                "chroma": 0.441
                             },
                             "aqua": {
-                                "chroma": 0.3
+                                "chroma": 0.441
                             },
                             "blue": {
-                                "chroma": 0.3
+                                "chroma": 0.441
                             }
                         }
                     }
@@ -277,7 +340,21 @@ export const CATALOGUE = {
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": -0.2
+                        "temperature": -0.294
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.315
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.4725,
+                        "inner": 0.35,
+                        "outer": 0.95
                     }
                 }
             ],
@@ -288,7 +365,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -300,7 +377,7 @@ export const CATALOGUE = {
         {
             "id": "C05",
             "name": "Menton",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -311,13 +388,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Subtle everyday warmth"
             },
-            "description": "Sunny, slightly faded warmth",
+            "description": "Sunny, slightly faded warmth, with muted colour",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -349,27 +426,33 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.15
+                        "ev": 0.2903
                     }
                 },
                 {
                     "op": "colour.tint",
                     "params": {
-                        "hue": 90,
-                        "amount": 0.03
+                        "hue": 70.0,
+                        "amount": 0.0405
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.15
+                        "amount": -0.2903
                     }
                 },
                 {
                     "op": "colour.tone",
                     "params": {
-                        "shadows": 0.45,
+                        "shadows": 0.6075,
                         "highlights": 0.0
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.27
                     }
                 }
             ],
@@ -380,7 +463,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -392,7 +475,7 @@ export const CATALOGUE = {
         {
             "id": "C06",
             "name": "Honfleur",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Vintage",
             "status": "Build",
@@ -403,13 +486,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Wearable nostalgia, no harsh shadows"
             },
-            "description": "Washed-out nostalgic softness",
+            "description": "Faded warm print with lifted blacks",
             "editorial": {
                 "family": "Heritage",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -439,30 +522,64 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.highlightRolloff",
-                    "params": {
-                        "amount": 1.0,
-                        "knee": 0.6
-                    }
-                },
-                {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.33
+                        "amount": -0.575
                     }
                 },
                 {
-                    "op": "colour.fade",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.15,
-                        "toneHue": 95,
-                        "toneAmount": 0.03
+                        "r": [
+                            [
+                                0,
+                                0.15
+                            ],
+                            [
+                                0.5,
+                                0.569
+                            ],
+                            [
+                                1,
+                                0.942
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.115
+                            ],
+                            [
+                                0.5,
+                                0.488
+                            ],
+                            [
+                                1,
+                                0.873
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.081
+                            ],
+                            [
+                                0.5,
+                                0.396
+                            ],
+                            [
+                                1,
+                                0.77
+                            ]
+                        ]
                     }
                 },
                 {
-                    "op": "colour.contrast",
+                    "op": "light.vignette",
                     "params": {
-                        "amount": -0.15
+                        "amount": 0.7,
+                        "inner": 0.75,
+                        "outer": 1.0
                     }
                 }
             ],
@@ -473,7 +590,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -485,7 +602,7 @@ export const CATALOGUE = {
         {
             "id": "C07",
             "name": "Étretat",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Pastel",
             "status": "Build",
@@ -496,13 +613,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Creamy mood without smoothing her skin"
             },
-            "description": "Creamy pastel haze",
+            "description": "Airy lilac mist with lifted blacks; more contrast",
             "editorial": {
                 "family": "Heritage",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -532,33 +649,98 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.tint",
+                    "op": "colour.curve",
                     "params": {
-                        "hue": 88,
-                        "amount": 0.035
+                        "r": [
+                            [
+                                0,
+                                0.126
+                            ],
+                            [
+                                0.3,
+                                0.318
+                            ],
+                            [
+                                0.55,
+                                0.546
+                            ],
+                            [
+                                0.72,
+                                0.747
+                            ],
+                            [
+                                0.86,
+                                0.932
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.108
+                            ],
+                            [
+                                0.3,
+                                0.291
+                            ],
+                            [
+                                0.55,
+                                0.532
+                            ],
+                            [
+                                0.72,
+                                0.702
+                            ],
+                            [
+                                0.86,
+                                0.824
+                            ],
+                            [
+                                1,
+                                0.928
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.153
+                            ],
+                            [
+                                0.3,
+                                0.345
+                            ],
+                            [
+                                0.55,
+                                0.55
+                            ],
+                            [
+                                0.72,
+                                0.756
+                            ],
+                            [
+                                0.86,
+                                0.941
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.25
+                        "amount": -0.144
                     }
                 },
                 {
-                    "op": "colour.fade",
+                    "op": "colour.contrast",
                     "params": {
-                        "amount": 0.1,
-                        "toneHue": 0.0,
-                        "toneAmount": 0.0
-                    }
-                },
-                {
-                    "op": "spatial.glow",
-                    "params": {
-                        "amount": 0.25,
-                        "threshold": 0.65,
-                        "radius": 0.03,
-                        "warmth": 0.2
+                        "amount": 0.3
                     }
                 }
             ],
@@ -569,7 +751,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -581,7 +763,7 @@ export const CATALOGUE = {
         {
             "id": "C08",
             "name": "Èze",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Natural",
             "status": "Build",
@@ -592,13 +774,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Best daily default: 'still me, best day'"
             },
-            "description": "Near-invisible polish",
+            "description": "Light polish, with a brighter exposure",
             "editorial": {
                 "family": "Masthead",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -631,21 +813,27 @@ export const CATALOGUE = {
                     "id": "expo",
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.15
+                        "ev": 0.1764
                     }
                 },
                 {
                     "id": "contrast",
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.08
+                        "amount": -0.0936
                     }
                 },
                 {
                     "id": "sat",
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.06
+                        "amount": -0.0708
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.3444
                     }
                 }
             ],
@@ -704,7 +892,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -716,7 +904,7 @@ export const CATALOGUE = {
         {
             "id": "C09",
             "name": "Provence",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Pastel",
             "status": "Build",
@@ -727,13 +915,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Soft light, no reshaping"
             },
-            "description": "Soft pastel light",
+            "description": "Soft pastel light, with a deeper exposure",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -765,7 +953,7 @@ export const CATALOGUE = {
                 {
                     "op": "colour.vibrance",
                     "params": {
-                        "amount": -0.5
+                        "amount": -0.42
                     }
                 },
                 {
@@ -773,14 +961,14 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "red": {
-                                "chroma": -0.1
+                                "chroma": -0.1155
                             },
                             "orange": {
-                                "chroma": -0.15
+                                "chroma": -0.1733
                             },
                             "yellow": {
-                                "chroma": -0.2,
-                                "hue": 6
+                                "chroma": -0.231,
+                                "hue": 1.05
                             }
                         }
                     }
@@ -788,14 +976,20 @@ export const CATALOGUE = {
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": -0.12
+                        "temperature": -0.1386
                     }
                 },
                 {
                     "op": "colour.highlightRolloff",
                     "params": {
-                        "amount": 0.5,
+                        "amount": 0.5775,
                         "knee": 0.7
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.3465
                     }
                 }
             ],
@@ -806,7 +1000,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -818,9 +1012,9 @@ export const CATALOGUE = {
         {
             "id": "C102",
             "name": "Sceaux",
-            "version": 1,
+            "version": 2,
             "class": 1,
-            "tab": "Clean",
+            "tab": "Warm",
             "status": "Build",
             "round": "FX1",
             "rank": 13,
@@ -829,13 +1023,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Ivory light"
             },
-            "description": "Ivory highlights, soft contrast",
+            "description": "Ivory highlights, soft contrast, with a deeper exposure",
             "editorial": {
                 "family": "Salon Suite",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -870,21 +1064,27 @@ export const CATALOGUE = {
                         "shadowHue": 0,
                         "shadowAmount": 0,
                         "highlightHue": 90,
-                        "highlightAmount": 0.04,
+                        "highlightAmount": 0.042,
                         "balance": 0.0
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.18
+                        "amount": -0.189
                     }
                 },
                 {
                     "op": "colour.highlightRolloff",
                     "params": {
-                        "amount": 0.3,
+                        "amount": 0.315,
                         "knee": 0.7
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.315
                     }
                 }
             ],
@@ -895,7 +1095,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -905,7 +1105,7 @@ export const CATALOGUE = {
         {
             "id": "C103",
             "name": "Senlis",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Clean",
             "status": "Build",
@@ -916,13 +1116,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Clean white"
             },
-            "description": "Clean whites, her skin tone neutral",
+            "description": "Clean whites, her skin tone neutral, muted colour; softer, deeper",
             "editorial": {
                 "family": "Salon Suite",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -954,16 +1154,34 @@ export const CATALOGUE = {
                 {
                     "op": "colour.highlightRolloff",
                     "params": {
-                        "amount": 0.25,
+                        "amount": 0.455,
                         "knee": 0.7,
-                        "chroma": -0.6
+                        "chroma": -0.7
                     }
                 },
                 {
                     "op": "colour.tone",
                     "params": {
-                        "shadows": 0.0,
-                        "highlights": 0.2
+                        "shadows": 0,
+                        "highlights": 0.364
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.245
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": -0.25
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.3
                     }
                 }
             ],
@@ -974,7 +1192,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -984,7 +1202,7 @@ export const CATALOGUE = {
         {
             "id": "C105",
             "name": "Chatou",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Clean",
             "status": "Build",
@@ -995,13 +1213,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Soft focus"
             },
-            "description": "Gentle diffusion, neutral colour",
+            "description": "Bright pearl high-key with a soft glow",
             "editorial": {
                 "family": "Salon Suite",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1031,26 +1249,77 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "spatial.glow",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.35,
-                        "threshold": 0.5,
-                        "radius": 0.04,
-                        "warmth": 0.0
+                        "r": [
+                            [
+                                0,
+                                0.04
+                            ],
+                            [
+                                0.5,
+                                0.579
+                            ],
+                            [
+                                0.8,
+                                0.932
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.04
+                            ],
+                            [
+                                0.5,
+                                0.579
+                            ],
+                            [
+                                0.8,
+                                0.932
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.04
+                            ],
+                            [
+                                0.5,
+                                0.579
+                            ],
+                            [
+                                0.8,
+                                0.932
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.05
+                        "amount": -0.36
                     }
                 },
                 {
-                    "op": "colour.fade",
+                    "op": "spatial.glow",
                     "params": {
-                        "amount": 0.15,
-                        "toneHue": 0.0,
-                        "toneAmount": 0.0
+                        "amount": 0.792,
+                        "threshold": 0.6,
+                        "radius": 0.03,
+                        "warmth": 0.198
                     }
                 }
             ],
@@ -1061,7 +1330,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [],
                 "concepts": [
                     "OKLab",
@@ -1072,9 +1341,9 @@ export const CATALOGUE = {
         {
             "id": "C106",
             "name": "Bougival",
-            "version": 1,
+            "version": 3,
             "class": 1,
-            "tab": "Clean",
+            "tab": "Film-style",
             "status": "Build",
             "round": "FX1",
             "rank": 16,
@@ -1083,13 +1352,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Pearl"
             },
-            "description": "Pearly highlight glow, very subtle",
+            "description": "Pearly highlight glow, softer contrast, cross-processed colour",
             "editorial": {
                 "family": "Salon Suite",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1121,10 +1390,10 @@ export const CATALOGUE = {
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.2,
+                        "amount": 0.1296,
                         "threshold": 0.78,
                         "radius": 0.02,
-                        "warmth": -0.1
+                        "warmth": -0.0648
                     }
                 },
                 {
@@ -1133,8 +1402,51 @@ export const CATALOGUE = {
                         "shadowHue": 0,
                         "shadowAmount": 0,
                         "highlightHue": 320,
-                        "highlightAmount": 0.012,
+                        "highlightAmount": 0.0081,
                         "balance": 0.0
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": -0.27
+                    }
+                },
+                {
+                    "op": "colour.curve",
+                    "params": {
+                        "b": [
+                            [
+                                0,
+                                0.0648
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                1,
+                                0.838
+                            ]
+                        ],
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.3,
+                                0.246
+                            ],
+                            [
+                                0.7,
+                                0.781
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 }
             ],
@@ -1145,7 +1457,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab",
@@ -1156,9 +1468,9 @@ export const CATALOGUE = {
         {
             "id": "C107",
             "name": "Croissy",
-            "version": 1,
+            "version": 2,
             "class": 1,
-            "tab": "Clean",
+            "tab": "Warm",
             "status": "Build",
             "round": "FX1",
             "rank": 17,
@@ -1167,13 +1479,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Warm light"
             },
-            "description": "Warm white balance, soft",
+            "description": "Warm white balance, soft, with a matte finish",
             "editorial": {
                 "family": "Salon Suite",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1205,20 +1517,28 @@ export const CATALOGUE = {
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": 0.45
+                        "temperature": 1
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.1
+                        "amount": -0.24
                     }
                 },
                 {
                     "op": "colour.tone",
                     "params": {
-                        "shadows": 0.2,
-                        "highlights": 0.0
+                        "shadows": 0.48,
+                        "highlights": 0
+                    }
+                },
+                {
+                    "op": "colour.fade",
+                    "params": {
+                        "amount": 0.3,
+                        "toneAmount": 0,
+                        "toneHue": 0
                     }
                 }
             ],
@@ -1229,7 +1549,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -1239,7 +1559,7 @@ export const CATALOGUE = {
         {
             "id": "C14",
             "name": "Lyon",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -1250,13 +1570,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Safe warm look for every skin tone"
             },
-            "description": "Gentle warmth",
+            "description": "Gentle warmth, with more contrast",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1288,20 +1608,26 @@ export const CATALOGUE = {
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": 0.25
+                        "temperature": 0.6038
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.12
+                        "amount": 0.2898
                     }
                 },
                 {
                     "op": "colour.tone",
                     "params": {
-                        "shadows": 0.3,
+                        "shadows": 0.7245,
                         "highlights": 0.0
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.315
                     }
                 }
             ],
@@ -1312,7 +1638,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -1324,7 +1650,7 @@ export const CATALOGUE = {
         {
             "id": "C16",
             "name": "Antibes",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Cool",
             "status": "Build",
@@ -1335,13 +1661,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Holiday look that keeps the face natural"
             },
-            "description": "Blue water, warm light",
+            "description": "Blue water, warm light, with a deeper exposure; darker corners",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1375,12 +1701,12 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "blue": {
-                                "chroma": 0.35,
-                                "light": -0.15
+                                "chroma": 0.4725,
+                                "light": -0.1323
                             },
                             "aqua": {
-                                "chroma": 0.25,
-                                "light": -0.1
+                                "chroma": 0.3675,
+                                "light": -0.0882
                             }
                         }
                     }
@@ -1388,11 +1714,25 @@ export const CATALOGUE = {
                 {
                     "op": "colour.splitTone",
                     "params": {
-                        "shadowHue": 0,
-                        "shadowAmount": 0,
+                        "shadowHue": 220.0,
+                        "shadowAmount": 0.0315,
                         "highlightHue": 58,
-                        "highlightAmount": 0.035,
+                        "highlightAmount": 0.0315,
                         "balance": 0.0
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.378
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.63,
+                        "inner": 0.35,
+                        "outer": 0.95
                     }
                 }
             ],
@@ -1403,7 +1743,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -1415,7 +1755,7 @@ export const CATALOGUE = {
         {
             "id": "C26",
             "name": "Colmar",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Natural",
             "status": "Build",
@@ -1432,7 +1772,7 @@ export const CATALOGUE = {
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1464,13 +1804,27 @@ export const CATALOGUE = {
                 {
                     "op": "colour.vibrance",
                     "params": {
-                        "amount": 0.8
+                        "amount": 0.64
                     }
                 },
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.05
+                        "ev": 0.04
+                    }
+                },
+                {
+                    "op": "colour.fade",
+                    "params": {
+                        "amount": 0.3,
+                        "toneAmount": 0,
+                        "toneHue": 0
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": -0.25
                     }
                 }
             ],
@@ -1481,7 +1835,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -1493,7 +1847,7 @@ export const CATALOGUE = {
         {
             "id": "C28",
             "name": "Fontainebleau",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Natural",
             "status": "Build",
@@ -1504,16 +1858,16 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Complexion untouched by design"
             },
-            "description": "Warm background, face untouched",
+            "description": "Warm look, skin kept as it is, with more contrast and a brighter exposure",
             "editorial": {
                 "family": "Salon Suite",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
-                "protectSkin": false,
-                "backgroundOnly": true,
+                "protectSkin": true,
+                "backgroundOnly": false,
                 "addons": [
                     {
                         "id": "fade",
@@ -1532,8 +1886,7 @@ export const CATALOGUE = {
                 "landmarks": false,
                 "masks": [
                     "face-skin",
-                    "body-skin",
-                    "person"
+                    "body-skin"
                 ],
                 "depth": false,
                 "camera": false,
@@ -1545,13 +1898,13 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "red": {
-                                "chroma": 0.25
+                                "chroma": 0.2625
                             },
                             "orange": {
-                                "chroma": 0.35
+                                "chroma": 0.3675
                             },
                             "yellow": {
-                                "chroma": 0.35
+                                "chroma": 0.3675
                             }
                         }
                     }
@@ -1559,7 +1912,19 @@ export const CATALOGUE = {
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": 0.25
+                        "temperature": 0.2625
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.315
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.2625
                     }
                 }
             ],
@@ -1570,7 +1935,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -1582,7 +1947,7 @@ export const CATALOGUE = {
         {
             "id": "C30",
             "name": "Périgord",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -1593,13 +1958,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Golden-hour glow is widely loved"
             },
-            "description": "Golden hour",
+            "description": "Matte amber film, lifted warm blacks, soft glow; more contrast",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1629,50 +1994,89 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "id": "wb",
-                    "op": "colour.whiteBalance",
+                    "op": "colour.curve",
                     "params": {
-                        "temperature": 0.45
+                        "r": [
+                            [
+                                0,
+                                0.145
+                            ],
+                            [
+                                0.5,
+                                0.545
+                            ],
+                            [
+                                0.8,
+                                0.892
+                            ],
+                            [
+                                1,
+                                0.965
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.127
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                0.8,
+                                0.8
+                            ],
+                            [
+                                1,
+                                0.885
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.081
+                            ],
+                            [
+                                0.5,
+                                0.43
+                            ],
+                            [
+                                0.8,
+                                0.639
+                            ],
+                            [
+                                1,
+                                0.7
+                            ]
+                        ]
                     }
                 },
                 {
-                    "id": "contrast",
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.25
+                    }
+                },
+                {
+                    "op": "spatial.glow",
+                    "params": {
+                        "amount": 0.4,
+                        "threshold": 0.7,
+                        "radius": 0.03,
+                        "warmth": 0.2
+                    }
+                },
+                {
                     "op": "colour.contrast",
                     "params": {
                         "amount": 0.2
-                    }
-                },
-                {
-                    "id": "split",
-                    "op": "colour.splitTone",
-                    "params": {
-                        "shadowHue": 240,
-                        "shadowAmount": 0.02,
-                        "highlightHue": 75,
-                        "highlightAmount": 0.02,
-                        "balance": 0.0
                     }
                 }
             ],
             "presets": [
                 {
                     "name": "Golden Vinyl",
-                    "patch": {
-                        "wb": {
-                            "temperature": 0.22,
-                            "tint": 0.01
-                        },
-                        "contrast": {
-                            "amount": 0.14
-                        },
-                        "split": {
-                            "shadowHue": 246,
-                            "shadowAmount": 0.01,
-                            "highlightHue": 52,
-                            "highlightAmount": 0.028,
-                            "balance": 0.08
-                        }
-                    },
                     "append": [
                         {
                             "op": "colour.curve",
@@ -1714,7 +2118,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -1726,7 +2130,7 @@ export const CATALOGUE = {
         {
             "id": "C38",
             "name": "Camargue",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Fade",
             "status": "Build",
@@ -1737,13 +2141,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Gentle and versatile"
             },
-            "description": "Matte finish",
+            "description": "Matte finish, with a deeper exposure",
             "editorial": {
                 "family": "Heritage",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1775,15 +2179,21 @@ export const CATALOGUE = {
                 {
                     "op": "colour.fade",
                     "params": {
-                        "amount": 0.45,
-                        "toneHue": 0.0,
-                        "toneAmount": 0.0
+                        "amount": 0.36,
+                        "toneHue": 0,
+                        "toneAmount": 0
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.2
+                        "amount": -0.16
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.3
                     }
                 }
             ],
@@ -1794,7 +2204,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -1806,7 +2216,7 @@ export const CATALOGUE = {
         {
             "id": "C39",
             "name": "Talloires",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Clean",
             "status": "Build",
@@ -1817,13 +2227,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Soft-focus portrait with her skin protected"
             },
-            "description": "Soft-focus portrait, slightly cool, her skin kept as it is",
+            "description": "Soft-focus portrait, slightly cool, skin kept; more contrast, brighter",
             "editorial": {
                 "family": "Salon Suite",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": true,
                 "backgroundOnly": false,
@@ -1855,16 +2265,34 @@ export const CATALOGUE = {
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": -0.3
+                        "temperature": -0.756
                     }
                 },
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.3,
+                        "amount": 0.756,
                         "threshold": 0.55,
                         "radius": 0.035,
-                        "warmth": -0.4
+                        "warmth": -1
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.315
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.2625
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.315
                     }
                 }
             ],
@@ -1875,7 +2303,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#10"
                 ],
@@ -1888,7 +2316,7 @@ export const CATALOGUE = {
         {
             "id": "C40",
             "name": "Uzès",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Fade",
             "status": "Build",
@@ -1899,13 +2327,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Warm diffusion without changing her"
             },
-            "description": "Romantic warm glow",
+            "description": "Moody rose: darker mids, warm bloom",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -1935,26 +2363,77 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.whiteBalance",
+                    "op": "colour.exposure",
                     "params": {
-                        "temperature": 0.15
+                        "ev": -0.449
                     }
                 },
                 {
-                    "op": "colour.fade",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.3,
-                        "toneHue": 75,
-                        "toneAmount": 0.02
+                        "r": [
+                            [
+                                0,
+                                0.12
+                            ],
+                            [
+                                0.5,
+                                0.535
+                            ],
+                            [
+                                0.8,
+                                0.875
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.075
+                            ],
+                            [
+                                0.5,
+                                0.49
+                            ],
+                            [
+                                0.8,
+                                0.71
+                            ],
+                            [
+                                1,
+                                0.851
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.12
+                            ],
+                            [
+                                0.5,
+                                0.47
+                            ],
+                            [
+                                0.8,
+                                0.8
+                            ],
+                            [
+                                1,
+                                0.925
+                            ]
+                        ]
                     }
                 },
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.25,
-                        "threshold": 0.65,
-                        "radius": 0.03,
-                        "warmth": 0.6
+                        "amount": 0.822,
+                        "threshold": 0.6,
+                        "radius": 0.035,
+                        "warmth": 0.3
                     }
                 }
             ],
@@ -1979,7 +2458,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -1992,7 +2471,7 @@ export const CATALOGUE = {
         {
             "id": "C41",
             "name": "Conques",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Classic",
             "status": "Build",
@@ -2003,13 +2482,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Puts attention on her face"
             },
-            "description": "Light drawn to the face",
+            "description": "Light drawn to the face, with a deeper exposure",
             "editorial": {
                 "family": "Masthead",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2041,7 +2520,7 @@ export const CATALOGUE = {
                 {
                     "op": "light.centre",
                     "params": {
-                        "amount": 0.35,
+                        "amount": 1,
                         "warmth": 0.0,
                         "radius": 0.45,
                         "follow": 1
@@ -2050,9 +2529,15 @@ export const CATALOGUE = {
                 {
                     "op": "light.vignette",
                     "params": {
-                        "amount": 0.2,
+                        "amount": 0.78,
                         "inner": 0.35,
-                        "outer": 1.0
+                        "outer": 1
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.45
                     }
                 }
             ],
@@ -2084,7 +2569,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -2096,7 +2581,7 @@ export const CATALOGUE = {
         {
             "id": "C50",
             "name": "Arcachon",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -2107,13 +2592,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Warm and kind"
             },
-            "description": "Honey mids, gentle gold highlights, low contrast",
+            "description": "Honey mids, gentle gold highlights, low contrast, with darker corners",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2146,7 +2631,7 @@ export const CATALOGUE = {
                     "op": "colour.tint",
                     "params": {
                         "hue": 75,
-                        "amount": 0.025
+                        "amount": 0.015
                     }
                 },
                 {
@@ -2155,14 +2640,22 @@ export const CATALOGUE = {
                         "shadowHue": 0,
                         "shadowAmount": 0,
                         "highlightHue": 85,
-                        "highlightAmount": 0.025,
-                        "balance": 0.0
+                        "highlightAmount": 0.015,
+                        "balance": 0
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.12
+                        "amount": -0.072
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.45,
+                        "inner": 0.35,
+                        "outer": 0.95
                     }
                 }
             ],
@@ -2173,7 +2666,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -2183,7 +2676,7 @@ export const CATALOGUE = {
         {
             "id": "C53",
             "name": "Granville",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Natural",
             "status": "Build",
@@ -2194,13 +2687,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "True colour"
             },
-            "description": "True colour: half the colour cast removed",
+            "description": "True colour, half the cast removed; cooler and brighter; richer colour",
             "editorial": {
                 "family": "Masthead",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2232,13 +2725,31 @@ export const CATALOGUE = {
                 {
                     "op": "colour.greyWorld",
                     "params": {
-                        "amount": 0.6
+                        "amount": 1
                     }
                 },
                 {
                     "op": "colour.vibrance",
                     "params": {
-                        "amount": 0.15
+                        "amount": 0.4158
+                    }
+                },
+                {
+                    "op": "colour.whiteBalance",
+                    "params": {
+                        "temperature": -0.3465
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.2888
+                    }
+                },
+                {
+                    "op": "colour.vibrance",
+                    "params": {
+                        "amount": 0.21
                     }
                 }
             ],
@@ -2249,7 +2760,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab",
@@ -2260,7 +2771,7 @@ export const CATALOGUE = {
         {
             "id": "C54",
             "name": "Dinard",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Natural",
             "status": "Build",
@@ -2271,13 +2782,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Fresh"
             },
-            "description": "A little brighter, livelier, cleaner greens",
+            "description": "A little brighter, livelier, cleaner greens, with a matte finish",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2309,13 +2820,13 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.2
+                        "ev": 0.42
                     }
                 },
                 {
                     "op": "colour.vibrance",
                     "params": {
-                        "amount": 0.25
+                        "amount": 0.525
                     }
                 },
                 {
@@ -2323,10 +2834,18 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "green": {
-                                "chroma": 0.3,
-                                "hue": 8
+                                "chroma": 0.63,
+                                "hue": 1.05
                             }
                         }
+                    }
+                },
+                {
+                    "op": "colour.fade",
+                    "params": {
+                        "amount": 0.315,
+                        "toneAmount": 0,
+                        "toneHue": 0
                     }
                 }
             ],
@@ -2337,7 +2856,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -2347,7 +2866,7 @@ export const CATALOGUE = {
         {
             "id": "C55",
             "name": "Bréhat",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Natural",
             "status": "Build",
@@ -2358,13 +2877,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Soft daylight"
             },
-            "description": "Soft highlights, open shadows, neutral colour",
+            "description": "Soft highlights, open shadows, neutral colour, with a cooler cast",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2396,15 +2915,21 @@ export const CATALOGUE = {
                 {
                     "op": "colour.highlightRolloff",
                     "params": {
-                        "amount": 0.7,
+                        "amount": 1,
                         "knee": 0.65
                     }
                 },
                 {
                     "op": "colour.tone",
                     "params": {
-                        "shadows": 0.5,
+                        "shadows": 1,
                         "highlights": 0.0
+                    }
+                },
+                {
+                    "op": "colour.whiteBalance",
+                    "params": {
+                        "temperature": -0.45
                     }
                 }
             ],
@@ -2415,7 +2940,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -2425,9 +2950,9 @@ export const CATALOGUE = {
         {
             "id": "C63",
             "name": "Chenonceau",
-            "version": 1,
+            "version": 2,
             "class": 1,
-            "tab": "Classic",
+            "tab": "Film-style",
             "status": "Build",
             "round": "FX1",
             "rank": 31,
@@ -2436,13 +2961,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Soft portrait classic"
             },
-            "description": "Low contrast with a slight highlight glow",
+            "description": "Low contrast, highlight glow; brighter, cross-processed colour",
             "editorial": {
                 "family": "Heritage",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2474,16 +2999,59 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.2
+                        "amount": -0.462
                     }
                 },
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.15,
+                        "amount": 0.3465,
                         "threshold": 0.72,
                         "radius": 0.025,
                         "warmth": 0.0
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.2888
+                    }
+                },
+                {
+                    "op": "colour.curve",
+                    "params": {
+                        "b": [
+                            [
+                                0,
+                                0.0556
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                1,
+                                0.8614
+                            ]
+                        ],
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.3,
+                                0.2538
+                            ],
+                            [
+                                0.7,
+                                0.7693
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 }
             ],
@@ -2494,7 +3062,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab",
@@ -2505,7 +3073,7 @@ export const CATALOGUE = {
         {
             "id": "C77",
             "name": "Villefranche",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Pastel",
             "status": "Build",
@@ -2516,13 +3084,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Flattering peach light"
             },
-            "description": "Peach in the highlights",
+            "description": "Peach highlights, muted colour, brighter; darker corners",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2558,15 +3126,35 @@ export const CATALOGUE = {
                         "shadowHue": 0,
                         "shadowAmount": 0,
                         "highlightHue": 48,
-                        "highlightAmount": 0.045,
-                        "balance": -0.2
+                        "highlightAmount": 0.12,
+                        "balance": -0.24
                     }
                 },
                 {
                     "id": "expo",
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.05
+                        "ev": 0.2592
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.6
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.54
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.54,
+                        "inner": 0.35,
+                        "outer": 0.95
                     }
                 }
             ],
@@ -2624,7 +3212,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -2634,7 +3222,7 @@ export const CATALOGUE = {
         {
             "id": "C93",
             "name": "Palavas",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Film-style",
             "status": "Build",
@@ -2645,13 +3233,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Made for faces"
             },
-            "description": "Portrait film: soft contrast, warm mids",
+            "description": "Portrait film: soft contrast, warm mids, with a warmer cast",
             "editorial": {
                 "family": "Heritage",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2691,7 +3279,7 @@ export const CATALOGUE = {
                         "master": [
                             [
                                 0,
-                                0.03
+                                0.039
                             ],
                             [
                                 0.5,
@@ -2699,7 +3287,7 @@ export const CATALOGUE = {
                             ],
                             [
                                 1,
-                                0.97
+                                0.961
                             ]
                         ]
                     }
@@ -2708,7 +3296,7 @@ export const CATALOGUE = {
                     "id": "contrast",
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.15
+                        "amount": -0.195
                     }
                 },
                 {
@@ -2716,15 +3304,21 @@ export const CATALOGUE = {
                     "op": "colour.tint",
                     "params": {
                         "hue": 65,
-                        "amount": 0.015
+                        "amount": 0.019
                     }
                 },
                 {
                     "id": "roll",
                     "op": "colour.highlightRolloff",
                     "params": {
-                        "amount": 0.3,
+                        "amount": 0.39,
                         "knee": 0.7
+                    }
+                },
+                {
+                    "op": "colour.whiteBalance",
+                    "params": {
+                        "temperature": 0.3
                     }
                 }
             ],
@@ -2801,7 +3395,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1H",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [],
                 "concepts": [
                     "OKLab"
@@ -2811,7 +3405,7 @@ export const CATALOGUE = {
         {
             "id": "M02",
             "name": "Saint-Malo",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Monochrome",
             "status": "Build",
@@ -2822,13 +3416,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Elegant, flattering"
             },
-            "description": "Soft mono with a faint violet tone",
+            "description": "Soft black and white with a gentle glow",
             "editorial": {
                 "family": "Heritage",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2844,7 +3438,8 @@ export const CATALOGUE = {
                 "geometry": "none",
                 "simulationLabel": false,
                 "funTab": false,
-                "guardMode": "lightness"
+                "guardMode": "lightness",
+                "neutralMono": true
             },
             "needs": {
                 "landmarks": false,
@@ -2884,23 +3479,16 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.1
-                    }
-                },
-                {
-                    "op": "colour.tint",
-                    "params": {
-                        "hue": 300,
-                        "amount": 0.015
+                        "amount": -0.23
                     }
                 },
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.2,
+                        "amount": 0.46,
                         "threshold": 0.7,
                         "radius": 0.03,
-                        "warmth": 0.0
+                        "warmth": 0
                     }
                 }
             ],
@@ -2925,7 +3513,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1B",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -2937,7 +3525,7 @@ export const CATALOGUE = {
         {
             "id": "C04",
             "name": "Albi",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Classic",
             "status": "Build",
@@ -2948,13 +3536,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Editorial at low strength; red cast only if she picks Strong"
             },
-            "description": "Red accents kept, other colours quieter",
+            "description": "Red accents kept, other colours quieter; matte and brighter; darker corners",
             "editorial": {
                 "family": "Heritage",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -2988,28 +3576,28 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "red": {
-                                "chroma": 0.1
+                                "chroma": 0.181
                             },
                             "orange": {
-                                "chroma": -0.3
+                                "chroma": -0.542
                             },
                             "yellow": {
-                                "chroma": -0.45
+                                "chroma": -0.815
                             },
                             "green": {
-                                "chroma": -0.55
+                                "chroma": -0.995
                             },
                             "aqua": {
-                                "chroma": -0.55
+                                "chroma": -0.995
                             },
                             "blue": {
-                                "chroma": -0.55
+                                "chroma": -0.995
                             },
                             "purple": {
-                                "chroma": -0.5
+                                "chroma": -0.905
                             },
                             "magenta": {
-                                "chroma": -0.3
+                                "chroma": -0.542
                             }
                         }
                     }
@@ -3017,7 +3605,29 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.12
+                        "amount": -0.217
+                    }
+                },
+                {
+                    "op": "colour.fade",
+                    "params": {
+                        "amount": 0.679,
+                        "toneAmount": 0,
+                        "toneHue": 0
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.566
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.652,
+                        "inner": 0.35,
+                        "outer": 0.95
                     }
                 }
             ],
@@ -3041,7 +3651,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3053,7 +3663,7 @@ export const CATALOGUE = {
         {
             "id": "C10",
             "name": "Grasse",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Pastel",
             "status": "Build",
@@ -3064,13 +3674,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Playful rosy mood"
             },
-            "description": "Rosy pastel",
+            "description": "Rosy pastel, with a brighter exposure; softer contrast",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3105,20 +3715,38 @@ export const CATALOGUE = {
                         "shadowHue": 0,
                         "shadowAmount": 0,
                         "highlightHue": 355,
-                        "highlightAmount": 0.045,
-                        "balance": -0.3
+                        "highlightAmount": 0.078,
+                        "balance": -0.45
                     }
                 },
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.12
+                        "ev": 0.207
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.12
+                        "amount": -0.207
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.24
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": -0.3
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": -0.375
                     }
                 }
             ],
@@ -3129,7 +3757,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3141,7 +3769,7 @@ export const CATALOGUE = {
         {
             "id": "C11",
             "name": "Ramatuelle",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Vintage",
             "status": "Build",
@@ -3152,13 +3780,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Pretty vintage feel"
             },
-            "description": "Rosy, faded vintage",
+            "description": "Rosy, faded vintage, with muted colour",
             "editorial": {
                 "family": "Heritage",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3190,22 +3818,28 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.1
+                        "ev": 0.23
                     }
                 },
                 {
                     "op": "colour.tint",
                     "params": {
                         "hue": 5,
-                        "amount": 0.025
+                        "amount": 0.057
                     }
                 },
                 {
                     "op": "colour.fade",
                     "params": {
-                        "amount": 0.3,
+                        "amount": 0.69,
                         "toneHue": 60,
-                        "toneAmount": 0.025
+                        "toneAmount": 0.057
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.35
                     }
                 }
             ],
@@ -3216,7 +3850,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3228,7 +3862,7 @@ export const CATALOGUE = {
         {
             "id": "C12",
             "name": "Annecy",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Pastel",
             "status": "Build",
@@ -3239,13 +3873,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Suits bright backgrounds"
             },
-            "description": "Fresh aqua pastel",
+            "description": "Bright mint-aqua daylight",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3275,22 +3909,68 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.tint",
+                    "op": "colour.curve",
                     "params": {
-                        "hue": 195,
-                        "amount": 0.03
-                    }
-                },
-                {
-                    "op": "colour.exposure",
-                    "params": {
-                        "ev": 0.14
+                        "r": [
+                            [
+                                0,
+                                0.102
+                            ],
+                            [
+                                0.5,
+                                0.539
+                            ],
+                            [
+                                0.8,
+                                0.8
+                            ],
+                            [
+                                1,
+                                0.898
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.153
+                            ],
+                            [
+                                0.5,
+                                0.577
+                            ],
+                            [
+                                0.8,
+                                0.914
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.141
+                            ],
+                            [
+                                0.5,
+                                0.565
+                            ],
+                            [
+                                0.8,
+                                0.902
+                            ],
+                            [
+                                1,
+                                0.986
+                            ]
+                        ]
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.12
+                        "amount": -0.065
                     }
                 }
             ],
@@ -3301,7 +3981,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -3313,7 +3993,7 @@ export const CATALOGUE = {
         {
             "id": "C13",
             "name": "Chamonix",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Cool",
             "status": "Build",
@@ -3324,13 +4004,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Cool tones flatter fewer complexions"
             },
-            "description": "Cool, icy light",
+            "description": "Cool, icy light; softer contrast",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3362,14 +4042,20 @@ export const CATALOGUE = {
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": -0.45
+                        "temperature": -1
                     }
                 },
                 {
                     "op": "colour.tone",
                     "params": {
-                        "shadows": -0.5,
+                        "shadows": -1,
                         "highlights": 0.0
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": -0.375
                     }
                 }
             ],
@@ -3395,7 +4081,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3407,7 +4093,7 @@ export const CATALOGUE = {
         {
             "id": "C15",
             "name": "Nice",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -3418,15 +4104,15 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Sunny; saturation kept in check by the guard"
             },
-            "description": "Golden, saturated sun",
+            "description": "Golden sun, skin kept natural; matte, cross-processed colour",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
-                "protectSkin": false,
+                "protectSkin": true,
                 "backgroundOnly": false,
                 "addons": [
                     {
@@ -3460,13 +4146,13 @@ export const CATALOGUE = {
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": 0.25
+                        "amount": 0.1575
                     }
                 },
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": 0.3
+                        "temperature": 0.189
                     }
                 },
                 {
@@ -3475,8 +4161,53 @@ export const CATALOGUE = {
                         "shadowHue": 0,
                         "shadowAmount": 0,
                         "highlightHue": 80,
-                        "highlightAmount": 0.035,
+                        "highlightAmount": 0.0221,
                         "balance": 0.0
+                    }
+                },
+                {
+                    "op": "colour.fade",
+                    "params": {
+                        "amount": 0.189,
+                        "toneAmount": 0,
+                        "toneHue": 0
+                    }
+                },
+                {
+                    "op": "colour.curve",
+                    "params": {
+                        "b": [
+                            [
+                                0,
+                                0.0504
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                1,
+                                0.874
+                            ]
+                        ],
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.3,
+                                0.258
+                            ],
+                            [
+                                0.7,
+                                0.763
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 }
             ],
@@ -3487,7 +4218,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3499,7 +4230,7 @@ export const CATALOGUE = {
         {
             "id": "C20",
             "name": "Rouen",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Vintage",
             "status": "Build",
@@ -3510,13 +4241,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Gentle nostalgia"
             },
-            "description": "Soft sepia warmth",
+            "description": "Low-key walnut brown with deep shadows",
             "editorial": {
                 "family": "Heritage",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3546,33 +4277,94 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.27
+                    }
+                },
+                {
+                    "op": "colour.curve",
+                    "params": {
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.187
+                            ],
+                            [
+                                0.5,
+                                0.473
+                            ],
+                            [
+                                0.75,
+                                0.759
+                            ],
+                            [
+                                1,
+                                0.955
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.16
+                            ],
+                            [
+                                0.5,
+                                0.428
+                            ],
+                            [
+                                0.75,
+                                0.705
+                            ],
+                            [
+                                1,
+                                0.91
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.133
+                            ],
+                            [
+                                0.5,
+                                0.374
+                            ],
+                            [
+                                0.75,
+                                0.633
+                            ],
+                            [
+                                1,
+                                0.838
+                            ]
+                        ]
+                    }
+                },
+                {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.35
-                    }
-                },
-                {
-                    "op": "colour.tint",
-                    "params": {
-                        "hue": 70,
-                        "amount": 0.035
-                    }
-                },
-                {
-                    "op": "spatial.glow",
-                    "params": {
-                        "amount": 0.15,
-                        "threshold": 0.7,
-                        "radius": 0.025,
-                        "warmth": 0.4
+                        "amount": -0.27
                     }
                 },
                 {
                     "op": "light.vignette",
                     "params": {
-                        "amount": 0.3,
-                        "inner": 0.35,
-                        "outer": 1.0
+                        "amount": 0.45,
+                        "inner": 0.3,
+                        "outer": 1
                     }
                 }
             ],
@@ -3583,7 +4375,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -3595,7 +4387,7 @@ export const CATALOGUE = {
         {
             "id": "C24",
             "name": "Montmartre",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Classic",
             "status": "Build",
@@ -3606,13 +4398,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Urban character"
             },
-            "description": "Moody city warmth",
+            "description": "Moody city warmth, with a deeper exposure",
             "editorial": {
                 "family": "Heritage",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3648,20 +4440,26 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": -0.2
+                        "ev": -0.1785
                     }
                 },
                 {
                     "op": "colour.tint",
                     "params": {
                         "hue": 85,
-                        "amount": 0.03
+                        "amount": 0.0263
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": -0.1
+                        "amount": -0.0893
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.315
                     }
                 }
             ],
@@ -3672,7 +4470,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3684,7 +4482,7 @@ export const CATALOGUE = {
         {
             "id": "C27",
             "name": "Dordogne",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Pastel",
             "status": "Build",
@@ -3695,13 +4493,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Good for outdoor portraits"
             },
-            "description": "Green and yellow pastel",
+            "description": "Green and yellow pastel, with more contrast; warmer and deeper",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3735,12 +4533,12 @@ export const CATALOGUE = {
                     "params": {
                         "bands": {
                             "green": {
-                                "chroma": 0.4,
-                                "light": 0.15
+                                "chroma": 1.0,
+                                "light": 0.7605
                             },
                             "yellow": {
-                                "chroma": 0.35,
-                                "light": 0.1
+                                "chroma": 1.0,
+                                "light": 0.507
                             }
                         }
                     }
@@ -3748,7 +4546,25 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.1
+                        "ev": 0.507
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.585
+                    }
+                },
+                {
+                    "op": "colour.whiteBalance",
+                    "params": {
+                        "temperature": 0.45
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.45
                     }
                 }
             ],
@@ -3759,7 +4575,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3771,7 +4587,7 @@ export const CATALOGUE = {
         {
             "id": "C31",
             "name": "Sarlat",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -3782,13 +4598,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Warm finish; smoothing only if she asks"
             },
-            "description": "Bronzed summer warmth",
+            "description": "Bronzed summer warmth, with more contrast and muted colour",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3821,25 +4637,37 @@ export const CATALOGUE = {
                     "op": "colour.tint",
                     "params": {
                         "hue": 62,
-                        "amount": 0.03
+                        "amount": 0.041
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": 0.15
+                        "amount": 0.2048
                     }
                 },
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": 0.2
+                        "temperature": 0.273
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.1
+                        "amount": 0.1365
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.315
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.3675
                     }
                 }
             ],
@@ -3857,7 +4685,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3870,7 +4698,7 @@ export const CATALOGUE = {
         {
             "id": "C32",
             "name": "Semur",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Vintage",
             "status": "Build",
@@ -3881,13 +4709,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Rich, cosy"
             },
-            "description": "Warm vintage depth",
+            "description": "Warm vintage depth, with more contrast, deeper",
             "editorial": {
                 "family": "Heritage",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -3919,36 +4747,48 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.15
+                        "amount": 0.3024
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": 0.1
+                        "amount": 0.2016
                     }
                 },
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": 0.15
+                        "temperature": 0.3024
                     }
                 },
                 {
                     "op": "colour.fade",
                     "params": {
-                        "amount": 0.25,
+                        "amount": 0.504,
                         "toneHue": 65,
-                        "toneAmount": 0.015
+                        "toneAmount": 0.0305
                     }
                 },
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.15,
+                        "amount": 0.3024,
                         "threshold": 0.7,
                         "radius": 0.025,
-                        "warmth": 0.5
+                        "warmth": 1
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.378
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.315
                     }
                 }
             ],
@@ -3959,7 +4799,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -3972,7 +4812,7 @@ export const CATALOGUE = {
         {
             "id": "C33",
             "name": "Royan",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Warm",
             "status": "Build",
@@ -3983,13 +4823,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Striking outdoors"
             },
-            "description": "Sunset colour",
+            "description": "Coral-pink sunset warmth with a soft glow; brighter",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4019,20 +4859,85 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.splitTone",
+                    "op": "colour.curve",
                     "params": {
-                        "shadowHue": 55,
-                        "shadowAmount": 0.008,
-                        "highlightHue": 55,
-                        "highlightAmount": 0.045,
-                        "balance": 0.0
+                        "r": [
+                            [
+                                0,
+                                0.031
+                            ],
+                            [
+                                0.5,
+                                0.52
+                            ],
+                            [
+                                0.8,
+                                0.846
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.012
+                            ],
+                            [
+                                0.5,
+                                0.488
+                            ],
+                            [
+                                0.8,
+                                0.763
+                            ],
+                            [
+                                1,
+                                0.926
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.032
+                            ],
+                            [
+                                0.5,
+                                0.477
+                            ],
+                            [
+                                0.8,
+                                0.782
+                            ],
+                            [
+                                1,
+                                0.936
+                            ]
+                        ]
                     }
                 },
                 {
-                    "op": "colour.tint",
+                    "op": "spatial.glow",
                     "params": {
-                        "hue": 335,
-                        "amount": 0.02
+                        "amount": 0.218,
+                        "threshold": 0.7,
+                        "radius": 0.03,
+                        "warmth": 0.3
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.414,
+                        "inner": 0.55,
+                        "outer": 1
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.25
                     }
                 }
             ],
@@ -4043,7 +4948,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -4056,7 +4961,7 @@ export const CATALOGUE = {
         {
             "id": "C35",
             "name": "Valensole",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Pastel",
             "status": "Build",
@@ -4067,13 +4972,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Soft and personal"
             },
-            "description": "Lavender haze",
+            "description": "Soft haze: a gentle glow and faded tones; cross-processed colour",
             "editorial": {
                 "family": "Editorial Day",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4103,25 +5008,75 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.tint",
+                    "op": "spatial.glow",
                     "params": {
-                        "hue": 305,
-                        "amount": 0.03
+                        "amount": 0.42,
+                        "threshold": 0.55,
+                        "radius": 0.06,
+                        "warmth": 0.0
+                    }
+                },
+                {
+                    "op": "colour.fade",
+                    "params": {
+                        "amount": 0.5775,
+                        "toneAmount": 0,
+                        "toneHue": 0
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": -0.42
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.1
+                        "amount": -0.1575
                     }
                 },
                 {
-                    "op": "spatial.glow",
+                    "op": "colour.exposure",
                     "params": {
-                        "amount": 0.2,
-                        "threshold": 0.65,
-                        "radius": 0.03,
-                        "warmth": 0.0
+                        "ev": 0.2457
+                    }
+                },
+                {
+                    "op": "colour.curve",
+                    "params": {
+                        "b": [
+                            [
+                                0,
+                                0.0651
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                1,
+                                0.8362
+                            ]
+                        ],
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.3,
+                                0.2454
+                            ],
+                            [
+                                0.7,
+                                0.7819
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 }
             ],
@@ -4132,7 +5087,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -4145,7 +5100,7 @@ export const CATALOGUE = {
         {
             "id": "C36",
             "name": "Gordes",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Fade",
             "status": "Build",
@@ -4156,13 +5111,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Dreamlike portrait mood"
             },
-            "description": "Dreamy, low colour",
+            "description": "Dreamy, low colour, with a brighter exposure and a cross-processed colour shift",
             "editorial": {
                 "family": "Heritage",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4194,24 +5149,67 @@ export const CATALOGUE = {
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.4
+                        "amount": -0.36
                     }
                 },
                 {
                     "op": "colour.fade",
                     "params": {
-                        "amount": 0.35,
-                        "toneHue": 0.0,
-                        "toneAmount": 0.0
+                        "amount": 0.42,
+                        "toneHue": 0,
+                        "toneAmount": 0
                     }
                 },
                 {
                     "op": "spatial.glow",
                     "params": {
-                        "amount": 0.2,
+                        "amount": 0.24,
                         "threshold": 0.7,
                         "radius": 0.03,
                         "warmth": 0.0
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": 0.3
+                    }
+                },
+                {
+                    "op": "colour.curve",
+                    "params": {
+                        "b": [
+                            [
+                                0,
+                                0.0576
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                1,
+                                0.856
+                            ]
+                        ],
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.3,
+                                0.252
+                            ],
+                            [
+                                0.7,
+                                0.772
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 }
             ],
@@ -4222,7 +5220,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -4235,7 +5233,7 @@ export const CATALOGUE = {
         {
             "id": "C37",
             "name": "Calanques",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Cinematic",
             "status": "Build",
@@ -4246,13 +5244,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Cinematic and shareable"
             },
-            "description": "Two-tone sky-to-sand grade",
+            "description": "Teal shadows and background, warm skin tones; darker corners",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4282,22 +5280,90 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.splitTone",
+                    "op": "colour.curve",
                     "params": {
-                        "shadowHue": 300,
-                        "shadowAmount": 0.015,
-                        "highlightHue": 55,
-                        "highlightAmount": 0.015,
-                        "balance": 0.0
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.2,
+                                0.1559
+                            ],
+                            [
+                                0.45,
+                                0.4668
+                            ],
+                            [
+                                0.75,
+                                0.7332
+                            ],
+                            [
+                                1,
+                                0.9297
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.0441
+                            ],
+                            [
+                                0.2,
+                                0.2168
+                            ],
+                            [
+                                0.45,
+                                0.45
+                            ],
+                            [
+                                0.75,
+                                0.7762
+                            ],
+                            [
+                                1,
+                                0.9832
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.0882
+                            ],
+                            [
+                                0.2,
+                                0.2441
+                            ],
+                            [
+                                0.45,
+                                0.4059
+                            ],
+                            [
+                                0.75,
+                                0.7941
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 },
                 {
-                    "op": "light.grade",
+                    "op": "light.vignette",
                     "params": {
-                        "topHue": 270,
-                        "topAmount": 0.04,
-                        "bottomHue": 65,
-                        "bottomAmount": 0.04
+                        "amount": 0.2636,
+                        "inner": 0.35,
+                        "outer": 1
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.4725,
+                        "inner": 0.35,
+                        "outer": 0.95
                     }
                 }
             ],
@@ -4308,7 +5374,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -4321,7 +5387,7 @@ export const CATALOGUE = {
         {
             "id": "C42",
             "name": "Joinville",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Cinematic",
             "status": "Build",
@@ -4332,13 +5398,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Clean profile-photo finish"
             },
-            "description": "Warm cinema grade",
+            "description": "Warm cinema grade, with more contrast",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4371,22 +5437,28 @@ export const CATALOGUE = {
                     "op": "colour.splitTone",
                     "params": {
                         "shadowHue": 215,
-                        "shadowAmount": 0.03,
+                        "shadowAmount": 0.063,
                         "highlightHue": 60,
-                        "highlightAmount": 0.035,
+                        "highlightAmount": 0.063,
                         "balance": 0.0
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.2
+                        "amount": 0.252
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.1
+                        "amount": -0.127
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.1638
                     }
                 }
             ],
@@ -4404,7 +5476,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -4417,7 +5489,7 @@ export const CATALOGUE = {
         {
             "id": "C43",
             "name": "Lille",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Film-style",
             "status": "Build",
@@ -4428,13 +5500,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Keepsake feel"
             },
-            "description": "Instant-print feel",
+            "description": "Instant-print feel, with richer colour",
             "editorial": {
                 "family": "Heritage",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4466,21 +5538,27 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.15
+                        "ev": 0.507
                     }
                 },
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": -0.25
+                        "temperature": -0.845
                     }
                 },
                 {
                     "op": "colour.fade",
                     "params": {
-                        "amount": 0.35,
+                        "amount": 0.65,
                         "toneHue": 200,
-                        "toneAmount": 0.015
+                        "toneAmount": 0.051
+                    }
+                },
+                {
+                    "op": "colour.vibrance",
+                    "params": {
+                        "amount": 0.455
                     }
                 }
             ],
@@ -4505,7 +5583,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -4518,7 +5596,7 @@ export const CATALOGUE = {
         {
             "id": "M01",
             "name": "Ouessant",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Monochrome",
             "status": "Build",
@@ -4529,13 +5607,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Timeless, no shape change"
             },
-            "description": "Neutral black and white",
+            "description": "Graphic black and white, strong contrast",
             "editorial": {
                 "family": "Masthead",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4590,9 +5668,74 @@ export const CATALOGUE = {
                     "id": "mono"
                 },
                 {
-                    "op": "colour.contrast",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.25
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.158
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                0.75,
+                                0.865
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.158
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                0.75,
+                                0.865
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.158
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                0.75,
+                                0.865
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
                     }
                 }
             ],
@@ -4603,7 +5746,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1B",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -4616,7 +5759,7 @@ export const CATALOGUE = {
         {
             "id": "M03",
             "name": "Tombelaine",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Monochrome",
             "status": "Build",
@@ -4627,13 +5770,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Soft editorial"
             },
-            "description": "Faded mono",
+            "description": "Matte silver black and white, lifted blacks",
             "editorial": {
                 "family": "Heritage",
                 "light": "Window"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4668,19 +5811,19 @@ export const CATALOGUE = {
                     "params": {
                         "matrix": [
                             [
-                                0.2126,
-                                0.7152,
-                                0.0722
+                                0.3,
+                                0.6,
+                                0.1
                             ],
                             [
-                                0.2126,
-                                0.7152,
-                                0.0722
+                                0.3,
+                                0.6,
+                                0.1
                             ],
                             [
-                                0.2126,
-                                0.7152,
-                                0.0722
+                                0.3,
+                                0.6,
+                                0.1
                             ]
                         ]
                     },
@@ -4688,18 +5831,74 @@ export const CATALOGUE = {
                     "id": "mono"
                 },
                 {
-                    "op": "colour.fade",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.4,
-                        "toneHue": 0.0,
-                        "toneAmount": 0.0
-                    }
-                },
-                {
-                    "op": "colour.tone",
-                    "params": {
-                        "shadows": -0.35,
-                        "highlights": 0.0
+                        "r": [
+                            [
+                                0,
+                                0.224
+                            ],
+                            [
+                                0.3,
+                                0.348
+                            ],
+                            [
+                                0.5,
+                                0.548
+                            ],
+                            [
+                                0.7,
+                                0.748
+                            ],
+                            [
+                                1,
+                                0.888
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.224
+                            ],
+                            [
+                                0.3,
+                                0.348
+                            ],
+                            [
+                                0.5,
+                                0.548
+                            ],
+                            [
+                                0.7,
+                                0.748
+                            ],
+                            [
+                                1,
+                                0.888
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.224
+                            ],
+                            [
+                                0.3,
+                                0.348
+                            ],
+                            [
+                                0.5,
+                                0.548
+                            ],
+                            [
+                                0.7,
+                                0.748
+                            ],
+                            [
+                                1,
+                                0.888
+                            ]
+                        ]
                     }
                 }
             ],
@@ -4710,7 +5909,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1B",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -4723,7 +5922,7 @@ export const CATALOGUE = {
         {
             "id": "C17",
             "name": "Céret",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Contrast",
             "status": "Build",
@@ -4734,13 +5933,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Red-heavy contrast can take over skin"
             },
-            "description": "Hard contrast, warm red shift",
+            "description": "Warm copper contrast with a dark edge",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4770,22 +5969,88 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.contrast",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.6
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.196
+                            ],
+                            [
+                                0.5,
+                                0.581
+                            ],
+                            [
+                                0.75,
+                                0.8835
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.1435
+                            ],
+                            [
+                                0.5,
+                                0.473
+                            ],
+                            [
+                                0.75,
+                                0.7905
+                            ],
+                            [
+                                1,
+                                0.9595
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.25,
+                                0.0745
+                            ],
+                            [
+                                0.5,
+                                0.3665
+                            ],
+                            [
+                                0.75,
+                                0.6435
+                            ],
+                            [
+                                1,
+                                0.8125
+                            ]
+                        ]
                     }
                 },
                 {
-                    "op": "colour.whiteBalance",
+                    "op": "colour.saturation",
                     "params": {
-                        "temperature": 0.2
+                        "amount": -0.45
                     }
                 },
                 {
-                    "op": "colour.tint",
+                    "op": "light.vignette",
                     "params": {
-                        "hue": 30,
-                        "amount": 0.025
+                        "amount": 0.9,
+                        "inner": 0.45,
+                        "outer": 1
                     }
                 }
             ],
@@ -4796,7 +6061,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -4809,7 +6074,7 @@ export const CATALOGUE = {
         {
             "id": "C18",
             "name": "Saintes",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Contrast",
             "status": "Build",
@@ -4820,13 +6085,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Dramatic, often too much on faces"
             },
-            "description": "Deep contrast and saturation",
+            "description": "Deep contrast and saturation, with muted colour",
             "editorial": {
                 "family": "Masthead",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4858,19 +6123,25 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.45
+                        "amount": 0.6153
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": 0.35
+                        "amount": 0.4778
                     }
                 },
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": 0.15
+                        "temperature": 0.2058
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": -0.2646
                     }
                 }
             ],
@@ -4894,7 +6165,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -4907,7 +6178,7 @@ export const CATALOGUE = {
         {
             "id": "C19",
             "name": "Marseille",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Contrast",
             "status": "Build",
@@ -4918,13 +6189,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Artistic, not everyday"
             },
-            "description": "Cross-processed punch",
+            "description": "Cross-processed: yellow-green lights, blue blacks; darker corners",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -4954,32 +6225,46 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.contrast",
-                    "params": {
-                        "amount": 0.7
-                    }
-                },
-                {
-                    "op": "colour.saturation",
-                    "params": {
-                        "amount": 0.3
-                    }
-                },
-                {
                     "op": "colour.curve",
                     "params": {
                         "r": [
+                            [
+                                0,
+                                0.0126
+                            ],
+                            [
+                                0.25,
+                                0.1996
+                            ],
+                            [
+                                0.5,
+                                0.5
+                            ],
+                            [
+                                0.75,
+                                0.8078
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ],
+                        "g": [
                             [
                                 0,
                                 0
                             ],
                             [
                                 0.25,
-                                0.2
+                                0.2248
+                            ],
+                            [
+                                0.5,
+                                0.5315
                             ],
                             [
                                 0.75,
-                                0.82
+                                0.8256
                             ],
                             [
                                 1,
@@ -4989,34 +6274,33 @@ export const CATALOGUE = {
                         "b": [
                             [
                                 0,
-                                0.06
+                                0.021
+                            ],
+                            [
+                                0.25,
+                                0.2626
                             ],
                             [
                                 0.5,
-                                0.48
+                                0.4937
+                            ],
+                            [
+                                0.75,
+                                0.6922
                             ],
                             [
                                 1,
-                                0.92
+                                0.873
                             ]
                         ]
                     }
                 },
                 {
-                    "op": "light.centre",
-                    "params": {
-                        "amount": 0.2,
-                        "warmth": 0.6,
-                        "radius": 0.45,
-                        "follow": 0
-                    }
-                },
-                {
                     "op": "light.vignette",
                     "params": {
-                        "amount": 0.45,
+                        "amount": 0.4725,
                         "inner": 0.35,
-                        "outer": 1.0
+                        "outer": 0.95
                     }
                 }
             ],
@@ -5027,7 +6311,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -5040,7 +6324,7 @@ export const CATALOGUE = {
         {
             "id": "C22",
             "name": "Nancy",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Contrast",
             "status": "Build",
@@ -5051,13 +6335,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Editorial, can flatten skin"
             },
-            "description": "Metallic grey-green",
+            "description": "Metallic grey-green, with more contrast",
             "editorial": {
                 "family": "Masthead",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5089,26 +6373,32 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.3
+                        "amount": 0.217
                     }
                 },
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": 0.1
+                        "ev": 0.072
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.45
+                        "amount": -0.326
                     }
                 },
                 {
                     "op": "colour.tint",
                     "params": {
                         "hue": 150,
-                        "amount": 0.02
+                        "amount": 0.014
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.255
                     }
                 }
             ],
@@ -5119,7 +6409,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -5132,7 +6422,7 @@ export const CATALOGUE = {
         {
             "id": "C23",
             "name": "Toulouse",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Cinematic",
             "status": "Build",
@@ -5143,13 +6433,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Dark style hides detail"
             },
-            "description": "Purple-brown drama",
+            "description": "Purple-brown drama, with a deeper exposure",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5186,22 +6476,28 @@ export const CATALOGUE = {
                     "op": "colour.splitTone",
                     "params": {
                         "shadowHue": 310,
-                        "shadowAmount": 0.04,
+                        "shadowAmount": 0.0609,
                         "highlightHue": 60,
-                        "highlightAmount": 0.02,
+                        "highlightAmount": 0.0305,
                         "balance": 0.0
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.25
+                        "amount": -0.379
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.35
+                        "amount": 0.5313
+                    }
+                },
+                {
+                    "op": "colour.exposure",
+                    "params": {
+                        "ev": -0.2278
                     }
                 }
             ],
@@ -5212,7 +6508,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -5225,7 +6521,7 @@ export const CATALOGUE = {
         {
             "id": "C25",
             "name": "Belleville",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Cinematic",
             "status": "Build",
@@ -5236,13 +6532,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Can show noise"
             },
-            "description": "Night mood",
+            "description": "Night mood, with more contrast",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5274,20 +6570,32 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": -0.35
+                        "ev": -0.3528
                     }
                 },
                 {
                     "op": "colour.whiteBalance",
                     "params": {
-                        "temperature": -0.2
+                        "temperature": -0.2016
                     }
                 },
                 {
                     "op": "colour.highlightRolloff",
                     "params": {
-                        "amount": 0.6,
+                        "amount": 0.6048,
                         "knee": 0.65
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.189
+                    }
+                },
+                {
+                    "op": "colour.contrast",
+                    "params": {
+                        "amount": 0.315
                     }
                 }
             ],
@@ -5305,7 +6613,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -5318,7 +6626,7 @@ export const CATALOGUE = {
         {
             "id": "C34",
             "name": "Belle-Île",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Cool",
             "status": "Build",
@@ -5329,13 +6637,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Niche mood"
             },
-            "description": "Blue-violet dusk",
+            "description": "Dark steel-blue night with a heavy edge",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5365,22 +6673,74 @@ export const CATALOGUE = {
             },
             "stages": [
                 {
-                    "op": "colour.tint",
-                    "params": {
-                        "hue": 285,
-                        "amount": 0.04
-                    }
-                },
-                {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": -0.25
+                        "ev": -0.369
                     }
                 },
                 {
-                    "op": "colour.whiteBalance",
+                    "op": "colour.curve",
                     "params": {
-                        "temperature": -0.2
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.5,
+                                0.467
+                            ],
+                            [
+                                1,
+                                0.918
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0.016
+                            ],
+                            [
+                                0.5,
+                                0.492
+                            ],
+                            [
+                                1,
+                                0.967
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0.066
+                            ],
+                            [
+                                0.25,
+                                0.266
+                            ],
+                            [
+                                0.5,
+                                0.516
+                            ],
+                            [
+                                1,
+                                1
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "op": "colour.saturation",
+                    "params": {
+                        "amount": 0.082
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.451,
+                        "inner": 0.28,
+                        "outer": 1
                     }
                 }
             ],
@@ -5391,7 +6751,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -5404,7 +6764,7 @@ export const CATALOGUE = {
         {
             "id": "M04",
             "name": "Le Havre",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Monochrome",
             "status": "Build",
@@ -5415,13 +6775,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Hides detail on darker skin; guard limits crush"
             },
-            "description": "Hard mono",
+            "description": "Low-key noir black and white, dark edges",
             "editorial": {
                 "family": "Masthead",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5456,18 +6816,18 @@ export const CATALOGUE = {
                     "params": {
                         "matrix": [
                             [
-                                0.25,
-                                0.65,
+                                0.5,
+                                0.4,
                                 0.1
                             ],
                             [
-                                0.25,
-                                0.65,
+                                0.5,
+                                0.4,
                                 0.1
                             ],
                             [
-                                0.25,
-                                0.65,
+                                0.5,
+                                0.4,
                                 0.1
                             ]
                         ]
@@ -5476,16 +6836,82 @@ export const CATALOGUE = {
                     "id": "mono"
                 },
                 {
-                    "op": "colour.contrast",
+                    "op": "colour.curve",
                     "params": {
-                        "amount": 0.7
+                        "r": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.15,
+                                0.1
+                            ],
+                            [
+                                0.5,
+                                0.4
+                            ],
+                            [
+                                0.85,
+                                0.84
+                            ],
+                            [
+                                1,
+                                0.97
+                            ]
+                        ],
+                        "g": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.15,
+                                0.1
+                            ],
+                            [
+                                0.5,
+                                0.4
+                            ],
+                            [
+                                0.85,
+                                0.84
+                            ],
+                            [
+                                1,
+                                0.97
+                            ]
+                        ],
+                        "b": [
+                            [
+                                0,
+                                0
+                            ],
+                            [
+                                0.15,
+                                0.1
+                            ],
+                            [
+                                0.5,
+                                0.4
+                            ],
+                            [
+                                0.85,
+                                0.84
+                            ],
+                            [
+                                1,
+                                0.97
+                            ]
+                        ]
                     }
                 },
                 {
-                    "op": "colour.tone",
+                    "op": "light.vignette",
                     "params": {
-                        "shadows": -0.6,
-                        "highlights": 0.4
+                        "amount": 0.85,
+                        "inner": 0.2,
+                        "outer": 1
                     }
                 }
             ],
@@ -5496,7 +6922,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1B",
+                "writtenFrom": "filters-plan.md §3.1; lane 11 curated set (16 looks, measured on four synthetic skin tones)",
                 "answers": [
                     "#8"
                 ],
@@ -5509,7 +6935,7 @@ export const CATALOGUE = {
         {
             "id": "M05",
             "name": "Roubaix",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Monochrome",
             "status": "Build",
@@ -5526,7 +6952,7 @@ export const CATALOGUE = {
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5591,7 +7017,7 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.6
+                        "amount": 0.3
                     }
                 }
             ],
@@ -5602,7 +7028,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1B",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -5615,7 +7041,7 @@ export const CATALOGUE = {
         {
             "id": "M06",
             "name": "Montparnasse",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Monochrome",
             "status": "Build",
@@ -5632,7 +7058,7 @@ export const CATALOGUE = {
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5688,20 +7114,20 @@ export const CATALOGUE = {
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": -0.25
+                        "ev": -0.35
                     }
                 },
                 {
                     "op": "colour.tint",
                     "params": {
                         "hue": 70,
-                        "amount": 0.025
+                        "amount": 0.035
                     }
                 },
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.2
+                        "amount": 0.28
                     }
                 }
             ],
@@ -5712,7 +7138,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1B",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -5725,7 +7151,7 @@ export const CATALOGUE = {
         {
             "id": "C21",
             "name": "Lagrasse",
-            "version": 1,
+            "version": 2,
             "class": 1,
             "tab": "Vintage",
             "status": "Build",
@@ -5742,7 +7168,7 @@ export const CATALOGUE = {
                 "light": "Evening"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5774,22 +7200,22 @@ export const CATALOGUE = {
                 {
                     "op": "colour.fade",
                     "params": {
-                        "amount": 0.2,
+                        "amount": 0.336,
                         "toneHue": 60,
-                        "toneAmount": 0.02
+                        "toneAmount": 0.0336
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.2
+                        "amount": -0.336
                     }
                 },
                 {
                     "op": "light.centre",
                     "params": {
-                        "amount": 0.3,
-                        "warmth": 0.8,
+                        "amount": 0.504,
+                        "warmth": 1,
                         "radius": 0.5,
                         "follow": 0
                     }
@@ -5797,9 +7223,9 @@ export const CATALOGUE = {
                 {
                     "op": "light.vignette",
                     "params": {
-                        "amount": 0.75,
+                        "amount": 1,
                         "inner": 0.2,
-                        "outer": 1.0
+                        "outer": 1
                     }
                 }
             ],
@@ -5810,7 +7236,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -5823,7 +7249,7 @@ export const CATALOGUE = {
         {
             "id": "C29",
             "name": "Dunkerque",
-            "version": 1,
+            "version": 3,
             "class": 1,
             "tab": "Contrast",
             "status": "Build",
@@ -5834,13 +7260,13 @@ export const CATALOGUE = {
                 "source": "assumed",
                 "reason": "Unforgiving shadows on faces"
             },
-            "description": "Dark, hard contrast",
+            "description": "Dark, hard contrast, with darker corners; richer colour",
             "editorial": {
                 "family": "Cover Evening",
                 "light": "Studio"
             },
             "defaults": {
-                "strength": 30,
+                "strength": 65,
                 "guard": true,
                 "protectSkin": false,
                 "backgroundOnly": false,
@@ -5872,26 +7298,40 @@ export const CATALOGUE = {
                 {
                     "op": "colour.contrast",
                     "params": {
-                        "amount": 0.55
+                        "amount": 0.3794
                     }
                 },
                 {
                     "op": "colour.exposure",
                     "params": {
-                        "ev": -0.25
+                        "ev": -0.1715
                     }
                 },
                 {
                     "op": "colour.highlightRolloff",
                     "params": {
-                        "amount": 0.7,
+                        "amount": 0.4819,
                         "knee": 0.6
                     }
                 },
                 {
                     "op": "colour.saturation",
                     "params": {
-                        "amount": -0.15
+                        "amount": -0.104
+                    }
+                },
+                {
+                    "op": "light.vignette",
+                    "params": {
+                        "amount": 0.3645,
+                        "inner": 0.35,
+                        "outer": 0.95
+                    }
+                },
+                {
+                    "op": "colour.vibrance",
+                    "params": {
+                        "amount": 0.4725
                     }
                 }
             ],
@@ -5902,7 +7342,7 @@ export const CATALOGUE = {
                 "faceClear": false
             },
             "provenance": {
-                "writtenFrom": "filters-plan.md §2.1 table 1A",
+                "writtenFrom": "filters-plan.md §3.1; reworked Oct 31, 2026 so all 61 looks are distinct and keep skin natural, measured on four synthetic skin tones",
                 "answers": [
                     "#8"
                 ],
@@ -6712,3 +8152,4 @@ export const CATALOGUE = {
         }
     ]
 };
+//# sourceMappingURL=recipes.js.map

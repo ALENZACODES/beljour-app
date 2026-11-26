@@ -29,6 +29,7 @@ export function renderJudgeFiveEditPanel(doc, host, state, options) {
         ? "Each illustrated edit uses the same on-device sample and adjustable 1.0–5.0 strength."
         : "Choose a valid subject and grant separate local, hair and face consent before applying.";
     panel.append(judgeParagraph(doc, boundary, "lg-judge-small"));
-    panel.append(judgeParagraph(doc, "A count of five is not evidence of face tracking, identity preservation or a live YouCam result.", "lg-judge-small"));
+    panel.append(judgeParagraph(doc, "A count of five is not evidence of face tracking, identity preservation or real-photo quality.", "lg-judge-small"));
     host.append(panel);
 }
+//# sourceMappingURL=judge-five-edit-panel.js.map

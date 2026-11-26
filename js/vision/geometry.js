@@ -141,3 +141,4 @@ export function normaliseFaces(raw, width, height, tracker, limit = 6) {
     }
     return tracker.assign(valid);
 }
+//# sourceMappingURL=geometry.js.map

@@ -1,7 +1,7 @@
 /** FS7 thumbnail strip: every option of a local tool previewed on your own photo, free.
  *
  * The plan: "Thumbnails on your own photo for every local tool (computed at 128 px in a
- * worker, free); YouCam tools show recorded samples and render on tap, with the unit price on
+ * worker, free); Provider tools show recorded samples and render on tap, with the unit price on
  * the button." Here each option (an enhance mode, a beard style, a fibre product, a posture
  * fix) is one layer rendered by the R7 engine on a 128 px copy of the source (scale.ts).
  * Provider tools get an honest tile instead: the studio page never sends a photo, so their
@@ -54,7 +54,7 @@ export const GENDER_LEVELS = [
 /** Default parameters for a new layer of this kind (the controller's defaults, in one place). */
 export function defaultParams(kind, source) {
     if (kind === "older" || kind === "younger")
-        return { stop: kind === "older" ? 3 : 2 };
+        return { stop: kind === "older" ? 4 : 2 };
     if (kind === "gender")
         return { slider: -33 };
     if (kind === "lighting")
@@ -104,13 +104,15 @@ export function defaultParams(kind, source) {
         return { fix: source.body?.view === "side" ? "forward_head" : "lean",
             band_share: POSTURE_DEFAULTS.bandShare, cap_share: POSTURE_DEFAULTS.capShare };
     if (kind === "beard")
-        return { style: "stubble", colour: "#241915", length: 3 };
+        return { style: "short_boxed", colour: "#241915", length: 3 };
     return { product: "fibres" };
 }
 /** The options a tool's strip shows. Posture options follow the photo's front or side view;
  * filter options are every look in §2.22 rank order, each at its own gentle default. */
 export function optionsFor(kind, source) {
     if (kind === "filters") {
+        // Each tile renders at the strength one tap gives (o.strength). r1 forced 60-80 here, so a tile promised a stronger look
+        // than the one she got on tapping it. Make looks stronger in the recipe defaults, not only in the preview.
         return filterOptions().map((o) => ({ id: o.id, kind, key: "recipe", label: o.label, params: o.params, strength: o.strength, rank: o.rank }));
     }
     if (kind === "portrait") {
@@ -196,9 +198,9 @@ export function planStrip(studio, source) {
     if (row.source === "planned")
         return [{ option: null, status: "planned", label: row.title, simulation: false,
                 reason: "Filters come after the must-have tools. This slot is reserved." }];
-    if (row.source === "youcam")
-        return [{ option: null, status: "provider", label: row.title, simulation: false,
-                reason: "Recorded examples and live previews open on the styling screen, with the unit price on the button. This page never sends your photo." }];
+    if (studio === "hair-style")
+        return [{ option: null, status: "blocked", label: row.title, simulation: false,
+                reason: "The Hair Studio below plans a cut with diagrams and a salon brief; it doesn't redraw your hair." }];
     const kind = studio, ready = readiness(kind, source);
     if (!ready.ready)
         return [{ option: null, status: "blocked", label: row.title, reason: ready.reason, simulation: false }];
@@ -235,11 +237,23 @@ export function renderStripPage(studio, source, { side = THUMB_SIDE, clock = () 
     if (!plan.some((tile) => tile.option))
         return { tiles: plan, page: 0, pages: 1, total: 0, more: false };
     const window = pageOf(plan, page, pageSize);
-    const small = scaleSource(source, side);
+    let small;
+    try {
+        small = scaleSource(source, side);
+    }
+    catch (error) {
+        // The miniature could not be made: every option is still usable at full size, so the page stays tappable.
+        return { tiles: window.items.map((tile) => (tile.option ? { ...tile, status: "unrendered",
+                reason: `Preview unavailable: ${error instanceof Error ? error.message : String(error)}` } : tile)),
+            page: window.page, pages: window.pages, total: window.total, more: window.more };
+    }
     const origin = source.kind === "sample" ? "sample" : "photo";
     const tiles = window.items.map((tile) => {
         if (!tile.option)
             return tile;
+        // scaleSource drops body points that are too small to edit at this size: posture can't be previewed, but it can be applied.
+        if (tile.option.kind === "posture" && !small.body)
+            return { ...tile, status: "unrendered", reason: "Too small to preview a posture change. Tap to apply it on the full photo." };
         const start = clock();
         try {
             const preview = tile.option.kind === "filters" ? null : renderLayers(small, [optionLayer(tile.option, origin)]);
@@ -254,7 +268,8 @@ export function renderStripPage(studio, source, { side = THUMB_SIDE, clock = () 
             return { ...tile, image, enhance, ms, overBudget: ms > THUMB_BUDGET_MS };
         }
         catch (error) {
-            return { ...tile, status: "blocked", image: undefined, reason: error instanceof Error ? error.message : String(error) };
+            // A preview failure is not a refusal of the option (the full photo may succeed): keep it tappable, say why.
+            return { ...tile, status: "unrendered", image: undefined, reason: `Preview unavailable: ${error instanceof Error ? error.message : String(error)}` };
         }
     });
     return { tiles: annotateEnhancePreviews(tiles), page: window.page, pages: window.pages, total: window.total, more: window.more };
@@ -301,3 +316,4 @@ export function activeOption(tiles, selected) {
     const exact = hits.find((t) => [...varying].every((k) => selected.parameters[k] === t.option.params[k]));
     return (exact ?? hits[0]).option?.id ?? null;
 }
+//# sourceMappingURL=thumbnails.js.map

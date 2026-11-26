@@ -17,7 +17,8 @@ export function renderJudgeReadinessPanel(doc, host, report) {
         list.append(entry);
     }
     details.append(list);
-    details.append(judgeNotice(doc, "Release decision not made", "The local demonstration alone does not pass the required live YouCam API, "
+    details.append(judgeNotice(doc, "Release decision not made", "The local demonstration alone does not pass the required real-photo checks, "
         + "real-face quality, device or licensing gates."));
     host.append(details);
 }
+//# sourceMappingURL=judge-readiness-panel.js.map

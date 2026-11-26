@@ -46,3 +46,4 @@ export function densityScore(marks, mask) {
         }
     return n ? c / n : 0;
 }
+//# sourceMappingURL=freckles.js.map

@@ -9,3 +9,4 @@ export * as colour from "./colour.js";
 export * as filters from "./filters.js";
 export * as mask from "./mask.js";
 export * as pyramid from "./pyramid.js";
+//# sourceMappingURL=index.js.map

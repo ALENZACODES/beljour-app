@@ -60,3 +60,4 @@ register({
     halo: () => 0,
     help: "Deterministic fine grain without whitening highlights or smearing texture",
 });
+//# sourceMappingURL=grain.js.map

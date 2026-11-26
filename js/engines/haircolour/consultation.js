@@ -410,3 +410,4 @@ export class HairColourSession {
         delete this.levels.W39;
     }
 }
+//# sourceMappingURL=consultation.js.map

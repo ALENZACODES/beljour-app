@@ -104,3 +104,4 @@ export function renderAgeSurface(image, skin, points, options) {
         poreRatio: beforeEnergy > 0 ? afterEnergy / beforeEnergy : 1,
         expandedSkin: extent.expandedPixels, coverageVerified: extent.coverageComplete, renderMs: renderClock() - start };
 }
+//# sourceMappingURL=age-texture.js.map

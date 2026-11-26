@@ -19,3 +19,4 @@ import("./media-worker.js").then(() => {
     // Surface the failure as a worker error, which the client already turns into a refusal.
     setTimeout(() => { throw error instanceof Error ? error : new Error(String(error)); });
 });
+//# sourceMappingURL=media-worker-boot.js.map

@@ -161,3 +161,4 @@ export function reportContainsUnsafeFields(text) {
     return ["data:image", "base64", "filename", "photo_id", "landmarks", "authorization",
         "api_key", "objecturl", "face_embedding"].some((item) => lower.includes(item));
 }
+//# sourceMappingURL=report.js.map

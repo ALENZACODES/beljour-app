@@ -339,3 +339,4 @@ export function safeTrialReport(result) {
         quality_verdict: "UNPROVEN", simulation: true,
     };
 }
+//# sourceMappingURL=iris-trial.js.map

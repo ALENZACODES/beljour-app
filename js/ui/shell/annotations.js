@@ -151,3 +151,4 @@ export function drawMarks(canvas, draft) {
     });
     ctx.restore();
 }
+//# sourceMappingURL=annotations.js.map

@@ -128,3 +128,4 @@ export function paintRibbons(image, mask, strokes, options) {
         metrics: { render_ms: Math.round(renderClock() - started), ribbons: ribbons.ribbons, painted_share: lifted.paintedShare, root_max: lifted.rootMax,
             width_growth: ribbons.widthGrowth, ribbon_lift_sd: ribbons.ribbonLiftSd, log_contrast_kept: lifted.logContrastKept, texture_source: "own_photo" } };
 }
+//# sourceMappingURL=balayage.js.map

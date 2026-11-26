@@ -40,7 +40,7 @@ export function planSteps(steps, source) {
     return steps.map((step, index) => {
         const label = TOOLS[step.tool]?.label ?? step.tool;
         if (step.provider === "youcam")
-            return { index, tool: step.tool, runs: false, reason: `${label} needs YouCam, which re-applying on this device never calls.` };
+            return { index, tool: step.tool, runs: false, reason: `${label} was saved with an online tool the app no longer uses; add it again with the on-device tool.` };
         if (!KINDS.includes(step.tool))
             return { index, tool: step.tool, runs: false, reason: `${label} can't be re-applied on this device yet.` };
         const ready = readiness(step.tool, source);
@@ -106,3 +106,4 @@ export function reapply(look, source, options = {}) {
     return { photo: report.photo, applied, plan, face: own ? "this-photo" : borrowed ? "saved-for-this-photo" : "none",
         skipped: [...report.skipped.map((s) => ({ tool: s.tool, reason: reasons.get(s.tool) ?? s.reason })), ...refused] };
 }
+//# sourceMappingURL=reapply.js.map

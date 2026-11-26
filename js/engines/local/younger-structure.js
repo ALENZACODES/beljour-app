@@ -730,3 +730,4 @@ export function youngCues(img, support, face, amount) {
         }
     return changed;
 }
+//# sourceMappingURL=younger-structure.js.map

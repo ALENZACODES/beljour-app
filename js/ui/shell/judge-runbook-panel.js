@@ -40,7 +40,8 @@ export function renderJudgeRunbookPanel(doc, host, summary, witness, options = {
     if (summary.timeStatus === "over-rehearsal-target") {
         content.append(judgeNotice(doc, "Rehearsal over target", "This elapsed time is not a phone benchmark. Finish with accurate disclosures."));
     }
-    content.append(judgeParagraph(doc, "The live application, user consent and approved YouCam API path require their own separate test.", "lg-judge-small"));
+    content.append(judgeParagraph(doc, "The live application and real photos require their own separate test.", "lg-judge-small"));
     details.append(content);
     host.append(details);
 }
+//# sourceMappingURL=judge-runbook-panel.js.map

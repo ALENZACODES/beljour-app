@@ -112,3 +112,4 @@ export function transportTexture(resized, width, height, residual, level) {
     }
     return { pixels, maxDelta, chromaShift };
 }
+//# sourceMappingURL=quality-stages.js.map

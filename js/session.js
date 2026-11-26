@@ -120,3 +120,4 @@ export async function waitForTask(get, { tries = 60, everyMs = 2000, sleep = (ms
     }
     return last;
 }
+//# sourceMappingURL=session.js.map

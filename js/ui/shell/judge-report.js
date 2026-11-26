@@ -23,7 +23,7 @@ export function renderJudgeReport(doc, host, state, clock) {
         ["Completed steps", String(report.stepsCompleted)],
         ["Skipped steps", String(report.stepsSkipped)],
         ["Measured in-app time", report.elapsed],
-        ["Real YouCam calls from this guide", "0 — mocked"],
+        ["Uploads from this guide", "0"],
         ["Image uploaded by this guide", "No"],
         ["Permanent export marking", report.label],
     ];
@@ -35,7 +35,7 @@ export function renderJudgeReport(doc, host, state, clock) {
         panel.append(judgeNotice(doc, "Incomplete walkthrough", "Skipped steps were not tested. Re-open Judge Mode to rehearse every screen."));
     }
     panel.append(judgeNotice(doc, "Proof boundary", "The elapsed time is one local rehearsal, not a mobile performance claim. "
-        + "Live YouCam API integration must be shown separately."));
+        + "Real-photo quality must be shown separately."));
     panel.append(judgeParagraph(doc, "No personal image, timing, consent selection or report is stored by this screen.", "lg-judge-small"));
     const pre = judgeNode(doc, "details", "lg-judge-report-details");
     pre.append(judgeNode(doc, "summary", "", "Read a plain-text step record"));
@@ -44,3 +44,4 @@ export function renderJudgeReport(doc, host, state, clock) {
     panel.append(pre);
     host.append(panel);
 }
+//# sourceMappingURL=judge-report.js.map

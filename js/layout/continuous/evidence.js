@@ -43,7 +43,7 @@ export class ContinuousEvidence {
             `Steps skipped: ${summary.skipped}`,
             `Mock try-on: ${summary.mockOnly ? "observed locally" : "not observed"}`,
             `Export request: ${summary.exportRequested ? "requested" : "not requested"}`,
-            "Live YouCam evidence: none",
+            "Uploads: none",
             "Real-face evidence: none",
             "Release/quality gate: not established by this report",
             ...this.events.map((event) => `${event.step} | ${event.code} | ${event.elapsedMs}ms`),
@@ -58,3 +58,4 @@ export class ContinuousEvidence {
         this.disposed = true;
     }
 }
+//# sourceMappingURL=evidence.js.map

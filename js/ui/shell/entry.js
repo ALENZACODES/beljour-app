@@ -1,4 +1,5 @@
-/** Static editor entry point. No API health call, no model download and no fetch.
+/** Static editor entry point. No API health call, no model download and no fetch at load; every tool
+ * runs on this device.
  * Layout v1 adds its editor chrome (top bar Save and Trust, strength slider, categories,
  * tags, face picker, My Look) on top of the R8/R9 studio. */
 import { mountClientShell } from "../../layout/client-shell.js";
@@ -19,7 +20,7 @@ window.addEventListener("pagehide", () => {
     stopOfflineTools();
     shellClient.destroy();
 }, { once: true });
-// R15 Workstream B standalone local studio; no shared compositing changes. Author: John Khan.
+// R15 Lane B standalone local studio; no shared compositing changes. Author: John Khan.
 import { installEyesBrowsLink } from "../eyes-brows/install.js";
 installEyesBrowsLink(document.querySelector(".shell-top-links"));
 window.addEventListener("pageshow", (event) => {
@@ -27,3 +28,4 @@ window.addEventListener("pageshow", (event) => {
         shellClient = mountClientShell(document, window, { page: "studio" });
     }
 });
+//# sourceMappingURL=entry.js.map

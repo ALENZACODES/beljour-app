@@ -69,3 +69,4 @@ export class DemoTour {
     next() { return this.go(this.index + 1); }
     previous() { return this.go(this.index < 0 ? this.scenes.length - 1 : this.index - 1); }
 }
+//# sourceMappingURL=loader.js.map

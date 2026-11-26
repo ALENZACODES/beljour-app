@@ -1,18 +1,16 @@
-import { naturalHairHex, requestProviderHair } from "../../engines/haircolour/provider-hair.js";
-import { OLDER_HAIR_HEX, OLDER_UNITS, requestProviderOlder } from "../../engines/older-youcam/provider-older.js";
 import { engineToVisible, visibleToEngine, setStrengthRange, PreviewDebouncer } from "../../layout/strength-scale.js";
 /** Working studio UI (R8 shell, extended in R9). Native buttons and inputs; no framework, CDN or
  * third-party art. The editor page never calls fetch and never sends a user photo anywhere.
  * R9 adds: the ten compare modes (compare-view.ts), visit consent before opening a photo and a
- * styling transfer that explains what is sent (consent.ts), the on-device pre-check and the
+ * styling hand-off that explains what is sent (consent.ts), the on-device pre-check and the
  * thumbnail strip, both computed in the shell worker, the demo tour (web/src/demo/), the phone
  * panel tabs, a keyboard map with a shortcuts dialog, and live-region announcements.
  * Author: John Khan.
  */
 import { SIDEBAR_SECTIONS, defaultSample, readiness, tool, toolsIn } from "./catalogue.js";
 import { Editor } from "./controller.js";
-import { readLocalImage, SAMPLE_IDS, SAMPLE_NAMES, uploadedSource } from "./demo.js";
-import { EXAMPLE_LABEL, examplePeople, framingPoints } from "../../screens/shape-art.js";
+import { readLocalImage, SAMPLE_IDS, SAMPLE_NAMES, STUDIO_SIDE, uploadedSource } from "./demo.js";
+import { EXAMPLE_LABEL, examplePeople, framingPoints, highResPerson } from "../../screens/shape-art.js";
 import { faceMapFor } from "../../face/map-reader.js";
 import { studioMapKey } from "../../screens/face-map.js";
 import { paint, label as burnLabel, SIMULATION_TAG } from "./canvas.js";
@@ -32,7 +30,7 @@ import { fixesFor } from "../../engines/local/posture.js";
 import { CompareController } from "./compare-view.js";
 import { StripView, renderPrecheck } from "./strip-view.js";
 import { Modal } from "./dialogs.js";
-import { LOCAL_ONLY_REASON, PROVIDER_FACTS, VISIT_STATEMENTS, appConsent } from "./consent.js";
+import { VISIT_STATEMENTS, appConsent } from "./consent.js";
 import { PANELS, PANEL_LABELS, PanelTabs, isPhone } from "./panels.js";
 import { SHORTCUTS, resolveKey } from "./keymap.js";
 import { Announcer, regionSink } from "./announcer.js";
@@ -226,7 +224,6 @@ export class ShellView {
     announcer;
     tour;
     consentModal;
-    providerModal;
     helpModal;
     singleKeys = true;
     stripKey = "";
@@ -278,12 +275,10 @@ export class ShellView {
                     return;
                 this.editor.applyOption(tile.option.kind, tile.option.params, tile.label, tile.option.strength);
             }, `${tile.label} applied from its preview. Undo returns the previous option.`),
-            provider: () => { void this.openProvider(); },
         });
         const background = [find("shell-editor"), document.querySelector(".shell-header"), document.querySelector(".shell-footer")];
         const scrim = find("shell-scrim");
         this.consentModal = new Modal(find("shell-consent"), scrim, background, false);
-        this.providerModal = new Modal(find("shell-provider"), scrim, background, false);
         this.helpModal = new Modal(find("shell-help"), scrim, background, false);
         this.tour = new DemoTour(this.editor, this.compare.session);
         this.brushes = new BrushSession(this.editor);
@@ -417,7 +412,7 @@ export class ShellView {
         find("shell-zoom-reset").addEventListener("click", () => this.safely(() => this.editor.zoom(1)));
         find("shell-download").addEventListener("click", () => { void this.exportPreview(); });
     }
-    /** R9 controls: consent, provider transfer, demo tour, tabs, shortcuts and the keyboard map. */
+    /** R9 controls: consent, demo tour, tabs, shortcuts and the keyboard map. */
     wireR9() {
         find("shell-consent-understood").nextElementSibling.textContent = VISIT_STATEMENTS[0].text;
         find("shell-consent-statement").textContent = VISIT_STATEMENTS[0].text;
@@ -431,13 +426,7 @@ export class ShellView {
                 find("shell-consent-error").textContent = error instanceof Error ? error.message : String(error);
             }
         });
-        find("shell-provider-facts").replaceChildren(...PROVIDER_FACTS.map((fact) => node("li", "", fact)));
-        find("shell-provider-cancel").addEventListener("click", () => this.providerModal.close(false));
-        find("shell-provider-continue").addEventListener("click", () => this.providerModal.close(true));
         find("shell-withdraw").addEventListener("click", () => this.safely(() => appConsent.withdraw(), "Consent withdrawn for this tab. Local tools and drawn samples still work."));
-        const localOnly = find("shell-local-only");
-        localOnly.checked = appConsent.localOnly;
-        localOnly.addEventListener("change", () => this.safely(() => appConsent.setLocalOnly(localOnly.checked), localOnly.checked ? "On-device only is on: no photo can be sent to YouCam from this tab." : "On-device only is off. Styling still asks before sending a photo."));
         // Demo tour
         const demo = find("shell-demo"), bar = find("shell-demo-bar"), picker = find("shell-demo-scene");
         picker.append(...DEMO_SCENES.map((scene, i) => { const o = node("option", "", `${i + 1}. ${scene.title}`); o.value = scene.id; return o; }));
@@ -494,7 +483,7 @@ export class ShellView {
     handleKey(event, type) {
         const target = event.target instanceof HTMLElement ? event.target : null;
         const editable = Boolean(target?.closest("input, select, textarea, [contenteditable='true']"));
-        const inDialog = Boolean(target?.closest("[role=dialog]")) || this.consentModal.isOpen || this.providerModal.isOpen || this.helpModal.isOpen;
+        const inDialog = Boolean(target?.closest("[role=dialog]")) || this.consentModal.isOpen || this.helpModal.isOpen;
         // Keys the compare stage used (arrows, Space, loupe zoom) were already handled there.
         if (event.defaultPrevented)
             return;
@@ -578,22 +567,6 @@ export class ShellView {
             this.inform("No photo opened. Drawn samples need no consent.");
         return ok;
     }
-    /** The styling transfer: what is sent, the pre-check for styling, then a link to the styling screen. */
-    async openProvider() {
-        const studio = this.editor.document.studio;
-        const target = studio === "makeup" ? "index.html#/tryon" : "index.html#/photo";
-        // No dialog (owner's order): the cloud action carries its own inline label, and this button
-        // either opens the styling screen or says plainly why it can't.
-        if (appConsent.localOnly) {
-            this.inform(LOCAL_ONLY_REASON);
-            return;
-        }
-        if (!serverConfigured()) {
-            this.inform("YouCam styling is off in this on-device preview. Nothing was sent. The on-device tools in the list still work.");
-            return;
-        }
-        window.location.href = target;
-    }
     /** A new photo is open: the editor chrome opens its Face map first (studio.html, face-map.ts). */
     newPhoto() {
         document.dispatchEvent(new CustomEvent("beljour:new-photo", { detail: { id: this.editor.source.id } }));
@@ -620,22 +593,35 @@ export class ShellView {
         });
         this.draw();
     }
-    /** A first visit opens on an AI-generated example person (assets/shape/ or the Skin Moment
+    /** A first visit opens on a synthetic example person (assets/shape/ or the Skin Moment
      * faces), not a drawn test picture, when those pictures are in the build. Face points come from
      * the shared face map; only a build without the face reader uses the pictures' fixed passport
      * framing, and the label says so. Skipped once she has opened anything herself. */
     async openExamplePerson() {
-        const person = (await examplePeople())[0];
-        if (!person)
-            return;
-        try {
+        // The high-resolution example people (assets/people, 1600 px) open first; the older 640 px
+        // example pictures remain the fallback for a build without them.
+        const open = (url) => new Promise((ok, fail) => {
             const img = new Image();
             img.decoding = "async";
-            await new Promise((ok, fail) => { img.onload = () => ok(); img.onerror = () => fail(new Error("The example picture could not be opened.")); img.src = person.url; });
+            img.onload = () => ok(img);
+            img.onerror = () => fail(new Error("The example picture could not be opened."));
+            img.src = url;
+        });
+        try {
+            let img;
+            try {
+                img = await open(highResPerson().url);
+            }
+            catch {
+                const person = (await examplePeople())[0];
+                if (!person)
+                    return;
+                img = await open(person.url);
+            }
             const untouched = this.editor.source.id.startsWith("sample:") && !this.editor.document.layers.length && !this.draft && !this.tour.current;
             if (!untouched)
                 return;
-            const scale = Math.min(1, 640 / Math.max(img.naturalWidth, img.naturalHeight));
+            const scale = Math.min(1, STUDIO_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
             const w = Math.max(8, Math.round(img.naturalWidth * scale)), hgt = Math.max(8, Math.round(img.naturalHeight * scale));
             const c = document.createElement("canvas");
             c.width = w;
@@ -763,6 +749,11 @@ export class ShellView {
             this.draw();
         }
         catch { /* the photo stays usable; face tools say what they need */ }
+        finally {
+            // Face, hair, person and body readings are done (or not available): a held My Look can go on now.
+            if (this.editor.source.id === sourceId)
+                document.dispatchEvent(new CustomEvent("beljour:photo-ready", { detail: { id: sourceId } }));
+        }
     }
     openDemo(id) {
         this.safely(() => {
@@ -915,8 +906,7 @@ export class ShellView {
                 }
                 if (row.source === "planned")
                     control.classList.add("is-future");
-                control.append(node("span", "shell-nav-status", row.source === "local" ? "On device"
-                    : row.source === "youcam" ? (appConsent.localOnly ? "Off" : "YouCam") : "Later"));
+                control.append(node("span", "shell-nav-status", row.source === "planned" ? "Later" : "On device"));
                 group.append(control);
             }
             this.nav.append(group);
@@ -954,7 +944,7 @@ export class ShellView {
         this.add.hidden = isEditorKind(item.id);
         this.undo.disabled = !this.editor.history.canUndo;
         this.redo.disabled = !this.editor.history.canRedo;
-        this.flow.textContent = item.source === "youcam" ? "sent to YouCam, deleted after the result" : "stays on this device";
+        this.flow.textContent = "stays on this device";
         this.flow.dataset.scope = item.source;
         this.safety.textContent = item.safety;
         const guidance = find("shell-guidance");
@@ -987,13 +977,10 @@ export class ShellView {
                     }
                     this.safely(() => { this.editor.loadRecommendedSample(); }, "Drawn example loaded; previous layers have been reset.");
                 }, "Use a drawn photo for this tool"));
-            if (item.source === "youcam") {
-                guidance.append(button("What is sent, and open the styling screen", () => { void this.openProvider(); }, "Explains what is sent to YouCam before you go to the styling screen", "shell-button shell-link"));
-            }
         }
         // R10: embed the Hair Studio in the EXISTING shell guidance panel. The editor
         // remains the single owner of the source, layer history, compare and Trust Centre.
-        // Neither switching studios nor re-rendering sends any photo to the provider.
+        // Neither switching studios nor re-rendering sends any photo anywhere.
         if (item.id === "hair-style") {
             const src = this.editor.source;
             this.hairStudio.setContext({ mode: "shell", image: {
@@ -1063,8 +1050,7 @@ export class ShellView {
             top.append(visible, name);
             const record = documentEvidence(this.editor.source, state.layers).layers[index];
             const detail = node("span", "shell-layer-origin", record.display);
-            detail.title = record.scope === "on-device" ? "stays on this device" :
-                record.scope === "provider" ? "sent to YouCam, deleted after the result" : "not built this round";
+            detail.title = record.scope === "on-device" ? "stays on this device" : "not built this round";
             const actions = node("div", "shell-layer-actions");
             const up = button("↑", () => this.safely(() => this.editor.move(item.id, 1)), "Move up", "shell-mini");
             const down = button("↓", () => this.safely(() => this.editor.move(item.id, -1)), "Move down", "shell-mini");
@@ -1142,60 +1128,11 @@ export class ShellView {
             settings.append(percent("Appearance stop", getNumber(layer, "stop", layer.kind === "older" ? 3 : 2), 1, layer.kind === "older" ? 5 : 3, 1, n => param("stop", n), ""));
             if (layer.kind === "younger") {
                 settings.append(check("Hair colour", layer.parameters.hair_colour === true, (v) => param("hair_colour", v)), node("p", "shell-hint", "Off by default: Younger leaves the hair exactly as it is."));
-                if (layer.parameters.hair_colour === true && !serverConfigured()) {
-                    settings.append(node("p", "shell-hint", "Hair colour is made on this device in this preview."));
-                }
-                else if (layer.parameters.hair_colour === true) {
-                    const src = this.editor.source;
-                    const status = node("p", "shell-hint", src.providerHair ? "YouCam natural colour ready." : "Local colour. YouCam gives a more natural colour: it sends this photo to YouCam and uses 1 unit.");
-                    settings.append(button(src.providerHair ? "Use YouCam colour" : "Natural colour from YouCam (1 unit)", () => {
-                        void (async () => {
-                            if (!src.providerHair) {
-                                if (!src.face || !src.hair)
-                                    throw new Error("Mark the hair and find the face first.");
-                                src.providerHair = await requestProviderHair(src.image, naturalHairHex(src.image, src.face), (m) => { status.textContent = m; });
-                            }
-                            param("hair_source", "youcam");
-                        })().catch((e) => { status.textContent = e instanceof Error ? e.message : String(e); });
-                    }), button("Use local colour", () => param("hair_source", "local")), status);
-                }
+                if (layer.parameters.hair_colour === true)
+                    settings.append(node("p", "shell-hint", "Hair colour is made on this device."));
             }
-            if (layer.kind === "older" && !serverConfigured()) {
-                // Static on-device build: no styling server, so the YouCam path is not offered (no dead button, no error).
-                settings.append(node("p", "shell-hint", "Older is made on this device in this preview. Nothing is sent."));
-            }
-            else if (layer.kind === "older") {
-                // Older (YouCam, 2 units): removable adapter with its own consent tick and unit quote (John, Oct 30, 2026).
-                const src = this.editor.source, grey = layer.parameters.older_grey !== false;
-                const units = OLDER_UNITS + (grey && !src.providerGrey ? 1 : 0) - (src.providerOlder ? OLDER_UNITS : 0);
-                const status = node("p", "shell-hint", src.providerOlder
-                    ? `YouCam aging ready${src.providerOlder.ages ? ` (measured from age ${Math.round(src.providerOlder.ages.neutral_age)} to ${Math.round(src.providerOlder.ages.aged_age)})` : ""}. Only the change is used; your skin texture stays your own.`
-                    : "Local Older. YouCam Aging is more convincing: it sends this photo to YouCam once and uses the units shown.");
-                const tick = node("input");
-                tick.type = "checkbox";
-                tick.id = `older-consent-${layer.id}`;
-                const tickLabel = node("label", "shell-hint", `I agree to send this photo to YouCam for an aging preview${grey ? " and a grey hair colour" : ""}. The provider copy is deleted after the result.`);
-                tickLabel.htmlFor = tick.id;
-                const run = button(units > 0 ? `Older from YouCam (${units} unit${units === 1 ? "" : "s"})` : "Use Older from YouCam", () => {
-                    void (async () => {
-                        if (units > 0 && !tick.checked) {
-                            status.textContent = "Tick the box to send this photo to YouCam. Nothing was sent.";
-                            return;
-                        }
-                        if (!src.face)
-                            throw new Error("Find the face first.");
-                        if (!src.providerOlder)
-                            src.providerOlder = await requestProviderOlder(src.image, (m) => { status.textContent = m; });
-                        if (grey && src.hair && !src.providerGrey)
-                            src.providerGrey = await requestProviderHair(src.image, OLDER_HAIR_HEX, (m) => { status.textContent = m; }, { intensity: 90, shine: 30 });
-                        param("older_source", "youcam");
-                    })().catch((e) => { status.textContent = e instanceof Error ? e.message : String(e); });
-                });
-                settings.append(check("Grey hair from YouCam (+1 unit, colour only on your own strands)", grey, (v) => param("older_grey", v)));
-                if (units > 0)
-                    settings.append(tick, tickLabel);
-                settings.append(run, button("Use local Older", () => param("older_source", "local")), status);
-            }
+            if (layer.kind === "older")
+                settings.append(node("p", "shell-hint", "Older is made on this device. Nothing is sent."));
         }
         if (layer.kind === "gender") {
             // Named levels (the same seven as the preview strip); the level carries the intensity.
@@ -1211,7 +1148,7 @@ export class ShellView {
             settings.append(percent("Feminine to masculine appearance", slider, -100, 100, 1, n => param("slider", n), ""), node("p", "shell-hint", "Face-only simulation. Original is 0. Hair and makeup stay as they are."));
         }
         if (layer.kind === "beard") {
-            settings.append(labelled("Style", select(Object.keys(STYLES).map((s) => ({ value: s, label: s.replaceAll("_", " ") })), getParam(layer, "style", "stubble"), (v) => param("style", v))));
+            settings.append(labelled("Style", select(Object.keys(STYLES).map((s) => ({ value: s, label: s.replaceAll("_", " ") })), getParam(layer, "style", "short_boxed"), (v) => param("style", v))));
             settings.append(percent("Length", getNumber(layer, "length", 3), 1, 5, 1, (n) => param("length", n), "/5"));
             const colour = node("input", "shell-colour");
             colour.type = "color";
@@ -1312,7 +1249,7 @@ export class ShellView {
             settings.append(node("p", "shell-hint", `${BRUSH_NAMES[brush]} brush, ${strokes} stroke${strokes === 1 ? "" : "s"}. Paint more in Retouch brushes; Strength scales the whole brush.`), node("p", "shell-hint", BRUSH_LABELS[brush]));
         }
         if (layer.kind === "illustration") {
-            settings.append(labelled("Look", select(Object.entries(ILLUSTRATION_LOOKS).map(([value, row]) => ({ value, label: row.name })), getParam(layer, "look", "sancerre-cartoon"), (v) => param("look", v))));
+            settings.append(labelled("Look", select(Object.entries(ILLUSTRATION_LOOKS).map(([value, row]) => ({ value, label: row.name })), getParam(layer, "look", "chambord-portrait"), (v) => param("look", v))));
             settings.append(node("p", "shell-hint", "Illustration filter on your own photo; your face shape is unchanged."));
         }
         if (layer.kind === "under-eye") {
@@ -1401,17 +1338,21 @@ export class ShellView {
     /** A tool that could not apply, or applied only an estimate, says so in the status line; no tool
      * leaves the photo unchanged without a reason on screen. */
     showToolNotice() {
-        let notes = [];
+        let notes = [], refused = false;
         try {
-            notes = this.editor.rendered().metrics.filter((m) => (m.status === "refused" || m.status === "estimated") && typeof m.message === "string")
-                .map((m) => `${m.status === "refused" ? "Not applied: " : ""}${String(m.message)}`);
+            const shown = this.editor.rendered().metrics.filter((m) => (m.status === "refused" || m.status === "estimated" || m.status === "note") && typeof m.message === "string");
+            refused = shown.some((m) => m.status === "refused");
+            notes = shown.map((m) => `${m.status === "refused" ? "Not applied: " : ""}${String(m.message)}`);
         }
         catch {
             return;
         }
         const text = [...new Set(notes)].join(" ");
         this.status.dataset.toolNotice = notes.length ? "shown" : "";
-        if (text && !this.status.textContent?.includes(text))
+        // A refusal replaces the last message: "Not applied" next to "... applied from its preview" contradicted itself.
+        if (text && refused)
+            this.status.textContent = text;
+        else if (text && !this.status.textContent?.includes(text))
             this.status.textContent = this.lastMessage ? `${text} ${this.lastMessage}` : text;
     }
     /** Where the face is, as fractions of the photo, so checks can measure an edit inside its own region. */
@@ -1432,9 +1373,4 @@ export class ShellView {
     }
 }
 export function mountShell() { return new ShellView(); }
-/** Whether a styling server is configured (same rule as api.ts, read here without importing the API client). */
-function serverConfigured() {
-    const scope = globalThis;
-    const raw = scope.BELJOUR_API ?? scope.PLUMB_API;
-    return typeof raw === "string" && /^https?:\/\/[^\s/?#]+$/i.test(raw.trim().replace(/\/+$/, ""));
-}
+//# sourceMappingURL=view.js.map

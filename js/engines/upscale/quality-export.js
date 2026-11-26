@@ -59,3 +59,4 @@ export async function exportQualityRender(render, name, settings = {}, encoder =
     checkQualityAudit(render);
     return exportColourSafe(render.image, name, settings, encoder);
 }
+//# sourceMappingURL=quality-export.js.map

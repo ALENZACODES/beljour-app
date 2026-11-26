@@ -6,15 +6,15 @@ const LABELS = {
 };
 /** Endpoint ids as people read them. Unknown ids are shown as they are. */
 const ENDPOINTS = {
-    "makeup-vto": "YouCam Makeup Try On",
-    "hair-style": "YouCam Hairstyle",
-    "hair-color": "YouCam Hair Color",
-    "hair-bang": "YouCam Hair Bangs",
-    "hair-curl": "YouCam Hair Curl",
-    "hair-extension": "YouCam Hair Extension",
-    "hair-volume": "YouCam Hair Volume",
-    "eye-color-vto": "YouCam Eye Colour",
-    "beard-style": "YouCam Beard Styling",
+    "makeup-vto": "Makeup try-on (earlier online tool)",
+    "hair-style": "Hairstyle (earlier online tool)",
+    "hair-color": "Hair colour (earlier online tool)",
+    "hair-bang": "Hair bangs (earlier online tool)",
+    "hair-curl": "Hair curl (earlier online tool)",
+    "hair-extension": "Hair extension (earlier online tool)",
+    "hair-volume": "Hair volume (earlier online tool)",
+    "eye-color-vto": "Eye colour (earlier online tool)",
+    "beard-style": "Beard styling (earlier online tool)",
     "local-warp": "our face shape warp",
     "local-photo-check": "our photo condition checks",
     "local-proportions": "our face measurements",
@@ -62,7 +62,7 @@ export function badgeModel(p) {
     if (p.source === "recorded")
         parts.push("no units used");
     if (p.source === "local")
-        parts.push("made by our own code, no YouCam call");
+        parts.push("made by our own code");
     if (p.created)
         parts.push(p.created);
     if (isRetired(p))
@@ -108,3 +108,4 @@ export function withEndpoint(route, body) {
 export function provenanceOf(meta, route) {
     return meta.provenance ?? fromLegacyMeta(meta, route ? ROUTE_ENDPOINTS[route] ?? null : null);
 }
+//# sourceMappingURL=provenance.js.map

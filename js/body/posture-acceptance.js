@@ -38,3 +38,4 @@ export const READINESS_MESSAGES = {
     output_checks_failed: "The edited image failed its safety checks.",
     simulation_label_missing: "The edit is missing its simulation label.",
 };
+//# sourceMappingURL=posture-acceptance.js.map

@@ -21,3 +21,4 @@ export function renderGlasses(image, width, height, left, right, options = DEFAU
         out = restore(out, image, iris);
     return protectedMask ? restore(out, image, protectedMask) : out;
 }
+//# sourceMappingURL=glasses.js.map

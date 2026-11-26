@@ -427,7 +427,7 @@ export function poissonDisk(w, h, minDist, allowed, seed, maxPoints = 50000, tri
             add(x, y);
     }
     while (active.length && pts.length < maxPoints) {
-        const ai = Math.floor(r() * active.length), p = pts[active[ai]], d = minDist(p[0], p[1]);
+        const pick = Math.floor(r() * active.length), p = pts[active[pick]], d = minDist(p[0], p[1]);
         let placed = false;
         for (let t = 0; t < tries; t++) {
             const ang = 2 * Math.PI * r(), rad = d * (1 + r());
@@ -440,7 +440,7 @@ export function poissonDisk(w, h, minDist, allowed, seed, maxPoints = 50000, tri
             }
         }
         if (!placed) {
-            active[ai] = active[active.length - 1];
+            active[pick] = active[active.length - 1];
             active.pop();
         }
     }
@@ -484,3 +484,4 @@ export function pasteImage(dst, dstWidth, ch, src, b) {
         for (let k = 0, o = ((y + b.y0) * dstWidth + b.x0) * ch, q = y * cw * ch; k < cw * ch; k++)
             dst[o + k] = src[q + k];
 }
+//# sourceMappingURL=bands.js.map

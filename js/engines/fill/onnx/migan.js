@@ -1,6 +1,6 @@
 /** E07 part 2: MI-GAN as another fill method, behind the registry gate.
  *
- * Inspiration: MI-GAN (Sargsyan et al., ICCV 2023; github.com/Picsart-AI-Research/MI-GAN)
+ * Inspiration: MI-GAN (Sargsyan et al., ICCV 2023; source link in licences.json)
  * for the crop-around-the-hole, 512 px generator and masked-input idea; concept only, no
  * code copied. Two tensor layouts are supported, chosen when the model is pinned:
  *  - "pipeline-uint8": the exported pipeline. The MI-GAN README states its inputs are a
@@ -194,3 +194,4 @@ export class MiganFill {
 export function defaultMigan(ort = null) {
     return new MiganFill(new SessionLoader({ modelId: MIGAN_ID, ort }), "pipeline-uint8", () => ort);
 }
+//# sourceMappingURL=migan.js.map

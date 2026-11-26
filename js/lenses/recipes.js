@@ -5,8 +5,10 @@
  * transparent picture with the prop centred); `draw` is the drawn fallback used until that
  * picture exists (fallbacks.ts). The prop's square box is `scale` face widths wide, placed at
  * `anchor` plus `offset` (face widths, along the face's own right and down), turned with the
- * head plus `turn` degrees, and slid with head yaw by `depth` (0 flat on the face plane, 1 as
- * far forward as the nose tip). `bob` moves it gently up and down on video (face widths and
+ * head plus `turn` degrees, and slid with head yaw by `depth`: how far the prop stands in front
+ * of its anchor point, in nose depths (anchors.ts NOSE_DEPTH). 0 lies on the anchor (a nose on
+ * the nose tip, gloss on the lips), 0.45 is glasses in front of the eyes, and below 0 is worn
+ * around the head (a crown or ears sit over the skull, behind the forehead point). `bob` moves it gently up and down on video (face widths and
  * seconds per cycle). `when` shows it only while the mouth is open or the brows are raised.
  * Particle layer: many copies of one small picture (`name`, optionally alternating with `alt`)
  * that fall, rise, orbit the head or twinkle, in the face's own frame so they follow her.
@@ -19,9 +21,12 @@ import { BEAUTY_LABEL } from "./beauty.js";
 import { EFFECT_LABEL, EFFECTS } from "./effects.js";
 import { DRAWINGS } from "./fallbacks.js";
 import { FUN_WARP_LABEL, WARPS } from "./warps.js";
-const crownAt = (name, draw, dy, scale, extra = {}) => ({ name, anchor: "forehead", offset: [0, dy], scale, draw, depth: 0.2, ...extra });
-const glassesLayer = (draw) => ({ name: "glasses", anchor: "eyes", offset: [0, 0.02], scale: 1.12, draw, depth: 0.75, glass: true });
-const nose = (draw, scale = 0.42) => ({ name: "nose", anchor: "nose", offset: [0, 0.01], scale, draw, depth: 1 });
+/** Depth of props worn around the head: the middle of the skull sits about this many nose
+ * depths behind the top of the forehead (point 10). ASSUMED, set on a three-quarter photo. */
+export const HEAD_DEPTH = -2;
+const crownAt = (name, draw, dy, scale, extra = {}) => ({ name, anchor: "forehead", offset: [0, dy], scale, draw, depth: HEAD_DEPTH, ...extra });
+const glassesLayer = (draw) => ({ name: "glasses", anchor: "eyes", offset: [0, 0.02], scale: 1.12, draw, depth: 0.45, glass: true });
+const nose = (draw, scale = 0.42) => ({ name: "nose", anchor: "nose", offset: [0, 0.01], scale, draw, depth: 0 });
 export const LENSES = [
     { id: "flower-crown", title: "Couronne de Grasse", theme: "flower crown",
         layers: [crownAt("crown", "flower-ring", -0.12, 1.3, { art: { offset: [0, 0.02], scale: 1.35 } })], beauty: { look: "C03", lookShare: 0.4 } },
@@ -37,20 +42,22 @@ export const LENSES = [
     { id: "fox-ears", title: "Renard de Sologne", theme: "fox ears", layers: [crownAt("ears", "fox-ears", -0.32, 1.35), nose("fox-nose")] },
     { id: "bear-ears", title: "Ourson des Vosges", theme: "bear ears", layers: [crownAt("ears", "bear-ears", -0.26, 1.35), nose("bear-nose", 0.3)] },
     { id: "deer-antlers", title: "Cerf de Chambord", theme: "deer antlers", layers: [crownAt("antlers", "antlers", -0.45, 1.5),
-            { name: "freckles", anchor: "cheeks", offset: [0, 0], scale: 1.0, draw: "fawn-spots", opacity: 0.8, depth: 0.4 }] },
+            { name: "freckles", anchor: "cheeks", offset: [0, 0], scale: 1.0, draw: "fawn-spots", opacity: 0.8, depth: 0 }] },
     { id: "halo", title: "Auréole de Vézelay", theme: "halo", layers: [crownAt("halo", "halo", -0.42, 1.1, { blend: "screen", bob: [0.015, 3] })], beauty: { smooth: 30 } },
     { id: "devil-horns", title: "Cornes de Carcassonne", theme: "devil horns", layers: [crownAt("horns", "horns", -0.18, 1.1)] },
     { id: "tiara", title: "Diadème de Versailles", theme: "tiara", layers: [crownAt("tiara", "tiara", -0.1, 0.8)], beauty: { smooth: 25 } },
     { id: "crown", title: "Couronne de Reims", theme: "crown", layers: [crownAt("crown", "crown", -0.28, 0.75)] },
     { id: "sparkle-freckles", title: "Paillettes de Collioure", theme: "sparkle freckles",
-        layers: [{ name: "freckles", anchor: "cheeks", offset: [0, -0.03], scale: 1.0, draw: "glitter-freckles", depth: 0.5 }] },
+        layers: [{ name: "freckles", anchor: "cheeks", offset: [0, -0.03], scale: 1.0, draw: "glitter-freckles", depth: 0 }] },
     { id: "glitter-tears", title: "Larmes d'Arles", theme: "glitter tears",
-        layers: [{ name: "tears", anchor: "eyes", offset: [0, 0.14], scale: 0.7, draw: "tears", depth: 0.4 }] },
+        layers: [{ name: "tears", anchor: "eyes", offset: [0, 0.14], scale: 0.7, draw: "tears", depth: 0.1,
+                art: { offset: [0, 0.36], scale: 1.05 } }] },
     { id: "heart-cheeks", title: "Joues de Menton", theme: "heart cheeks",
-        layers: [{ name: "cheeks", anchor: "cheeks", offset: [0, 0], scale: 1.05, draw: "heart-pair", blend: "multiply", opacity: 0.55, depth: 0.4 }],
+        layers: [{ name: "cheeks", anchor: "cheeks", offset: [0, 0], scale: 1.05, draw: "heart-pair", blend: "multiply", opacity: 0.55, depth: 0 }],
         beauty: { look: "C07", lookShare: 0.4 } },
     { id: "blush-hearts", title: "Petits coeurs de Lyon", theme: "blush hearts",
-        layers: [{ name: "float", anchor: "face", offset: [0, -0.3], scale: 1.9, draw: "hearts-scatter", bob: [0.03, 2] }] },
+        layers: [{ name: "float", anchor: "face", offset: [0, -0.3], scale: 1.9, draw: "hearts-scatter", bob: [0.03, 2],
+                art: { offset: [0, -0.12], scale: 2.4 }, depth: HEAD_DEPTH / 2, behind: true }] },
     { id: "petal-shower", title: "Pluie de pétales", theme: "petal shower", layers: [],
         particles: [{ name: "particle", draw: "petal", alt: { name: "particle-2", draw: "blossom" }, motion: "fall", count: 18, size: 0.12, speed: 0.12, spread: 2.4 }] },
     { id: "snow", title: "Neige de Chamonix", theme: "snow", layers: [crownAt("hat", "beanie", -0.3, 1.25)],
@@ -63,13 +70,13 @@ export const LENSES = [
         particles: [{ name: "particle", draw: "butterfly-lavender", alt: { name: "particle-2", draw: "butterfly-blush" }, motion: "orbit", count: 6, size: 0.2, speed: 0.12, spread: 1.6 }] },
     { id: "rainbow", title: "Arc-en-ciel d'Étretat", theme: "rainbow", layers: [crownAt("arc", "rainbow", -0.55, 1.8, { depth: 0 })] },
     { id: "sunburst", title: "Soleil de Biarritz", theme: "sunburst",
-        layers: [{ name: "rays", anchor: "face", offset: [0, -0.08], scale: 2.6, draw: "rays", blend: "screen", opacity: 0.6 }], beauty: { look: "C02", lookShare: 0.5 } },
+        layers: [{ name: "rays", anchor: "face", offset: [0, -0.08], scale: 2.6, draw: "rays", blend: "screen", opacity: 0.8, depth: HEAD_DEPTH / 2, behind: true }], beauty: { look: "C02", lookShare: 0.5 } },
     { id: "neon-outline", title: "Néon de Pigalle", theme: "neon outline",
-        layers: [{ name: "frame", anchor: "face", offset: [0, -0.04], scale: 2.0, draw: "neon-frame", blend: "screen" }] },
+        layers: [{ name: "frame", anchor: "face", offset: [0, -0.04], scale: 2.0, draw: "neon-frame", blend: "screen", depth: HEAD_DEPTH / 2, behind: true }] },
     { id: "lip-gloss", title: "Gloss de Saint-Tropez", theme: "lip gloss shine",
-        layers: [{ name: "shine", anchor: "mouth", offset: [0, -0.01], scale: 0.45, draw: "gloss", blend: "screen", depth: 0.9 }], beauty: { smooth: 20 } },
+        layers: [{ name: "shine", anchor: "mouth", offset: [0, -0.01], scale: 0.45, draw: "gloss", blend: "screen", depth: 0 }], beauty: { smooth: 20 } },
     { id: "lash-flutter", title: "Cils de Deauville", theme: "lash flutter",
-        layers: [{ name: "lashes", anchor: "eyes", offset: [0, -0.02], scale: 0.95, draw: "lashes", depth: 0.6 }], beauty: { smooth: 20 } },
+        layers: [{ name: "lashes", anchor: "eyes", offset: [0, -0.02], scale: 0.95, draw: "lashes", depth: 0.1 }], beauty: { smooth: 20 } },
     { id: "moon-stars", title: "Nuit de Saint-Malo", theme: "moon and stars", layers: [crownAt("headband", "moon-band", -0.12, 1.2)],
         particles: [{ name: "particle", draw: "star", motion: "twinkle", count: 10, size: 0.07, speed: 0.5, spread: 1.7, boost: "brow-raise" }] },
     // Fun warps: the guarded mesh warp, labelled as a fun warp.
@@ -182,8 +189,8 @@ export function checkLenses(lenses = LENSES) {
                 problems.push(`${l.id}/${p.name}: scale must be in (0, 4]`);
             if (!(p.draw in DRAWINGS))
                 problems.push(`${l.id}/${p.name}: no drawn fallback ${p.draw}`);
-            if (p.depth !== undefined && !(p.depth >= 0 && p.depth <= 1))
-                problems.push(`${l.id}/${p.name}: depth must be 0..1`);
+            if (p.depth !== undefined && !(p.depth >= -3 && p.depth <= 1))
+                problems.push(`${l.id}/${p.name}: depth must be -3..1`);
             if (p.opacity !== undefined && !(p.opacity > 0 && p.opacity <= 1))
                 problems.push(`${l.id}/${p.name}: opacity must be in (0, 1]`);
         }
@@ -201,3 +208,4 @@ export function checkLenses(lenses = LENSES) {
     }
     return problems;
 }
+//# sourceMappingURL=recipes.js.map

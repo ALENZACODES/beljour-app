@@ -20,3 +20,4 @@ export function backgroundBlur(image, coarse, amount = 60) {
     return { image: out.data, channels: out.channels, label: LABEL, crops: [],
         metrics: { ...metrics, tool: "blur", radius_px: radius, person_changed_share: changedShare(p.rgb, out.data, out.channels, inside(alpha)) } };
 }
+//# sourceMappingURL=blur.js.map

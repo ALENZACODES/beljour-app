@@ -82,3 +82,4 @@ export function paintFaceChip(doc, chip, image, points) {
     chip.dataset.thumb = key;
     return true;
 }
+//# sourceMappingURL=face-chip.js.map

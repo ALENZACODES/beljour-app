@@ -65,3 +65,4 @@ export class ResourcePool {
     }
     get isDisposed() { return this.disposed; }
 }
+//# sourceMappingURL=resources.js.map

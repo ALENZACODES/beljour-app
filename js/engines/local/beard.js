@@ -30,9 +30,11 @@ export const MOUSTACHE_FEATHER = 0.6, MOUSTACHE_TOP = 0.9;
 export const CHEEK_SHARE = 0.6, TOP_SHARE = 0.55, NOSE_GAP = 0.05, LIP_MARGIN = 0.05, CORNER_OUT = 0.12;
 export const STYLES = {
     stubble: { region: "full", length: [0.008, 0.02], density: 900, width: [0.6, 1.0], shadow: 0.1 },
-    short_boxed: { region: "full", length: [0.035, 0.08], density: 600, width: [0.8, 1.3], shadow: 0.04 },
+    // Nov 1, 2026 review on the high-resolution samples: 600 strands per IOD² read as scattered hairs, so
+    // short_boxed is denser with a soft under-shadow, and the moustache lighter so it is hair, not a bar.
+    short_boxed: { region: "full", length: [0.035, 0.08], density: 1500, width: [0.8, 1.3], shadow: 0.16 },
     // Moustache: dense, longer and wider strands with a stronger under-shadow so it reads at the default strength.
-    moustache: { region: "moustache", length: [0.07, 0.15], density: 2600, width: [1.0, 1.7], shadow: 0.25 },
+    moustache: { region: "moustache", length: [0.07, 0.15], density: 1700, width: [0.8, 1.4], shadow: 0.2 },
 };
 export const LENGTHS = { 1: 0.6, 2: 0.8, 3: 1.0, 4: 1.25, 5: 1.5 };
 export const DENSITIES = [1, 2, 3, 4];
@@ -201,3 +203,4 @@ export function facePhoto(points, width, height, seed = 1) {
         out.data[i] = Math.min(255, Math.max(0, roundHalfEven(img[i])));
     return out;
 }
+//# sourceMappingURL=beard.js.map

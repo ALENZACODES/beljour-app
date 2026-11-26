@@ -1,4 +1,4 @@
-/** Release verification categories for the public browser transfer. Author: John Khan. */
+/** Release verification categories for the public browser handoff. Author: John Khan. */
 import { realDemoRoute } from "../judge-live-routes.js";
 const CHECKS = [
     {
@@ -43,7 +43,7 @@ const CHECKS = [
         id: "skin-match", title: "Inspect shade and skin recommendations",
         classification: "operator", route: "shade",
         expectation: "Only actual available catalogue products appear as buyable matches.",
-        proofNeeded: "Distinguish local estimates from returned Skin AI observations.",
+        proofNeeded: "Distinguish local estimates from returned skin analysis observations.",
         recovery: "Keep unavailable provider recommendations explicitly labelled.",
     },
     {
@@ -136,3 +136,4 @@ export function releaseLink(id) {
         throw new Error("Unsafe release destination");
     return href;
 }
+//# sourceMappingURL=catalogue.js.map

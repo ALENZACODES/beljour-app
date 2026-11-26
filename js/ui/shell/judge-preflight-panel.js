@@ -7,7 +7,7 @@ const LABELS = {
 };
 export function renderJudgePreflightPanel(doc, host, report) {
     const details = judgeNode(doc, "details", "lg-judge-preflight");
-    details.append(judgeNode(doc, "summary", "", "Browser and live-service readiness"));
+    details.append(judgeNode(doc, "summary", "", "Browser readiness"));
     details.append(judgeParagraph(doc, demoCapabilitySummary(report), "lg-judge-small"));
     const list = judgeNode(doc, "ul", "lg-judge-preflight-list");
     for (const capability of report.checks) {
@@ -21,7 +21,8 @@ export function renderJudgePreflightPanel(doc, host, report) {
     if (!report.canRunIllustration) {
         details.append(judgeNotice(doc, "Local illustration not available", "You can read or skip the guide. Do not claim a successful render."));
     }
-    details.append(judgeNotice(doc, "Separate live demo required", "This panel does not test provider units, a Render proxy, hosted availability, "
+    details.append(judgeNotice(doc, "Separate real-photo demo required", "This panel does not test a real photo, hosted availability, "
         + "commercial model rights or real-face accuracy."));
     host.append(details);
 }
+//# sourceMappingURL=judge-preflight-panel.js.map

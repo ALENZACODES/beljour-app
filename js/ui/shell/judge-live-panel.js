@@ -1,4 +1,4 @@
-/** Optional real-product transfer and manual operator checklist.
+/** Optional real-product handoff and manual operator checklist.
  * Every link is a fixed public entry point; no demo photo follows it.
  */
 import { REAL_DEMO_CHECKS, } from "../../layout/judge-live-checks.js";
@@ -125,7 +125,7 @@ export function renderJudgeLivePanel(doc, host, checks, options = {}) {
         const confirm = judgeParagraph(doc, `Confirm: ${route.confirmation}`, "lg-judge-small");
         item.append(link, description, prerequisite, confirm);
         if (route.boundary === "requires-consent") {
-            item.append(judgeNotice(doc, "Fresh provider consent required", "This Judge Mode's local approval never authorizes a real YouCam request."));
+            item.append(judgeNotice(doc, "Fresh provider consent required", "This Judge Mode's local approval never authorizes an upload."));
         }
         routes.append(item);
     }
@@ -139,3 +139,4 @@ export function renderJudgeLivePanel(doc, host, checks, options = {}) {
 export function linkForRealDemo(id) {
     return realDemoRoute(id).href;
 }
+//# sourceMappingURL=judge-live-panel.js.map

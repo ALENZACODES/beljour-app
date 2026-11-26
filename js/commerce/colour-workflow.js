@@ -95,3 +95,4 @@ export class TintedFibreWorkflow {
         return out;
     }
 }
+//# sourceMappingURL=colour-workflow.js.map

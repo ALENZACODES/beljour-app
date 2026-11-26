@@ -63,3 +63,4 @@ export function rank(catalogue, profile, cosmetic = {}, finish = "natural", limi
     }
     return out;
 }
+//# sourceMappingURL=ranking.js.map

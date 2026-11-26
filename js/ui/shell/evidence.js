@@ -1,8 +1,7 @@
 export function evidenceForLayer(item, index) {
     const running = Boolean(item.enabled && item.strength > 0 && item.opacity > 0);
-    const scope = item.provenance === "youcam" ? "provider" : "on-device";
-    const status = !running ? "Hidden" : scope === "provider" ? "YouCam result"
-        : item.kind === "filters" ? "Local look" : item.simulation ? "Local simulation" : "Local correction";
+    const scope = "on-device";
+    const status = !running ? "Hidden" : item.kind === "filters" ? "Local look" : item.simulation ? "Local simulation" : "Local correction";
     return { id: item.id, name: item.name, scope, display: status, running,
         simulation: item.simulation, position: index + 1, strength: item.strength, opacity: item.opacity };
 }
@@ -14,8 +13,6 @@ export function documentEvidence(source, stack) {
     const simulationCount = layers.filter((row) => row.running && row.simulation).length;
     const activeCount = layers.filter((row) => row.running).length;
     const warnings = [];
-    if (providerCount)
-        warnings.push("Provider results can only arrive through a separate consented YouCam task.");
     if (source.kind === "uploaded" && source.crown)
         warnings.push("Crown shape was placed manually; the fibre coverage reading is an estimate.");
     if (source.kind === "uploaded" && source.body)
@@ -39,3 +36,4 @@ export function documentEvidence(source, stack) {
         flow: providerCount ? "provider work requires a separate consented task" : "stays on this device",
         warnings, badges, layers };
 }
+//# sourceMappingURL=evidence.js.map

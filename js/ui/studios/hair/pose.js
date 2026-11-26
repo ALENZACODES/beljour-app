@@ -86,7 +86,8 @@ export function poseDecision(input) {
 }
 export function syntheticHairPose() {
     // A *labelled* synthetic fixture needs no face tracker; never use this to clear
-    // a real photo for upload or a YouCam task.
+    // a real photo.
     return { acceptable: true, rollDegrees: 0, yawProxy: 0, faceShare: 0.6,
         reasons: [], confidence: "geometric proxy", faceCount: 1 };
 }
+//# sourceMappingURL=pose.js.map

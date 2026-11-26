@@ -147,3 +147,4 @@ export function detailField(width, height, anchors, p) {
     }
     return result;
 }
+//# sourceMappingURL=detailing.js.map

@@ -20,3 +20,4 @@ export function alphaPreserved(before, after) {
             return false;
     return true;
 }
+//# sourceMappingURL=shared.js.map

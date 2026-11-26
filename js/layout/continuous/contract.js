@@ -18,7 +18,7 @@ export const TOUR_STEPS = [
         caption: "Review the exact commands; execution requires the owner adapter." },
     { id: "seasonal", title: "Seasonal packs",
         caption: "List verified packs from a public catalogue if it is connected." },
-    { id: "tryon", title: "Mock YouCam try-on", caption: "No provider task or YouCam unit is used in this tour." },
+    { id: "tryon", title: "Mock try-on", caption: "Nothing is uploaded in this tour." },
     { id: "compare", title: "Before and after",
         caption: "Move the divider to compare the original and local illustration." },
     { id: "save", title: "Save labelled image", caption: "Export an explicitly marked illustration from this browser." },
@@ -66,3 +66,4 @@ export function defaultLevels() {
 export function completedTourCount(state) {
     return state.completed.length;
 }
+//# sourceMappingURL=contract.js.map

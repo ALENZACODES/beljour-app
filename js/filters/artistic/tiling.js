@@ -140,3 +140,4 @@ export function renderTiled(effectId, image, options = {}) {
             visible_alpha_sum: visibleAlpha, allocation_allowance_bytes: allocation.estimated_peak_bytes,
             selected_tile_size: allocation.tile_size } };
 }
+//# sourceMappingURL=tiling.js.map

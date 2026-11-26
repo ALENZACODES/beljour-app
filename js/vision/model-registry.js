@@ -211,3 +211,4 @@ export class ModelDownloads {
     clear() { this.pending.clear(); }
 }
 export const DEFAULT_MODELS = new BrowserModelRegistry();
+//# sourceMappingURL=model-registry.js.map

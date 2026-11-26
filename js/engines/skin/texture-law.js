@@ -115,3 +115,4 @@ export function lowBandOnly(input, out, sigma, weight, blur = (p, w, h, s) => bo
     }
     return res;
 }
+//# sourceMappingURL=texture-law.js.map

@@ -50,3 +50,4 @@ register({
     halo: (params, frame) => structureRadius(params.radius, frame),
     help: "Restrained local luminance structure without face reshaping",
 });
+//# sourceMappingURL=structure.js.map

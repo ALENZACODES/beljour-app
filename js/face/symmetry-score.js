@@ -31,7 +31,7 @@ export const REGION_LABELS = {
 };
 export const PUPILS = [468, 473];
 /**
- * Pose limits, measured on 12 AI-generated example faces and their mirrored copies
+ * Pose limits, measured on 12 synthetic example faces and their mirrored copies
  * (docs/FACE-MAP.md, "Thresholds"). Re-posing a real mesh on its own 3D points by 1 degree of
  * turn moved the score by about 5 points; the mirrored photo, read again by the face reader,
  * differed by 0 to 4 points. The 24 front-facing portraits read |yaw| 0.4 to 3.0 degrees, so 4
@@ -188,3 +188,4 @@ export function mirrorMesh(points, width) {
 export const SYMMETRY_NOTE = "This measures how the two sides of the face line up in this photo, after allowing for a tilted head. "
     + `Most faces score between ${TYPICAL_RANGE[0]} and ${TYPICAL_RANGE[1]}; nobody's two sides match exactly. `
     + "It is not a beauty or attractiveness score, it is not medical, and it is never used to compare people.";
+//# sourceMappingURL=symmetry-score.js.map

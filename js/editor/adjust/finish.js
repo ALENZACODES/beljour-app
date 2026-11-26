@@ -91,3 +91,4 @@ export function finish(rgb, width, height, v, opacity = 1) {
             rgb[i + 2] = b;
         }
 }
+//# sourceMappingURL=finish.js.map

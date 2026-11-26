@@ -526,3 +526,4 @@ export class CoverSession {
             hairRgb: prepared.colour, providerCalls: 0, simulated: true, label: COVER_LABEL };
     }
 }
+//# sourceMappingURL=fibre.js.map

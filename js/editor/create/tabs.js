@@ -260,3 +260,4 @@ function boardTab(p, kind) {
     }
     return out;
 }
+//# sourceMappingURL=tabs.js.map

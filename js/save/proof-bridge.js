@@ -88,3 +88,4 @@ export function mountSavedLookProof(root, options) {
         title: "Verify saved look locally",
     });
 }
+//# sourceMappingURL=proof-bridge.js.map

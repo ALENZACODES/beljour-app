@@ -58,7 +58,7 @@ export function applyLook(look, photo, engine, options = {}) {
     const applied = [], skipped = [];
     for (const step of cloneSteps(chosen.steps)) {
         if (step.provider === "youcam" && !options.youcamAvailable) {
-            skipped.push({ tool: step.tool, reason: `${TOOLS[step.tool].label} needs YouCam, which is off; the rest of the look was applied.` });
+            skipped.push({ tool: step.tool, reason: `${TOOLS[step.tool].label} was saved with an online tool the app no longer uses; the rest of the look was applied.` });
             continue;
         }
         const fn = engine[step.tool];
@@ -101,3 +101,4 @@ export class SaveOffer {
         catch { /* the offer may show again next visit */ }
     }
 }
+//# sourceMappingURL=looks.js.map

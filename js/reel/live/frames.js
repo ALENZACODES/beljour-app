@@ -44,3 +44,4 @@ export async function processSequence(frames, effect, inputsFor, sink, strength 
     }
     return { frames: index, changed, notes: [...notes] };
 }
+//# sourceMappingURL=frames.js.map

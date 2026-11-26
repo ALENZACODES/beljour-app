@@ -1,4 +1,4 @@
-/** Makeup on this device as a shell layer kind, "face-makeup" (the "makeup" studio is the YouCam try-on): lipstick, blush, eyeshadow and eyeliner drawn on this
+/** Makeup on this device as a shell layer kind, "face-makeup" : lipstick, blush, eyeshadow and eyeliner drawn on this
  * device by web/src/engines/beauty/makeup.ts from the photo's own face points. Nothing is sent
  * anywhere. Each product is a hex colour or "none"; the lipstick has a matte, satin or gloss finish.
  * Author: John Khan.
@@ -101,3 +101,4 @@ export function applyMakeupLayer(image, source, layer) {
     return { image: { width: image.width, height: image.height, channels: image.channels, data: result.image },
         label: result.label, metrics: { ...result.metrics, look: text(layer, "look"), mask_source: "face points" } };
 }
+//# sourceMappingURL=makeup-layer.js.map

@@ -107,3 +107,4 @@ export class JudgeImage {
             throw new Error("This demonstration has ended.");
     }
 }
+//# sourceMappingURL=judge-image.js.map

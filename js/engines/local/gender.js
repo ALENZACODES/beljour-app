@@ -49,6 +49,37 @@ export function validateOptions(options = {}) {
     }
     return { factors, scope, gain };
 }
+/** Width of the smooth share, in eye distances. ASSUMED, set so Hyper moves the jaw visibly. */
+export const SPREAD_IOD = 0.28;
+function spread(face, dx, dy, sigma) {
+    const n = face.length, mag = Array.from({ length: n }, (_, i) => Math.hypot(dx[i], dy[i]));
+    const top = Math.max(...mag);
+    if (!(top > 1e-9) || !(sigma > 0))
+        return;
+    // Points the recipe really moves (a quarter of the largest move or more) lead; the rest follow.
+    const lead = mag.map((m, i) => (m >= 0.25 * top ? i : -1)).filter((i) => i >= 0);
+    const k2 = 1 / (2 * sigma * sigma), pins = new Set(IDENTITY_PINS);
+    const ox = Float64Array.from(dx), oy = Float64Array.from(dy);
+    for (let i = 0; i < n; i++) {
+        if (pins.has(i) || mag[i] >= 0.25 * top)
+            continue;
+        let w = 0, sx = 0, sy = 0;
+        for (const j of lead) {
+            const d2 = (face[i][0] - face[j][0]) ** 2 + (face[i][1] - face[j][1]) ** 2, k = Math.exp(-d2 * k2);
+            w += k;
+            sx += k * ox[j];
+            sy += k * oy[j];
+        }
+        if (!(w > 1e-9))
+            continue;
+        // Normalised among close leaders, fading to its own move far from any of them.
+        const near = w / (w + 0.5), ax = sx / w, ay = sy / w;
+        if (Math.hypot(ax, ay) * near <= mag[i])
+            continue;
+        dx[i] = ox[i] + (ax - ox[i]) * near;
+        dy[i] = oy[i] + (ay - oy[i]) * near;
+    }
+}
 export function genderTargets(face, slider, options = {}) {
     return targets(face, slider, options);
 }
@@ -133,6 +164,12 @@ function targets(face, slider, options, preparation) {
     }
     for (const idx of [152, 175])
         add(idx, 0, f.length * par.face_length_fh / 100, factors.chin);
+    // The recipe moves outline points (jaw, chin, brows, lips, eyes). Left alone, the points just
+    // inside them stay put, the strain rule below sees a fold and cancels most of the move, and
+    // Hyper ends up a few pixels from the original. So each point the recipe does not move takes a
+    // distance-weighted share of its neighbours' moves (Gaussian, SPREAD_IOD eye distances wide):
+    // the cheek and jaw flesh follow the jaw line, and the whole face changes shape smoothly.
+    spread(face, dx, dy, f.iod * SPREAD_IOD);
     // Gain scales the whole recipe uniformly (shape stays the recipe's shape); the cap scales with it so
     // Hyper is not silently clipped back to Extra. Identity pins and both regularisers still apply.
     if (gain !== 1)
@@ -151,7 +188,7 @@ function targets(face, slider, options, preparation) {
         return [x + dx[i] * scale, y + dy[i] * scale];
     });
     // One direction-neutral local-spacing policy follows all nine contributions.
-    const safety = regularizeTargets(face, requested, f.iod, IDENTITY_PINS, preparation?.graph);
+    const safety = regularizeTargets(face, requested, f.iod, IDENTITY_PINS, preparation?.graph, Math.max(1, gain));
     // R13: one strain rule for both directions (35% of the shortest adjacent edge).
     const strain = regulariseTargets(face, safety.points, f.iod, EDGE_STRAIN_SHARE, IDENTITY_PINS, true, preparation?.graph);
     const points = strain.points;
@@ -165,3 +202,4 @@ function targets(face, slider, options, preparation) {
             direction: slider === 0 ? "original" : slider > 0 ? "masculine" : "feminine",
             simulation: LABEL, validated_on_released_photos: false, gain } };
 }
+//# sourceMappingURL=gender.js.map

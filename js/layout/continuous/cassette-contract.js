@@ -17,7 +17,7 @@ export const CASSETTE_CARDS = Object.freeze([
     }),
     Object.freeze({
         id: "drawn-skin", family: "skin", title: "Skin match concept",
-        explanation: "A catalogue-category example, not a Skin AI reading or a verified product match.",
+        explanation: "A catalogue-category example, not a skin analysis reading or a verified product match.",
         productType: "Complexion reference", relatedPermission: "face", route: "shade",
         scene: "drawn-pair", provenance: "local-drawn",
         label: "ILLUSTRATION · NOT A PROVIDER RESULT",
@@ -79,3 +79,4 @@ export function statusCopy(status) {
         case "disposed": return "This demonstration session has ended.";
     }
 }
+//# sourceMappingURL=cassette-contract.js.map

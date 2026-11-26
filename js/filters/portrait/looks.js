@@ -8,7 +8,7 @@
  */
 import { PORTRAIT_LOOKS } from "../data/generated/portrait-looks.js";
 import { catalogue } from "../recipe/registry.js";
-import { checkRecipe } from "../recipe/schema.js";
+import { DEFAULT_STRENGTH, checkRecipe } from "../recipe/schema.js";
 import { op } from "../colour/ops.js";
 export const FORMAT = "beljour-portrait-looks/1";
 export const POLISH_MAX = 0.6; // "soften, not erase"; ASSUMED
@@ -27,7 +27,7 @@ export function validate(looks, coreNames = new Set(catalogue().recipes.map((r) 
     const ids = new Set(), names = new Set(), ranks = new Set();
     for (const look of looks) {
         const where = look.id;
-        problems.push(...checkRecipe(look.recipe));
+        problems.push(...checkRecipe(look.recipe, undefined, DEFAULT_STRENGTH));
         if (ids.has(look.id))
             problems.push(`${where}: id used twice`);
         const key = look.name.toLocaleLowerCase("en");
@@ -87,3 +87,4 @@ export function portraitLooks() {
 export function portraitLook(id) {
     return portraitLooks().find((look) => look.id === id) ?? null;
 }
+//# sourceMappingURL=looks.js.map

@@ -163,3 +163,4 @@ export function tan(image, skin, direction = "add", strength = 30, undertone = "
             exposure_map: context.mesh ? "mesh_normals" : "uniform", texture_source: "own_photo", render_ms: now() - t0
         } };
 }
+//# sourceMappingURL=tan.js.map

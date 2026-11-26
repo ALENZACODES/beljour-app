@@ -57,3 +57,4 @@ export function scene(id) {
         throw new RangeError(`There is no demo scene called ${id}`);
     return found;
 }
+//# sourceMappingURL=scenes.js.map

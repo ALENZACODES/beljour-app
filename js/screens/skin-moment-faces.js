@@ -1,8 +1,8 @@
 export const FACES_DIR = "assets/skin-moment/faces/";
-export const FACE_LABEL = "AI-generated example person";
+export const FACE_LABEL = "synthetic example person";
 export const SCORE_LABEL = "Saved example";
-export const SCORE_NOTE = "Saved example: made-up scores for an AI-generated example person, not a measurement.";
-export const REFERENCE_LABEL = "AI-generated picture of this example person in a matched foundation, not a try-on result.";
+export const SCORE_NOTE = "Saved example: made-up scores for a synthetic example person, not a measurement.";
+export const REFERENCE_LABEL = "synthetic picture of this example person in a matched foundation, not a try-on result.";
 export const FACE_COUNT = 60;
 export const DAY42_COUNT = 60;
 export const FOUNDATION_COUNT = 60;
@@ -146,3 +146,4 @@ export function savedResult(face, moment, now = new Date()) {
     return { ...base, photo: face.day0, concerns: rows(first, concerns),
         reference: moment === "buy" && face.foundation ? { url: face.foundation, label: REFERENCE_LABEL } : null };
 }
+//# sourceMappingURL=skin-moment-faces.js.map

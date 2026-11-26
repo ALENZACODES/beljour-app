@@ -47,8 +47,7 @@
       <div id="shell-nav"></div>
       <div class="shell-nav-footer">
         <strong>Private workspace</strong>
-        <p>Local tools run in this browser. YouCam actions say on the button what is sent and how many units they use.</p>
-        <p class="shell-check-row shell-local-only"><input type="checkbox" id="shell-local-only"><label for="shell-local-only">On-device only: never send a photo to YouCam</label></p>
+        <p>Every tool runs in this browser. Your photo never leaves this device.</p>
         <button type="button" id="shell-withdraw" class="shell-button shell-quiet">Withdraw consent</button>
       </div>
     </aside>
@@ -169,7 +168,7 @@
         </div>
       </div>
       <p id="shell-status" class="shell-status" role="status" aria-live="polite">Ready.</p>
-      <p class="shell-small">Preview rendering is limited to a device-friendly size. It does not predict real-world outcomes. No data is automatically sent to YouCam.</p>
+      <p class="shell-small">Preview rendering is limited to a device-friendly size. It does not predict real-world outcomes. Nothing is uploaded.</p>
     </main>
     <aside class="shell-inspector" aria-label="Layer controls">
       <section class="shell-panel" id="shell-panel-edit" data-panel-id="edit">
@@ -205,15 +204,6 @@
       <button type="button" id="shell-consent-accept" class="shell-button shell-primary">Continue</button>
     </div>
   </div>
-  <div class="shell-dialog" id="shell-provider" role="dialog" aria-modal="true" aria-labelledby="shell-provider-title" aria-describedby="shell-provider-facts" hidden>
-    <h2 id="shell-provider-title">Styling sends a photo to YouCam</h2>
-    <ul id="shell-provider-facts" class="shell-plain-list"></ul>
-    <div id="shell-provider-check" class="shell-provider-check"></div>
-    <div class="shell-dialog-actions">
-      <button type="button" id="shell-provider-cancel" class="shell-button">Keep editing here</button>
-      <a id="shell-provider-continue" class="shell-button shell-primary" href="index.html#/tryon">Open the styling screen</a>
-    </div>
-  </div>
   <div class="shell-dialog shell-dialog-wide" id="shell-help" role="dialog" aria-modal="true" aria-labelledby="shell-help-title" hidden>
     <h2 id="shell-help-title">Keyboard shortcuts</h2>
     <p class="shell-check-row"><input type="checkbox" id="shell-single-keys" checked><label for="shell-single-keys">Use single-key shortcuts (letters, digits and brackets)</label></p>
@@ -223,7 +213,7 @@
   </div>
   <p id="shell-announce" class="shell-visually-hidden" aria-live="polite"></p>
   <p id="shell-alert" class="shell-visually-hidden" aria-live="assertive"></p>
-  <footer class="shell-footer"><span>Designed and built by John Khan.</span><span>Local rendering · Optional YouCam styling · No third-party filters in this round.</span></footer>
+  <footer class="shell-footer"><span>Designed and built by John Khan.</span><span>Everything runs on this device · No uploads · No third-party filters.</span></footer>
   <script type="module" src="js/ui/shell/entry.js"></script>
 </body>
 </html>

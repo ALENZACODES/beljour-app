@@ -119,3 +119,4 @@ export function shipGate(tool, metrics, identity, human = {}) {
     const status = failures.length ? "FAIL" : unknown.length ? "UNKNOWN" : "PASS";
     return { tool, status, failures, unknown, phoneEstimateMs: phone, exportAllowed: status === "PASS" };
 }
+//# sourceMappingURL=ship-gate.js.map

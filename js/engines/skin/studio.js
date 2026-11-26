@@ -104,3 +104,4 @@ export function renderSkinTool(tool, image, points, strength = 30, params = {}) 
         throw error;
     }
 }
+//# sourceMappingURL=studio.js.map

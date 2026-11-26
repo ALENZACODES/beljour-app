@@ -173,3 +173,4 @@ export function copyExif(original, saved, width, height) {
     const adjusted = payload && exifForSave(payload, width, height);
     return adjusted ? { bytes: withExif(saved, adjusted), copied: true } : { bytes: saved, copied: false };
 }
+//# sourceMappingURL=exif-copy.js.map

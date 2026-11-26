@@ -1,3 +1,4 @@
+// Face and body mapping: concept only, no code copied, after MediaPipe Pose Landmarker (body landmarks as the joint points).
 import { floatImage } from "../core/buffer.js";
 const clamp = (v) => Math.max(0, Math.min(1, v));
 /** Box mean by integral image; unchanged at borders, deterministic CPU path. */
@@ -70,3 +71,4 @@ export function vacantBodyMask(oldMatte, newMatte, oldPerson) {
     }
     return result;
 }
+//# sourceMappingURL=posture-matte.js.map

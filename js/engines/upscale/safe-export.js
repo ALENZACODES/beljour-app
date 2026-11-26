@@ -33,3 +33,4 @@ export async function exportSafeUpscale(result, name, settings = {}, gate, encod
     }
     return exportColourSafe({ width: photo.width, height: photo.height, data: rgba(result) }, name, settings, encoder);
 }
+//# sourceMappingURL=safe-export.js.map

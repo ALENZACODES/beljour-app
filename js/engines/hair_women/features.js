@@ -231,3 +231,4 @@ export function planHairFeature(options, geometry, imageHeight) {
             };
     }
 }
+//# sourceMappingURL=features.js.map

@@ -38,3 +38,4 @@ register({
     },
     help: "Photographic white or dark border, full-frame coordinates",
 });
+//# sourceMappingURL=border.js.map

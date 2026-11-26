@@ -107,3 +107,4 @@ export function validateProofBudget(raw) {
     }
     return obj;
 }
+//# sourceMappingURL=proof-budget.js.map

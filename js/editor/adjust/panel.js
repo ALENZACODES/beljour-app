@@ -112,3 +112,4 @@ export function colourOutsideSkin(img) {
         }
     return total ? coloured / total : 0;
 }
+//# sourceMappingURL=panel.js.map

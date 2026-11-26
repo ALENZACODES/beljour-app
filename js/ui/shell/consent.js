@@ -1,4 +1,5 @@
-/** Consent gate (plan N22, round brief item 1): nothing reaches the styling provider without it.
+/** Consent gate (plan N22, round brief item 1). Since the app runs on this device only, visit consent
+ * is the gate in use; the per-photo scopes below are kept so older saved records still load.
  *
  * Two levels:
  *  1. Visit consent, once per device (localStorage): the person confirms they understand how photos are
@@ -20,18 +21,11 @@
 export const CONSENT_VERSION = "beljour-consent/2";
 export const STORAGE_KEY = "beljour.consent";
 export const LOCAL_ONLY_KEY = "beljour.local-only";
-export const LOCAL_ONLY_REASON = "On-device only is on, so nothing is sent to YouCam. Turn it off in the studio to use makeup and hair styling.";
+export const LOCAL_ONLY_REASON = "Everything runs on this device, so nothing is sent anywhere.";
 export const PHOTO_CONSENT_MS = 30 * 60 * 1000;
 export const STYLING_ACTIONS = ["makeup", "hair-color", "hair-style", "hair-transfer", "hair-bang", "hair-curl", "hair-extension", "hair-volume"];
 export const VISIT_STATEMENTS = [
-    { id: "understood", text: "Your photos are processed on this device. A photo is sent to YouCam only when you start an action labelled YouCam, and that label says what is sent and how many units it uses." },
-];
-export const PROVIDER_FACTS = [
-    "Only the photo you chose is sent, for the one makeup or hair styling action you start.",
-    "YouCam processes it and the result comes back here. The provider copy is deleted after the result.",
-    "Each action shows its unit price before you start. Cached results cost nothing.",
-    "Location data and other file metadata are removed before upload.",
-    "You can withdraw at any time. Local tools keep working without consent to send.",
+    { id: "understood", text: "Your photos are processed on this device and never uploaded. Delete them from this device at any time in the Trust Centre." },
 ];
 export function scopeFor(action) {
     if (action === "makeup")
@@ -43,7 +37,7 @@ export function scopeFor(action) {
     throw new RangeError("Only makeup and hair styling actions can be sent to the provider");
 }
 export function scopeTitle(scope) {
-    return scope === "makeup" ? "makeup preview" : scope === "age" ? "Older (YouCam aging) preview" : "hair styling preview";
+    return scope === "makeup" ? "makeup preview" : scope === "age" ? "Older preview" : "hair styling preview";
 }
 export function attestationFor(grant, photoId, action) {
     return { version: CONSENT_VERSION, scope: scopeFor(action), photo_id: photoId, given_at: grant.at };
@@ -187,7 +181,7 @@ export class ConsentGate {
         if (!this.visitRecord)
             return { allowed: false, need: "visit", reason: "Confirm how photos are used before anything is sent." };
         let grant = this.grants.get(photoId);
-        // The single consent covers named cloud actions: starting a YouCam-labelled action is the
+        // The single consent covers named cloud actions: starting a cloud-labelled action is the
         // per-photo choice, so no second tick is asked for.
         if (!grant || !grant.scopes.includes(scope) || grant.expires <= this.clock()) {
             if (!PHOTO_ID.test(photoId))
@@ -251,3 +245,4 @@ if (typeof window !== "undefined" && typeof window.addEventListener === "functio
     window.addEventListener("storage", (event) => { if (event.key === STORAGE_KEY || event.key === null)
         appConsent.reload(); });
 }
+//# sourceMappingURL=consent.js.map

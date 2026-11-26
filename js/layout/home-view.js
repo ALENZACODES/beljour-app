@@ -72,3 +72,4 @@ export function mountHome(doc = document) {
     return { looks: store };
 }
 export { CATEGORIES };
+//# sourceMappingURL=home-view.js.map

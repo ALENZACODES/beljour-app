@@ -163,3 +163,4 @@ export function beardJawCheck(before, after, maxIn = 7, tol = 0.8) {
     }
     return { pass: worstOut <= tol && worstIn <= maxIn, worstOut, worstIn };
 }
+//# sourceMappingURL=identity.js.map

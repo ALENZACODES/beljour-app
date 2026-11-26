@@ -106,3 +106,4 @@ export class BrushSession {
         this.editor.paintStrokes(layer.id, "", `Clear ${BRUSH_NAMES[this.state.brush]} strokes`);
     }
 }
+//# sourceMappingURL=session.js.map

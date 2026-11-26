@@ -339,3 +339,4 @@ export function createShellClient(workerUrl) {
     port.receiver = (message) => client.receive(message);
     return { client, threaded: false, terminate: () => client.cancelAll("Closed") };
 }
+//# sourceMappingURL=worker-protocol.js.map

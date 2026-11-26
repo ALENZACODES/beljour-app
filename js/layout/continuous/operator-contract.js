@@ -1,4 +1,4 @@
-/** Fixed, privacy-safe operator checks for the real application transfer. */
+/** Fixed, privacy-safe operator checks for the real application handoff. */
 import { realDemoRoutes } from "../judge-live-routes.js";
 export const OPERATOR_FORMAT = "beljour-operator-rehearsal/1";
 export const OPERATOR_REFUSALS = [
@@ -60,3 +60,4 @@ export function operatorRefusalText(reason) {
     };
     return descriptions[reason];
 }
+//# sourceMappingURL=operator-contract.js.map

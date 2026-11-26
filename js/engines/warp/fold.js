@@ -77,3 +77,4 @@ export function safeStrength(build, { minimum = Q3_MINIMUM, iterations = 12, req
 export function scaledBuilder(field) {
     return (s) => scale(field, s);
 }
+//# sourceMappingURL=fold.js.map

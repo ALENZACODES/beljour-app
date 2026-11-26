@@ -216,3 +216,4 @@ export function jacobianDeterminant(mapX, mapY) {
         out.data[i] = xx.data[i] * yy.data[i] - xy.data[i] * yx.data[i];
     return out;
 }
+//# sourceMappingURL=filters.js.map

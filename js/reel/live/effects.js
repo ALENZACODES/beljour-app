@@ -27,3 +27,4 @@ export function effectChoice(id) {
         throw new RangeError(`no video effect ${JSON.stringify(id)}`);
     return found;
 }
+//# sourceMappingURL=effects.js.map

@@ -92,3 +92,4 @@ export async function runSyntheticProProbe(width = 3000, height = 4000, options 
     };
     return measureProOnDevice(source, recipe, options);
 }
+//# sourceMappingURL=performance.js.map

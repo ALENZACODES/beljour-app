@@ -46,3 +46,4 @@ export class PanelTabs {
     /** After a tool is chosen on a phone, show its settings. */
     followTool() { this.select("edit"); }
 }
+//# sourceMappingURL=panels.js.map

@@ -9,7 +9,6 @@ import { h } from "../../dom.js";
 import { PALETTE, PHOTO_MARK, withAlpha } from "../../ui/palette.js";
 import { candidate, canvasPoint, choiceRow, commit, frameScheduler, layerOf, paintPicture, rememberFocus, sliderRow, workingImage } from "../adjust/kit.js";
 import { orderNote } from "../adjust/panel.js";
-import { capturePointer } from "../../ui/shell/pointer-capture.js";
 import { ASPECT_BUTTONS, IDENTITY, MAX_ANGLE, Transform, applyGeometry, aspectRatio, cropRect, fitInside, flip, geometryParams, readGeometry, refit, swapAspect, turn } from "./geometry.js";
 const PAD = 360;
 const state = { straightening: false };
@@ -85,7 +84,7 @@ export function cropScreen(host) {
             drag = { mode: "move", start: p, rect: r };
         else
             return;
-        capturePointer(pad, event.pointerId);
+        pad.setPointerCapture?.(event.pointerId);
     });
     pad.addEventListener("pointermove", (event) => {
         if (!drag)
@@ -163,3 +162,4 @@ export function cropScreen(host) {
     rememberFocus(panel, "crop");
     return panel;
 }
+//# sourceMappingURL=panel.js.map

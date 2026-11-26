@@ -123,7 +123,7 @@ function makeIllustration() {
     return dest;
 }
 /** Wire a genuine local renderer to a *drawn* portrait. It intentionally never
- * reads a visitor photo, and continues working when YouCam has zero units.
+ * reads a visitor photo.
  */
 export async function setupHairDemo() {
     const button = element("hair-render");
@@ -254,7 +254,7 @@ export async function setupHairDemo() {
                 if (requested !== revision)
                     return;
                 element("hair-result").src = output.toDataURL("image/png");
-                status(`${style.name}. ${SIMULATION_LABEL} No hair was added or removed. ${covered} painted hair pixels were eligible; no uploaded photo, YouCam call or paid unit.`);
+                status(`${style.name}. ${SIMULATION_LABEL} No hair was added or removed. ${covered} painted hair pixels were eligible; nothing was uploaded.`);
             }
             catch (reason) {
                 if (requested === revision)
@@ -331,3 +331,4 @@ export async function setupHairDemo() {
         status(error instanceof Error ? error.message : "This device cannot open the optional local haircut gallery.");
     }
 }
+//# sourceMappingURL=hair-demo.js.map

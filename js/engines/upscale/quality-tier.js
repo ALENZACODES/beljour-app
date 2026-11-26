@@ -98,3 +98,4 @@ export function scaledPlan(plan, maxEdge) {
         workingBytes: workingBytes(plan.sourceWidth, plan.sourceHeight, width, height),
     });
 }
+//# sourceMappingURL=quality-tier.js.map

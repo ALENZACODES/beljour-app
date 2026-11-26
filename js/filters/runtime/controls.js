@@ -37,7 +37,8 @@ export function filterControls(layer, options = {}) {
     return {
         recipe: recipe.id, family: recipe.editorial.family, light: recipe.editorial.light,
         level, levels: levelValues(), identityLock: flag("identity_lock", true),
-        looks: catalogue().recipes.map((r) => ({ value: r.id,
+        // The offered looks, plus this layer's own look if it is one kept only for saved looks and links.
+        looks: [...catalogue().shown(), ...(recipe.status === "Build" ? [] : [recipe])].map((r) => ({ value: r.id,
             label: `${r.name} · ${r.tab} · ${r.editorial.family} · ${r.editorial.light}` })),
         preset: typeof p.preset === "string" ? p.preset : "",
         presets: [{ value: "", label: "Standard" }, ...recipe.presets.filter((x) => (x.append?.length ?? 0) + Object.keys(x.patch ?? {}).length > 0)
@@ -79,3 +80,4 @@ export function filterControls(layer, options = {}) {
         labelFor: (id) => catalogue().get(id).name,
     };
 }
+//# sourceMappingURL=controls.js.map

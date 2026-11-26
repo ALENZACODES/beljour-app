@@ -220,3 +220,4 @@ function render(image, skin, face, amount, density, seed) {
             calibrated_from_own: pigment.length >= 12, texture_source: "own_photo"
         } };
 }
+//# sourceMappingURL=freckles.js.map

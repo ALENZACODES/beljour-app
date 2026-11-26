@@ -115,3 +115,4 @@ export function mountHomeToday(doc = document, store = new DailyStore(), now = (
     slot.replaceChildren(h("h2", { id: "home-today-title", class: "lg-hidden" }, "Today"), routineCard, pickCard);
     slot.hidden = false;
 }
+//# sourceMappingURL=home-today.js.map

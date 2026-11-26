@@ -6,12 +6,14 @@ import { faceFrame, place } from "./anchors.js";
 import { drawnSprite } from "./fallbacks.js";
 import { glassSprite } from "./glass.js";
 import { beautyLook } from "./beauty.js";
-import { applyEffect } from "./effects.js";
+import { applyEffect, faceOval, personEstimate } from "./effects.js";
 import { funWarp } from "./warps.js";
 export const NO_PICTURES = () => null;
 const copy = (image) => ({ ...image, data: new Uint8ClampedArray(image.data) });
 /** Composite one sprite into `out` at `at`. Returns true if any pixel changed. */
-export function composite(out, sprite, at, opacity, blend = "over", clip = 1) {
+/** `behind`, when given, is 0..1 per pixel of her (face and person): the prop is hidden there,
+ * so it reads as standing behind her. */
+export function composite(out, sprite, at, opacity, blend = "over", clip = 1, behind = null) {
     if (!(opacity > 0) || !(at.halfW > 0.5) || !(at.halfH > 0.5))
         return false;
     const c = Math.cos(at.angle), s = Math.sin(at.angle), [cx, cy] = at.centre;
@@ -46,7 +48,10 @@ export function composite(out, sprite, at, opacity, blend = "over", clip = 1) {
             }
             if (a <= 1e-4)
                 continue;
-            const rgb = [r / a, g / a, b / a], alpha = Math.min(1, a) * opacity * keep, i = (y * out.width + x) * ch;
+            const front = behind ? 1 - behind[y * out.width + x] : 1;
+            if (front <= 0)
+                continue;
+            const rgb = [r / a, g / a, b / a], alpha = Math.min(1, a) * opacity * keep * front, i = (y * out.width + x) * ch;
             for (let q = 0; q < 3; q++) {
                 const base = data[i + q];
                 const target = blend === "multiply" ? base * rgb[q] / 255 : blend === "screen" ? 255 - (255 - base) * (255 - rgb[q]) / 255 : rgb[q];
@@ -98,7 +103,7 @@ export function particleSpots(p, lensId, t, boosted) {
     const seed = seedOf(`${lensId}/${p.name}`), n = Math.min(80, p.count * (boosted ? 2 : 1)), out = [];
     for (let i = 0; i < n; i++) {
         const r1 = rand(seed, i, 1), r2 = rand(seed, i, 2), r3 = rand(seed, i, 3);
-        let x, y, opacity = 1, turn = r3 * 360;
+        let x, y, opacity = 1, turn = r3 * 360, behind = false;
         if (p.motion === "fall" || p.motion === "rise") {
             const travel = frac(r2 + t * p.speed) * 2.4 - 1.2;
             x = (r1 - 0.5) * p.spread + 0.05 * Math.sin(2 * Math.PI * (t * 0.3 + r3));
@@ -110,6 +115,8 @@ export function particleSpots(p, lensId, t, boosted) {
             x = Math.cos(ang) * rad * p.spread / 2;
             y = -0.25 + Math.sin(ang) * rad * 0.45;
             turn = 20 * Math.sin(2 * Math.PI * (t + r1));
+            // The ring is seen from a little above, so its lower half is the far side, behind her head.
+            behind = Math.sin(ang) > 0;
         }
         else {
             const ang = 2 * Math.PI * i / n + r1 * 0.4;
@@ -117,7 +124,7 @@ export function particleSpots(p, lensId, t, boosted) {
             y = -0.35 + Math.sin(ang) * p.spread * 0.35;
             opacity = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(2 * Math.PI * (t * p.speed + r2)));
         }
-        out.push({ offset: [x, y], size: p.size * (0.65 + 0.7 * r3), turn, opacity, alt: !!p.alt && i % 2 === 1 });
+        out.push({ offset: [x, y], size: p.size * (0.65 + 0.7 * r3), turn, opacity, alt: !!p.alt && i % 2 === 1, ...(behind ? { behind } : {}) });
     }
     return out;
 }
@@ -161,6 +168,23 @@ export function applyLens(image, points, lens, strength, options = {}) {
     }
     const spriteFor = (name, draw) => sprites(`${lens.id}/${name}.png`) ?? drawnSprite(draw);
     let drawn = passes;
+    let her = null;
+    /** Her outline for props drawn behind her: the person mask when measured (else the
+     * head-and-shoulders estimate), with the face outline always counted as her. */
+    const herMask = () => {
+        if (her)
+            return her;
+        const n = out.width * out.height, oval = faceOval(frame, out.width, out.height);
+        const body = options.person && options.person.length === n ? options.person : personEstimate(frame, out.width, out.height);
+        her = new Float32Array(n);
+        // A soft mask edge is kept, but a confident reading (above 0.8) counts as fully her, so a
+        // bright prop does not show faintly through her.
+        for (let i = 0; i < n; i++) {
+            const t = Math.max(0, Math.min(1, (body[i] - 0.2) / 0.6));
+            her[i] = oval[i] ? 1 : t * t * (3 - 2 * t);
+        }
+        return her;
+    };
     for (const layer of lens.layers) {
         if (layer.when && !triggered(frame, layer.when))
             continue;
@@ -169,16 +193,17 @@ export function applyLens(image, points, lens, strength, options = {}) {
         const offset = (picture && layer.art?.offset) || layer.offset, scale = (picture && layer.art?.scale) || layer.scale;
         const at = place(frame, layer.anchor, [offset[0], offset[1] + bob], scale, layer.turn ?? 0, layer.depth ?? 0);
         const sprite = picture ? (layer.glass ? glassFor(picture, frame, at) : picture) : drawnSprite(layer.draw);
-        if (composite(out, sprite, at, (layer.opacity ?? 1) * share, layer.blend, (picture && layer.art?.clip) || 1))
+        if (composite(out, sprite, at, (layer.opacity ?? 1) * share, layer.blend, (picture && layer.art?.clip) || 1, layer.behind ? herMask() : null))
             drawn++;
     }
     for (const p of lens.particles ?? []) {
         const main = spriteFor(p.name, p.draw), alt = p.alt ? spriteFor(p.alt.name, p.alt.draw) : main;
         for (const spot of particleSpots(p, lens.id, t, triggered(frame, p.boost))) {
             const at = place(frame, "face", spot.offset, spot.size, spot.turn, 0);
-            if (composite(out, spot.alt ? alt : main, at, spot.opacity * share))
+            if (composite(out, spot.alt ? alt : main, at, spot.opacity * share, "over", 1, spot.behind ? herMask() : null))
                 drawn++;
         }
     }
     return { image: out, changed: true, drawn, frame };
 }
+//# sourceMappingURL=render.js.map

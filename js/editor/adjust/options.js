@@ -39,3 +39,4 @@ export function editorOptions(kind, source) {
     }
     return [];
 }
+//# sourceMappingURL=options.js.map

@@ -43,3 +43,4 @@ export function renderSummer(image, width, height, skin, options = DEFAULT_SUMME
         safe = restore(safe, image, protectedMask);
     return safe;
 }
+//# sourceMappingURL=summer.js.map

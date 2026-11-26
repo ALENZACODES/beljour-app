@@ -1,9 +1,3 @@
-/** Production entry for the existing appearance engines. The same guarded
- * field and age texture code used by the numeric arena produces these pixels.
- * No model, guessed mesh or provider fallback is added. Author: John Khan.
- */
-import { compositeProviderHair } from "../../engines/haircolour/provider-hair.js";
-import { olderYoucamFraction, renderProviderOlder } from "../../engines/older-youcam/provider-older.js";
 import { relayOwnHighBand, renderAge } from "../../engines/local/age.js";
 import { renderClock } from "../../engines/skin/texture-law.js";
 import { genderTargets, LABEL as GENDER_LABEL } from "../../engines/local/gender.js";
@@ -80,21 +74,11 @@ export function applyHeroLayer(image, source, layer) {
     const stop = Number(layer.parameters.stop ?? (layer.kind === "older" ? 3 : 2)), max = layer.kind === "older" ? 5 : 3;
     if (!Number.isInteger(stop) || stop < 1 || stop > max)
         throw new RangeError(`Choose a ${layer.kind} stop from 1 to ${max}.`);
-    // Older (YouCam, 2 units): the provider's measured change on her own pixels (removable adapter).
-    if (layer.kind === "older" && layer.parameters.older_source === "youcam" && source.providerOlder) {
-        const fraction = olderYoucamFraction(stop) * easeStrength(layer.strength);
-        const r = renderProviderOlder(image, points, source.hair, source.providerOlder, source.providerGrey, fraction);
-        return { image: r.image, label: "Older (YouCam)", face: points.map((p) => [p[0], p[1]]), metrics: { ...r.metrics, stop,
-                age_prediction: false, simulation: true, provider: "youcam-aging", validated_on_released_photos: false, texture_source: "own_photo" } };
-    }
-    // Younger's hair colour: YouCam's result (removable adapter) when the person chose and ran it, else the local toggle.
-    const useProvider = layer.kind === "younger" && layer.parameters.hair_colour === true && layer.parameters.hair_source === "youcam" && !!source.providerHair && !!source.hair;
     // The stop carries the look; the eased strength mixes it, so 30 and 50 already read clearly.
     const result = renderAge(image, points, { stop: layer.kind === "older" ? stop : -stop, strength: easeStrength(layer.strength), seed: 1024,
-        hairMask: source.hair, layers: { hair: source.hair && (layer.kind === "older" || (layer.parameters.hair_colour === true && !useProvider)) ? 1 : 0 },
-        keepHair: layer.kind === "younger" && (layer.parameters.hair_colour !== true || useProvider) });
-    if (useProvider && source.providerHair && source.hair)
-        result.image = compositeProviderHair(result.image, source.providerHair, source.hair);
+        hairMask: source.hair, layers: { hair: source.hair && (layer.kind === "older" || layer.parameters.hair_colour === true) ? 1 : 0 },
+        keepHair: layer.kind === "younger" && layer.parameters.hair_colour !== true });
     return { image: result.image, label: result.label, face: result.face, metrics: { ...result.metrics, stop: layer.kind === "older" ? stop : -stop,
             age_prediction: false, simulation: true, validated_on_released_photos: false } };
 }
+//# sourceMappingURL=hero-layer.js.map

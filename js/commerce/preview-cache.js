@@ -98,3 +98,4 @@ export class ProviderResponseCache {
     clear() { this.entries.clear(); this.totalBytes = 0; }
     get bytesUsed() { return this.totalBytes; }
 }
+//# sourceMappingURL=preview-cache.js.map

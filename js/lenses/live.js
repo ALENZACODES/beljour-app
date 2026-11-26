@@ -29,3 +29,4 @@ export class LensEffect {
     }
     reset() { this.points.reset(); this.lastPoints = null; }
 }
+//# sourceMappingURL=live.js.map

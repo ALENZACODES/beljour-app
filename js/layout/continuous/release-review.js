@@ -42,8 +42,8 @@ export function reviewContinuousDemo(state, evidence, commands, seasonal, previe
             : "No local preview timing observation",
     });
     rows.push({
-        id: "youcam-live", title: "Live YouCam request", status: "unverified",
-        explanation: "Never invoked by this mock-only demonstration",
+        id: "real-photo-reading", title: "Skin reading on a real photo", status: "unverified",
+        explanation: "This tour uses drawings; the on-device reader on a real photo is a separate check",
     });
     rows.push({
         id: "real-face", title: "Real-face acceptance", status: "unverified",
@@ -91,3 +91,4 @@ export function serializeContinuousReview(review) {
     ];
     return lines.join("\n");
 }
+//# sourceMappingURL=release-review.js.map

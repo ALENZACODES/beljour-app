@@ -35,3 +35,4 @@ export function faceEllipse(w, h) {
         }
     return out;
 }
+//# sourceMappingURL=raster.js.map

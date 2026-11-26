@@ -17,7 +17,7 @@ export async function renderPreviews(main, ctx, dependencies = localPreviewDepen
     const output = h("div", { "aria-live": "polite" });
     const controls = h("div", { class: "proc-grid" });
     const inputs = new Map();
-    main.append(h("h1", {}, "Face shape previews"), h("p", { class: "lede" }, "Local simulation. Try one change at a time, using the measured points on your own photo."), h("p", { class: "notice" }, "This changes photo geometry on your device. It does not predict a treatment result. Your original stays untouched."), ...(ctx.localPhoto?.example ? [h("p", { class: "fine" }, `${ctx.localPhoto.example.label}: AI-generated, not a real person. The after below is made by this app's own engines.${ctx.localPhoto.example.estimated ? " Face points are estimated from the picture's framing, so changes can sit slightly off the features." : ""}`)] : []));
+    main.append(h("h1", {}, "Face shape previews"), h("p", { class: "lede" }, "Local simulation. Try one change at a time, using the measured points on your own photo."), h("p", { class: "notice" }, "This changes photo geometry on your device. It does not predict a treatment result. Your original stays untouched."), ...(ctx.localPhoto?.example ? [h("p", { class: "fine" }, `${ctx.localPhoto.example.label}: synthetic, not a real person. The after below is made by this app's own engines.${ctx.localPhoto.example.estimated ? " Face points are estimated from the picture's framing, so changes can sit slightly off the features." : ""}`)] : []));
     if (!ctx.face || ctx.face.points.length !== 478) {
         main.append(h("p", { class: "notice" }, "Face points are unavailable. Choose a clear front-facing photo; no example face will be substituted."));
         return;
@@ -91,3 +91,4 @@ export async function renderPreviews(main, ctx, dependencies = localPreviewDepen
         } }, "Reset to original");
     main.append(controls, h("div", { class: "row" }, apply, undo, reset), output, facePartsSection(ctx, dependencies), expressionsSection(ctx, dependencies), ...moreSimulations(ctx, dependencies));
 }
+//# sourceMappingURL=previews.js.map

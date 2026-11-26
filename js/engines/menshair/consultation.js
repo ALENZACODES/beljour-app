@@ -250,3 +250,4 @@ export function stylistBrief(style, p) {
         quality_status: "UNPROVEN", photo_required: false, provider_calls: 0,
         notice: "For discussion only; no hairstyle result is guaranteed." };
 }
+//# sourceMappingURL=consultation.js.map

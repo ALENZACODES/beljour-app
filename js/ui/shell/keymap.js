@@ -89,3 +89,4 @@ export function shortcutCollisions() {
         claim(k, what);
     return clashes;
 }
+//# sourceMappingURL=keymap.js.map

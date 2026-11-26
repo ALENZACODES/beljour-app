@@ -266,3 +266,4 @@ export async function startQuoteVeil(win) {
 }
 if (typeof window !== "undefined" && typeof document !== "undefined")
     void startQuoteVeil(window);
+//# sourceMappingURL=quote-veil.js.map

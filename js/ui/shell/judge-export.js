@@ -62,3 +62,4 @@ export function judgeExportDescription(format, size) {
     const height = size === "large" ? 960 : 640;
     return `${type}, ${width} × ${height} pixels. "SIMULATION — ILLUSTRATIVE DEMO" is burned into the image.`;
 }
+//# sourceMappingURL=judge-export.js.map

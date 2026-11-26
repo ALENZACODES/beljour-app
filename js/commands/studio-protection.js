@@ -59,3 +59,4 @@ export function protectStudioPixel(original, candidate, checkedSkin, limit = MAX
     return { rgb: result, adjusted: true, liftL: Math.max(0, finalLift),
         measured: true };
 }
+//# sourceMappingURL=studio-protection.js.map

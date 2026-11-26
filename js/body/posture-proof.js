@@ -201,3 +201,4 @@ export function mountProofStatus(parent) {
         dispose() { root.remove(); },
     };
 }
+//# sourceMappingURL=posture-proof.js.map

@@ -302,3 +302,13 @@
   .sm-subject { max-width: 18rem; }
   .sm-subject figcaption { font-size: 0.8rem; }
 }
+
+/* Demo status line (fed by /api/health) */
+.sm-status { margin: 0.4rem 0 0.6rem; font-size: 0.9rem; padding: 0.35rem 0.7rem; border-radius: 999px; display: inline-block; background: var(--paper-2, #f3ece8); color: var(--ink, #2a1a22); }
+.sm-status::before { content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; margin-right: 0.45rem; vertical-align: 0.05rem; background: #9a8f94; }
+.sm-status[data-status="live"]::before { background: #1f7a4d; }
+.sm-status[data-status="examples"]::before { background: #b07a12; }
+.sm-status[data-status="waking"]::before { background: #b07a12; animation: sm-pulse 1.2s ease-in-out infinite; }
+.sm-status[data-status="down"]::before { background: #a3243a; }
+@keyframes sm-pulse { 50% { opacity: 0.3; } }
+@media (prefers-reduced-motion: reduce) { .sm-status[data-status="waking"]::before { animation: none; } }

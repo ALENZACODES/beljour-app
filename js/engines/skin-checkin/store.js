@@ -62,7 +62,7 @@ export function validateSnapshot(raw) {
     const row = raw;
     parseTakenAt(row.taken_at);
     if (row.source !== "youcam" && row.source !== "local") {
-        throw new CheckinStoreError("source_invalid", "A check-in comes from a YouCam analysis or the local estimate.");
+        throw new CheckinStoreError("source_invalid", "A check-in comes from the on-device reading.");
     }
     const scores = scoresFromConcerns(row.concerns);
     return { taken_at: row.taken_at, source: row.source,
@@ -192,3 +192,4 @@ export function parseExport(text) {
     }
     return rows.map((row) => validateSnapshot(row)).sort(byTime);
 }
+//# sourceMappingURL=store.js.map

@@ -137,3 +137,4 @@ export function groupFacesScreen(session, active, sync, deps = {}) {
     show();
     return panel;
 }
+//# sourceMappingURL=group-faces.js.map

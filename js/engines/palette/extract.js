@@ -135,3 +135,4 @@ export function extractPalette(image, options = {}) {
     return { format: "beljour-extracted-palette/1", colours, sampled, transparentSkipped, region, iterations,
         meanDeltaE: sumDelta / sumWeight, label: EXTRACT_LABEL, assumed: true };
 }
+//# sourceMappingURL=extract.js.map

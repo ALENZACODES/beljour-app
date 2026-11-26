@@ -248,3 +248,4 @@ export function whitenTeeth(image, points, strength = 30, options = {}) {
         edge_step_l: Math.round(result.edgeStep * 100) / 100, texture_source: "own_photo", render_ms: renderClock() - started });
     return { image: result.image, weight: result.weight, label: LABEL, metrics };
 }
+//# sourceMappingURL=natural.js.map

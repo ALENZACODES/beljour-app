@@ -55,3 +55,4 @@ export function parseBrowRecipe(document) {
     }
     return choices(value.options);
 }
+//# sourceMappingURL=brow-board.js.map

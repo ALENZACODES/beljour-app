@@ -151,3 +151,4 @@ export function downloadLocalPng(blob, filename = 'beljour-edit.png') {
         URL.revokeObjectURL(url);
     }
 }
+//# sourceMappingURL=frame-io.js.map

@@ -46,3 +46,4 @@ export function validateArtworkManifest(value) {
 export function artworkReviewReceipt() {
     return JSON.stringify(validateArtworkManifest(artworkReviewManifest()), null, 2) + "\n";
 }
+//# sourceMappingURL=review.js.map

@@ -116,3 +116,4 @@ export function mergeBestFaces(shots, options = {}) {
     }
     return { image, faces, people, changedPixels, labels: changedPixels ? [LABEL] : [] };
 }
+//# sourceMappingURL=group-merge.js.map

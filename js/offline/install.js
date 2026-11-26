@@ -53,7 +53,7 @@ export function mountOfflineTools(hasEdits, doc = document) {
     summary.textContent = "Offline tools";
     note.className = "shell-small";
     note.setAttribute("role", "status");
-    note.textContent = serviceWorker ? "Keep the public editor on this device. Photos, face points, models and YouCam results are excluded. Device installation is available from your browser menu." : "Offline installation is unavailable in this browser. Editing still works while this page is open.";
+    note.textContent = serviceWorker ? "Keep the public editor on this device. Photos, face points and models are excluded. Device installation is available from your browser menu." : "Offline installation is unavailable in this browser. Editing still works while this page is open.";
     const install = doc.createElement("button"), update = doc.createElement("button");
     for (const button of [install, update]) {
         button.type = "button";
@@ -68,7 +68,7 @@ export function mountOfflineTools(hasEdits, doc = document) {
         note.textContent = "Saving public tools on this device. Keep this page open.";
         const state = await installer.enable();
         note.textContent = state === "failed" ? "Offline tools could not be saved. Your photo and edits are unchanged." :
-            state === "ready" ? "Public tools are ready offline. Model and YouCam features still need their own resources." :
+            state === "ready" ? "Public tools are ready offline. Model features still need their model files." :
                 state === "update_waiting" ? "An update is waiting. Save and reset edits before applying it." : "Installation is in progress. Check again before going offline.";
         install.disabled = false;
     });
@@ -86,3 +86,4 @@ export function mountOfflineTools(hasEdits, doc = document) {
     host.append(panel);
     return () => panel.remove();
 }
+//# sourceMappingURL=install.js.map

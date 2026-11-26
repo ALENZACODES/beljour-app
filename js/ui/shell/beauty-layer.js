@@ -97,3 +97,4 @@ export function applyBeautyLayer(image, source, layer, lightingRenderer) {
     }
     return null;
 }
+//# sourceMappingURL=beauty-layer.js.map

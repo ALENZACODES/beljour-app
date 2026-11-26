@@ -105,3 +105,4 @@ export function texturePreview(image, mesh, strength) {
     }
     return output;
 }
+//# sourceMappingURL=local-preview.js.map

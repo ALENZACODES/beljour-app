@@ -153,3 +153,4 @@ export function browserPalettes() {
     catch { /* denied getter: memory-only editor */ }
     return new PaletteLibrary(storage);
 }
+//# sourceMappingURL=palettes.js.map

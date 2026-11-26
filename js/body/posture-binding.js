@@ -111,3 +111,4 @@ export function installPostureScreen(parent, options) {
         },
     };
 }
+//# sourceMappingURL=posture-binding.js.map

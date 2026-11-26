@@ -3,12 +3,11 @@
  * No file/network/provider access. Deterministic on one source, layers and seed.
  * Author: John Khan.
  */
-import { rootStrength } from "./strength-curve.js";
-import { requireColour, encodeChannel, roundHalfEven, SRGB_TO_LINEAR } from "../../engines/core/buffer.js";
+import { requireColour, resizeArea, resizeBilinear, encodeChannel, roundHalfEven, SRGB_TO_LINEAR } from "../../engines/core/buffer.js";
 import { enhance, MODES } from "../../engines/local/enhance.js";
 import { readCrown, shadeCard, hairColour } from "../../engines/local/fibre.js";
-import { PRODUCTS } from "../../engines/local/strands.js";
-import { renderFibresFlow } from "../../engines/local/fibres-flow.js";
+import { PRODUCTS, renderFibres } from "../../engines/local/strands.js";
+import { isShaveRefusal, removeBeard } from "../../engines/shave/remove.js";
 import { renderBeard, STYLES } from "../../engines/local/beard.js";
 import { plan, renderPosture, backgroundDetail, PLAIN_BACKGROUND_DETAIL, FIXES } from "../../engines/local/posture.js";
 import { postureSettings } from "./settings.js";
@@ -39,7 +38,7 @@ export const AUTO_FIX = "auto";
 /** Least Lab distance between the crown's hair and gap tones for Hair fibres to have anything to fill. ASSUMED. */
 /** Posture strength curve: share of the guarded maximum move = (strength/100)^POSTURE_CURVE. */
 export const POSTURE_CURVE = 0.7;
-export const FIBRE_MIN_CONTRAST = 12, FIBRE_POWER = 0.5;
+export const FIBRE_MIN_CONTRAST = 12;
 /** The points after a layer that moved them and was mixed in at `weight` (0-1). A partly mixed
  * warp has no single true geometry; moving the points by the same share is ASSUMED. */
 export function nextFace(before, after, weight) {
@@ -102,8 +101,6 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
     if (!(layer.enabled && layer.strength > 0 && layer.opacity > 0)) {
         return { image: copyRGB(img), label: "Disabled layer", metrics: { skipped: true } };
     }
-    if (layer.kind === "styling")
-        throw new Error("This is not an offline local engine. Use the approved styling screen.");
     if (isEditorKind(layer.kind)) {
         // One photo-adjustment layer on its own: its develop, geometry and finish parts in stage order.
         const developed = developStage(img, layer.kind === "crop" ? [] : [layer]);
@@ -115,7 +112,7 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
     const ready = readiness(layer.kind, source);
     if (!ready.ready)
         throw new Error(ready.reason);
-    const hero = applyHeroLayer(img, source, layer);
+    const hero = heroAtWorkingSize(img, source, layer);
     if (hero)
         return hero;
     const beauty = applyBeautyLayer(img, source, layer, lightingRenderer);
@@ -211,8 +208,12 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
         const longer = moustache && typeof layer.parameters.length !== "number" ? Math.min(5, length + 1) : length;
         const result = renderBeard(img, source.face, { style, length: longer, density,
             colour: stringParam(layer, "colour", defaultBeardColour(img, source.face)), seed: 11 });
+        // Say what the tool does on this face: a beardless face gets a simulated beard, a full beard gets one drawn over it.
+        const probe = removeBeard(img, source.face, 30);
+        const note = isShaveRefusal(probe) && probe.code === "no_beard_found" ? "No beard in this photo: this adds a simulated beard."
+            : isShaveRefusal(probe) && probe.code === "full_beard" ? "This photo already has a full beard: the simulated beard is drawn over it." : null;
         return { image: result.image, label: result.label,
-            metrics: { style, length, density, strands: Number(result.metrics.strands) } };
+            metrics: { style, length, density, strands: Number(result.metrics.strands), ...(note ? { status: "note", message: note } : {}) } };
     }
     if (layer.kind === "hair-fibre") {
         const requested = stringParam(layer, "product", "fibres");
@@ -231,17 +232,107 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
                 metrics: { product, status: "refused", reason_code: "no_scalp_showing", message, crown_contrast: Math.round(contrast * 10) / 10 } };
         }
         const shade = shadeCard(hairColour(img, reading.split.hair));
-        // A root curve (FIBRE_POWER 0.5): the default 50 gives amount 71 (about 74% of the scalp covered), 100 gives
-        // 90%. The old 0.15 gave 90 at the default, so default and maximum looked the same.
-        const result = renderFibresFlow(img, area, reading.split.scalp, shade.top[0].lab, { product, hair: reading.split.hair, amount: Math.min(100, 100 * rootStrength(layer.strength, FIBRE_POWER)), seed: 17 });
+        const result = renderFibres(img, area, reading.split.scalp, shade.top[0].lab, { product, hair: reading.split.hair, amount: layer.strength, seed: 17 });
         return { image: result.image, label: result.label,
-            metrics: { product, scalp_share: reading.overall_scalp_share, fibres: result.metrics.fibres,
-                status: result.metrics.status, refused_grey_root_px: result.metrics.refused_grey_root_px,
-                covered_scalp: result.metrics.covered_scalp, flow_coherence_in_gap: result.metrics.flow_coherence_in_gap,
-                render_ms: result.metrics.render_ms, texture_source: "own_photo",
+            metrics: { product, scalp_share: reading.overall_scalp_share, fibres: Number(result.metrics.fibres || 0),
                 crown_contrast: Math.round(contrast * 10) / 10 } };
     }
-    if (layer.kind === "posture") {
+    if (layer.kind === "posture")
+        return postureAtWorkingSize(img, source, layer);
+    throw new Error("This layer has no approved local renderer");
+}
+/** Posture's background fill (biharmonic or patch match) grows fast with pixel count: at the
+ * Studio's 1024 px a full-body photo froze the page for about a minute. Above POSTURE_SIDE the
+ * edit runs on a smaller copy. Where the body moved, the upscaled result is used (so a moved edge
+ * is never doubled); everywhere else the full photo keeps its own pixels plus the small change. */
+export const POSTURE_SIDE = 640;
+function postureAtWorkingSize(img, source, layer) {
+    const long = Math.max(img.width, img.height);
+    if (long <= POSTURE_SIDE || !source.body || !source.person)
+        return renderPostureLayer(img, source, layer);
+    const k = POSTURE_SIDE / long, w = Math.max(8, Math.round(img.width * k)), h = Math.max(8, Math.round(img.height * k));
+    const small = resizeArea(copyRGB(img), w, h);
+    const kx = w / img.width, ky = h / img.height;
+    const points = {};
+    for (const [name, q] of Object.entries(source.body.points))
+        points[name] = [q[0] * kx, q[1] * ky];
+    const body = { ...source.body, points, width: w, height: h };
+    const person = shrinkMask(source.person, w, h);
+    const result = renderPostureLayer(small, { ...source, image: small, body, person }, layer);
+    if (result.metrics?.status === "refused")
+        return { ...result, image: { ...img, data: new Uint8ClampedArray(img.data) } };
+    // Moved area: where the small result differs by more than a few levels, grown and softened.
+    const n = w * h, delta = { width: w, height: h, channels: 3, data: new Float32Array(n * 3) };
+    const moved = new Float32Array(n);
+    for (let i = 0; i < n; i++) {
+        let m = 0;
+        for (let c = 0; c < 3; c++) {
+            const d = result.image.data[i * 3 + c] - small.data[i * 3 + c];
+            delta.data[i * 3 + c] = d;
+            m = Math.max(m, Math.abs(d));
+        }
+        moved[i] = m <= 4 ? 0 : m >= 16 ? 1 : (m - 4) / 12;
+    }
+    const grown = softGrow(moved, w, h, 2);
+    const up = upDelta(delta, img.width, img.height);
+    const upResult = resizeBilinear(copyRGB(result.image), img.width, img.height);
+    const upMoved = upDelta({ width: w, height: h, data: Float32Array.from({ length: n * 3 }, (_, i) => grown[Math.floor(i / 3)]) }, img.width, img.height);
+    const out = copyRGB(img);
+    for (let i = 0; i < out.data.length; i++) {
+        const t = Math.max(0, Math.min(1, upMoved[i]));
+        const kept = out.data[i] + up[i];
+        out.data[i] = Math.max(0, Math.min(255, Math.round(kept * (1 - t) + upResult.data[i] * t)));
+    }
+    return { ...result, image: out, metrics: { ...result.metrics, working_side: POSTURE_SIDE } };
+}
+/** Area-average a mask down to w x h. */
+function shrinkMask(m, w, h) {
+    const out = { width: w, height: h, channels: 1, data: new Float32Array(w * h) };
+    const sx = m.width / w, sy = m.height / h;
+    for (let y = 0; y < h; y++)
+        for (let x = 0; x < w; x++) {
+            const x0 = Math.floor(x * sx), x1 = Math.max(x0 + 1, Math.floor((x + 1) * sx)), y0 = Math.floor(y * sy), y1 = Math.max(y0 + 1, Math.floor((y + 1) * sy));
+            let s = 0, c = 0;
+            for (let yy = y0; yy < Math.min(m.height, y1); yy++)
+                for (let xx = x0; xx < Math.min(m.width, x1); xx++) {
+                    s += m.data[(yy * m.width + xx) * m.channels];
+                    c++;
+                }
+            out.data[y * w + x] = c ? s / c : 0;
+        }
+    return out;
+}
+/** Max over a (2r+1) square, then a box blur of the same size: a soft, grown copy of a 0..1 map. */
+function softGrow(a, w, h, r) {
+    const g = new Float32Array(a.length), b = new Float32Array(a.length);
+    for (let y = 0; y < h; y++)
+        for (let x = 0; x < w; x++) {
+            let m = 0;
+            for (let j = -r; j <= r; j++)
+                for (let i = -r; i <= r; i++) {
+                    const X = x + i, Y = y + j;
+                    if (X >= 0 && Y >= 0 && X < w && Y < h)
+                        m = Math.max(m, a[Y * w + X]);
+                }
+            g[y * w + x] = m;
+        }
+    for (let y = 0; y < h; y++)
+        for (let x = 0; x < w; x++) {
+            let s = 0, c = 0;
+            for (let j = -r; j <= r; j++)
+                for (let i = -r; i <= r; i++) {
+                    const X = x + i, Y = y + j;
+                    if (X >= 0 && Y >= 0 && X < w && Y < h) {
+                        s += g[Y * w + X];
+                        c++;
+                    }
+                }
+            b[y * w + x] = s / c;
+        }
+    return b;
+}
+function renderPostureLayer(img, source, layer) {
+    {
         const requested = stringParam(layer, "fix", "lean");
         if (!(requested in FIXES))
             throw new RangeError("Unknown posture edit");
@@ -277,12 +368,50 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
             metrics: { fix, cap_share: config.capShare, band_share: config.bandShare,
                 strength_used: result.strengthUsed, cap_scale: p.capScale, background_detail: Math.round(detail * 100) / 100, fill: String(result.metrics.fill) } };
     }
-    throw new Error("This layer has no approved local renderer");
 }
 /** Render bottom to top; originals and input layers are never mutated.
  * Stages (web/src/editor/adjust/stack.ts documents them): develop (Adjust, Colour mixer, Curves,
  * Selective adjust), then every other layer in her order, then the crop geometry, then the
  * Adjust finish (vignette, grain, fade). With none of those tools the result is as before. */
+/** Older and Younger take several seconds above about 800 px (texture, crease and reshape passes).
+ * On a larger photo they run on a copy at HERO_SIDE and their change is scaled back up and added to
+ * the full photo, so her own fine detail stays sharp and the tool answers in about half the time. */
+export const HERO_SIDE = 768;
+function heroAtWorkingSize(img, source, layer) {
+    const long = Math.max(img.width, img.height);
+    if (!(layer.kind === "older" || layer.kind === "younger") || long <= HERO_SIDE || !source.face)
+        return applyHeroLayer(img, source, layer);
+    const k = HERO_SIDE / long, w = Math.max(8, Math.round(img.width * k)), h = Math.max(8, Math.round(img.height * k));
+    const small = resizeArea(copyRGB(img), w, h);
+    const face = source.face.map((p) => [p[0] * k, p[1] * k]);
+    const result = applyHeroLayer(small, { ...source, image: small, face }, layer);
+    if (!result)
+        return null;
+    const delta = { width: w, height: h, channels: 3, data: new Float32Array(w * h * 3) };
+    for (let i = 0; i < w * h * 3; i++)
+        delta.data[i] = result.image.data[i] - small.data[i];
+    const up = upDelta(delta, img.width, img.height);
+    const out = copyRGB(img);
+    for (let i = 0; i < out.data.length; i++)
+        out.data[i] = Math.max(0, Math.min(255, Math.round(out.data[i] + up[i])));
+    return { ...result, image: out, ...(result.face ? { face: result.face.map((p) => [p[0] / k, p[1] / k]) } : {}),
+        metrics: { ...result.metrics, working_side: HERO_SIDE } };
+}
+function upDelta(d, W, H) {
+    const out = new Float32Array(W * H * 3), sx = d.width / W, sy = d.height / H;
+    for (let y = 0; y < H; y++) {
+        const fy = Math.max(0, Math.min(d.height - 1, (y + 0.5) * sy - 0.5)), y0 = Math.floor(fy), y1 = Math.min(d.height - 1, y0 + 1), ty = fy - y0;
+        for (let x = 0; x < W; x++) {
+            const fx = Math.max(0, Math.min(d.width - 1, (x + 0.5) * sx - 0.5)), x0 = Math.floor(fx), x1 = Math.min(d.width - 1, x0 + 1), tx = fx - x0;
+            for (let c = 0; c < 3; c++) {
+                const a = d.data[(y0 * d.width + x0) * 3 + c], b = d.data[(y0 * d.width + x1) * 3 + c];
+                const e = d.data[(y1 * d.width + x0) * 3 + c], f = d.data[(y1 * d.width + x1) * 3 + c];
+                out[(y * W + x) * 3 + c] = (a * (1 - tx) + b * tx) * (1 - ty) + (e * (1 - tx) + f * tx) * ty;
+            }
+        }
+    }
+    return out;
+}
 export function renderLayers(source, layers, lightingRenderer) {
     const visible = effective(layers), plan = stagePlan(visible);
     // Age texture before the gender warp, so creases follow the face (appearance-stack.ts).
@@ -362,3 +491,4 @@ export function defaultBeardColour(img, face) {
         }
     return count && sum / count < 90 ? "#0E0A09" : "#241915";
 }
+//# sourceMappingURL=pipeline.js.map

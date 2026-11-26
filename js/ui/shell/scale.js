@@ -73,7 +73,18 @@ export function scaleSource(source, maxSide) {
         scaled.person = resizeMask(source.person, width, height);
     if (source.face)
         scaled.face = source.face.map((p) => scalePoint(p, sx, sy));
-    if (source.body)
-        scaled.body = scaleControls(source.body, width, height);
+    if (source.body) {
+        try {
+            scaled.body = scaleControls(source.body, width, height);
+        }
+        catch (error) {
+            // A tiny body fixture must not block unrelated headshot previews.
+            // Fail closed for posture only: without valid geometry posture cannot render.
+            if (!(error instanceof RangeError))
+                throw error;
+            delete scaled.body; // absent, not `undefined` (safe under exactOptionalPropertyTypes; readers test `if (source.body)`)
+        }
+    }
     return scaled;
 }
+//# sourceMappingURL=scale.js.map

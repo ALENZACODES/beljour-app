@@ -1,10 +1,6 @@
-/** Local photo checks and simulations; no borrowed skin scores or inferred age.
- * YouCam Skin Analysis is the separate consented product flow. Author: John Khan. */
-import { apiBase } from "../api.js";
 import { announce, clear, h } from "../dom.js";
 import { analyse, classifyPhoto } from "../engines/local/enhance.js";
 import { renderAge } from "../engines/local/age.js";
-import { skinMatchSection } from "./skin-match.js";
 import { localPreviewDependencies, localPreviewError, measuredMesh, needsLocalPhoto, texturePreview } from "./local-preview.js";
 import { touchUpSection } from "./skin-touch-up.js";
 import { photoFixSection } from "./photo-fix.js";
@@ -91,9 +87,7 @@ export function renderSkin(main, ctx, dependencies = localPreviewDependencies) {
     }
     else
         main.append(h("p", { class: "notice" }, "Texture and age-look previews need face points. No saved face will be substituted."));
-    if (apiBase() && ctx.photo)
-        main.append(skinMatchSection(ctx));
-    else
-        main.append(h("section", {}, h("h2", {}, "YouCam Skin Analysis product matching"), h("p", {}, "The local tools above work here. Consented YouCam product matching needs the configured API and your own uploaded photo.")));
+    main.append(h("section", { class: "notice" }, h("h2", {}, "Read your skin and get a plan"), h("p", {}, "Skin Moment reads redness, breakouts, texture, pores, shine and hydration on this device, then gives you one plan."), h("a", { class: "btn", href: "skin-moment.html" }, "Open Skin Moment")));
     main.append(h("p", { class: "fine" }, "General cosmetic information, not medical advice."));
 }
+//# sourceMappingURL=skin.js.map

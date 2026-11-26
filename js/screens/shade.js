@@ -1,8 +1,6 @@
-/** Shade: measured colours, undertone, and CIEDE2000 matches against the catalogue. */
-import { api, apiBase } from "../api.js";
 import { localShadeSection } from "./shade-local.js";
 import { announce, clear, h } from "../dom.js";
-import { costButton, errorBox, sourceNote, swatch } from "../ui/widgets.js";
+import { sourceNote, swatch } from "../ui/widgets.js";
 import { foundationDecision } from "../decision/spec.js";
 import { decisionSection } from "./decision-sheet.js";
 function item(ctx, s, kind, detail) {
@@ -32,15 +30,8 @@ export function renderShade(main, ctx) {
         ctx.localShade = result;
         // The foundation spec sheet appears only once there is a confident local reading.
         sheet.replaceChildren(...(result && !result.refused ? [decisionSection(options => foundationDecision(result, options), { name: () => "Foundation shade" })] : []));
-    }), sheet, h("p", {}, h("a", { href: "#/palettes", class: "link" }, "Mix a personal palette or extract colours from a reference photo")), apiBase() && ctx.photo ? costButton("Measure my colours", { photo_id: ctx.photo.photo_id, action: "shade" }, async () => {
-        try {
-            render(out, ctx, await api.shade(ctx.photo.photo_id, ctx.face?.points.map(point => [point.x, point.y, point.z ?? 0])));
-        }
-        catch (err) {
-            clear(out);
-            out.append(errorBox(err));
-        }
-    }) : h("p", { class: "fine" }, "The shade finder above works on this device without a server."), out);
+    }), sheet, h("p", {}, h("a", { href: "#/palettes", class: "link" }, "Mix a personal palette or extract colours from a reference photo")), h("p", { class: "fine" }, "Measured on this device. Your photo never leaves it."), out);
     if (ctx.shade)
         render(out, ctx, ctx.shade);
 }
+//# sourceMappingURL=shade.js.map

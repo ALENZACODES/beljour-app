@@ -17,3 +17,4 @@ export { DEFAULT_SIMILARITY, guardFacePixels } from "./identity.js";
 export { PhotoEditCache } from "./cache.js";
 export { MAX_ENCODED_BYTES, scrubEncodedBlob, stripImageMetadata, stripPngMetadata } from "./export-privacy.js";
 export { DRAG_MAX_EDGE, FULL_MAX_PIXELS, ProgressivePreview, planResolution } from "./interaction.js";
+//# sourceMappingURL=index.js.map

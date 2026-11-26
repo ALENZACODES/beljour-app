@@ -2,19 +2,20 @@
  * Accessible, consent-first, fictional catalogue, original canvas illustration.
  * No photo is uploaded in local mode. Author: John Khan.
  */
-import { apiBase } from "../api.js";
 import { money } from "./bag.js";
 import { assertCatalogue, expandCatalogue, findProduct, nearbyShades } from "./catalogue.js";
 import { CommerceController } from "./controller.js";
 import { cleanUpload, decodePrivate, syntheticPortrait } from "./image.js";
 import { renderInteractive, renderLocal } from "./local-render.js";
+import { faceMapFor } from "../face/map-reader.js";
 import { LookShelf } from "./look.js";
 import { setupHairDemo } from "./hair-demo.js";
 import { setupHairWorkbench } from "./hair-workbench.js";
 import { buildShortlist } from "./shortlist.js";
-import { KeyProxyCommerceRemote } from "./remote.js";
+import { OfflineCommerceRemote } from "./remote.js";
 import { DEFAULT_LOCK, fromLegacy, toLegacy, validateLevel, LevelHistory } from "./strength.js";
 import { SAMPLE_NOTICE, SIMULATION_NOTICE } from "./types.js";
+import { SAMPLE_PHOTOS, sampleFile } from "../photos/samples.js";
 function el(id) {
     const node = document.getElementById(id);
     if (!node)
@@ -43,16 +44,12 @@ function displayError(reason) {
     announce(reason instanceof Error ? reason.message :
         "The action could not be completed. The original photo remains safe.");
 }
-function selectedMode() { return el("mode-youcam").checked ? "youcam" : "local"; }
 function makeProfile() {
     return { depth: Number(el("depth").value),
         undertone: el("undertone").value,
         confidence: "manual", evidence: "Visitor-selected fictional colour category" };
 }
 function selectedFinish() { return el("finish").value; }
-function consentValues() {
-    return [el("confirm-skin").checked, el("confirm-makeup").checked];
-}
 function setPhotoDisplay(photo) {
     const img = el("photo-image");
     img.src = photo.canvas.toDataURL("image/jpeg", .82);
@@ -63,21 +60,11 @@ function setPhotoDisplay(photo) {
     el("photo-details").textContent = `${photo.name} · ${photo.sourceWidth}×${photo.sourceHeight} · ` +
         `preview ${photo.canvas.width}×${photo.canvas.height}`;
 }
-function providerConfigured() {
-    const settings = globalThis;
-    return apiBase() !== null && settings.BELJOUR_COMMERCE_PROVIDER !== false;
-}
 function showMode() {
-    const live = selectedMode() === "youcam" && providerConfigured();
-    const field = el("sharing-consent");
-    field.hidden = !live;
-    field.disabled = !live;
-    announce(live ? "YouCam is optional. Tick each sharing purpose before upload." :
-        "Local-only preview is active. The YouCam provider is off or no proxy is configured; no photo will be uploaded.");
+    announce("Everything here runs on this device; your photo is never uploaded.");
 }
 function sourceName(result) {
-    return result.source === "youcam" ? "YouCam makeup virtual try-on simulation" :
-        "Approximate local cosmetic simulation";
+    return "Approximate cosmetic simulation drawn on this device";
 }
 function drawComparison(after, before, message) {
     el("before-image").src = before;
@@ -102,7 +89,7 @@ async function start() {
     assertCatalogue(source);
     const catalogue = expandCatalogue(source);
     const allowedConcerns = source.concerns;
-    const remote = new KeyProxyCommerceRemote();
+    const remote = new OfflineCommerceRemote();
     const strengthMemory = new LevelHistory();
     // Upgrade the legacy 0–100 HTML input at the owned screen boundary.
     const levelSlider = el("effect-strength");
@@ -116,6 +103,11 @@ async function start() {
     if (levelLabel)
         levelLabel.firstChild.textContent = "Sample colour strength (1.0–5.0) ";
     let photo = null;
+    /** The photo's face, mapped on this device; null until mapped or when no face was found. */
+    let mesh = null;
+    const overlayNote = () => mesh
+        ? "Approximate on-device colour overlay, placed on the face mapped on this device. No photo was uploaded."
+        : "Approximate on-device colour overlay on a fixed portrait layout, because no face was mapped. No photo was uploaded.";
     let displayedBefore = "";
     let chosenProduct = null;
     let previewResult = null;
@@ -128,9 +120,9 @@ async function start() {
         async localPreview(product, strength) {
             if (!photo)
                 throw Error("Choose a photo first.");
-            const rendered = renderLocal(photo.canvas, product, strength);
+            const rendered = renderLocal(photo.canvas, product, strength, undefined, undefined, mesh);
             return { image: rendered.toDataURL("image/jpeg", .9), source: "local", simulation: true,
-                notice: "Approximate on-device colour overlay. No face was detected and no photo was uploaded.",
+                notice: overlayNote(),
                 product, provider_calls: 0, cached: false, units_spent: 0, label: "Local simulation" };
         },
         async localCompositePreview(steps) {
@@ -140,16 +132,15 @@ async function start() {
                 throw Error("Choose one to three sample effects.");
             let current = photo.canvas;
             for (const step of steps)
-                current = renderLocal(current, step.product, step.strength);
+                current = renderLocal(current, step.product, step.strength, undefined, undefined, mesh);
             return { image: current.toDataURL("image/jpeg", .9), source: "local", simulation: true,
-                notice: "Local multi-product simulation, with approximate centred masks and fictional colours. " +
-                    "No face detection or upload.",
+                notice: `Local multi-product simulation with fictional colours. ${overlayNote()}`,
                 product: steps[0].product, provider_calls: 0, cached: false, units_spent: 0,
                 label: "Local composite simulation" };
         },
     };
     const controller = new CommerceController(catalogue, remote, media, Date.now, {
-        providerEnabled: providerConfigured, allowedConcerns: new Set(source.concerns),
+        providerEnabled: () => false, allowedConcerns: new Set(source.concerns),
     });
     let photoEpoch = 0;
     let matchEpoch = 0;
@@ -182,7 +173,6 @@ async function start() {
             const imageEpoch = photoEpoch;
             const original = photo;
             const selected = lookShelf.plan().steps.map((s) => ({ product_id: s.product.id, strength: s.strength }));
-            controller.grant(...consentValues());
             announce("Combining the selected fictional samples…");
             const state = await controller.tryOnComposite(selected);
             if (requestEpoch !== previewEpoch || imageEpoch !== photoEpoch || original !== photo)
@@ -231,6 +221,7 @@ async function start() {
         controller.setPhoto(false);
         resetLook();
         photo = null;
+        mesh = null;
         displayedBefore = "";
         chosenProduct = null;
         previewResult = null;
@@ -247,14 +238,20 @@ async function start() {
             displayedBefore = photo.canvas.toDataURL("image/jpeg", .82);
             setPhotoDisplay(photo);
             controller.setPhoto(true);
-            for (const id of ["confirm-skin", "confirm-makeup"])
-                el(id).checked = false;
             el("products-section").hidden = true;
             el("try-on-section").hidden = true;
             previewResult = null;
             chosenProduct = null;
             announce(photo.synthetic ? "A drawn synthetic illustration is ready. No photo was uploaded." :
-                "The selected image is in browser memory only. Choose processing and consent before any upload.");
+                "Your photo is ready on this device. It is never uploaded.");
+            // Map the face on this device so local previews follow it; a newer photo cancels this.
+            if (!photo.synthetic)
+                void faceMapFor(photo.canvas).then((map) => {
+                    if (epoch !== photoEpoch || map.status !== "mapped" || !map.points)
+                        return;
+                    mesh = { width: map.width, height: map.height, points: map.points };
+                    el("photo-details").textContent = `${el("photo-details").textContent ?? ""} Face mapped on this device with 478 points; local previews follow it.`.trim();
+                }).catch(() => { });
         }
         catch (reason) {
             if (epoch === photoEpoch)
@@ -267,45 +264,21 @@ async function start() {
             void usePhoto(decodePrivate(file));
     });
     el("synthetic-button").addEventListener("click", () => void usePhoto(syntheticPortrait()));
-    for (const id of ["mode-local", "mode-youcam"]) {
-        el(id).addEventListener("change", () => {
-            controller.chooseMode(selectedMode());
-            resetLook();
-            matchEpoch += 1;
-            previewEpoch += 1;
-            chosenProduct = null;
-            previewResult = null;
-            for (const consent of ["confirm-skin", "confirm-makeup"]) {
-                el(consent).checked = false;
-            }
-            el("products-section").hidden = true;
-            el("try-on-section").hidden = true;
-            showMode();
-        });
+    // Open on a bundled synthetic portrait so the page never starts on an empty box.
+    // A photo the visitor picks first wins; if the example cannot load, the empty state stays.
+    const example = SAMPLE_PHOTOS.find((p) => p.file === "person-2.jpg");
+    if (example) {
+        const startEpoch = photoEpoch;
+        void sampleFile(example).then((file) => {
+            if (photoEpoch !== startEpoch || photo)
+                return;
+            // The example is light-medium; match the picker unless the visitor already changed it.
+            const depth = el("depth");
+            if (depth.options[depth.selectedIndex]?.defaultSelected)
+                depth.value = "4";
+            return usePhoto(decodePrivate(file));
+        }).catch(() => { });
     }
-    for (const id of ["confirm-skin", "confirm-makeup"]) {
-        el(id).addEventListener("change", () => controller.grant(...consentValues()));
-    }
-    el("forget-server-photo").addEventListener("click", () => {
-        void (async () => {
-            try {
-                if (await controller.forgetServerPhoto()) {
-                    for (const id of ["confirm-skin", "confirm-makeup"]) {
-                        el(id).checked = false;
-                    }
-                    el("products-section").hidden = true;
-                    el("try-on-section").hidden = true;
-                    previewResult = null;
-                    announce("The temporary server photo was deleted. Your original is still on this device.");
-                }
-                else
-                    announce("No server photo was uploaded in this session.");
-            }
-            catch (reason) {
-                displayError(reason);
-            }
-        })();
-    });
     async function performPreview(sku) {
         try {
             matchEpoch += 1;
@@ -315,7 +288,6 @@ async function start() {
             chosenProduct = sku;
             const level = validateLevel(Number(el("effect-strength").value));
             announce("Rendering your selected fictional cosmetic item…");
-            controller.grant(...consentValues());
             const product = findProduct(catalogue, sku);
             strengthMemory.remember(product.category === "complexion" ? "complexion" :
                 product.category === "cheek" ? "cheek" : "lip", level);
@@ -503,7 +475,6 @@ async function start() {
             const requestEpoch = ++matchEpoch;
             const photoAtStart = photo;
             const photoVersionAtStart = photoEpoch;
-            controller.grant(...consentValues());
             announce("Finding fictional shade options…");
             const matches = await controller.match(makeProfile(), selectedFinish());
             if (requestEpoch !== matchEpoch || photo !== photoAtStart || photoEpoch !== photoVersionAtStart)
@@ -534,7 +505,7 @@ async function start() {
             return;
         try {
             const product = findProduct(catalogue, chosenProduct);
-            const small = renderInteractive(photo.canvas, product, value);
+            const small = renderInteractive(photo.canvas, product, value, undefined, undefined, mesh);
             drawComparison(small.toDataURL("image/jpeg", .8), displayedBefore, "Low-resolution local slider preview. Release to apply a full-resolution guarded edit.");
         }
         catch (reason) {
@@ -576,3 +547,4 @@ async function start() {
 void start().catch(displayError);
 void setupHairDemo();
 void setupHairWorkbench();
+//# sourceMappingURL=page.js.map

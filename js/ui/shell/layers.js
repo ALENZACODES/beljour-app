@@ -26,7 +26,7 @@ export function layer(id, kind, name, origin = "sample", params = {}) {
         throw new RangeError("Layer ID must be a local token");
     if (!name || name.length > 80 || !validParams(params))
         throw new RangeError("Invalid layer fields");
-    const provenance = kind === "styling" ? "youcam" : "local";
+    const provenance = "local";
     return { id, kind, name, enabled: true, opacity: 1, strength: GENTLE_DEFAULT, parameters: { ...params },
         provenance, simulation: isSimulationKind(kind), origin };
 }
@@ -44,7 +44,7 @@ export function validateStack(stack) {
             throw new RangeError("Layer opacity must be 0–1");
         if (!validParams(item.parameters))
             throw new RangeError("Layer options aren't valid");
-        if (item.provenance !== (item.kind === "styling" ? "youcam" : "local"))
+        if (item.provenance !== "local")
             throw new RangeError("Layer provenance differs from its engine");
     }
 }
@@ -89,7 +89,8 @@ export function countLine(stack) {
 }
 export function describeStack(stack) {
     return { local: stack.filter((i) => i.provenance === "local").length,
-        provider: stack.filter((i) => i.provenance === "youcam").length,
+        provider: 0,
         hidden: stack.filter((i) => !i.enabled).length,
         simulation: stack.some((i) => i.enabled && i.simulation) };
 }
+//# sourceMappingURL=layers.js.map

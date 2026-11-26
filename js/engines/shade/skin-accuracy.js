@@ -193,3 +193,4 @@ export function assessSkinPhoto(image, points, options = {}) {
     }
     return assessSkinZones(image, masks, options);
 }
+//# sourceMappingURL=skin-accuracy.js.map

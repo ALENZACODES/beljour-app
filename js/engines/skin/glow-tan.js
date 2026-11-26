@@ -68,3 +68,4 @@ export function glowTan(image, skin, undertone = "neutral", strength = 55, freck
     result.reason = "measured local colour edit";
     return result;
 }
+//# sourceMappingURL=glow-tan.js.map

@@ -247,3 +247,4 @@ export class BatchReview {
     }
     dispose() { this.stop = true; this.ended = true; this.records.length = 0; this.files.clear(); }
 }
+//# sourceMappingURL=batch-review.js.map

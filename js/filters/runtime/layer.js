@@ -3,8 +3,9 @@ import { catalogue } from "../recipe/registry.js";
 import { ThumbCache, thumbKey, thumbSourceStamp } from "./cache.js";
 import { render } from "./engine.js";
 import { checkedLevel, fromPercent, toPercent } from "./strength.js";
-/** The best daily default (§2.1 C08: "still me, best day"), used when a new filter layer has no pick. */
-export const DEFAULT_RECIPE = "C08";
+/** The look a new filter layer starts on when it has no pick: the clean everyday look, one of the 16 offered.
+ * (C08 was the daily default until it moved to the kept-for-saved-looks list.) */
+export const DEFAULT_RECIPE = "C105";
 export const BUILT_ADDON_IDS = [
     "fade", "vignette", "centre-light", "glow", "halation", "border",
     "grain", "structure",
@@ -208,9 +209,9 @@ export function applyFilterLayer(img, source, layer) {
             guard: result.plan.guard && masks.skin !== null, fallback: result.plan.fallback, masks: masks.source,
             notes: result.notes.join(" ") } };
 }
-/** Every look in strip order (§2.22 rank), with the parameters one tap gives. */
+/** Every offered look (status Build) in strip order (§2.22 rank), with the parameters one tap gives. */
 export function filterOptions() {
-    return catalogue().recipes.map((r) => ({ id: `filters:recipe:${r.id}`, recipe: r.id, label: r.name, description: r.description,
+    return catalogue().shown().map((r) => ({ id: `filters:recipe:${r.id}`, recipe: r.id, label: r.name, description: r.description,
         tab: r.tab, rank: r.rank, params: defaultFilterParams(r.id), strength: r.defaults.strength }));
 }
 export const THUMBS = new ThumbCache();
@@ -253,3 +254,4 @@ export function renderFilterBatch(small, options, page = 0, size = 12, cache = T
     const stamp = thumbSourceStamp(small);
     return visible.map((option) => renderStampedTile(small, option, stamp, cache, true));
 }
+//# sourceMappingURL=layer.js.map

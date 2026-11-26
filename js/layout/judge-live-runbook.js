@@ -15,7 +15,7 @@ export const REAL_DEMO_CUES = [
     { route: "makeup", targetSeconds: 35,
         action: "Demonstrate separate makeup consent and the permitted try-on path.",
         explanation: "The result must come from the real provider flow if claiming API integration.",
-        stopCondition: "Never present the prior illustrated mock as a successful YouCam task." },
+        stopCondition: "Never present the prior illustrated mock as a real try-on." },
     { route: "shade", targetSeconds: 30,
         action: "Show how the app links a current shade reading to a supported product choice.",
         explanation: "Distinguish measured catalogue entries from local examples and estimates.",
@@ -86,3 +86,4 @@ export function realDemoCueHeadline(timeline) {
         + `${unavailable} stages have reported blockers or mixed observations. `
         + "Provider wait time and real-phone conditions are not measured.";
 }
+//# sourceMappingURL=judge-live-runbook.js.map

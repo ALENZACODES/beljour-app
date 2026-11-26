@@ -149,7 +149,7 @@
 .batch-review-card h3 { overflow-wrap:anywhere; }
 .batch-review-card canvas { display:block; max-width:100%; margin:auto; }
 
-/* Workstream D r23d — opt-in timing route, readable lock controls, responsive layout. */
+/* Lane D r23d — opt-in timing route, readable lock controls, responsive layout. */
 .lg-timing-launch,
 .lg-timing-panel,
 .lg-identity-guard,
@@ -208,7 +208,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-timing-panel *, .lg-identity-guard * { transition: none !important; }
 }
 
-/* Workstream D r24d: accessible, local-only device review. */
+/* Lane D r24d: accessible, local-only device review. */
 .lg-accessibility-launch,
 .lg-accessibility-screen {
   background: var(--blanc);
@@ -270,7 +270,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-accessibility-launch * { animation: none !important; transition: none !important; }
 }
 
-/* Workstream D r24d: opt-in install controls; all text is dark blue, not French red. */
+/* Lane D r24d: opt-in install controls; all text is dark blue, not French red. */
 .lg-install-launch,
 .lg-install-panel {
   margin-block: 22px;
@@ -312,7 +312,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
 /* French clinic accent: red is reserved for the LG monogram and warnings. */
 :root { --lg-french-rouge: var(--rouge); }
 
-/* Workstream D r24d-cp4: local Judge Mode cue, proof and capability panels. */
+/* Lane D r24d-cp4: local Judge Mode cue, proof and capability panels. */
 .lg-judge-demo-tools {
   display: grid;
   gap: 0.75rem;
@@ -448,7 +448,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
 .lg-judge-readiness-row dd { color: var(--plum); font-weight: 600; margin: 0; }
 .lg-judge-readiness-row p { margin: 0.25rem 0 0; }
 
-/* Workstream D r24d-cp5: opt-in real-product transfer and provider-refusal rehearsal. */
+/* Lane D r24d-cp5: opt-in real-product handoff and provider-refusal rehearsal. */
 .lg-judge-live-panel,
 .lg-judge-failure-panel,
 .lg-judge-selfcheck-panel {
@@ -613,7 +613,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
 }
 .lg-judge-live-cue strong { color: var(--plum); font-weight: 700; }
 
-/* Workstream D: synthetic and supplied subject boxes never imply identity recognition. */
+/* Lane D: synthetic and supplied subject boxes never imply identity recognition. */
 .lg-judge-visual { position: relative; }
 .lg-subject-overlay {
   position: absolute;
@@ -668,7 +668,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-subject-box { animation: none; transition: none; }
 }
 
-/* Workstream D: five distinct, consent-scoped illustrative edit controls. */
+/* Lane D: five distinct, consent-scoped illustrative edit controls. */
 .lg-judge-five-edit-panel {
   border: 1px solid var(--rule);
   border-radius: 0.6rem;
@@ -723,7 +723,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-judge-five-edit-panel * { animation: none !important; transition: none !important; }
 }
 
-/* Workstream D: French clinic white demonstration surface, scoped to the optional tour. */
+/* Lane D: French clinic white demonstration surface, scoped to the optional tour. */
 .lg-continuous {
   --lg-demo-blue: var(--plum);
   --lg-demo-red: var(--lg-french-rouge);
@@ -788,7 +788,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   }
 }
 
-/* Workstream D continuous real-product rehearsal: accessible, in-memory, opt-in. */
+/* Lane D continuous real-product rehearsal: accessible, in-memory, opt-in. */
 .lg-cont-operator {
   margin-block: 1.5rem;
   padding: 1rem;
@@ -849,7 +849,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
 }
 
 
-/* Workstream D release transfer: public page checks only, never acceptance evidence. */
+/* Lane D release handoff: public page checks only, never acceptance evidence. */
 .lg-release-workspace { color: var(--plum); background: var(--blanc); line-height: 1.55; }
 .lg-release-header { border-top: 4px solid var(--plum); padding: 1.2rem 0; }
 .lg-release-header h2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(1.35rem, 3vw, 2rem); }
@@ -880,7 +880,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-release-workspace * { scroll-behavior: auto; transition-duration: 0s; }
 }
 
-/* Workstream D r29d: accessible, in-memory confirmation of a drawn PNG download. */
+/* Lane D r29d: accessible, in-memory confirmation of a drawn PNG download. */
 .lg-cont-export-status {
   margin-block: 1rem;
   padding: 1rem;
@@ -909,7 +909,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-cont-receipt-picker { overflow-wrap: anywhere; }
 }
 
-/* Workstream D: local drawn-only sequence on phones and desktop. Author: John Khan. */
+/* Lane D: local drawn-only sequence on phones and desktop. Author: John Khan. */
 .lg-cont-sequence {
   display: grid;
   gap: 0.75rem;
@@ -947,7 +947,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   }
 }
 
-/* Workstream D: French clinic editorial hierarchy and local cassette. */
+/* Lane D: French clinic editorial hierarchy and local cassette. */
 .lg-cont-header,
 .lg-release-header {
   border-block-start: 2px solid var(--plum);
@@ -1100,7 +1100,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   border-block-end: 1px solid var(--panel);
 }
 
-/* Workstream D r32d: optional read-only local PNG file review. Author: John Khan. */
+/* Lane D r32d: optional read-only local PNG file review. Author: John Khan. */
 .lg-local-import {
   border: 1px solid var(--rule);
   border-radius: 0.75rem;
@@ -1204,7 +1204,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-local-import * { scroll-behavior: auto; }
 }
 
-/* Workstream D: in-memory drawn-frame rehearsal. French clinic, no provider claims. */
+/* Lane D: in-memory drawn-frame rehearsal. French clinic, no provider claims. */
 .lg-cache-panel {
   border: 1px solid var(--rule);
   background: var(--blanc);
@@ -1285,7 +1285,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   color: var(--plum);
 }
 
-/* Workstream D: editorial finish, original BELJOUR identity. Author: John Khan. */
+/* Lane D: editorial finish, original BELJOUR identity. Author: John Khan. */
 .lg-editorial-surface {
   --lg-ivy-ink: var(--plum);
   --lg-ivy-paper: var(--blanc);
@@ -1544,7 +1544,7 @@ body[data-timing-active="true"] .lg-tabs { display: none; }
   .lg-editorial-proof-actions { justify-items: stretch; }
 }
 
-/* Workstream D: BELJOUR public lockup, existing module and selector names retained. */
+/* Lane D: BELJOUR public lockup, existing module and selector names retained. */
 .lg-editorial-brand-lockup {
   display: grid;
   gap: 0.15rem;

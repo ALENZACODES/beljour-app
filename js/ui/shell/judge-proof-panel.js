@@ -26,7 +26,7 @@ export function renderJudgeProofPanel(doc, host, witness, evidence, runbook, act
         ? "A browser download was requested. Receipt and file integrity have not been checked."
         : "No labelled image download was requested during this rehearsal.";
     panel.append(judgeNotice(doc, "Export evidence", note));
-    panel.append(judgeNotice(doc, "Not a provider test", "Zero YouCam API requests are made by this guided demonstration. "
+    panel.append(judgeNotice(doc, "Not a provider test", "No uploads are made by this guided demonstration. "
         + "The real adapter, external faces and release gates must be verified separately."));
     const status = judgeStatus(doc, "The report remains on this device unless you choose to save it.");
     const download = judgeButton(doc, "Download photo-free rehearsal note", "proof-download", () => {
@@ -49,3 +49,4 @@ export function renderJudgeProofPanel(doc, host, witness, evidence, runbook, act
         + "This checklist excludes any unobserved or skipped action from the observed count.", "lg-judge-small"));
     host.append(panel);
 }
+//# sourceMappingURL=judge-proof-panel.js.map

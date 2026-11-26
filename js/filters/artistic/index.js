@@ -36,3 +36,4 @@ export function renderArtistic(effectId, image, options = {}) {
     return meadowCrown(src, options.landmarks, options.hairMask, options.params);
 }
 export { TimeWarpScan } from "./time-warp.js";
+//# sourceMappingURL=index.js.map

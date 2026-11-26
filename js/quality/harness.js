@@ -93,3 +93,4 @@ export function run(tool, toolVersion, engine, photos, stops, options = {}) {
     }
     return buildReport(tool, toolVersion, entries, options.created);
 }
+//# sourceMappingURL=harness.js.map

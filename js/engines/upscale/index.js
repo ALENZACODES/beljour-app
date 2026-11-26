@@ -131,3 +131,4 @@ export function psnr(reference, candidate) {
     mse /= n;
     return mse === 0 ? Infinity : 20 * Math.log10(255 / Math.sqrt(mse));
 }
+//# sourceMappingURL=index.js.map

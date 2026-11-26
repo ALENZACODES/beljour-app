@@ -1,6 +1,6 @@
 /** #111 Face lenses page: the parts that do not need a browser, so they are tested in Node.
  *
- * Example people are the AI-generated faces John made for Skin Moment (assets/skin-moment/
+ * Example people are the synthetic faces John made for Skin Moment (assets/skin-moment/
  * faces/face-XX-day0.png, listed by the build); on them the lens is placed with the fixed
  * passport framing (shape-art.ts framingPoints) when no face reader runs here, and the page
  * says so. Her own photo needs the face reader; without it no lens is drawn on her photo.
@@ -11,7 +11,7 @@ import { resizeArea, toRGBA } from "../engines/core/buffer.js";
 import { applyLens } from "../lenses/render.js";
 import { exportPhoto } from "../save/export.js";
 export const LENS_LABEL = "Face lens: our own drawn props on this photo. A simulation.";
-export const EXAMPLE_LABEL = "AI-generated example person";
+export const EXAMPLE_LABEL = "synthetic example person";
 export const FRAMING_NOTE = "Without the face reader in this build, lenses use the pictures' fixed framing and leave out lip and eye tints.";
 export const NEEDS_READER = "Lenses on your own photo need the face reader, which is not installed in this build. Try an example person.";
 export const NO_FACE = "No face was found in this photo, so no lens is drawn. Try a front-facing photo.";
@@ -19,7 +19,7 @@ export const THUMB_SIDE = 132;
 export const PREVIEW_SIDE = 720;
 const FACE_FILE = /^faces\/face-(\d{2})-day0\.png$/;
 /** The example people the picker offers, chosen for a spread of skin tones (very fair to very
- * deep), ages and genders from the AI-generated set: by picture number, in the order shown. */
+ * deep), ages and genders from the synthetic set: by picture number, in the order shown. */
 export const PICKER_PEOPLE = [1, 8, 5, 6, 12, 22, 24, 25];
 /** The picker's example people that are in this build, in PICKER_PEOPLE order; when none of
  * those is there, the first eight listed. */
@@ -49,3 +49,4 @@ export async function capture(image, lens, index, encoder, simulationLabel = tru
     const rgba = { width: image.width, height: image.height, data: toRGBA(image) };
     return exportPhoto(rgba, encoder, { lookName: lens.title, index, simulationLabel, isSimulation: true });
 }
+//# sourceMappingURL=lenses-model.js.map

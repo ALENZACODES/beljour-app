@@ -275,3 +275,4 @@ export function mountAccessibilityPage(doc, host, browser) {
         },
     };
 }
+//# sourceMappingURL=accessibility-page.js.map

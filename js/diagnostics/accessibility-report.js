@@ -140,3 +140,4 @@ export function accessibilityEvidenceText(report) {
     const state = report.completedManualReview ? "All manual tasks answered" : "Manual review incomplete";
     return `${report.findingCount} DOM hints. ${state}. ${report.pages.filter((row) => row.decision !== "not-reviewed").length} routes reviewed. ${report.issuesFound} reported issues. Not certified.`;
 }
+//# sourceMappingURL=accessibility-report.js.map

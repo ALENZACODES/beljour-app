@@ -24,7 +24,7 @@ export function buildTimingReport(previewSamples, fullSamples, environment = "br
         previewBudget: compareBudget(preview, TIMING_BUDGETS.previewMs),
         fullBudget: compareBudget(full, TIMING_BUDGETS.exportMs),
         limitations: [
-            "Drawn pixels only: not a real face, not a YouCam call or a vision-model benchmark.",
+            "Drawn pixels only: not a real face or a vision-model benchmark.",
             "Canvas raster timing is not a complete edit pipeline or encoded-image export timing.",
             "A CPU-throttled headless browser is not an actual three-year-old phone.",
             "First page load, memory, 4G network and identity preservation are not measured.",
@@ -62,3 +62,4 @@ export function safeTimingJson(report) {
         throw new RangeError("Invalid timing report");
     return JSON.stringify(report, null, 2);
 }
+//# sourceMappingURL=timing-report.js.map

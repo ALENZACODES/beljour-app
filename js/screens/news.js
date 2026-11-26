@@ -43,10 +43,9 @@ function partnerSlot(config, region, today) {
     if (view.show === "none")
         return null;
     const box = h("aside", { class: "nw-partner", "aria-label": "Partner spot", "data-show": view.show });
-    if (view.show === "label") {
-        box.append(h("p", { class: "nw-partner-label" }, view.label));
-        return box;
-    }
+    // No partner yet: show nothing rather than an empty "partner spot" placeholder.
+    if (view.show === "label")
+        return null;
     const p = view.placement;
     box.append(h("p", { class: "nw-sponsored" }, SPONSORED, h("span", { class: "nw-sponsor" }, ` · ${p.sponsor}`)));
     if (p.image)
@@ -129,3 +128,4 @@ if (root) {
     document.getElementById("nw-not-medical")?.replaceChildren(NOT_MEDICAL);
     void mountNews(root);
 }
+//# sourceMappingURL=news.js.map

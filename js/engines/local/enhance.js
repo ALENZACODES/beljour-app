@@ -485,3 +485,4 @@ export function q11(row, m) {
     const rule = `${row}: PSNR +${spec.psnr_gain} dB` + ("sigma_drop" in spec ? `, noise sigma -${spec.sigma_drop * 100}%` : "");
     return { check: "Q11", row, passed: Object.values(parts).every(Boolean), parts, measured, rule };
 }
+//# sourceMappingURL=enhance.js.map

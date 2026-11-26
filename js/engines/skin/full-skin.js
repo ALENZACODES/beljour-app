@@ -87,3 +87,4 @@ export function extendVisibleSkin(image, initial, excluded) {
     // Not asserted complete merely because the flood fill stops: that is unknowable without full parsing.
     return { alpha: feathered, expandedPixels: added, confidence, coverageComplete: false };
 }
+//# sourceMappingURL=full-skin.js.map

@@ -156,3 +156,4 @@ export function define(rgb, width, height, mask, scale) {
     }
     return toBytes(mixed);
 }
+//# sourceMappingURL=polish.js.map

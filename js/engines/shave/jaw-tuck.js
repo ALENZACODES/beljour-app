@@ -88,3 +88,4 @@ export function jawTuck(img, pts, iod, density, amount, maxIod = 0.05) {
         }
     return { data: out, maxShiftPx: tMax, meanShiftPx: cnt ? sum / cnt : 0, minJacobian: Number.isFinite(minJ) ? minJ : 1 };
 }
+//# sourceMappingURL=jaw-tuck.js.map

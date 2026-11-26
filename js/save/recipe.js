@@ -1,7 +1,7 @@
 /** Save System recipes (round 2 plan §8, John's spec): a look is the recipe, not the photo.
  *
  * A LookRecipe keeps every tool used, in order, with its strength, settings and provider tag
- * ("local" or "youcam"). Versions append: v1 is never changed; an edit makes v2, v3 and so on.
+ * ("local", or "youcam" for a step saved by an earlier version). Versions append: v1 is never changed; an edit makes v2, v3 and so on.
  * A recipe holds settings only: never a photo, face points, masks or anything measured from
  * a face, so it can be stored in this browser and shared as a small file.
  * The runtime validator (validate.ts) checks every recipe that comes from storage or a file.
@@ -11,8 +11,9 @@ export const RECIPE_FORMAT = "beljour-look-recipe/1";
 export const MAX_STEPS = 16;
 export const MAX_VERSIONS = 20;
 export const MAX_SETTINGS = 20;
-/** Tools a recipe may name. YouCam tools keep their provider tag so a look still loads (with a
- * local fallback or a plain "needs YouCam" note) if the adapter is removed. */
+/** Tools a recipe may name. Looks saved by earlier versions may name the retired online tools
+ * ("makeup", "hair-style", "hair-colour", provider "youcam" in the stored data); they still load,
+ * and those steps are skipped with a plain note while every on-device step runs. */
 export const TOOLS = Object.freeze({
     enhance: { label: "Enhance", provider: "local" },
     "hair-fibre": { label: "Hair fibres", provider: "local" },
@@ -79,3 +80,4 @@ export function hashId(text) {
     }
     return h.toString(16).padStart(8, "0");
 }
+//# sourceMappingURL=recipe.js.map

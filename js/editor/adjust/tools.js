@@ -27,3 +27,4 @@ export function fullSizeFor(width, height) {
     const k = Math.min(1, Math.sqrt(FULL_SIZE_PIXELS / (width * height)));
     return { width: Math.max(1, Math.floor(width * k)), height: Math.max(1, Math.floor(height * k)) };
 }
+//# sourceMappingURL=tools.js.map

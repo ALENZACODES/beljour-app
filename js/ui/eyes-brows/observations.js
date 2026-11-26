@@ -140,3 +140,4 @@ export class Observations {
     clearHair() { this.cancel(); this.maskValue.fill(0); this.hairChecked = false; }
     clearTraces() { this.cancel(); this.tracesValue = []; }
 }
+//# sourceMappingURL=observations.js.map

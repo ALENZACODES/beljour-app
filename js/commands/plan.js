@@ -149,3 +149,4 @@ export function canonicalProPlan(plan) {
     };
     return JSON.stringify(canonical);
 }
+//# sourceMappingURL=plan.js.map

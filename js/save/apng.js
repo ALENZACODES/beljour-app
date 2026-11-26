@@ -96,3 +96,4 @@ export function encodePng(frames, fps = 12) {
     }
     return out;
 }
+//# sourceMappingURL=apng.js.map

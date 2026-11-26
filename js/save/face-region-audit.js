@@ -82,3 +82,4 @@ export function auditPersonEdit(before, after, selected, bystanders = [], requir
         changed_alpha: alphaChanges,
     };
 }
+//# sourceMappingURL=face-region-audit.js.map

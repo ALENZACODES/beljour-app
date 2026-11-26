@@ -90,3 +90,4 @@ export function olderFeatureTone(input, face, amount) {
     const r3 = (v) => Math.round(v * 1000) / 1000;
     return { image: { ...input, data: out }, edit, metrics: { feature_contrast_before: r3(cn ? cb / cn : 0), feature_contrast_after: r3(cn ? ca / cn : 0) } };
 }
+//# sourceMappingURL=older-tone.js.map

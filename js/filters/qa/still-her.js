@@ -77,3 +77,4 @@ export function problems(recipe, r, label = "this face") {
         out.push(`${where}: kept ${(100 * r.marksKept).toFixed(0)}% of freckles and moles`);
     return out;
 }
+//# sourceMappingURL=still-her.js.map

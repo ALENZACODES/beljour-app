@@ -1,18 +1,19 @@
 /**
- * Reel: apply a makeup look to a vertical clip using only a few YouCam calls.
- *  1. Scan the clip on this device: face points and a brightness histogram, 4 times a second.
+ * Reel: apply a makeup look to a vertical clip, all on this device.
+ *  1. Scan the clip: face points and a brightness histogram, 4 times a second.
  *  2. Pick 3 to 8 keyframes (scene starts, then the most different head poses).
- *  3. Send only those frames to makeup-vto (1 unit each) and learn the colour change per region.
+ *  3. Draw the look on those frames with the on-device makeup engine and learn the colour change per region.
  *  4. Play the clip once, track the face, smooth the points (One Euro filter), and apply the
  *     blended colour change in a WebGL shader while recording the canvas with the audio.
  * The finished file never leaves this device.
  */
-import { api } from "../api.js";
 import { ensureConsent } from "../ui/one-consent.js";
 import { PALETTE, withAlpha } from "../ui/palette.js";
-import { applyStyling } from "../ui/styling-tasks.js";
-import { appConsent, PROVIDER_FACTS } from "../ui/shell/consent.js";
-import { announce, clear, h, loadImage } from "../dom.js";
+import { announce, clear, h } from "../dom.js";
+import { BLUSHES, drawLook, foundationChoices, LIPS } from "../engines/makeup-local/index.js";
+import { matchShades } from "../engines/shade/finder.js";
+import { toRGBA } from "../engines/core/buffer.js";
+import { pixelPoints } from "./shade-local.js";
 import { loadVideoLandmarker, readFace } from "../face/landmarks.js";
 import { drawMasks, mixDeltas, REGIONS, regionDelta, splitMasks } from "../reel/colour.js";
 import { ColourPass } from "../reel/gl.js";
@@ -40,7 +41,7 @@ function pickMime() {
 }
 export function renderReel(main, ctx) {
     clear(main);
-    main.append(h("h1", {}, "Make a reel"), h("p", { class: "lede" }, "Add a vertical clip up to 60 seconds. BELJOUR sends only a few frames to YouCam's Makeup Try On, then carries the look through the whole clip on your device."));
+    main.append(h("h1", {}, "Make a reel"), h("p", { class: "lede" }, "Add a vertical clip up to 60 seconds. BELJOUR draws your look on a few key frames, then carries it through the whole clip. Everything happens on your device."));
     const look = ctx.tryon.foundation_id || ctx.tryon.lip_id || ctx.tryon.blush_id ? ctx.tryon : null;
     if (!look) {
         main.append(h("p", { class: "notice" }, "First choose a look on the Makeup step, then come back here."), h("button", { class: "btn", onclick: () => ctx.go(ctx.photoSrc ? "tryon" : "photo") }, "Choose a look"));
@@ -54,10 +55,9 @@ export function renderReel(main, ctx) {
     const progress = h("progress", { max: "100", value: "0", class: "progress", "aria-label": "Progress" });
     const video = h("video", { playsinline: true, class: "reel-src", controls: true });
     const keyCount = h("input", { type: "range", min: "3", max: "8", value: "4", id: "key-count" });
-    const keyOut = h("output", { for: "key-count" }, "4 frames, up to 4 units");
-    keyCount.addEventListener("input", () => (keyOut.textContent = `${keyCount.value} frames, up to ${keyCount.value} units`));
+    const keyOut = h("output", { for: "key-count" }, "4 frames");
+    keyCount.addEventListener("input", () => (keyOut.textContent = `${keyCount.value} frames`));
     const tag = h("input", { type: "checkbox", id: "edited-tag", checked: true });
-    // Photo consent for the key frames: each uploaded frame is cleared for makeup only while this is ticked.
     const go = h("button", { class: "btn", disabled: true }, "Make my reel");
     const result = h("div", {});
     let file = null;
@@ -80,12 +80,12 @@ export function renderReel(main, ctx) {
             say(`${Math.round(video.duration)} seconds, ${video.videoWidth} by ${video.videoHeight}.${tall ? "" : " It isn't vertical, so it will be framed to 9:16."}`);
             go.disabled = false;
         };
-    }, false)), video, h("p", { class: "proc" }, h("label", { for: "key-count" }, "Frames sent to YouCam"), keyCount, keyOut), h("p", { class: "check" }, tag, h("label", { for: "edited-tag" }, " Add a small \"edited\" tag in the corner")), h("p", { class: "fine provider-label", id: "send-frames-label" }, "YouCam · sends the chosen frames for this makeup preview · 1 unit per new frame"), h("details", { id: "send-frames-facts" }, h("summary", {}, "What is sent, and what happens to it"), h("ul", { class: "plain-list" }, ...PROVIDER_FACTS.map((fact) => h("li", {}, fact)))), go, progress, status, result, h("p", { class: "fine" }, "Each new frame costs one YouCam unit. Your clip and the finished reel stay on this device; only the chosen frames are sent, then deleted."));
+    }, false)), video, h("p", { class: "proc" }, h("label", { for: "key-count" }, "Key frames (more follows fast head turns better, takes longer)"), keyCount, keyOut), h("p", { class: "check" }, tag, h("label", { for: "edited-tag" }, " Add a small \"edited\" tag in the corner")), go, progress, status, result, h("p", { class: "fine" }, "Your clip and the finished reel stay on this device. Nothing is uploaded."));
     go.addEventListener("click", async () => {
         if (!file)
             return;
         if (!(await ensureConsent())) {
-            say("Nothing has been sent.");
+            say("No clip opened.");
             return;
         }
         go.disabled = true;
@@ -125,41 +125,48 @@ async function make(video, look, maxKeys, withTag, say, result) {
         throw new Error("No face was found in the clip, or face tracking isn't available in this browser.");
     const cutTimes = sceneCuts(frames).map((i) => frames[i].t);
     const picks = selectKeyframes(frames, maxKeys);
-    // 2. keyframes through YouCam
+    // 2. the look drawn on the key frames on this device, and the colour change it makes per region
     const maskCanvas = canvas(MASK_W, MASK_H);
     const mg = maskCanvas.getContext("2d", { willReadFrequently: true });
     const scratch = canvas(MASK_W, MASK_H).getContext("2d");
+    const lip = LIPS.find((c) => c.id === look.lip_id) ?? null, blush = BLUSHES.find((c) => c.id === look.blush_id) ?? null;
     const keys = [];
     for (const [n, idx] of picks.entries()) {
         const f = frames[idx];
-        say(`Sending frame ${n + 1} of ${picks.length} to YouCam`, 30 + (n / picks.length) * 30);
+        say(`Drawing the look on key frame ${n + 1} of ${picks.length}`, 30 + (n / picks.length) * 30);
         await seek(video, f.t);
         fg.drawImage(video, 0, 0, vw, vh);
-        const blob = await new Promise((res) => frameCanvas.toBlob((b) => res(b), "image/jpeg", 0.92));
-        const photo = await api.uploadPhoto(blob);
-        appConsent.grantPhoto(photo.photo_id, ["makeup"]);
+        const frame = { width: vw, height: vh, channels: 4, data: fg.getImageData(0, 0, vw, vh).data };
+        const pts = pixelPoints(f.points, vw, vh);
+        const read = foundationChoices(frame, pts);
+        const measured = "measured" in read ? read.measured : null;
+        // The chosen foundation when it is still never lighter on this frame, else the nearest that is.
+        const foundation = measured && look.foundation_id ? (matchShades(measured).find((s) => s.id === look.foundation_id) ?? matchShades(measured)[0] ?? null) : null;
+        let afterImage;
         try {
-            const r = await applyStyling({ photo_id: photo.photo_id, action: "makeup", ...look });
-            const after = await loadImage(r.image);
-            const before = canvas(MASK_W, MASK_H).getContext("2d", { willReadFrequently: true });
-            before.drawImage(frameCanvas, 0, 0, MASK_W, MASK_H);
-            const afterC = canvas(MASK_W, MASK_H).getContext("2d", { willReadFrequently: true });
-            afterC.drawImage(after, 0, 0, MASK_W, MASK_H);
-            drawMasks(mg, scratch, f.points, MASK_W, MASK_H, 3);
-            const masks = splitMasks(mg.getImageData(0, 0, MASK_W, MASK_H).data);
-            const b = before.getImageData(0, 0, MASK_W, MASK_H).data, a = afterC.getImageData(0, 0, MASK_W, MASK_H).data;
-            const d = {};
-            for (const reg of REGIONS)
-                d[reg] = regionDelta(b, a, masks[reg]);
-            // cheeks sit inside the skin region, so keep only what blush adds on top of foundation
-            d.cheeks = [d.cheeks[0] - d.skin[0], d.cheeks[1] - d.skin[1], d.cheeks[2] - d.skin[2]];
-            keys.push({ t: f.t, points: f.points, deltas: d });
+            afterImage = drawLook(frame, pts, measured ?? [60, 12, 16], { foundation, lip, blush });
         }
-        finally {
-            appConsent.revokePhoto(photo.photo_id);
-            await api.deletePhoto(photo.photo_id).catch(() => undefined);
-        }
+        catch {
+            continue;
+        } // a frame the engine can't draw on is skipped
+        const after = canvas(vw, vh);
+        after.getContext("2d").putImageData(new ImageData(toRGBA(afterImage), vw, vh), 0, 0);
+        const before = canvas(MASK_W, MASK_H).getContext("2d", { willReadFrequently: true });
+        before.drawImage(frameCanvas, 0, 0, MASK_W, MASK_H);
+        const afterC = canvas(MASK_W, MASK_H).getContext("2d", { willReadFrequently: true });
+        afterC.drawImage(after, 0, 0, MASK_W, MASK_H);
+        drawMasks(mg, scratch, f.points, MASK_W, MASK_H, 3);
+        const masks = splitMasks(mg.getImageData(0, 0, MASK_W, MASK_H).data);
+        const b = before.getImageData(0, 0, MASK_W, MASK_H).data, a = afterC.getImageData(0, 0, MASK_W, MASK_H).data;
+        const d = {};
+        for (const reg of REGIONS)
+            d[reg] = regionDelta(b, a, masks[reg]);
+        // cheeks sit inside the skin region, so keep only what blush adds on top of foundation
+        d.cheeks = [d.cheeks[0] - d.skin[0], d.cheeks[1] - d.skin[1], d.cheeks[2] - d.skin[2]];
+        keys.push({ t: f.t, points: f.points, deltas: d });
     }
+    if (!keys.length)
+        throw new Error("The look couldn't be drawn on any key frame. Try a clip with the face clearly in view.");
     // 3. render while recording
     const outW = 1080, outH = 1920;
     const glCanvas = canvas(vw, vh);
@@ -247,7 +254,8 @@ async function make(video, look, maxKeys, withTag, say, result) {
     const blob = new Blob(chunks, { type: mime.split(";")[0] });
     const ext = mime.includes("mp4") ? "mp4" : "webm";
     const url = URL.createObjectURL(blob);
-    say(`Done. ${keys.length} frames used ${keys.length} YouCam units at most; repeats of the same frames are free.`, 100);
+    say(`Done. The look was drawn on ${keys.length} key frames and carried through the clip on your device.`, 100);
     result.append(h("video", { src: url, controls: true, playsinline: true, class: "reel-out" }), h("p", {}, h("a", { href: url, download: `beljour-reel.${ext}`, class: "btn" }, `Download (${ext.toUpperCase()})`)), ext === "webm" ? h("p", { class: "fine" }, "This browser saves WebM. Most apps accept it; to get an MP4, convert it or use a recent Chrome.") : "");
     announce("Your reel is ready.");
 }
+//# sourceMappingURL=reel.js.map

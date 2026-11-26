@@ -7,6 +7,7 @@
  * web/src/filters, whose source digest pins the measured Proof Wall run. Author: John Khan.
  */
 import { boxMean } from "../core/filters.js";
+import { resizeArea, resizeBilinear } from "../core/buffer.js";
 import { renderClock } from "../skin/texture-law.js";
 import { cartoonV2 } from "./cartoon.js";
 import { sobel } from "../../filters/artistic/ink.js";
@@ -23,6 +24,11 @@ export const LABEL = "Illustration filter on your own photo. Your face shape is 
 export const HALFTONE_PITCH = 5.0;
 export const VARNISH = [1.0, 0.93, 0.80];
 export const MARK_RADIUS = 4;
+/** The drawing is made at this long side, then scaled up to the photo. Every kernel here is in
+ * pixels (paint radius, band smoothing, ink width), so on a 1024 px photo the look all but
+ * vanished; drawn at about 480 px it reads as an illustration at any photo size. Smaller photos
+ * (and the Python-parity fixtures) are drawn at their own size. */
+export const DRAW_SIDE = 480;
 const boxPlane = (v, w, h, r) => boxMean({ width: w, height: h, channels: 1, data: v }, r).data;
 function lumaPlane(rgb, n, plus = 0) {
     const out = new Float64Array(n);
@@ -137,15 +143,25 @@ export function illustrate(look, image, params) {
     const amount = number(parameters(params === undefined ? undefined : settings, DEFAULTS).amount, "amount", 0, 1);
     let extra = {};
     let drawnRaw;
+    // Draw on a copy at DRAW_SIDE when the photo is larger, then scale the drawing up.
+    const k = Math.min(1, DRAW_SIDE / Math.max(src.width, src.height));
+    const dw = Math.max(2, Math.round(src.width * k)), dh = Math.max(2, Math.round(src.height * k));
+    const small = k < 1 ? resizeArea({ width: src.width, height: src.height, channels: 3, data: Uint8ClampedArray.from(rgbValues(src), (v) => v) }, dw, dh) : null;
+    const work = small ? photo(small) : src;
+    const smallFaces = k < 1 ? faces.map((f) => ({ ...f, x: f.x * k, y: f.y * k, w: f.w * k, h: f.h * k, ...(f.iod ? { iod: f.iod * k } : {}) })) : faces;
     if (look === "sancerre-cartoon" && Array.isArray(faceList)) {
-        const v2 = cartoonV2(rgbValues(src), src.width, src.height, faces);
+        const v2 = cartoonV2(rgbValues(work), work.width, work.height, smallFaces);
         drawnRaw = v2.rgb;
         extra = { line_share: v2.metrics.lineShare, specks_removed: v2.metrics.specksRemoved, specks_left: v2.metrics.specksLeft,
             blotches: v2.metrics.blotches, faces_scaled: v2.metrics.faces, tone_dl_ratio: v2.metrics.toneDL, tone_drift_share: v2.metrics.toneDrift, tone_gate: v2.metrics.toneGate ? 1 : 0 };
     }
     else
-        drawnRaw = DRAW[look](rgbValues(src), src.width, src.height);
-    const drawn = drawnRaw.map((v) => Math.min(255, Math.max(0, v)));
+        drawnRaw = DRAW[look](rgbValues(work), work.width, work.height);
+    let drawn = drawnRaw.map((v) => Math.min(255, Math.max(0, v)));
+    if (small) {
+        const up = resizeBilinear({ width: dw, height: dh, channels: 3, data: Uint8ClampedArray.from(drawn) }, src.width, src.height);
+        drawn = Float64Array.from(up.data);
+    }
     const support = new Float64Array(n).fill(amount);
     const out = blend(src, drawn, support);
     let before = 0, after = 0;
@@ -156,3 +172,4 @@ export function illustrate(look, image, params) {
     }
     return result(look, src, out, support, LABEL, { geometry_displacement: 0, look, mean_luma_change: (after - before) / n, render_ms: renderClock() - started, artistic_texture_exception: true, ...extra }, ["Illustration of your own photo; no costume, body, face or background is generated."]);
 }
+//# sourceMappingURL=illustration.js.map

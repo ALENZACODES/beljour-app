@@ -148,7 +148,7 @@ export class CommerceController {
         const matches = rank(this.catalogue, profile, {}, finish);
         this.state = { ...this.state, results: matches, profile, stage: "results", units: 0,
             analysedBy: "Visitor-selected local sample shade", localReason: reason,
-            message: "Local suggestions only. No face analysis or provider call happened." };
+            message: "Local suggestions only. No skin analysis, upload or provider call happened." };
     }
     async match(profile, finish) {
         if (!this.photoPresent)
@@ -185,7 +185,7 @@ export class CommerceController {
             if (this.recoverable(reason)) {
                 this.localMatch(profile, finish, "provider_unavailable");
                 this.state = { ...this.state,
-                    message: "The optional Skin AI server is unavailable. " +
+                    message: "The optional skin analysis server is unavailable. " +
                         "Showing local manual shade suggestions instead; no provider retry." };
                 return this.state;
             }
@@ -341,3 +341,4 @@ export class CommerceController {
     cancel() { this.generation += 1; }
     pendingUploadedPhotos() { return this.uploadedIds.size; }
 }
+//# sourceMappingURL=controller.js.map

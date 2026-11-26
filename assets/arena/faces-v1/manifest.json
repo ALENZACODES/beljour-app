@@ -1,0 +1,633 @@
+{
+ "format": "beljour-judge-bundle/1",
+ "run": "arena-v1-2026-11-02",
+ "bundle": "faces",
+ "question": "Which result still looks like the same person, with her own skin texture?",
+ "reasons": [
+  "Lost Identity",
+  "Not Her / Erased Marks"
+ ],
+ "assignments": [
+  {
+   "id": "56c4431c80fa",
+   "filter": "Older",
+   "label": "Older \u00b7 face 09, very light skin (synthetic example person)",
+   "ref": "images/f8d71396a45421fe.jpg",
+   "a": "images/fe809eae83e749ff.jpg",
+   "b": "images/0fb21a1e2a6263d8.jpg",
+   "still_her": true
+  },
+  {
+   "id": "c15c5491e37c",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 09, very light skin (synthetic example person)",
+   "ref": "images/f8d71396a45421fe.jpg",
+   "a": "images/b9acc4ad4b0fd277.jpg",
+   "b": "images/d0aa7f6389544006.jpg",
+   "still_her": true
+  },
+  {
+   "id": "3188627df613",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 09, very light skin (synthetic example person)",
+   "ref": "images/f8d71396a45421fe.jpg",
+   "a": "images/cac15786a48ace1b.jpg",
+   "b": "images/3103e378008b7bb5.jpg",
+   "still_her": true
+  },
+  {
+   "id": "d73383878be0",
+   "filter": "Older",
+   "label": "Older \u00b7 face 16, very light skin (synthetic example person)",
+   "ref": "images/d35a2adf14ad0d4b.jpg",
+   "a": "images/d8ff9cfed3d3073e.jpg",
+   "b": "images/b77b5598af7ad95d.jpg",
+   "still_her": true
+  },
+  {
+   "id": "b85943b0464a",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 16, very light skin (synthetic example person)",
+   "ref": "images/d35a2adf14ad0d4b.jpg",
+   "a": "images/a3fad58a693dca05.jpg",
+   "b": "images/1766e58ee075f9b8.jpg",
+   "still_her": true
+  },
+  {
+   "id": "1a4ba89466f6",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 16, very light skin (synthetic example person)",
+   "ref": "images/d35a2adf14ad0d4b.jpg",
+   "a": "images/9a66c6a5b726dd84.jpg",
+   "b": "images/b9366fbc318dc967.jpg",
+   "still_her": true
+  },
+  {
+   "id": "7c3fb98c8bcb",
+   "filter": "Older",
+   "label": "Older \u00b7 face 21, very light skin (synthetic example person)",
+   "ref": "images/bdbcbaf2de2f3cef.jpg",
+   "a": "images/0570fa9c7b6fd007.jpg",
+   "b": "images/c2d45facc57f33f7.jpg",
+   "still_her": true
+  },
+  {
+   "id": "d2adb49acb01",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 21, very light skin (synthetic example person)",
+   "ref": "images/bdbcbaf2de2f3cef.jpg",
+   "a": "images/596e356996197e94.jpg",
+   "b": "images/5812ac0047a48172.jpg",
+   "still_her": true
+  },
+  {
+   "id": "b81f26687c60",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 21, very light skin (synthetic example person)",
+   "ref": "images/bdbcbaf2de2f3cef.jpg",
+   "a": "images/75f7703354ea76a5.jpg",
+   "b": "images/a5f15e25f661df67.jpg",
+   "still_her": true
+  },
+  {
+   "id": "d979034e77eb",
+   "filter": "Older",
+   "label": "Older \u00b7 face 22, very light skin (synthetic example person)",
+   "ref": "images/1f50fe05c86c6bc1.jpg",
+   "a": "images/1bb6748021540fe0.jpg",
+   "b": "images/e224b7f40e59a65f.jpg",
+   "still_her": true
+  },
+  {
+   "id": "d98c9e430cc8",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 22, very light skin (synthetic example person)",
+   "ref": "images/1f50fe05c86c6bc1.jpg",
+   "a": "images/584b420c1f20a6fa.jpg",
+   "b": "images/a2f480da59c5bbca.jpg",
+   "still_her": true
+  },
+  {
+   "id": "0c7bb75c8c7e",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 22, very light skin (synthetic example person)",
+   "ref": "images/1f50fe05c86c6bc1.jpg",
+   "a": "images/274e6a00f3132012.jpg",
+   "b": "images/54afd537e965586c.jpg",
+   "still_her": true
+  },
+  {
+   "id": "0d909875708d",
+   "filter": "Older",
+   "label": "Older \u00b7 face 01, light skin (synthetic example person)",
+   "ref": "images/29805b5bfffc0677.jpg",
+   "a": "images/41d8e2ef0756d35d.jpg",
+   "b": "images/4a600f1382e314fa.jpg",
+   "still_her": true
+  },
+  {
+   "id": "ee2a429942ff",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 01, light skin (synthetic example person)",
+   "ref": "images/29805b5bfffc0677.jpg",
+   "a": "images/570f9d78ec4d8d6d.jpg",
+   "b": "images/eef965b50757e4eb.jpg",
+   "still_her": true
+  },
+  {
+   "id": "b6194639c52f",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 01, light skin (synthetic example person)",
+   "ref": "images/29805b5bfffc0677.jpg",
+   "a": "images/76b4a5947fe76b63.jpg",
+   "b": "images/6724987bcc665d01.jpg",
+   "still_her": true
+  },
+  {
+   "id": "206bb2f4b700",
+   "filter": "Older",
+   "label": "Older \u00b7 face 02, light skin (synthetic example person)",
+   "ref": "images/5be649aa943c0cb4.jpg",
+   "a": "images/eeda5609deffb1e0.jpg",
+   "b": "images/e0dfe3ac6642d015.jpg",
+   "still_her": true
+  },
+  {
+   "id": "b0e368c2fb78",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 02, light skin (synthetic example person)",
+   "ref": "images/5be649aa943c0cb4.jpg",
+   "a": "images/3b23e2779ec5a8eb.jpg",
+   "b": "images/9df744ac7ef4dd10.jpg",
+   "still_her": true
+  },
+  {
+   "id": "44d812b1d884",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 02, light skin (synthetic example person)",
+   "ref": "images/5be649aa943c0cb4.jpg",
+   "a": "images/1f5c0ea61bf91f75.jpg",
+   "b": "images/c0e1a7e10aa50db8.jpg",
+   "still_her": true
+  },
+  {
+   "id": "8438fc57afa1",
+   "filter": "Older",
+   "label": "Older \u00b7 face 03, light skin (synthetic example person)",
+   "ref": "images/f6713d1d7f9c324c.jpg",
+   "a": "images/4e8a7d5fa632ecea.jpg",
+   "b": "images/64d60aba74d563dd.jpg",
+   "still_her": true
+  },
+  {
+   "id": "93413f6c5b8e",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 03, light skin (synthetic example person)",
+   "ref": "images/f6713d1d7f9c324c.jpg",
+   "a": "images/0c868558a9114984.jpg",
+   "b": "images/6115b38e5451bf7a.jpg",
+   "still_her": true
+  },
+  {
+   "id": "f18f1cad0d6f",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 03, light skin (synthetic example person)",
+   "ref": "images/f6713d1d7f9c324c.jpg",
+   "a": "images/8847c371c75fc783.jpg",
+   "b": "images/7ffedac0fd57a587.jpg",
+   "still_her": true
+  },
+  {
+   "id": "faaee7420079",
+   "filter": "Older",
+   "label": "Older \u00b7 face 10, light skin (synthetic example person)",
+   "ref": "images/007aef93b5b8c03b.jpg",
+   "a": "images/591a7fbea1ad92b1.jpg",
+   "b": "images/ec8bce96fb75b6df.jpg",
+   "still_her": true
+  },
+  {
+   "id": "43ef220ae9ab",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 10, light skin (synthetic example person)",
+   "ref": "images/007aef93b5b8c03b.jpg",
+   "a": "images/f4b81028f75bad30.jpg",
+   "b": "images/675a88f40c19a308.jpg",
+   "still_her": true
+  },
+  {
+   "id": "c60e4976065f",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 10, light skin (synthetic example person)",
+   "ref": "images/007aef93b5b8c03b.jpg",
+   "a": "images/beb71ac32e3beeb8.jpg",
+   "b": "images/a1147578a93e615d.jpg",
+   "still_her": true
+  },
+  {
+   "id": "1dbe770eefd9",
+   "filter": "Older",
+   "label": "Older \u00b7 face 04, intermediate skin (synthetic example person)",
+   "ref": "images/62f806bba84485d0.jpg",
+   "a": "images/24039e0dfffba3f2.jpg",
+   "b": "images/a44ae6ac24ace401.jpg",
+   "still_her": true
+  },
+  {
+   "id": "ff221623ba9d",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 04, intermediate skin (synthetic example person)",
+   "ref": "images/62f806bba84485d0.jpg",
+   "a": "images/43a8f70531a18f13.jpg",
+   "b": "images/491d519b9c3daa2f.jpg",
+   "still_her": true
+  },
+  {
+   "id": "fb3bd9842d07",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 04, intermediate skin (synthetic example person)",
+   "ref": "images/62f806bba84485d0.jpg",
+   "a": "images/f272119b9294d4ba.jpg",
+   "b": "images/4428f2934348a546.jpg",
+   "still_her": true
+  },
+  {
+   "id": "d9ccdd056601",
+   "filter": "Older",
+   "label": "Older \u00b7 face 05, intermediate skin (synthetic example person)",
+   "ref": "images/edb21baaee2a49c4.jpg",
+   "a": "images/79449ab46e8ded33.jpg",
+   "b": "images/559b6f6b145a62b6.jpg",
+   "still_her": true
+  },
+  {
+   "id": "afd768e9245b",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 05, intermediate skin (synthetic example person)",
+   "ref": "images/edb21baaee2a49c4.jpg",
+   "a": "images/537c7f475907d2d1.jpg",
+   "b": "images/caa74e254000c16a.jpg",
+   "still_her": true
+  },
+  {
+   "id": "6c95160e20d1",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 05, intermediate skin (synthetic example person)",
+   "ref": "images/edb21baaee2a49c4.jpg",
+   "a": "images/6339f278a0c27e33.jpg",
+   "b": "images/3b246d6549b3996e.jpg",
+   "still_her": true
+  },
+  {
+   "id": "1bcb0f9814d6",
+   "filter": "Older",
+   "label": "Older \u00b7 face 11, intermediate skin (synthetic example person)",
+   "ref": "images/88438f263b42c7d0.jpg",
+   "a": "images/7bdcd44a36f2bfcd.jpg",
+   "b": "images/6b9b8de53af48ba1.jpg",
+   "still_her": true
+  },
+  {
+   "id": "835b8422116d",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 11, intermediate skin (synthetic example person)",
+   "ref": "images/88438f263b42c7d0.jpg",
+   "a": "images/56978188dbb7a555.jpg",
+   "b": "images/316a34714425fae2.jpg",
+   "still_her": true
+  },
+  {
+   "id": "99d4f20b6c25",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 11, intermediate skin (synthetic example person)",
+   "ref": "images/88438f263b42c7d0.jpg",
+   "a": "images/9c52d7e546afe52e.jpg",
+   "b": "images/a83352668c4969b8.jpg",
+   "still_her": true
+  },
+  {
+   "id": "c71eb821bf1e",
+   "filter": "Older",
+   "label": "Older \u00b7 face 12, intermediate skin (synthetic example person)",
+   "ref": "images/98f97907e0649a66.jpg",
+   "a": "images/43db8cdb72de88d6.jpg",
+   "b": "images/c59bb3cb1e0cac13.jpg",
+   "still_her": true
+  },
+  {
+   "id": "e7ed474cb583",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 12, intermediate skin (synthetic example person)",
+   "ref": "images/98f97907e0649a66.jpg",
+   "a": "images/96553ae39957b035.jpg",
+   "b": "images/e44ecac704149606.jpg",
+   "still_her": true
+  },
+  {
+   "id": "f7606ec1b34e",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 12, intermediate skin (synthetic example person)",
+   "ref": "images/98f97907e0649a66.jpg",
+   "a": "images/4b3cc85db94f6539.jpg",
+   "b": "images/f2372dbbb66e9725.jpg",
+   "still_her": true
+  },
+  {
+   "id": "38ca2589e012",
+   "filter": "Older",
+   "label": "Older \u00b7 face 06, tan skin (synthetic example person)",
+   "ref": "images/42f0b4dbf29ad396.jpg",
+   "a": "images/11a7bd89cb2ecd45.jpg",
+   "b": "images/f52ec0916ce25837.jpg",
+   "still_her": true
+  },
+  {
+   "id": "caebd27d792d",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 06, tan skin (synthetic example person)",
+   "ref": "images/42f0b4dbf29ad396.jpg",
+   "a": "images/4ffbd59db4e6d310.jpg",
+   "b": "images/e167501ebf18b646.jpg",
+   "still_her": true
+  },
+  {
+   "id": "a452b407df05",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 06, tan skin (synthetic example person)",
+   "ref": "images/42f0b4dbf29ad396.jpg",
+   "a": "images/cdd560dc5bbb0555.jpg",
+   "b": "images/a3c76348157b8f29.jpg",
+   "still_her": true
+  },
+  {
+   "id": "3af67ce934f7",
+   "filter": "Older",
+   "label": "Older \u00b7 face 13, tan skin (synthetic example person)",
+   "ref": "images/0bc3a7027db60cbd.jpg",
+   "a": "images/f3962e56836a172c.jpg",
+   "b": "images/1a3d7c4783263f87.jpg",
+   "still_her": true
+  },
+  {
+   "id": "ef7d1e284df9",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 13, tan skin (synthetic example person)",
+   "ref": "images/0bc3a7027db60cbd.jpg",
+   "a": "images/aa28e65ca0d31ffb.jpg",
+   "b": "images/6de9086ac53eae1e.jpg",
+   "still_her": true
+  },
+  {
+   "id": "65cce7419026",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 13, tan skin (synthetic example person)",
+   "ref": "images/0bc3a7027db60cbd.jpg",
+   "a": "images/77f9bae904134e30.jpg",
+   "b": "images/de9fb5d9ee91a4e2.jpg",
+   "still_her": true
+  },
+  {
+   "id": "d4e09b84f4e6",
+   "filter": "Older",
+   "label": "Older \u00b7 face 17, tan skin (synthetic example person)",
+   "ref": "images/06a2eb257feaf34a.jpg",
+   "a": "images/19bdb3b6446783fc.jpg",
+   "b": "images/bcbfcf9a7426d3b1.jpg",
+   "still_her": true
+  },
+  {
+   "id": "9911f3d6ef09",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 17, tan skin (synthetic example person)",
+   "ref": "images/06a2eb257feaf34a.jpg",
+   "a": "images/5a910b21974710be.jpg",
+   "b": "images/1d425e5117352b3d.jpg",
+   "still_her": true
+  },
+  {
+   "id": "5c290124a04a",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 17, tan skin (synthetic example person)",
+   "ref": "images/06a2eb257feaf34a.jpg",
+   "a": "images/083dab172bf1e3d1.jpg",
+   "b": "images/3ba1d4a9d720cdaa.jpg",
+   "still_her": true
+  },
+  {
+   "id": "b62e85ab09a7",
+   "filter": "Older",
+   "label": "Older \u00b7 face 23, tan skin (synthetic example person)",
+   "ref": "images/d9e7f081aefb9323.jpg",
+   "a": "images/64727480f1b4de08.jpg",
+   "b": "images/ce8704b2b9d95856.jpg",
+   "still_her": true
+  },
+  {
+   "id": "e05099a890be",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 23, tan skin (synthetic example person)",
+   "ref": "images/d9e7f081aefb9323.jpg",
+   "a": "images/00e612488e590b25.jpg",
+   "b": "images/afc80f87b3fe19d3.jpg",
+   "still_her": true
+  },
+  {
+   "id": "701d22db9534",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 23, tan skin (synthetic example person)",
+   "ref": "images/d9e7f081aefb9323.jpg",
+   "a": "images/5aaf11cc59734e28.jpg",
+   "b": "images/d6000115c3539eef.jpg",
+   "still_her": true
+  },
+  {
+   "id": "1a87c9b3dd61",
+   "filter": "Older",
+   "label": "Older \u00b7 face 07, brown skin (synthetic example person)",
+   "ref": "images/3320db9afd286f39.jpg",
+   "a": "images/8ded6e6124315a3a.jpg",
+   "b": "images/5aa7816c0721bea0.jpg",
+   "still_her": true
+  },
+  {
+   "id": "282766bb0a70",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 07, brown skin (synthetic example person)",
+   "ref": "images/3320db9afd286f39.jpg",
+   "a": "images/bc72ba43dbce48f6.jpg",
+   "b": "images/bf0d40aebb8f62c5.jpg",
+   "still_her": true
+  },
+  {
+   "id": "4581ab60aa2b",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 07, brown skin (synthetic example person)",
+   "ref": "images/3320db9afd286f39.jpg",
+   "a": "images/9934c52366e3bbfe.jpg",
+   "b": "images/736433c159bda483.jpg",
+   "still_her": true
+  },
+  {
+   "id": "8f7f374324e8",
+   "filter": "Older",
+   "label": "Older \u00b7 face 14, brown skin (synthetic example person)",
+   "ref": "images/970497596c21e735.jpg",
+   "a": "images/8c066041ec3ffd63.jpg",
+   "b": "images/7b89422722253b3e.jpg",
+   "still_her": true
+  },
+  {
+   "id": "bd058e70b130",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 14, brown skin (synthetic example person)",
+   "ref": "images/970497596c21e735.jpg",
+   "a": "images/01ca15a478190b9a.jpg",
+   "b": "images/fee750d9c63e0301.jpg",
+   "still_her": true
+  },
+  {
+   "id": "618c241c248c",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 14, brown skin (synthetic example person)",
+   "ref": "images/970497596c21e735.jpg",
+   "a": "images/d4d56af0e04775f7.jpg",
+   "b": "images/e44907b4353b344d.jpg",
+   "still_her": true
+  },
+  {
+   "id": "321b1d034a61",
+   "filter": "Older",
+   "label": "Older \u00b7 face 15, brown skin (synthetic example person)",
+   "ref": "images/d06c6964e6e3e679.jpg",
+   "a": "images/1a70fb52f9707fc4.jpg",
+   "b": "images/f093cbb0e22926f8.jpg",
+   "still_her": true
+  },
+  {
+   "id": "9a9ed88faa19",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 15, brown skin (synthetic example person)",
+   "ref": "images/d06c6964e6e3e679.jpg",
+   "a": "images/33d2641232100a54.jpg",
+   "b": "images/b2f8e60ad76d3ad0.jpg",
+   "still_her": true
+  },
+  {
+   "id": "84e9cb1590ab",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 15, brown skin (synthetic example person)",
+   "ref": "images/d06c6964e6e3e679.jpg",
+   "a": "images/b2c6766fbb34c25f.jpg",
+   "b": "images/6d669e6736095868.jpg",
+   "still_her": true
+  },
+  {
+   "id": "a550871c543d",
+   "filter": "Older",
+   "label": "Older \u00b7 face 18, brown skin (synthetic example person)",
+   "ref": "images/1ef376e2ab934742.jpg",
+   "a": "images/392da34b73ac413f.jpg",
+   "b": "images/b462612ad9483ba4.jpg",
+   "still_her": true
+  },
+  {
+   "id": "7f2e25ab2244",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 18, brown skin (synthetic example person)",
+   "ref": "images/1ef376e2ab934742.jpg",
+   "a": "images/55768ea120cdad3a.jpg",
+   "b": "images/019e190772ac08da.jpg",
+   "still_her": true
+  },
+  {
+   "id": "e7f7267954ef",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 18, brown skin (synthetic example person)",
+   "ref": "images/1ef376e2ab934742.jpg",
+   "a": "images/45a220a8e1e82659.jpg",
+   "b": "images/d4c82dc3ff3ebcfe.jpg",
+   "still_her": true
+  },
+  {
+   "id": "01547a35034d",
+   "filter": "Older",
+   "label": "Older \u00b7 face 08, dark skin (synthetic example person)",
+   "ref": "images/47bd6c39c8750903.jpg",
+   "a": "images/d8e4f8828800661d.jpg",
+   "b": "images/80f1a5c00681fe2e.jpg",
+   "still_her": true
+  },
+  {
+   "id": "efb8f093a55f",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 08, dark skin (synthetic example person)",
+   "ref": "images/47bd6c39c8750903.jpg",
+   "a": "images/02357ba1245f8c57.jpg",
+   "b": "images/c464986eccbf10bd.jpg",
+   "still_her": true
+  },
+  {
+   "id": "f0266d76a507",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 08, dark skin (synthetic example person)",
+   "ref": "images/47bd6c39c8750903.jpg",
+   "a": "images/2a62784a0566af6a.jpg",
+   "b": "images/9aef5e5039e4c096.jpg",
+   "still_her": true
+  },
+  {
+   "id": "9e7e1dbdb346",
+   "filter": "Older",
+   "label": "Older \u00b7 face 19, dark skin (synthetic example person)",
+   "ref": "images/560c290ffa285948.jpg",
+   "a": "images/521571f4ea939683.jpg",
+   "b": "images/e0af1eab0758f1e3.jpg",
+   "still_her": true
+  },
+  {
+   "id": "ee2fba2aca21",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 19, dark skin (synthetic example person)",
+   "ref": "images/560c290ffa285948.jpg",
+   "a": "images/121e09d8c51df7de.jpg",
+   "b": "images/f16845e003ef0b98.jpg",
+   "still_her": true
+  },
+  {
+   "id": "6e283e76e8d2",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 19, dark skin (synthetic example person)",
+   "ref": "images/560c290ffa285948.jpg",
+   "a": "images/f5b7a818880184ab.jpg",
+   "b": "images/ae31f8c5166824d5.jpg",
+   "still_her": true
+  },
+  {
+   "id": "1a42c3a2c276",
+   "filter": "Older",
+   "label": "Older \u00b7 face 20, dark skin (synthetic example person)",
+   "ref": "images/5019be929a197045.jpg",
+   "a": "images/3cce083252796be2.jpg",
+   "b": "images/5e20a86fcfe4f19f.jpg",
+   "still_her": true
+  },
+  {
+   "id": "533ac3798a92",
+   "filter": "Younger",
+   "label": "Younger \u00b7 face 20, dark skin (synthetic example person)",
+   "ref": "images/5019be929a197045.jpg",
+   "a": "images/18d315158928e55e.jpg",
+   "b": "images/ceeb237c1410ea2f.jpg",
+   "still_her": true
+  },
+  {
+   "id": "07e1c60cd6cd",
+   "filter": "Gender swap",
+   "label": "Gender swap \u00b7 face 20, dark skin (synthetic example person)",
+   "ref": "images/5019be929a197045.jpg",
+   "a": "images/dc7f96c7f97f5f16.jpg",
+   "b": "images/ab826faabcf89f68.jpg",
+   "still_her": true
+  }
+ ]
+}

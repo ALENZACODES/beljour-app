@@ -140,8 +140,8 @@ export function relightEnamelRatio(image, lab, selected, opening, strength, labT
                 continue;
             for (const j of [i - 1, i + 1, i - w, i + w])
                 if (!sel[j] && opening[j] >= 0.5 && lab[j][0] > l20 - 6) {
-                    const ai = rgbToLab([out[i * ch], out[i * ch + 1], out[i * ch + 2]])[0], aj = rgbToLab([out[j * ch], out[j * ch + 1], out[j * ch + 2]])[0];
-                    dOut += ai - aj;
+                    const li = rgbToLab([out[i * ch], out[i * ch + 1], out[i * ch + 2]])[0], aj = rgbToLab([out[j * ch], out[j * ch + 1], out[j * ch + 2]])[0];
+                    dOut += li - aj;
                     dIn += lab[i][0] - lab[j][0];
                     ne++;
                 }
@@ -150,3 +150,4 @@ export function relightEnamelRatio(image, lab, selected, opening, strength, labT
         shadingRangeRatio: beforeIn.length > 16 ? range(afterIn) / Math.max(0.5, range(beforeIn)) : 1, translucencyKept: tk,
         minB: Number.isFinite(minB) ? minB : 0, edgeStep: ne ? (dOut - dIn) / ne : 0, renderMs: now() - t0 };
 }
+//# sourceMappingURL=enamel-ratio.js.map

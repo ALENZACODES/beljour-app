@@ -158,3 +158,4 @@ export function renderJob(job, now = () => performance.now()) {
         elapsedMs: Math.max(0, end - start),
     };
 }
+//# sourceMappingURL=render.js.map

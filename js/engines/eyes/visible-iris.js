@@ -110,3 +110,4 @@ export function recolourVisible(photo, masks, states, shade = "hazel", strength 
         reason: "measured_visible_iris", eligible: true,
     };
 }
+//# sourceMappingURL=visible-iris.js.map

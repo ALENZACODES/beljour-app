@@ -65,7 +65,7 @@ export function operatorGaps(snapshot) {
     if (snapshot.clock.activeMs > 180_000) {
         advice.push("The manual rehearsal exceeded the three-minute target.");
     }
-    advice.push("Separate evidence is still required for live YouCam, device quality and frozen faces.");
+    advice.push("Separate evidence is still required for device quality and frozen faces.");
     return Object.freeze({
         missing: Object.freeze(missing),
         refused: Object.freeze(refused),
@@ -76,3 +76,4 @@ export function operatorGaps(snapshot) {
         advice: Object.freeze(advice),
     });
 }
+//# sourceMappingURL=operator-script.js.map

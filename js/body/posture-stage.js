@@ -92,3 +92,4 @@ export class PostureStage {
         }
     }
 }
+//# sourceMappingURL=posture-stage.js.map

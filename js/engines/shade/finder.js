@@ -298,3 +298,4 @@ export function findReliableShade(image, points, options = {}) {
         notes: [...found.notes, `Lighting audit: ${audit.reason}.`] };
     return { result, audit };
 }
+//# sourceMappingURL=finder.js.map

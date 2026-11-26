@@ -110,3 +110,4 @@ export function renderSkinMore(photo, raw) {
     }
     return { data, coverage, report: { feature: req.feature, style: req.style, label: LABEL, version: VERSION, notes, manual_regions: [...named.keys()], local_only: req.feature === "W83", changed_fraction: changed / coverage.length, texture_preserved: true, ...extra } };
 }
+//# sourceMappingURL=engine.js.map

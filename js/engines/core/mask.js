@@ -444,3 +444,4 @@ export function edgeAwareFeather(mask, guide, radius = 8, eps = 1e-3, band = nul
     }
     return out;
 }
+//# sourceMappingURL=mask.js.map

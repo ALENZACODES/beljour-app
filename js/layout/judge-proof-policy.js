@@ -115,3 +115,4 @@ export function judgeWitnessHeadline(summary) {
         return "Rehearsal incomplete: a required action was not observed.";
     return "Rehearsal is in progress; no live-provider result is asserted.";
 }
+//# sourceMappingURL=judge-proof-policy.js.map

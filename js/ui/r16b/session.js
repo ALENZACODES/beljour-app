@@ -72,3 +72,4 @@ export class Session {
         return true;
     }
 }
+//# sourceMappingURL=session.js.map

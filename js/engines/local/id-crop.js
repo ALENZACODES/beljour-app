@@ -59,3 +59,4 @@ export function guideOverlay(crop) {
             paint(y * w + x);
     return out;
 }
+//# sourceMappingURL=id-crop.js.map

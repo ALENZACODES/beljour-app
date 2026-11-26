@@ -30,3 +30,4 @@ export class VideoRetouch {
     }
     reset() { this.points.reset(); this.lastPoints = null; }
 }
+//# sourceMappingURL=retouch.js.map

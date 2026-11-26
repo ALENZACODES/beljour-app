@@ -1,3 +1,4 @@
+// Face and body mapping: concept only, no code copied, after MediaPipe Face Landmarker (478-point mesh indices and contour loops as input data); Burt and Adelson Laplacian pyramid (low, mid and high frequency bands of the photo).
 import { CONTOURS } from "../../data/regions/generated/topology.js";
 import { faceFrame } from "../shape/geometry.js";
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
@@ -109,3 +110,4 @@ export function finishGender(image, mesh, slider) {
         }
     return { ...image, data };
 }
+//# sourceMappingURL=gender-finish.js.map

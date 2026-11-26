@@ -85,3 +85,4 @@ export async function importPostureFile(file, { decoder = browserImageDecoder, s
     owned.set(data);
     return { digest, type, bytes: file.size, image: { width, height, channels: 4, data: owned } };
 }
+//# sourceMappingURL=posture-file.js.map

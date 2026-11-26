@@ -7,6 +7,7 @@
  * on linear RGB, so pores and grain are scaled, never replaced (Texture Law). Lip colour is a small
  * low-band chroma gain inside the lips only.
  * Amplitudes are per SD unit (see gender-levels.ts) and ASSUMED until calibrated on morphometric data.
+ * Face and body mapping: concept only, no code copied, after MediaPipe Face Landmarker (478-point mesh indices and contour loops as input data); Burt and Adelson Laplacian pyramid (low, mid and high frequency bands of the photo).
  */
 import { clamp, gaussian, linToSrgb, lumLin, srgbToLin, toByte } from "../core/bands.js";
 import { bumpRatio, fitLight, landmarkNormals, normalImage, toP3 } from "../core/light-model.js";
@@ -194,3 +195,4 @@ export function genderCues(image, mesh, gapSigned) {
     }
     return out;
 }
+//# sourceMappingURL=gender-relight.js.map

@@ -212,3 +212,4 @@ export function ratioLift(img, mask, plan, targetLab, strength) {
     const before = bandStats(highBand(Y0, w, h, 1), ribbonIdx), after = bandStats(highBand(Y1, w, h, 1), ribbonIdx);
     return { data, logContrastKept: before.sd > 1e-9 ? after.sd / before.sd : 1, rootMax, paintedShare: hair ? painted / hair : 0, ms: now() - t0 };
 }
+//# sourceMappingURL=ribbons.js.map

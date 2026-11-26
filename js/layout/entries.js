@@ -12,6 +12,7 @@ import { mountTimingEntry } from "../diagnostics/timing-entry.js";
 import { mountAccessibilityEntry } from "../diagnostics/accessibility-entry.js";
 import { mountInstallEntry } from "../mobile/install-entry.js";
 import { mountTrust } from "./trust-view.js";
+import { api, apiBase } from "../api.js";
 const page = typeof document !== "undefined" ? document.body.dataset.page : undefined;
 if (page === "home") {
     mountHome();
@@ -19,9 +20,13 @@ if (page === "home") {
     mountHomeGroups();
     mountHomeFilters();
 }
+// Wake the demo server as soon as a judge lands: the free host sleeps after 15 idle minutes and the
+// scheduled keep-awake runs only about hourly. One health call: no photo, no units; errors ignored.
+if (page === "home" && apiBase())
+    void api.health().catch(() => undefined);
 else if (page === "trust")
     mountTrust();
-// Workstream D r21d: shared client bar for Home and Trust.
+// Lane D r21d: shared client bar for Home and Trust.
 if (page === "home" || page === "trust")
     mountClientShell(document, window, { page });
 // BFCache restores the document without rerunning its module entry.
@@ -30,10 +35,11 @@ window.addEventListener("pageshow", (event) => {
         mountClientShell(document, window, { page });
     }
 });
-// Workstream D r22d: opt-in judge walkthrough on Home; no provider call or photo upload.
+// Lane D r22d: opt-in judge walkthrough on Home; no provider call or photo upload.
 if (page === "home") {
     mountJudgeEntry(document, window);
     mountTimingEntry(document, window);
     mountAccessibilityEntry(document, window);
     mountInstallEntry(document, window);
 }
+//# sourceMappingURL=entries.js.map

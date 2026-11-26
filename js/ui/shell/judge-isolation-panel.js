@@ -75,3 +75,4 @@ export function renderJudgeIsolationPanel(doc, host) {
     panel.append(heading, notice, main, guest, result);
     host.append(panel);
 }
+//# sourceMappingURL=judge-isolation-panel.js.map

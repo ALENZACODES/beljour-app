@@ -1,4 +1,4 @@
-/** Pictures for the face shape tools: starting photos of AI-generated example people
+/** Pictures for the face shape tools: starting photos of synthetic example people
  * (assets/shape/shape-01..20.png) and one plum line icon per control (assets/icons/icon-*.png).
  * John makes them outside the app; until a file is there the screens look as they do today
  * (text-only controls, no example people). The build lists the files present in each folder
@@ -14,7 +14,7 @@ import { FACE_FILES, ICON_FILES, SHAPE_FILES } from "./shape-assets.js";
 export const SHAPE_DIR = "assets/shape";
 export const ICON_DIR = "assets/icons";
 export const SHAPE_COUNT = 20;
-export const EXAMPLE_LABEL = "AI-generated example person";
+export const EXAMPLE_LABEL = "synthetic example person";
 /** Each icon, the web controls it sits next to (shape, face-part and expression ids), and the
  * matching ids in api/plumb_api/services/procedures.py. An icon with no web control yet is kept
  * so the server catalogue and the picture set stay one list. */
@@ -82,12 +82,23 @@ export function isIconFile(file) {
 export function presentIn(dir, listed = { shape: SHAPE_FILES, icons: ICON_FILES }) {
     return dir === SHAPE_DIR ? new Set(listed.shape.filter(isShapeFile)) : new Set(listed.icons.filter(isIconFile));
 }
-/** The Skin Moment example people (assets/skin-moment/faces/face-NN-day0.png): AI-generated adults in
+/** The Skin Moment example people (assets/skin-moment/faces/face-NN-day0.png): synthetic adults in
  * the same passport framing, offered as starting photos when no shape-tool example is in the build. */
 export const FACES_DIR = "assets/skin-moment/faces";
 export function isFaceFile(file) { return /^face-\d{2}-day0\.png$/.test(file); }
 /** The example people whose picture is in the build, in order: the shape-tool pictures when there are
  * any, otherwise the first day pictures of the Skin Moment example people. */
+/** The high-resolution example people (1600 px, invented adults; provenance in licences.json),
+ * person-1 to person-6 across light to very deep skin. */
+export const PEOPLE_DIR = "assets/people";
+export const PEOPLE_FILES = ["person-1.jpg", "person-2.jpg", "person-3.jpg", "person-4.jpg", "person-5.jpg", "person-6.jpg"];
+/** The first high-resolution example person. The folder ships with every build
+ * (scripts/copy-static.mjs), so no request is made to look for it; the Studio falls back to the
+ * older example pictures if this one cannot be opened. */
+export function highResPerson() {
+    const file = PEOPLE_FILES[0];
+    return { file, url: `${PEOPLE_DIR}/${file}`, label: `${EXAMPLE_LABEL} 1` };
+}
 export async function examplePeople(listed = { shape: SHAPE_FILES, faces: FACE_FILES }) {
     const shapes = [...presentIn(SHAPE_DIR, { shape: listed.shape, icons: [] })].sort();
     const [dir, files] = shapes.length ? [SHAPE_DIR, shapes] : [FACES_DIR, listed.faces.filter(isFaceFile).sort()];
@@ -121,3 +132,4 @@ export function controlIcon(controlId) {
 export function framingPoints(width, height) {
     return symmetricFace(width, height, Math.round(width * 0.47), Math.round(height * 0.63)).map(([x, y]) => [x, y]);
 }
+//# sourceMappingURL=shape-art.js.map

@@ -62,3 +62,4 @@ export class SubjectSelection {
         this.reason = NO_SUBJECT_REASON;
     }
 }
+//# sourceMappingURL=selection.js.map

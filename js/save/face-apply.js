@@ -68,3 +68,4 @@ export function applyLookToFaces(look, source, selected, engine, options = {}) {
     return { photo: current, faceIds: selected.map((f) => f.id), reports,
         simulationLabel: "Selected-face rectangular containment; not pixel-exact segmentation" };
 }
+//# sourceMappingURL=face-apply.js.map

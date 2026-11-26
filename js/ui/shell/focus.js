@@ -73,3 +73,4 @@ export function trap(dialog) {
     dialog.addEventListener("keydown", onKey);
     return () => dialog.removeEventListener("keydown", onKey);
 }
+//# sourceMappingURL=focus.js.map

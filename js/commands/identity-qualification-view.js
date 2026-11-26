@@ -90,3 +90,4 @@ export function mountIdentityQualification(host, input) {
     content.appendChild(article);
     host.replaceChildren(content);
 }
+//# sourceMappingURL=identity-qualification-view.js.map

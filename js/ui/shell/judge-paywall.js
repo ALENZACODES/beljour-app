@@ -42,3 +42,4 @@ export function renderJudgePaywall(doc, host, onFinish) {
     section.append(final);
     host.replaceChildren(section);
 }
+//# sourceMappingURL=judge-paywall.js.map

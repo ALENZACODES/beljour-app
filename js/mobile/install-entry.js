@@ -46,3 +46,4 @@ export function mountInstallEntry(doc = document, browser = window) {
         },
     };
 }
+//# sourceMappingURL=install-entry.js.map

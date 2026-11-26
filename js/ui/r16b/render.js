@@ -34,3 +34,4 @@ export function renderJob(job, clock = () => performance.now()) {
     }
     return { pixels: out.data, label: String(out.report.label ?? "Local cosmetic simulation."), warnings, metrics: out.report, elapsedMs: Math.max(0, clock() - start) };
 }
+//# sourceMappingURL=render.js.map

@@ -159,8 +159,15 @@ export function funWarp(image, f, kind, share) {
 /** The face blended with its own mirror image across the face's midline (the line through the
  * forehead and chin), inside a soft ellipse around the face, so both halves match. Only the
  * ellipse's box is visited. */
+/** Sine of the head turn at which the mirror blend is fully off. ASSUMED. */
+export const MIRROR_MAX_YAW = 0.35;
 export function mirrorFace(image, f, share) {
     const { width: w, height: h, channels: ch } = image;
+    // A turned head has no matching half to mirror (the far half is hidden), so the blend fades
+    // out as the head turns and is off from MIRROR_MAX_YAW on, rather than pasting a ghost face.
+    share *= Math.max(0, 1 - Math.abs(f.yaw) / MIRROR_MAX_YAW);
+    if (!(share > 0))
+        return { ...image, data: new Uint8ClampedArray(image.data) };
     const [cx, cy] = f.centre, rx = 0.62 * f.width, ry = 0.62 * f.height, r = Math.max(rx, ry);
     const out = { ...image, data: new Uint8ClampedArray(image.data) }, px = new Uint8ClampedArray(4);
     for (let y = Math.max(0, Math.floor(cy - r)); y <= Math.min(h - 1, Math.ceil(cy + r)); y++) {
@@ -182,3 +189,4 @@ export function mirrorFace(image, f, share) {
     }
     return out;
 }
+//# sourceMappingURL=warps.js.map

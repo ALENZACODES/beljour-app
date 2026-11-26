@@ -103,3 +103,4 @@ export function proAgeProfile(style) {
         throw new Error("unsupported pro-age profile");
     return profiles[style];
 }
+//# sourceMappingURL=texture.js.map

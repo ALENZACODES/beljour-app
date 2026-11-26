@@ -15,8 +15,8 @@ export const JUDGE_CUES = [
         step: "consent",
         targetSeconds: 25,
         instruction: "Read local-processing scope, then opt into each illustration action.",
-        narration: "Each editing choice is separate. These checks do not permit a real provider upload.",
-        honestBoundary: "No YouCam consent is given or reused by this screen.",
+        narration: "Each editing choice is separate. Nothing is uploaded; these checks only unlock the tour's steps.",
+        honestBoundary: "No upload consent is given or reused by this screen.",
         recovery: "Skip rather than activate an action without permission.",
         keyboard: "Tab through checkboxes, using Space to toggle each choice.",
     },
@@ -42,8 +42,8 @@ export const JUDGE_CUES = [
         step: "tryon",
         targetSeconds: 25,
         instruction: "Show the explicitly labelled mock try-on.",
-        narration: "This mocks the user journey. It does not call or stand in for a successful YouCam API.",
-        honestBoundary: "The required real API demonstration must occur in the separate live product flow.",
+        narration: "This mocks the user journey. It does not call any service or stand in for a real-photo result.",
+        honestBoundary: "Real try-ons happen in the separate on-device makeup tool, not in this tour.",
         recovery: "If mock consent is missing, return to consent or skip visibly.",
         keyboard: "Tab to the mock action and press Enter.",
     },
@@ -71,7 +71,7 @@ export const JUDGE_CUES = [
         instruction: "Show the demo prices and close without signing up.",
         narration: "The three-day trial and prices are mock commercial copy; no billing is connected.",
         honestBoundary: "No actual subscription, free trial or payment is created.",
-        recovery: "Exit the local demonstration. Real provider setup is separate and requires approval.",
+        recovery: "Exit the local demonstration and open the real pages from the links.",
         keyboard: "Use Exit or Finish. Escape also exits from a non-editable focus target.",
     },
 ];
@@ -130,3 +130,4 @@ export function validateJudgeCuePlan() {
     }
     return errors;
 }
+//# sourceMappingURL=judge-runbook.js.map
