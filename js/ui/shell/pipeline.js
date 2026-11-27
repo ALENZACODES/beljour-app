@@ -7,7 +7,7 @@ import { requireColour, resizeArea, resizeBilinear, encodeChannel, roundHalfEven
 import { enhance, MODES } from "../../engines/local/enhance.js";
 import { readCrown, shadeCard, hairColour } from "../../engines/local/fibre.js";
 import { PRODUCTS, renderFibres } from "../../engines/local/strands.js";
-import { isShaveRefusal, removeBeard } from "../../engines/shave/remove.js";
+import { hasBeard } from "../../engines/shave/clean.js";
 import { renderBeard, STYLES } from "../../engines/local/beard.js";
 import { plan, renderPosture, backgroundDetail, PLAIN_BACKGROUND_DETAIL, FIXES } from "../../engines/local/posture.js";
 import { postureSettings } from "./settings.js";
@@ -209,9 +209,8 @@ export function applyLocalLayer(img, source, layer, lightingRenderer) {
         const result = renderBeard(img, source.face, { style, length: longer, density,
             colour: stringParam(layer, "colour", defaultBeardColour(img, source.face)), seed: 11 });
         // Say what the tool does on this face: a beardless face gets a simulated beard, a full beard gets one drawn over it.
-        const probe = removeBeard(img, source.face, 30);
-        const note = isShaveRefusal(probe) && probe.code === "no_beard_found" ? "No beard in this photo: this adds a simulated beard."
-            : isShaveRefusal(probe) && probe.code === "full_beard" ? "This photo already has a full beard: the simulated beard is drawn over it." : null;
+        const note = hasBeard(img, source.face) ? "This photo already has a beard: the simulated beard is drawn over it."
+            : "No beard in this photo: this adds a simulated beard.";
         return { image: result.image, label: result.label,
             metrics: { style, length, density, strands: Number(result.metrics.strands), ...(note ? { status: "note", message: note } : {}) } };
     }
